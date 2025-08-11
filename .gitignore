@@ -128,4 +128,7 @@ exports
 dist
 build
 .strapi-updater.json
-.strapi-cloud.json
+.strapi-cloud.jsonnode_modules/
+.env
+.cache/
+build/
