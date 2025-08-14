@@ -1,3 +1,2 @@
-export default () => ({
-  'encryptable-field': { enabled: true },
-});
+// config/plugins.ts
+export default () => ({});
