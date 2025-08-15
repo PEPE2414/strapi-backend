@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jobs",
+  "info": {
+    "singularName": "job",
+    "pluralName": "jobs",
+    "displayName": "Job"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid"
+    },
+    "company": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "applyURL": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "date"
+    },
+    "job_type": {
+      "type": "string"
+    },
+    "salary": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "date"
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "related_degree": {
+      "type": "string"
+    },
+    "company_page_link": {
+      "type": "string"
+    },
+    "degree_level": {
+      "type": "string"
+    },
+    "experience": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string"
+    },
+    "company_logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}
