@@ -39,4 +39,7 @@
     "uuid": "1fec110e-7143-4940-9285-4b92b918e593",
     "installId": "6de8e17f5f4774a196a06ba89873bb7a218245883603954713904d783a4a21ce"
   }
+  "dependencies": {
+  "google-auth-library": "^9.14.1"
+  }
 }
