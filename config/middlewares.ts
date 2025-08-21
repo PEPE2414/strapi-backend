@@ -8,11 +8,9 @@ export default [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          // Keep this minimal to avoid duplicates with Helmet defaults
           'connect-src': ["'self'", 'https:', 'http:'],
           'img-src': ["'self'", 'data:', 'blob:', 'https:'],
           'media-src': ["'self'", 'data:', 'blob:', 'https:'],
-          // DO NOT set 'upgrade-insecure-requests' here; Helmet adds it.
         },
       },
     },
@@ -30,6 +28,7 @@ export default [
             .filter(Boolean),
         ];
         const origin = String(ctx.request.header.origin || '');
+
         if (
           process.env.ALLOW_VERCEL_PREVIEWS === 'true' &&
           /\.vercel\.app$/.test(origin)
@@ -49,7 +48,19 @@ export default [
   'strapi::logger',
   'strapi::query',
   'strapi::body',
-  'strapi::session',
+
+  // IMPORTANT: trust proxy so secure cookies work behind HTTPS terminators
+  {
+    name: 'strapi::session',
+    config: {
+      key: 'strapi.sid',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: true,   // keep secure cookies in prod
+      proxy: true,    // <— tells koa-session to trust X-Forwarded-Proto
+    },
+  },
+
   'strapi::favicon',
   'strapi::public',
 ];
