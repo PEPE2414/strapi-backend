@@ -4,7 +4,7 @@ export default ({ env }) => ({
     config: {
       register: {
         // Extra fields you want to allow on /auth/local/register
-        allowedFields: ['preferredName', 'university', 'course', 'keyStats'],
+        allowedFields: ['preferredName','university','course','studyField','keyStats'],
       },
       jwt: { expiresIn: '7d' },
     },
