@@ -21,31 +21,28 @@ export default [
   config: {
     origin: (ctx) => {
       const requestOrigin = String(ctx.request.header.origin || '');
-
-      // Allowed list from env
-      const allowList = [
+      const allowList = new Set([
+        'https://www.effort-free.co.uk',
+        'https://effort-free.co.uk',
         'http://localhost:3000',
-        ...(process.env.FRONTEND_URLS || '')
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
-      ];
+      ]);
 
-      // Allow dynamic Vercel previews if toggled
+      // Allow Vercel previews dynamically if toggled
       if (
         process.env.ALLOW_VERCEL_PREVIEWS === 'true' &&
-        /\.vercel\.app$/.test(requestOrigin)
+        requestOrigin &&
+        /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(requestOrigin)
       ) {
-        return requestOrigin; // must return a single origin string
+        return requestOrigin; // must be a single string (NOT an array, NOT '*')
       }
 
-      // For production, return the exact origin if it’s allowed
-      if (allowList.includes(requestOrigin)) {
+      // Prod/local: return the exact request origin if allowed
+      if (allowList.has(requestOrigin)) {
         return requestOrigin;
       }
 
-      // Otherwise, disable CORS for this origin
-      return ''; // returning empty string = no Access-Control-Allow-Origin header
+      // Otherwise: return empty string => no CORS header
+      return '';
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -53,6 +50,7 @@ export default [
     keepHeaderOnError: true,
   },
 },
+
 
   'strapi::poweredBy',
   'strapi::logger',
