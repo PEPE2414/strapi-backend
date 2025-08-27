@@ -28,9 +28,16 @@ async function verifyGoogle(credential: string): Promise<any | null> {
 export default ({ strapi }: { strapi: any }) => ({
   async googleOneTap(ctx: any) {
     try {
+      // 0) Basic config sanity
+      if (!CLIENT_IDS.length) {
+        return ctx.internalServerError('GOOGLE_CLIENT_ID not configured on server');
+      }
+
+      // 1) Input
       const { credential } = (ctx.request.body || {}) as { credential?: string };
       if (!credential) return ctx.badRequest('Missing credential');
 
+      // 2) Verify Google token
       const payload = await verifyGoogle(credential);
       if (!payload) return ctx.unauthorized('Invalid Google token');
 
@@ -39,52 +46,55 @@ export default ({ strapi }: { strapi: any }) => ({
 
       const username = (payload.given_name || payload.name || email.split('@')[0]).slice(0, 30);
 
-      // Get default "authenticated" role
-      const defaultRole = await strapi.db
-        .query('plugin::users-permissions.role')
-        .findOne({ where: { type: 'authenticated' } });
-      if (!defaultRole) return ctx.internalServerError('Missing authenticated role');
+      // 3) Default "authenticated" role (via entityService to avoid low-level pitfalls)
+      const roles = await strapi.entityService.findMany('plugin::users-permissions.role', {
+        filters: { type: 'authenticated' },
+        limit: 1,
+      });
+      const defaultRole = Array.isArray(roles) ? roles[0] : roles;
+      if (!defaultRole?.id) return ctx.internalServerError('Missing authenticated role');
 
-      // Find or create user
-      let user = await strapi.db
-        .query('plugin::users-permissions.user')
-        .findOne({ where: { email } });
+      // 4) Find existing user by email
+      const found = await strapi.entityService.findMany('plugin::users-permissions.user', {
+        filters: { email },
+        limit: 1,
+      });
+      let user = Array.isArray(found) ? found[0] : found;
 
       if (!user) {
-        user = await strapi.db
-          .query('plugin::users-permissions.user')
-          .create({
-            data: {
-              email,
-              username,
-              provider: 'google',
-              confirmed: true,
-              blocked: false,
-              role: defaultRole.id,
-            },
-          });
+        // 5) Create new user with role + confirmed
+        user = await strapi.entityService.create('plugin::users-permissions.user', {
+          data: {
+            email,
+            username,
+            provider: 'google',
+            confirmed: true,
+            blocked: false,
+            role: defaultRole.id, // works with entityService
+          },
+        });
       } else {
         if (user.blocked) return ctx.forbidden('User is blocked');
+
         const patch: Record<string, any> = {};
         if (!user.role) patch.role = defaultRole.id;
         if (!user.confirmed) patch.confirmed = true;
+
         if (Object.keys(patch).length) {
-          user = await strapi.db
-            .query('plugin::users-permissions.user')
-            .update({ where: { id: user.id }, data: patch });
+          user = await strapi.entityService.update('plugin::users-permissions.user', user.id, {
+            data: patch,
+          });
         }
       }
 
-      // Issue JWT
+      // 6) Issue JWT
       const jwt = await strapi.service('plugin::users-permissions.jwt').issue({ id: user.id });
 
-      // Sanitize user before returning
-      const safeUser = await strapi
-        .service('plugin::users-permissions.user')
-        .sanitizeOutput(user);
-
-      ctx.body = { jwt, user: safeUser };
-    } catch {
+      // 7) Return (entityService already sanitizes output)
+      ctx.body = { jwt, user };
+    } catch (err: any) {
+      // Log the real error once so we can see root cause if any remains
+      console.error('[google-one-tap] error:', err?.message || err);
       ctx.throw(500, 'One Tap failed');
     }
   },
