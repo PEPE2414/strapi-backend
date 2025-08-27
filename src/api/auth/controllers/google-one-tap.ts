@@ -1,7 +1,5 @@
 // src/api/auth/controllers/google-one-tap.ts
-import type { Context } from 'koa';
-import type { Strapi } from '@strapi/strapi';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 
 const CLIENT_IDS = (
   process.env.GOOGLE_CLIENT_IDS ||
@@ -14,7 +12,7 @@ const CLIENT_IDS = (
 
 const googleClient = new OAuth2Client();
 
-async function verifyGoogle(credential: string): Promise<TokenPayload | null> {
+async function verifyGoogle(credential: string): Promise<any | null> {
   for (const aud of CLIENT_IDS) {
     try {
       const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: aud });
@@ -27,8 +25,8 @@ async function verifyGoogle(credential: string): Promise<TokenPayload | null> {
   return null;
 }
 
-export default ({ strapi }: { strapi: Strapi }) => ({
-  async googleOneTap(ctx: Context) {
+export default ({ strapi }: { strapi: any }) => ({
+  async googleOneTap(ctx: any) {
     try {
       const { credential } = (ctx.request.body || {}) as { credential?: string };
       if (!credential) return ctx.badRequest('Missing credential');
@@ -41,13 +39,13 @@ export default ({ strapi }: { strapi: Strapi }) => ({
 
       const username = (payload.given_name || payload.name || email.split('@')[0]).slice(0, 30);
 
-      // default "authenticated" role
+      // Get default "authenticated" role
       const defaultRole = await strapi.db
         .query('plugin::users-permissions.role')
         .findOne({ where: { type: 'authenticated' } });
       if (!defaultRole) return ctx.internalServerError('Missing authenticated role');
 
-      // find or create user
+      // Find or create user
       let user = await strapi.db
         .query('plugin::users-permissions.user')
         .findOne({ where: { email } });
@@ -77,18 +75,16 @@ export default ({ strapi }: { strapi: Strapi }) => ({
         }
       }
 
-      // issue JWT
-      const jwt = await strapi
-        .service('plugin::users-permissions.jwt')
-        .issue({ id: user.id });
+      // Issue JWT
+      const jwt = await strapi.service('plugin::users-permissions.jwt').issue({ id: user.id });
 
-      // sanitize user
+      // Sanitize user before returning
       const safeUser = await strapi
         .service('plugin::users-permissions.user')
         .sanitizeOutput(user);
 
       ctx.body = { jwt, user: safeUser };
-    } catch (err) {
+    } catch {
       ctx.throw(500, 'One Tap failed');
     }
   },
