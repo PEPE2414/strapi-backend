@@ -1,57 +1,99 @@
-import type { Core } from '@strapi/strapi';
-import { OAuth2Client } from 'google-auth-library';
+// src/api/auth/controllers/google-one-tap.ts
+import type { Context } from 'koa';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
-const audienceFromEnv = () => {
-  const single = process.env.GOOGLE_CLIENT_ID;
-  const multi = process.env.GOOGLE_CLIENT_IDS; // optional CSV if you ever add more
-  if (multi) return multi.split(',').map((s) => s.trim()).filter(Boolean);
-  return single ? [single] : [];
-};
+const CLIENT_IDS = (
+  process.env.GOOGLE_CLIENT_IDS ||
+  process.env.GOOGLE_CLIENT_ID ||
+  ''
+)
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
-export default ({ strapi }: { strapi: Core.Strapi }) => ({
-  async login(ctx) {
+const googleClient = new OAuth2Client();
+
+async function verifyGoogle(credential: string): Promise<TokenPayload | null> {
+  for (const aud of CLIENT_IDS) {
+    try {
+      const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: aud });
+      const payload = ticket.getPayload();
+      if (payload) return payload;
+    } catch {
+      // try next audience
+    }
+  }
+  return null;
+}
+
+export default {
+  async googleOneTap(ctx: Context) {
     try {
       const { credential } = ctx.request.body as { credential?: string };
       if (!credential) return ctx.badRequest('Missing credential');
 
-      const audience = audienceFromEnv();
-      if (!audience.length) return ctx.internalServerError('Missing GOOGLE_CLIENT_ID');
+      const payload = await verifyGoogle(credential);
+      if (!payload) return ctx.unauthorized('Invalid Google token');
 
-      const client = new OAuth2Client();
-      const ticket = await client.verifyIdToken({ idToken: credential, audience });
-      const payload = ticket.getPayload();
-      if (!payload || !payload.email) return ctx.unauthorized('Invalid Google token');
+      const email = String(payload.email || '').toLowerCase();
+      if (!email) return ctx.badRequest('Google token missing email');
 
-      const email = payload.email.toLowerCase();
-      const username = (payload.name || email.split('@')[0]).trim();
-      const provider = 'google';
+      const username =
+        (payload.given_name || payload.name || email.split('@')[0]).slice(0, 30);
 
-      // Find or create the user
-      let user = await strapi.query('plugin::users-permissions.user').findOne({
-        where: { email },
-      });
+      // 1) Get default "authenticated" role
+      const defaultRole = await strapi.db
+        .query('plugin::users-permissions.role')
+        .findOne({ where: { type: 'authenticated' } });
+
+      if (!defaultRole) return ctx.internalServerError('Missing authenticated role');
+
+      // 2) Find existing user by email
+      let user = await strapi.db
+        .query('plugin::users-permissions.user')
+        .findOne({ where: { email } });
 
       if (!user) {
-        user = await strapi.entityService.create('plugin::users-permissions.user', {
-          data: {
-            username,
-            email,
-            provider,
-            confirmed: true,   // mark confirmed (you already trust Google)
-            blocked: false,
-          },
-        });
-      } else if (user.blocked) {
-        return ctx.forbidden('User is blocked');
+        // 3) Create new Google user WITH role + confirmed
+        user = await strapi.db
+          .query('plugin::users-permissions.user')
+          .create({
+            data: {
+              email,
+              username,
+              provider: 'google',
+              confirmed: true,
+              blocked: false,
+              role: defaultRole.id,
+            },
+          });
+      } else {
+        // 4) Ensure existing user has role + confirmed and not blocked
+        const patch: any = {};
+        if (!user.role) patch.role = defaultRole.id;
+        if (!user.confirmed) patch.confirmed = true;
+        if (user.blocked) return ctx.forbidden('User is blocked');
+
+        if (Object.keys(patch).length) {
+          user = await strapi.db
+            .query('plugin::users-permissions.user')
+            .update({ where: { id: user.id }, data: patch });
+        }
       }
 
-      // Issue Strapi JWT
-      const jwt = await strapi.service('plugin::users-permissions.jwt').issue({ id: user.id });
+      // 5) Issue JWT
+      const jwt = await strapi
+        .service('plugin::users-permissions.jwt')
+        .issue({ id: user.id });
 
-      ctx.send({ jwt, user });
+      // 6) Sanitize user before returning
+      const safeUser = await strapi
+        .service('plugin::users-permissions.user')
+        .sanitizeOutput(user);
+
+      ctx.body = { jwt, user: safeUser };
     } catch (err) {
-      strapi.log.error('One Tap login failed', err);
-      ctx.internalServerError('One Tap login failed');
+      ctx.throw(500, 'One Tap failed');
     }
   },
-});
+};
