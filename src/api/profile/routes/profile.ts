@@ -5,9 +5,9 @@ export default {
       method: 'PUT',
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',
-      // In v5: omit `auth` to require authentication by default.
-      // (If you ever need to make it public, you'd use `auth: { required: false }`.)
+      // Make it public at the router level; we verify JWT inside the controller.
       config: {
+        auth: false,
         policies: [],
         middlewares: [],
       },
