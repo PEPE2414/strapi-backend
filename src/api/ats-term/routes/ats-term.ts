@@ -1,6 +1,8 @@
-import { factories } from '@strapi/strapi';
+'use strict';
 
-export default factories.createCoreRouter('api::ats-term.ats-term', {
+const { factories } = require('@strapi/strapi');
+
+module.exports = factories.createCoreRouter('api::ats-term.ats-term', {
   config: {
     find:    { auth: false }, // GET /api/ats-terms
     findOne: { auth: false }, // GET /api/ats-terms/:id
