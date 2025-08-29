@@ -11,7 +11,31 @@
   "attributes": {
     "phrase": { "type": "string", "required": true, "minLength": 1 },
     "category": {
+      "type": "enumeration",{
+  "kind": "collectionType",
+  "collectionName": "ats_terms",
+  "info": {
+    "singularName": "ats-term",
+    "pluralName": "ats-terms",
+    "displayName": "ATS Term",
+    "description": "Keywords/phrases the ATS checker uses"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "phrase": { "type": "string", "required": true, "minLength": 1 },
+    "category": {
       "type": "enumeration",
+      "enum": ["good", "weak", "bad"],
+      "required": true
+    },
+    "weight": { "type": "decimal" },
+    "suggestion": { "type": "text" },
+    "variants": { "type": "json", "default": [] },
+    "field": { "type": "string" },
+    "role": { "type": "string" }
+  }
+}
+
       "enum": ["good", "weak", "bad"],
       "required": true
     },
