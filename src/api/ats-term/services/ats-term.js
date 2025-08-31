@@ -1,5 +1,2 @@
-'use strict';
-
-const { factories } = require('@strapi/strapi');
-
-module.exports = factories.createCoreService('api::ats-term.ats-term');
+import { factories } from '@strapi/strapi';
+export default factories.createCoreService('api::ats-term.ats-term');
