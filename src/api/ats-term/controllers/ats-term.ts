@@ -1,2 +1,6 @@
 import { factories } from '@strapi/strapi';
-export default factories.createCoreController('api::ats-term.ats-term');
+
+const UID = 'api::ats-term.ats-term' as const;
+
+// Cast to any so TS doesn't require generated ContentType typings yet.
+export default (factories.createCoreController as any)(UID);
