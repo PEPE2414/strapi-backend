@@ -1,12 +1,7 @@
 'use strict';
 
 module.exports = {
-  routes: [
-    {
-      method: 'GET',
-      path: '/xdebug',
-      handler: 'xdebug.ping',
-      config: { auth: false },
-    },
-  ],
+  routes: [{ method: 'GET', path: '/xdebug', handler: 'xdebug.index', config: { auth: false } }],
 };
+
+
