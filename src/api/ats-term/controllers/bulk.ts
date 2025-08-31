@@ -1,4 +1,4 @@
-const UID = 'api::ats-term.ats-term';
+const UID = 'api::ats-term.ats-term' as const;
 
 export default {
   async ping(ctx: any) {
@@ -13,32 +13,37 @@ export default {
     const items = Array.isArray(body) ? body : body.items;
     if (!Array.isArray(items) || items.length === 0) ctx.throw(400, 'No items');
 
+    const docs = (strapi as any).documents(UID as any);
+
     const upserts = items.map(async (it: any) => {
       const filters = { phrase: it.phrase, field: it.field ?? null, role: it.role ?? null };
-      const existing = await strapi.documents(UID).findFirst({ filters });
+
+      const existing = await docs.findFirst({ filters } as any);
+
       if (existing) {
-        return strapi.documents(UID).update({
+        return docs.update({
           documentId: existing.documentId,
           data: {
             category: it.category,
             weight: it.weight,
             suggestion: it.suggestion,
-            variants: it.variants || [],
+            variants: Array.isArray(it.variants) ? it.variants : [],
             field: it.field ?? null,
             role: it.role ?? null,
-          },
+          } as any,
         });
       }
-      return strapi.documents(UID).create({
+
+      return docs.create({
         data: {
           phrase: it.phrase,
           category: it.category,
           weight: it.weight,
           suggestion: it.suggestion,
-          variants: it.variants || [],
+          variants: Array.isArray(it.variants) ? it.variants : [],
           field: it.field ?? null,
           role: it.role ?? null,
-        },
+        } as any,
       });
     });
 
