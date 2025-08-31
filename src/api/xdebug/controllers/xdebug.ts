@@ -1,7 +1,5 @@
-'use strict';
-
-module.exports = {
-  async index(ctx) {
+export default {
+  async index(ctx: any) {
     const cts = Object.keys(strapi.container.get('content-types') || {});
     ctx.body = { ok: true, contentTypes: cts.sort() };
   },
