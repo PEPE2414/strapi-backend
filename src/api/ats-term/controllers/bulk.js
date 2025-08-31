@@ -1,5 +1,4 @@
 'use strict';
-
 const CATEGORIES = new Set(['good', 'weak', 'bad']);
 
 module.exports = ({ strapi }) => ({
