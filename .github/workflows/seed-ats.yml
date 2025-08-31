@@ -1,6 +1,6 @@
 name: Seed ATS Terms
 on:
-  workflow_dispatch: {}   # run manually from GitHub Actions tab
+  workflow_dispatch: {}
 
 jobs:
   seed:
@@ -9,12 +9,30 @@ jobs:
       - name: Checkout backend
         uses: actions/checkout@v4
 
-      - name: POST seed to Strapi
+      - name: Seed single file if present
+        if: ${{ hashFiles('seed/ats-terms.json') != '' }}
         run: |
+          echo "Seeding seed/ats-terms.json"
           curl -sS -X POST "$ATS_API_URL/api/ats-terms/bulk" \
             -H "Content-Type: application/json" \
             -H "x-seed-secret: $ATS_SEED_SECRET" \
             --data-binary @seed/ats-terms.json
+        env:
+          ATS_API_URL: ${{ secrets.ATS_API_URL }}
+          ATS_SEED_SECRET: ${{ secrets.ATS_SEED_SECRET }}
+
+      - name: Seed all files in seed/ats (if any)
+        run: |
+          if [ -d seed/ats ]; then
+            for f in seed/ats/*.json; do
+              [ -e "$f" ] || continue
+              echo "Seeding $f"
+              curl -sS -X POST "$ATS_API_URL/api/ats-terms/bulk" \
+                -H "Content-Type: application/json" \
+                -H "x-seed-secret: $ATS_SEED_SECRET" \
+                --data-binary @"$f"
+            done
+          fi
         env:
           ATS_API_URL: ${{ secrets.ATS_API_URL }}
           ATS_SEED_SECRET: ${{ secrets.ATS_SEED_SECRET }}
