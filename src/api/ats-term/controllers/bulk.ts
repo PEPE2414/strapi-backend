@@ -1,9 +1,7 @@
 const UID = 'api::ats-term.ats-term' as const;
 
 export default {
-  async ping(ctx: any) {
-    ctx.body = { ok: true };
-  },
+  async ping(ctx: any) { ctx.body = { ok: true }; },
 
   async bulkUpsert(ctx: any) {
     const secret = ctx.request.headers['x-seed-secret'];
