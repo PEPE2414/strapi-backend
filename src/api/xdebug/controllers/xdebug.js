@@ -1,10 +1,11 @@
 'use strict';
 
 module.exports = {
-  async ping(ctx) {
+  async index(ctx) {
     ctx.body = {
       ok: true,
-      apis: Object.keys(strapi.api || {}).sort(), // which APIs Strapi loaded
+      apis: Object.keys(strapi.container.get('content-types') || {}),
     };
   },
 };
+
