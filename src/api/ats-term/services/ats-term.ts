@@ -1,2 +1,4 @@
 import { factories } from '@strapi/strapi';
-export default factories.createCoreService('api::ats-term.ats-term');
+const UID = 'api::ats-term.ats-term' as const;
+
+export default factories.createCoreService(UID as any);
