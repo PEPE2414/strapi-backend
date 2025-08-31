@@ -1,10 +1,18 @@
 'use strict';
 
-const { factories } = require('@strapi/strapi');
-
-module.exports = factories.createCoreRouter('api::ats-term.ats-term', {
-  config: {
-    find:    { auth: false }, // GET /api/ats-terms
-    findOne: { auth: false }, // GET /api/ats-terms/:id
-  },
-});
+module.exports = {
+  routes: [
+    {
+      method: 'GET',
+      path: '/ats-terms',
+      handler: 'api::ats-term.ats-term.find',
+      config: { auth: false },
+    },
+    {
+      method: 'GET',
+      path: '/ats-terms/:id',
+      handler: 'api::ats-term.ats-term.findOne',
+      config: { auth: false },
+    },
+  ],
+};
