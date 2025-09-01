@@ -647,8 +647,6 @@
     "field": null,
     "role": null
   },
-
-  /* --- a few weaker verbs to nudge improvements --- */
   {
     "phrase": "assisted",
     "category": "weak",
