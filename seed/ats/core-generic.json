@@ -1,0 +1,4 @@
+[
+  { "phrase": "developed", "category": "good", "weight": 1, "variants": ["developing","built","created"], "field": null, "role": null },
+  { "phrase": "photoshop", "category": "good", "weight": 1, "variants": ["adobe photoshop","ps"], "field": "Design", "role": null }
+]
