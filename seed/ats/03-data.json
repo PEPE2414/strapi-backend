@@ -675,5 +675,545 @@
     "variants": ["worked with", "worked across"],
     "field": null,
     "role": null
+  },
+  {
+  "phrase": "handled",
+  "category": "weak",
+  "weight": 0.5,
+  "suggestion": "Swap vague ‘handled’ for a strong action + metric (e.g., “processed 120 requests/day with 98% SLA”).",
+  "variants": ["handled tasks","handled responsibilities","dealt with"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "involved in",
+  "category": "weak",
+  "weight": 0.5,
+  "suggestion": "State your ownership and outcome (e.g., “co-built X feature, reducing churn 8%”).",
+  "variants": ["involved with","involvement in","part of"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "helped with",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Replace with your exact contribution and impact (e.g., “automated Y; saved 6 hrs/week”).",
+  "variants": ["provided assistance in","aided with","support in"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "responsible for",
+  "category": "weak",
+  "weight": 0.5,
+  "suggestion": "Use ownership verbs + results (e.g., “owned onboarding; cut TTV by 35%”).",
+  "variants": ["responsibilities included","in charge of","accountable for"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "familiar with",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Quantify proficiency or outcomes (e.g., “built 3 apps using React & Node”).",
+  "variants": ["knowledge of","experience with","worked with"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "exposure to",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Show applied usage and scope (e.g., “used Docker to deploy 4 services”).",
+  "variants": ["limited exposure to","exposure in","exposed to"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "basic understanding",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Specify what you built/tested and the result.",
+  "variants": ["basic knowledge of","rudimentary understanding","elementary understanding"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "some experience in",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Replace with concrete projects + metrics (how many, what impact).",
+  "variants": ["some experience with","limited experience in","beginner experience in"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "used",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Replace with purpose + outcome (e.g., “used Python to automate ETL; −4 hrs/week”).",
+  "variants": ["made use of","utilized"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "contributed to",
+  "category": "weak",
+  "weight": 0.5,
+  "suggestion": "State your slice of the work and measurable result.",
+  "variants": ["contribution to","contributed on"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "attended",
+  "category": "weak",
+  "weight": 0.2,
+  "suggestion": "Focus on outputs (certifications, artifacts, improvements).",
+  "variants": ["attended sessions","attended training","took classes"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "shadowed",
+  "category": "weak",
+  "weight": 0.2,
+  "suggestion": "Emphasize what you then did independently and its impact.",
+  "variants": ["observed","job shadowing","observational learning"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "performed tasks",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Name the task, frequency, and impact (volume, speed, quality).",
+  "variants": ["performed duties","carried out tasks","task execution"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "worked under supervision",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Highlight responsibilities you owned and outcomes you delivered.",
+  "variants": ["under guidance of","supervised by","under supervision"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "tasked with",
+  "category": "weak",
+  "weight": 0.5,
+  "suggestion": "Switch to ownership (“owned”, “delivered”) + result.",
+  "variants": ["assigned to","given responsibility to","allocated to"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "successfully",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Drop “successfully”; prove success with numbers.",
+  "variants": ["successfully completed","successfully delivered","successfully implemented"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "significantly",
+  "category": "weak",
+  "weight": 0.4,
+  "suggestion": "Replace with exact figures (%, counts, time).",
+  "variants": ["substantially","considerably","markedly"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "extensively",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Quantify extent (volume, frequency, duration).",
+  "variants": ["heavily","widely","at length"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "multiple",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Specify counts (e.g., “led 4 projects”).",
+  "variants": ["numerous","several","a variety of"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "various",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "List the most relevant items explicitly.",
+  "variants": ["diverse","assorted","a range of"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "several",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Replace with an exact number.",
+  "variants": ["a number of","many","numerous"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "numerous",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "State the exact count or scale.",
+  "variants": ["many","countless","a large number of"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "approximately",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Give the precise or bounded value (±).",
+  "variants": ["about","around","circa"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "limited experience",
+  "category": "weak",
+  "weight": 0.2,
+  "suggestion": "Focus on what you built and learned; quantify scope.",
+  "variants": ["limited background","limited exposure","some experience"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "entry-level knowledge",
+  "category": "weak",
+  "weight": 0.2,
+  "suggestion": "Show outcomes that prove capability instead.",
+  "variants": ["basic knowledge","beginner-level knowledge","junior-level knowledge"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "basic skills in",
+  "category": "weak",
+  "weight": 0.3,
+  "suggestion": "Demonstrate proficiency via projects/certifications.",
+  "variants": ["basic proficiency in","foundational skills in","beginner skills in"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "results-driven",
+  "category": "bad",
+  "weight": -2.0,
+  "suggestion": "Replace with the actual results and metrics you drove.",
+  "variants": ["results oriented","results-focussed","results-focused"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "detail-oriented",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Prove it with error rates, QA findings, or audit outcomes.",
+  "variants": ["detail oriented","strong attention to detail","keen eye for detail"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "hard worker",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Let outcomes show effort (volume, speed, quality).",
+  "variants": ["hardworking","strong work ethic","diligent worker"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "team player",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Show cross-team outputs (e.g., x-function project with result).",
+  "variants": ["great team player","excellent team player","works well in a team"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "fast learner",
+  "category": "bad",
+  "weight": -1.9,
+  "suggestion": "Demonstrate speed via ramp-up time and outcomes.",
+  "variants": ["quick learner","learns quickly","rapid learner"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "self-starter",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Show initiative with what you started and delivered.",
+  "variants": ["self starter","proactive self-starter","self-motivated"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "dynamic",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Replace with outcomes that imply adaptability.",
+  "variants": ["highly dynamic","dynamic professional","energetic"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "go-getter",
+  "category": "bad",
+  "weight": -2.0,
+  "suggestion": "Show initiative with concrete wins and KPIs.",
+  "variants": ["go getter","driven self-starter","hustler"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "can-do attitude",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Demonstrate resilience with hard targets hit.",
+  "variants": ["can do attitude","positive attitude","no-quit attitude"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "passionate about",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Replace with evidence of effort and impact.",
+  "variants": ["passion for","highly passionate about","deeply passionate about"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "innovative",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Show novelty via patents, citations, or metrics.",
+  "variants": ["highly innovative","innovative thinker","creative innovator"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "cutting-edge",
+  "category": "bad",
+  "weight": -1.9,
+  "suggestion": "Name the tech and the measurable advantage achieved.",
+  "variants": ["cutting edge","leading-edge","avant-garde"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "state-of-the-art",
+  "category": "bad",
+  "weight": -1.9,
+  "suggestion": "Specify the approach + benchmark beats (numbers).",
+  "variants": ["state of the art","best-in-class","leading-edge"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "visionary",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Translate vision into shipped milestones and KPIs.",
+  "variants": ["thought leader","visionary leader","forward-looking"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "disruptive",
+  "category": "bad",
+  "weight": -1.9,
+  "suggestion": "Show market/usage deltas that justify the term.",
+  "variants": ["game-changing","breakthrough","paradigm-shifting"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "out-of-the-box thinker",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Describe the unconventional approach and its impact.",
+  "variants": ["outside the box","think outside the box","creative thinker"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "rockstar",
+  "category": "bad",
+  "weight": -2.2,
+  "suggestion": "Avoid hype; prove excellence with rankings and results.",
+  "variants": ["rock star","A-player","top gun"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "ninja",
+  "category": "bad",
+  "weight": -2.1,
+  "suggestion": "Swap buzzwords for skills + outcomes.",
+  "variants": ["code ninja","data ninja","design ninja"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "guru",
+  "category": "bad",
+  "weight": -2.0,
+  "suggestion": "Use concrete seniority and proof points.",
+  "variants": ["tech guru","excel guru","marketing guru"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "wizard",
+  "category": "bad",
+  "weight": -2.0,
+  "suggestion": "Replace with specific expertise and achievements.",
+  "variants": ["code wizard","data wizard","excel wizard"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "synergy",
+  "category": "bad",
+  "weight": -1.8,
+  "suggestion": "Describe the collaboration and the measurable outcome.",
+  "variants": ["synergies","create synergy","leverage synergy"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "proven track record",
+  "category": "bad",
+  "weight": -1.9,
+  "suggestion": "Show the track record with concrete KPIs and dates.",
+  "variants": ["track record of success","proven success","demonstrated track record"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "strong communication skills",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Evidence with audiences, frequency, and outcomes.",
+  "variants": ["excellent communication skills","great communicator","good communication skills"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "interpersonal skills",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "Show stakeholder outcomes instead of traits.",
+  "variants": ["strong interpersonal skills","excellent interpersonal skills","people skills"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "ability to work under pressure",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "Cite tight deadlines met and the results.",
+  "variants": ["works well under pressure","thrives under pressure","perform under pressure"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "multitasker",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "Show parallel streams delivered and quality preserved.",
+  "variants": ["ability to multitask","strong multitasking skills","multitasking"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "works well independently and as part of a team",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Replace with cross-team projects and solo deliverables (with metrics).",
+  "variants": ["works independently and in a team","independently or as part of a team","both independently and in teams"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "motivated individual",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "Show motivation through stretch goals achieved.",
+  "variants": ["highly motivated","self-motivated individual","motivated professional"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "enthusiastic",
+  "category": "bad",
+  "weight": -1.5,
+  "suggestion": "Convert enthusiasm to concrete outcomes and scope.",
+  "variants": ["highly enthusiastic","great enthusiasm","enthusiastic individual"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "problem solver",
+  "category": "bad",
+  "weight": -1.7,
+  "suggestion": "Show the problems solved and the quantifiable impact.",
+  "variants": ["problem-solving skills","strong problem solver","solutions-oriented"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "quick thinker",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "Demonstrate with rapid-response outcomes and MTTR.",
+  "variants": ["fast thinker","think quickly","quick on my feet"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "people person",
+  "category": "bad",
+  "weight": -1.5,
+  "suggestion": "Prove people outcomes (CSAT, NPS, stakeholder wins).",
+  "variants": ["great with people","good with people","people-oriented"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "flexible",
+  "category": "bad",
+  "weight": -1.5,
+  "suggestion": "Show adaptability via changes handled and results shipped.",
+  "variants": ["highly adaptable","flexible professional","adaptable"],
+  "field": null,
+  "role": null
+  },
+  {
+  "phrase": "seasoned professional",
+  "category": "bad",
+  "weight": -1.6,
+  "suggestion": "List years, domains, and quantified achievements instead.",
+  "variants": ["highly experienced","seasoned expert","veteran professional"],
+  "field": null,
+  "role": null
   }
-]
+  ]
