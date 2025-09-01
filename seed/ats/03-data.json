@@ -1,0 +1,679 @@
+[
+  {
+    "phrase": "led",
+    "category": "good",
+    "weight": 1.6,
+    "suggestion": "Add team size and scope (e.g., led 5 engineers across 2 workstreams).",
+    "variants": ["lead", "leading", "headed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "spearheaded",
+    "category": "good",
+    "weight": 1.6,
+    "suggestion": "State outcomes (timeline, KPIs, budget).",
+    "variants": ["championed", "pioneered"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "delivered",
+    "category": "good",
+    "weight": 1.6,
+    "suggestion": "Quantify what was delivered and the impact.",
+    "variants": ["delivering", "achieved", "accomplished"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "launched",
+    "category": "good",
+    "weight": 1.6,
+    "suggestion": "Include adoption, revenue, or user metrics.",
+    "variants": ["rolled out", "go-to-market", "released"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "owned",
+    "category": "good",
+    "weight": 1.6,
+    "suggestion": "Define scope and accountability (OKRs, budget).",
+    "variants": ["ownership of", "took ownership", "accountable for"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "orchestrated",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Note cross-functional teams and dependencies.",
+    "variants": ["coordinated end-to-end", "synchronized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "architected",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Mention the stack, patterns, and scale.",
+    "variants": ["designed the architecture", "blueprinted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "drove",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Tie to measurable outcomes (e.g., +25% throughput).",
+    "variants": ["driving", "propelled", "catalyzed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "executed",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Include timeline, budget, and quality metrics.",
+    "variants": ["implemented plan", "carried out"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "managed",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Add team size, budget, and scope.",
+    "variants": ["managing", "supervised", "oversaw", "administered"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "designed",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Specify constraints and user/engineering impact.",
+    "variants": ["designing", "conceived", "blueprinted", "drafted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "implemented",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Add tools/tech and outcome metrics.",
+    "variants": ["deploying", "implemented solution", "executed implementation"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "developed",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Quantify (e.g., time saved, defects reduced).",
+    "variants": ["developing", "built", "created", "engineered"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "built",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "State scale and performance metrics.",
+    "variants": ["constructed", "assembled", "developed", "created"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "created",
+    "category": "good",
+    "weight": 1.3,
+    "suggestion": "Include audience, reach, or efficiency gains.",
+    "variants": ["produced", "crafted", "generated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "optimized",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Quote % improvement or cost/time saved.",
+    "variants": ["optimized for", "fine-tuned", "streamlined performance"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "improved",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Add before/after metrics.",
+    "variants": ["enhanced", "boosted", "elevated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reduced",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Use concrete figures (e.g., −18% cost).",
+    "variants": ["cut", "decreased", "lowered", "shrunk"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "increased",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Quantify growth (users, revenue, throughput).",
+    "variants": ["grew", "scaled up", "boosted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "automated",
+    "category": "good",
+    "weight": 1.5,
+    "suggestion": "Report time saved and frequency.",
+    "variants": ["scripted", "built automation", "systematized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "streamlined",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Mention cycle time or handoff reduction.",
+    "variants": ["simplified", "rationalized", "refined process"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "integrated",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "List systems/APIs and reliability gains.",
+    "variants": ["connected", "interfaced", "federated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "migrated",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Include source→target, downtime, and scale.",
+    "variants": ["replatformed", "ported", "transitioned"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "refactored",
+    "category": "good",
+    "weight": 1.3,
+    "suggestion": "Call out defect rate or maintainability gains.",
+    "variants": ["cleaned up code", "modernized codebase"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "scaled",
+    "category": "good",
+    "weight": 1.4,
+    "suggestion": "Add scale metrics (QPS, users, regions).",
+    "variants": ["scaled up", "horizontal scaling", "vertical scaling"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "modernized",
+    "category": "good",
+    "weight": 1.3,
+    "suggestion": "Name legacy→modern stack and impact.",
+    "variants": ["upgraded", "overhauled", "revamped"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "analyzed",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "State datasets, tools, and insights generated.",
+    "variants": ["analysed", "analyzing", "evaluated", "assessed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "researched",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Outline methods and findings.",
+    "variants": ["investigated", "explored", "studied"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "modeled",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Mention techniques and validation.",
+    "variants": ["modelled", "simulated", "parameterized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "validated",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Include accuracy or acceptance criteria.",
+    "variants": ["verified", "qualified", "checked"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tested",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Add coverage, frameworks, and defect reduction.",
+    "variants": ["QAed", "quality assured", "test automation"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "debugged",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Highlight MTTR improvements.",
+    "variants": ["troubleshot", "diagnosed", "fixed bugs"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "monitored",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Note SLOs, alerts, and observability tools.",
+    "variants": ["observed", "tracked", "instrumented"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "maintained",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Scope the system and uptime/reliability.",
+    "variants": ["sustained", "supported", "administered"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "configured",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "List key platforms or tooling.",
+    "variants": ["set up", "provisioned", "parameterized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deployed",
+    "category": "good",
+    "weight": 1.3,
+    "suggestion": "Mention environment(s) and frequency.",
+    "variants": ["released to production", "rolled out", "shippped"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "documented",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Describe audiences and adoption.",
+    "variants": ["wrote documentation", "authored guides"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "presented",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Add audience size and outcomes.",
+    "variants": ["pitched", "demoed", "showcased"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "communicated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Clarify cadence and stakeholders.",
+    "variants": ["liaised", "reported", "briefed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "collaborated",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Name partner teams and deliverables.",
+    "variants": ["worked closely with", "partnered with", "co-created"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "coordinated",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Mention timelines and dependencies.",
+    "variants": ["organized across", "synchronized", "facilitated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mentored",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Add mentee count and growth outcomes.",
+    "variants": ["coached", "guided", "trained"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "trained",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Include cohort size and certification rates.",
+    "variants": ["onboarded", "taught", "upskilled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "facilitated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Describe sessions/workshops and outcomes.",
+    "variants": ["moderated", "ran workshops", "hosted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "negotiated",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Show savings or improved terms.",
+    "variants": ["secured terms", "brokered", "closed deals"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "planned",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Mention roadmap horizon and milestones.",
+    "variants": ["roadmapped", "mapped out", "outlined"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "prioritized",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Cite framework (RICE/MoSCoW) or KPI.",
+    "variants": ["triaged", "ranked", "sequenced"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "scheduled",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Note cadence and resource constraints.",
+    "variants": ["coordinated schedules", "sequenced"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "organized",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Describe scope and scale of operations.",
+    "variants": ["structured", "systematized", "arranged"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "budgeted",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Add amounts and variance improvements.",
+    "variants": ["managed budgets", "costed", "cost control"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "forecasted",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "State models and error reductions.",
+    "variants": ["projected", "predicted", "estimated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "audited",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Note findings and remediation.",
+    "variants": ["reviewed compliance", "assured", "inspected"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "procured",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Include cost savings and vendor count.",
+    "variants": ["sourced", "purchased", "acquired suppliers"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "evaluated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "List criteria and selection outcomes.",
+    "variants": ["assessed", "benchmarked", "compared"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "benchmarked",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Cite baseline vs. target improvements.",
+    "variants": ["compared against", "measured against"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "calibrated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Add tolerances and standards.",
+    "variants": ["tuned", "aligned", "standardized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "commissioned",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Include sign-off criteria and uptime at handover.",
+    "variants": ["brought online", "put into service"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "inspected",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Mention defect rates and standards (e.g., ISO).",
+    "variants": ["surveyed", "checked", "examined"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fabricated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "State materials and tolerances.",
+    "variants": ["manufactured", "machined", "assembled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "prototyped",
+    "category": "good",
+    "weight": 1.1,
+    "suggestion": "Include iteration count and test results.",
+    "variants": ["built prototype", "mocked up", "proof of concept"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "iterated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Describe learning cycles and improvements.",
+    "variants": ["cycled", "improved iteratively"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ideated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Note number of concepts and selection criteria.",
+    "variants": ["brainstormed", "conceived ideas"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "investigated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "State methods and key findings.",
+    "variants": ["diagnosed", "troubleshot", "root-caused"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "estimated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Mention methodology and accuracy.",
+    "variants": ["sized", "approximated", "forecasted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "calculated",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Include tools and verification steps.",
+    "variants": ["computed", "derived", "quantified"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reviewed",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Add volume and defect findings.",
+    "variants": ["peer reviewed", "CRed", "code reviewed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "approved",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Note criteria and stakeholders.",
+    "variants": ["signed off", "authorized", "validated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "secured",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "State what was secured (funding, access, compliance).",
+    "variants": ["obtained", "won", "locked down"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hardened",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Mention controls and risk reduction.",
+    "variants": ["secured system", "locked down", "fortified"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "resolved",
+    "category": "good",
+    "weight": 1.2,
+    "suggestion": "Add MTTR and impact avoided.",
+    "variants": ["closed issues", "fixed", "remediated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "triaged",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Include volume and SLA adherence.",
+    "variants": ["prioritized incidents", "sorted", "routed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "supported",
+    "category": "good",
+    "weight": 1.0,
+    "suggestion": "Add ticket volume and CSAT/NPS.",
+    "variants": ["assisted users", "provided support", "served"],
+    "field": null,
+    "role": null
+  },
+
+  /* --- a few weaker verbs to nudge improvements --- */
+  {
+    "phrase": "assisted",
+    "category": "weak",
+    "weight": 0.5,
+    "suggestion": "Swap for an ownership verb (e.g., led, implemented) and add metrics.",
+    "variants": ["helped", "supported with", "provided assistance"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "participated",
+    "category": "weak",
+    "weight": 0.3,
+    "suggestion": "Clarify your specific contribution and results.",
+    "variants": ["took part in", "involved in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked on",
+    "category": "weak",
+    "weight": 0.3,
+    "suggestion": "Use a precise verb (built, designed, delivered) and quantify.",
+    "variants": ["worked with", "worked across"],
+    "field": null,
+    "role": null
+  }
+]
