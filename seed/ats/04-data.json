@@ -811,8 +811,8 @@
 },
 {
 "phrase": "kinda helped",
-"category": "weak",
-"weight": 0.5,
+"category": "bad",
+"weight": -3.0,
 "suggestion": "somewhat assisted, partially supported, sort of aided",
 "variants": [],
 "field": null,
@@ -865,8 +865,8 @@
 },
 {
 "phrase": "kinda familiar",
-"category": "weak",
-"weight": 0.5,
+"category": "bad",
+"weight": -3.0,
 "suggestion": "somewhat acquainted, partially versed, roughly knowledgeable",
 "variants": [],
 "field": null,
