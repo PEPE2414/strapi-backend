@@ -1009,7 +1009,7 @@
 },
 {
 "phrase": "kinda helped",
-"category": "weak",
+"category": "bad",
 "suggestion": "somewhat assisted, partially supported, sort of aided",
 "variants": [],
 "field": null,
@@ -1056,7 +1056,7 @@
 "role": null
 },
 {
-"phrase": "kinda familiar",
+"phrase": "bad familiar",
 "category": "weak",
 "suggestion": "somewhat acquainted, partially versed, roughly knowledgeable",
 "variants": [],
