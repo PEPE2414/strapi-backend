@@ -1391,8 +1391,8 @@
 },
 {
 "phrase": "kinda familiar",
-"category": "weak",
-"weight": 0.5,
+"category": "bad",
+"weight": -3.0,
 "suggestion": "somewhat acquainted, partially versed, roughly knowledgeable",
 "variants": [],
 "field": null,
