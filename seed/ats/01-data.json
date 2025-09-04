@@ -3409,14 +3409,6 @@
 "role": null
 },
 {
-"phrase": "kinda",
-"category": "weak",
-"suggestion": "somewhat, rather, partially",
-"variants": ["kind of"],
-"field": null,
-"role": null
-},
-{
 "phrase": "pretty good",
 "category": "weak",
 "suggestion": "highly proficient, very skilled, excellently performed",
