@@ -70,5 +70,6 @@ export default [
   },
 
   'strapi::favicon',
+  'global::with-user',
   'strapi::public',
 ];
