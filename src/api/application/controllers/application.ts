@@ -3,7 +3,7 @@ import { factories } from '@strapi/strapi';
 const STAGES = ['Saved', 'Phase1', 'Phase2', 'Assessment', 'Interview', 'Rejected', 'Offer'] as const;
 type Stage = typeof STAGES[number];
 
-export default factories.createCoreController('api::application.application', ({ strapi }) => ({
+export default factories.createCoreController('api::application.application' as any, ({ strapi }) => ({
   // ---------- Owner-scoped READ (list) ----------
   async find(ctx) {
     const user = ctx.state.user;
@@ -170,48 +170,53 @@ export default factories.createCoreController('api::application.application', ({
   },
 
   // ---------- Custom: transition ----------
-  async transition(ctx) {
-    const user = ctx.state.user;
-    if (!user) return ctx.unauthorized();
+    async transition(ctx) {
+      const user = ctx.state.user;
+      if (!user) return ctx.unauthorized();
 
-    const id = Number(ctx.params.id);
-    const { stage } = ctx.request.body || {};
-    if (!stage || !STAGES.includes(stage)) return ctx.badRequest('Invalid or missing stage');
+      const id = Number(ctx.params.id);
+      const { stage } = ctx.request.body || {};
+      if (!stage || !STAGES.includes(stage)) return ctx.badRequest('Invalid or missing stage');
 
-    const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id },
-      populate: { owner: true }
-    });
-    if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+      const existing = await strapi.db.query('api::application.application').findOne({
+        where: { id },
+        populate: { owner: true }
+      });
+      if (!existing) return ctx.notFound();
+      if (existing.owner?.id !== user.id) return ctx.forbidden();
 
-    const updated = await strapi.entityService.update('api::application.application', id, {
-      data: { stage }
-    });
+      const updated = await strapi.entityService.update(
+        'api::application.application' as any,  // ⟵ cast here
+        id,
+        { data: { stage } }
+      );
 
-    ctx.body = { data: updated };
-  },
+      ctx.body = { data: updated };
+    },
 
   // ---------- Optional: dev-only verify via header ----------
-  async verify(ctx) {
-    const user = ctx.state.user;
-    if (!user) return ctx.unauthorized();
+    async verify(ctx) {
+      const user = ctx.state.user;
+      if (!user) return ctx.unauthorized();
 
-    const secret = ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret'];
-    if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
+      const secret = ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret'];
+      if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
 
-    const id = Number(ctx.params.id);
-    const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id },
-      populate: { owner: true }
-    });
-    if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+      const id = Number(ctx.params.id);
+      const existing = await strapi.db.query('api::application.application').findOne({
+        where: { id },
+        populate: { owner: true }
+      });
+      if (!existing) return ctx.notFound();
+      if (existing.owner?.id !== user.id) return ctx.forbidden();
 
-    const updated = await strapi.entityService.update('api::application.application', id, {
-      data: { verified: true }
-    });
+      const updated = await strapi.entityService.update(
+        'api::application.application' as any,  // ⟵ cast here
+        id,
+        { data: { verified: true } }
+      );
 
-    ctx.body = { data: updated };
-  }
-}));
+      ctx.body = { data: updated };
+    }
+  })
+);
