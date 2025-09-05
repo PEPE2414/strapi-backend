@@ -220,5 +220,15 @@ export default factories.createCoreController('api::application.application' as 
 
       ctx.body = { data: updated };
     }
+    // TEMP: simple probe to confirm auth is reaching controllers
+    async whoami(ctx) {
+      const user = await ensureUserOnCtx(ctx, strapi);
+      ctx.body = {
+        hasUser: !!user,
+        userId: user?.id ?? null,
+        // Helpful visibility that the header reached us:
+        hasAuthHeader: !!(ctx.request.header?.authorization || ctx.request.header?.Authorization),
+      };
+    },
   })
 );
