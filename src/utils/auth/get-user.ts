@@ -1,35 +1,62 @@
-// Resolve ctx.state.user from JWT (Authorization header or cookie) if missing.
-// Use the most compatible Users & Permissions services.
-export async function ensureUserOnCtx(ctx: any, strapi: any) {
+import type { Context } from 'koa';
+
+// Robustly resolve ctx.state.user from Authorization header or cookies.
+// Falls back to manual JWT verify using process.env.JWT_SECRET if plugin service isn't cooperating.
+export async function ensureUserOnCtx(ctx: Context & { state: any; request: any }, strapi: any) {
   if (ctx.state?.user) return ctx.state.user;
 
-  // 1) Header → Bearer token
-  const auth = ctx.request.header?.authorization || ctx.request.header?.Authorization;
+  // 1) Pull Bearer token from header if present
+  const auth = (ctx.request.header?.authorization || ctx.request.header?.Authorization) as string | undefined;
   let token: string | null = null;
-  if (auth && typeof auth === 'string' && auth.startsWith('Bearer ')) token = auth.slice(7);
+  if (auth && auth.startsWith('Bearer ')) token = auth.slice(7);
 
-  // 2) Resolve JWT service (v5-friendly)
+  // 2) Get plugin JWT service (v5-friendly)
   const jwtService =
     strapi.service?.('plugin::users-permissions.jwt') ??
     strapi.plugin?.('users-permissions')?.service?.('jwt') ??
     strapi.plugins?.['users-permissions']?.services?.jwt;
 
-  // 3) If no header token, try plugin helper (cookie/query)
+  // 3) If no header token, try plugin helper (cookie/query param)
   if (!token && jwtService?.getToken) {
-    try { token = await jwtService.getToken(ctx); } catch { /* no-op */ }
+    try { token = await jwtService.getToken(ctx); } catch { /* ignore */ }
   }
 
-  // 4) Verify & fetch user
+  // 4) Try plugin verify first
+  let userId: number | string | null = null;
   if (token && jwtService?.verify) {
     try {
       const payload = await jwtService.verify(token);
-      const userId = payload?.id ?? payload?.sub ?? payload?._id;
-      if (userId) {
-        const user = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: userId } });
-        if (user) ctx.state.user = user;
-      }
-    } catch { /* invalid token -> leave ctx.state.user undefined */ }
+      userId = (payload?.id ?? payload?.sub ?? (payload as any)?._id) || null;
+    } catch {
+      // ignore; we'll try the manual fallback below
+    }
   }
 
-  return ctx.state?.user || null;
+  // 5) Manual fallback using process.env.JWT_SECRET
+  if (!userId && token && process.env.JWT_SECRET) {
+    try {
+      // Lazy import to avoid type deps
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const jwt = require('jsonwebtoken');
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      userId = (payload?.id ?? payload?.sub ?? (payload as any)?._id) || null;
+    } catch {
+      // bad token or wrong secret
+    }
+  }
+
+  // 6) Load user if we resolved an id
+  if (userId) {
+    try {
+      const user = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: userId } });
+      if (user) {
+        ctx.state.user = user;
+        return user;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  return null;
 }
