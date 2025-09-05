@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::saved-job.saved-job', ({ strapi }) => ({
+export default factories.createCoreController('api::saved-job.saved-job' as any, ({ strapi }) => ({
   async find(ctx) {
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized();
