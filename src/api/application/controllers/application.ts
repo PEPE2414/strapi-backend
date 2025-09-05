@@ -220,14 +220,49 @@ export default factories.createCoreController('api::application.application' as 
 
       ctx.body = { data: updated };
     },
-    // TEMP: simple probe to confirm auth is reaching controllers
-    async whoami(ctx) {
-      const user = await ensureUserOnCtx(ctx, strapi);
+ // Diagnostic: never throws, never 401/403
+  async whoami(ctx) {
+    try {
+      const authHeader = String(ctx.request.header?.authorization || ctx.request.header?.Authorization || '');
+      const hasAuthHeader = !!authHeader;
+      const bearerToken = hasAuthHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+      // Resolve the plugin jwt service (v5-compatible)
+      const jwtService =
+        (strapi as any).service?.('plugin::users-permissions.jwt') ??
+        (strapi as any).plugin?.('users-permissions')?.service?.('jwt') ??
+        (strapi as any).plugins?.['users-permissions']?.services?.jwt;
+
+      let verifyOk = false;
+      let userId: number | string | null = null;
+      let reason: string | null = null;
+
+      if (bearerToken && jwtService?.verify) {
+        try {
+          const payload = await jwtService.verify(bearerToken);
+          userId = (payload?.id ?? payload?.sub ?? (payload as any)?._id) || null;
+          verifyOk = !!userId;
+        } catch (e: any) {
+          reason = e?.message || 'verify_failed';
+        }
+      } else if (!bearerToken) {
+        reason = 'no_bearer_token';
+      } else {
+        reason = 'jwt_service_unavailable';
+      }
+
       ctx.body = {
-        hasUser: !!user,
-        userId: user?.id ?? null,
-        hasAuthHeader: !!(ctx.request.header?.authorization || ctx.request.header?.Authorization),
+        hasAuthHeader,
+        verifyOk,
+        userId,
+        reason,
+        // for sanity: report if global middleware already populated ctx.state.user
+        hasCtxUser: !!ctx.state?.user,
       };
-    },
-  })
-);
+    } catch (e: any) {
+      // absolutely never 500 here
+      ctx.body = { diagError: e?.message || 'whoami_unexpected_error' };
+    }
+  },
+
+}));
