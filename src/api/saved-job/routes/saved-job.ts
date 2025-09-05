@@ -1,58 +1,34 @@
 export default {
-  type: 'content-api', // ✅ make this a content API route set
+  type: 'content-api', // ✅ content API
   routes: [
     {
       method: 'GET',
-      path: '/applications',
-      handler: 'application.find',
+      path: '/saved-jobs',
+      handler: 'saved-job.find',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'GET',
-      path: '/applications/:id',
-      handler: 'application.findOne',
+      path: '/saved-jobs/:id',
+      handler: 'saved-job.findOne',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'POST',
-      path: '/applications',
-      handler: 'application.create',
+      path: '/saved-jobs',
+      handler: 'saved-job.create',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'PUT',
-      path: '/applications/:id',
-      handler: 'application.update',
+      path: '/saved-jobs/:id',
+      handler: 'saved-job.update',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'DELETE',
-      path: '/applications/:id',
-      handler: 'application.delete',
-      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
-    },
-    {
-      method: 'GET',
-      path: '/applications/stats',
-      handler: 'application.stats',
-      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
-    },
-    {
-      method: 'GET',
-      path: '/applications/weekly',
-      handler: 'application.weekly',
-      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
-    },
-    {
-      method: 'POST',
-      path: '/applications/:id/transition',
-      handler: 'application.transition',
-      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
-    },
-    {
-      method: 'POST',
-      path: '/applications/:id/verify',
-      handler: 'application.verify',
+      path: '/saved-jobs/:id',
+      handler: 'saved-job.delete',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     }
   ]
