@@ -1,3 +1,3 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreService('api::application.application');
+export default factories.createCoreService('api::application.application' as any); // ⟵ cast
