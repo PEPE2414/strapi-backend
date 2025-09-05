@@ -1,99 +1,76 @@
 import { factories } from '@strapi/strapi';
-import { ensureUserOnCtx } from '../../../utils/auth/get-user';
-
-function decodeJwtId(token: string): string | number | null {
-  try {
-    const parts = token.split('.');
-    if (parts.length < 2) return null;
-    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-    const json = Buffer.from(b64, 'base64').toString('utf8');
-    const payload = JSON.parse(json);
-    return payload?.id ?? payload?.sub ?? payload?._id ?? null;
-  } catch { return null; }
-}
 
 const STAGES = ['Saved', 'Phase1', 'Phase2', 'Assessment', 'Interview', 'Rejected', 'Offer'] as const;
 type Stage = typeof STAGES[number];
 
 export default factories.createCoreController('api::application.application' as any, ({ strapi }) => ({
-  // ---------- Owner-scoped READ (list) ----------
-  async find(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
 
-    // Inject owner filter while preserving incoming filters
+  // ---------- LIST (owner scoped) ----------
+  async find(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
+
     ctx.query = ctx.query || {};
     const incomingFilters = (ctx.query as any).filters || {};
-    (ctx.query as any).filters = { ...incomingFilters, owner: user.id };
+    (ctx.query as any).filters = { ...incomingFilters, owner: userId };
 
-    // Delegate to core controller with modified query
-    // @ts-ignore super is provided by Strapi factory
+    // @ts-ignore
     const { data, meta } = await super.find(ctx);
     return { data, meta };
   },
 
-  // ---------- Owner-scoped READ (single) ----------
+  // ---------- GET ONE (owner scoped) ----------
   async findOne(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     // @ts-ignore
     const entity = await super.findOne(ctx);
-    const ownerId = (entity?.data?.attributes as any)?.owner?.data?.id;
 
-    // Strapi core populate for relations on single may vary; enforce via raw lookup if needed:
-    if (!ownerId) {
-      const id = ctx.params.id;
-      const record = await strapi.db.query('api::application.application').findOne({
-        where: { id: Number(id) },
-        populate: { owner: true }
-      });
-      if (!record || record.owner?.id !== user.id) return ctx.forbidden();
-      return entity;
-    }
+    const id = Number(ctx.params.id);
+    const existing = await strapi.db.query('api::application.application').findOne({
+      where: { id },
+      populate: { owner: true }
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
-    if (ownerId !== user.id) return ctx.forbidden();
     return entity;
   },
 
-  // ---------- CREATE (force owner = current user) ----------
+  // ---------- CREATE (force owner) ----------
   async create(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     const body = ctx.request.body || {};
     body.data = body.data || {};
-    // Always set owner to current user
-    body.data.owner = user.id;
+    body.data.owner = userId;
 
-    // Optional: ignore stage if invalid
     if (body.data.stage && !STAGES.includes(body.data.stage)) {
       return ctx.badRequest('Invalid stage');
     }
 
     ctx.request.body = body;
-
     // @ts-ignore
     return await super.create(ctx);
   },
 
-  // ---------- UPDATE (check owner) ----------
+  // ---------- UPDATE (owner check) ----------
   async update(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
-    const id = ctx.params.id;
+    const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id: Number(id) },
+      where: { id },
       populate: { owner: true }
     });
     if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
-    // Never allow changing owner manually
     if (ctx.request.body?.data?.owner) delete ctx.request.body.data.owner;
 
-    // Validate stage
     const stage = ctx.request.body?.data?.stage;
     if (stage && !STAGES.includes(stage)) return ctx.badRequest('Invalid stage');
 
@@ -101,152 +78,150 @@ export default factories.createCoreController('api::application.application' as 
     return await super.update(ctx);
   },
 
-  // ---------- DELETE (check owner) ----------
+  // ---------- DELETE (owner check) ----------
   async delete(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
-    const id = ctx.params.id;
+    const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id: Number(id) },
+      where: { id },
       populate: { owner: true }
     });
     if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
     // @ts-ignore
     return await super.delete(ctx);
   },
 
-  // ---------- Custom: stats ----------
+  // ---------- STATS ----------
   async stats(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     const counts: Record<Stage, number> = {
       Saved: 0, Phase1: 0, Phase2: 0, Assessment: 0, Interview: 0, Rejected: 0, Offer: 0
     } as any;
 
-    // count per stage
     await Promise.all(
       STAGES.map(async (s) => {
         counts[s] = await strapi.db.query('api::application.application').count({
-          where: { owner: user.id, stage: s }
+          where: { owner: userId, stage: s }
         });
       })
     );
 
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-
-    // Donut-friendly mapping for your UI
     const donut = {
       total,
       phase1: counts.Phase1,
       phase2: counts.Phase2,
       assessment: counts.Assessment,
-      interview: counts.Interview
+      interview: counts.Interview,
     };
 
     ctx.body = { counts, donut };
   },
 
-  // ---------- Custom: weekly ----------
+  // ---------- WEEKLY ----------
   async weekly(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
-    // Start of current week (Monday 00:00) in server time
     const now = new Date();
     const day = now.getDay(); // 0=Sun..6=Sat
-    const diffToMonday = (day + 6) % 7; // days since Monday
+    const diffToMonday = (day + 6) % 7;
     const start = new Date(now);
     start.setHours(0, 0, 0, 0);
     start.setDate(start.getDate() - diffToMonday);
 
     const submittedThisWeek = await strapi.db.query('api::application.application').count({
-      where: {
-        owner: user.id,
-        createdAt: { $gte: start.toISOString() }
-      }
+      where: { owner: userId, createdAt: { $gte: start.toISOString() } }
     });
 
     const verifiedThisWeek = await strapi.db.query('api::application.application').count({
-      where: {
-        owner: user.id,
-        createdAt: { $gte: start.toISOString() },
-        verified: true
-      }
+      where: { owner: userId, createdAt: { $gte: start.toISOString() }, verified: true }
     });
 
     ctx.body = { submittedThisWeek, verifiedThisWeek, weekStartISO: start.toISOString() };
   },
 
-  // ---------- Custom: transition ----------
-    async transition(ctx) {
-      const user = await ensureUserOnCtx(ctx, strapi);
-      if (!user) return ctx.unauthorized();
+  // ---------- TRANSITION ----------
+  async transition(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
-      const id = Number(ctx.params.id);
-      const { stage } = ctx.request.body || {};
-      if (!stage || !STAGES.includes(stage)) return ctx.badRequest('Invalid or missing stage');
+    const id = Number(ctx.params.id);
+    const { stage } = ctx.request.body || {};
+    if (!stage || !STAGES.includes(stage)) return ctx.badRequest('Invalid or missing stage');
 
-      const existing = await strapi.db.query('api::application.application').findOne({
-        where: { id },
-        populate: { owner: true }
-      });
-      if (!existing) return ctx.notFound();
-      if (existing.owner?.id !== user.id) return ctx.forbidden();
+    const existing = await strapi.db.query('api::application.application').findOne({
+      where: { id },
+      populate: { owner: true }
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
-      const updated = await strapi.entityService.update(
-        'api::application.application' as any,  // ⟵ cast here
-        id,
-        { data: { stage } }
-      );
+    const updated = await strapi.entityService.update(
+      'api::application.application' as any,
+      id,
+      { data: { stage } }
+    );
 
-      ctx.body = { data: updated };
-    },
+    ctx.body = { data: updated };
+  },
 
-  // ---------- Optional: dev-only verify via header ----------
-    async verify(ctx) {
-      const user = await ensureUserOnCtx(ctx, strapi);
-      if (!user) return ctx.unauthorized();
+  // ---------- VERIFY (dev-only, optional) ----------
+  async verify(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
-      const secret = ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret'];
-      if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
+    const secret = (ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret']) as string | undefined;
+    if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
 
-      const id = Number(ctx.params.id);
-      const existing = await strapi.db.query('api::application.application').findOne({
-        where: { id },
-        populate: { owner: true }
-      });
-      if (!existing) return ctx.notFound();
-      if (existing.owner?.id !== user.id) return ctx.forbidden();
+    const id = Number(ctx.params.id);
+    const existing = await strapi.db.query('api::application.application').findOne({
+      where: { id },
+      populate: { owner: true }
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
-      const updated = await strapi.entityService.update(
-        'api::application.application' as any,  // ⟵ cast here
-        id,
-        { data: { verified: true } }
-      );
+    const updated = await strapi.entityService.update(
+      'api::application.application' as any,
+      id,
+      { data: { verified: true } }
+    );
 
-      ctx.body = { data: updated };
-    },
- // Diagnostic: never throws, never 401/403
+    ctx.body = { data: updated };
+  },
+
+  // ---------- DIAG (never throws) ----------
   async whoami(ctx) {
     try {
       const authHeader = String(ctx.request.header?.authorization || ctx.request.header?.Authorization || '');
       const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-      const decodedId = token ? decodeJwtId(token) : null;
-      const user = await ensureUserOnCtx(ctx, strapi);
+
+      const decodedId = (() => {
+        try {
+          if (!token) return null;
+          const parts = token.split('.');
+          if (parts.length < 2) return null;
+          const json = Buffer.from(parts[1], 'base64url').toString('utf8');
+          const payload = JSON.parse(json);
+          return payload?.id ?? payload?.sub ?? payload?._id ?? null;
+        } catch { return null; }
+      })();
 
       ctx.body = {
         hasAuthHeader: !!authHeader,
         hasBearer: !!token,
         decodedId: decodedId ?? null,
-        hasCtxUser: !!user,
-        userId: user?.id ?? null,
+        hasCtxUserId: ctx.state?.jwtUserId ?? null,
       };
     } catch (e: any) {
-      ctx.body = { diagError: e?.message || 'whoami_error' }; // never 500
+      ctx.body = { diagError: e?.message || 'whoami_error' };
     }
   },
 
