@@ -1,4 +1,6 @@
 import { factories } from '@strapi/strapi';
+import { ensureUserOnCtx } from '../../../utils/auth/get-user';
+
 
 const STAGES = ['Saved', 'Phase1', 'Phase2', 'Assessment', 'Interview', 'Rejected', 'Offer'] as const;
 type Stage = typeof STAGES[number];
@@ -6,7 +8,7 @@ type Stage = typeof STAGES[number];
 export default factories.createCoreController('api::application.application' as any, ({ strapi }) => ({
   // ---------- Owner-scoped READ (list) ----------
   async find(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     // Inject owner filter while preserving incoming filters
@@ -22,7 +24,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- Owner-scoped READ (single) ----------
   async findOne(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     // @ts-ignore
@@ -46,7 +48,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- CREATE (force owner = current user) ----------
   async create(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const body = ctx.request.body || {};
@@ -67,7 +69,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- UPDATE (check owner) ----------
   async update(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const id = ctx.params.id;
@@ -91,7 +93,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- DELETE (check owner) ----------
   async delete(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const id = ctx.params.id;
@@ -108,7 +110,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- Custom: stats ----------
   async stats(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const counts: Record<Stage, number> = {
@@ -140,7 +142,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- Custom: weekly ----------
   async weekly(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     // Start of current week (Monday 00:00) in server time
@@ -171,7 +173,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- Custom: transition ----------
     async transition(ctx) {
-      const user = ctx.state.user;
+      const user = await ensureUserOnCtx(ctx, strapi);
       if (!user) return ctx.unauthorized();
 
       const id = Number(ctx.params.id);
@@ -196,7 +198,7 @@ export default factories.createCoreController('api::application.application' as 
 
   // ---------- Optional: dev-only verify via header ----------
     async verify(ctx) {
-      const user = ctx.state.user;
+      const user = await ensureUserOnCtx(ctx, strapi);
       if (!user) return ctx.unauthorized();
 
       const secret = ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret'];
