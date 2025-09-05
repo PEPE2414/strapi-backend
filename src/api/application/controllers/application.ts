@@ -226,7 +226,6 @@ export default factories.createCoreController('api::application.application' as 
       ctx.body = {
         hasUser: !!user,
         userId: user?.id ?? null,
-        // Helpful visibility that the header reached us:
         hasAuthHeader: !!(ctx.request.header?.authorization || ctx.request.header?.Authorization),
       };
     },
