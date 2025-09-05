@@ -1,55 +1,28 @@
 import { factories } from '@strapi/strapi';
-import { ensureUserOnCtx } from '../../../utils/auth/get-user';
-
 
 export default factories.createCoreController('api::saved-job.saved-job' as any, ({ strapi }) => ({
+
+  // LIST (owner scoped)
   async find(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     ctx.query = ctx.query || {};
     const incomingFilters = (ctx.query as any).filters || {};
-    (ctx.query as any).filters = { ...incomingFilters, owner: user.id };
+    (ctx.query as any).filters = { ...incomingFilters, owner: userId };
 
     // @ts-ignore
-    return await super.find(ctx);
+    const { data, meta } = await super.find(ctx);
+    return { data, meta };
   },
 
+  // GET ONE (owner scoped)
   async findOne(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     // @ts-ignore
     const entity = await super.findOne(ctx);
-
-    // Fallback owner check via raw query if needed
-    const id = Number(ctx.params.id);
-    const record = await strapi.db.query('api::saved-job.saved-job').findOne({
-      where: { id },
-      populate: { owner: true }
-    });
-    if (!record) return ctx.notFound();
-    if (record.owner?.id !== user.id) return ctx.forbidden();
-
-    return entity;
-  },
-
-  async create(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
-
-    const body = ctx.request.body || {};
-    body.data = body.data || {};
-    body.data.owner = user.id; // force
-    ctx.request.body = body;
-
-    // @ts-ignore
-    return await super.create(ctx);
-  },
-
-  async update(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::saved-job.saved-job').findOne({
@@ -57,7 +30,36 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
       populate: { owner: true }
     });
     if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
+
+    return entity;
+  },
+
+  // CREATE (force owner)
+  async create(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
+
+    const body = ctx.request.body || {};
+    body.data = { ...(body.data || {}), owner: userId };
+    ctx.request.body = body;
+
+    // @ts-ignore
+    return await super.create(ctx);
+  },
+
+  // UPDATE (owner check)
+  async update(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
+
+    const id = Number(ctx.params.id);
+    const existing = await strapi.db.query('api::saved-job.saved-job').findOne({
+      where: { id },
+      populate: { owner: true }
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
     if (ctx.request.body?.data?.owner) delete ctx.request.body.data.owner;
 
@@ -65,9 +67,10 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
     return await super.update(ctx);
   },
 
+  // DELETE (owner check)
   async delete(ctx) {
-    const user = await ensureUserOnCtx(ctx, strapi);
-    if (!user) return ctx.unauthorized();
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::saved-job.saved-job').findOne({
@@ -75,9 +78,10 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
       populate: { owner: true }
     });
     if (!existing) return ctx.notFound();
-    if (existing.owner?.id !== user.id) return ctx.forbidden();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
 
     // @ts-ignore
     return await super.delete(ctx);
-  }
+  },
+
 }));
