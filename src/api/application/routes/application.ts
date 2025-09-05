@@ -1,5 +1,3 @@
-import { factories } from '@strapi/strapi';
-
 export default {
   type: 'content-api', // ✅ make this a content API route set
   routes: [
