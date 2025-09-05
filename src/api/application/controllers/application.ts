@@ -219,7 +219,7 @@ export default factories.createCoreController('api::application.application' as 
       );
 
       ctx.body = { data: updated };
-    }
+    },
     // TEMP: simple probe to confirm auth is reaching controllers
     async whoami(ctx) {
       const user = await ensureUserOnCtx(ctx, strapi);
