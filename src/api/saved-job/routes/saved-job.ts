@@ -1,33 +1,58 @@
 export default {
+  type: 'content-api', // ✅ make this a content API route set
   routes: [
     {
       method: 'GET',
-      path: '/saved-jobs',
-      handler: 'saved-job.find',
+      path: '/applications',
+      handler: 'application.find',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'GET',
-      path: '/saved-jobs/:id',
-      handler: 'saved-job.findOne',
+      path: '/applications/:id',
+      handler: 'application.findOne',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'POST',
-      path: '/saved-jobs',
-      handler: 'saved-job.create',
+      path: '/applications',
+      handler: 'application.create',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'PUT',
-      path: '/saved-jobs/:id',
-      handler: 'saved-job.update',
+      path: '/applications/:id',
+      handler: 'application.update',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
     {
       method: 'DELETE',
-      path: '/saved-jobs/:id',
-      handler: 'saved-job.delete',
+      path: '/applications/:id',
+      handler: 'application.delete',
+      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
+    },
+    {
+      method: 'GET',
+      path: '/applications/stats',
+      handler: 'application.stats',
+      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
+    },
+    {
+      method: 'GET',
+      path: '/applications/weekly',
+      handler: 'application.weekly',
+      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
+    },
+    {
+      method: 'POST',
+      path: '/applications/:id/transition',
+      handler: 'application.transition',
+      config: { policies: ['plugin::users-permissions.isAuthenticated'] }
+    },
+    {
+      method: 'POST',
+      path: '/applications/:id/verify',
+      handler: 'application.verify',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     }
   ]
