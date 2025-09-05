@@ -1,8 +1,10 @@
 import { factories } from '@strapi/strapi';
+import { ensureUserOnCtx } from '../../../utils/auth/get-user';
+
 
 export default factories.createCoreController('api::saved-job.saved-job' as any, ({ strapi }) => ({
   async find(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     ctx.query = ctx.query || {};
@@ -14,7 +16,7 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
   },
 
   async findOne(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     // @ts-ignore
@@ -33,7 +35,7 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
   },
 
   async create(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const body = ctx.request.body || {};
@@ -46,7 +48,7 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
   },
 
   async update(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
@@ -64,7 +66,7 @@ export default factories.createCoreController('api::saved-job.saved-job' as any,
   },
 
   async delete(ctx) {
-    const user = ctx.state.user;
+    const user = await ensureUserOnCtx(ctx, strapi);
     if (!user) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
