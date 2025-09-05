@@ -1,6 +1,16 @@
 import { factories } from '@strapi/strapi';
 import { ensureUserOnCtx } from '../../../utils/auth/get-user';
 
+function decodeJwtId(token: string): string | number | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = Buffer.from(b64, 'base64').toString('utf8');
+    const payload = JSON.parse(json);
+    return payload?.id ?? payload?.sub ?? payload?._id ?? null;
+  } catch { return null; }
+}
 
 const STAGES = ['Saved', 'Phase1', 'Phase2', 'Assessment', 'Interview', 'Rejected', 'Offer'] as const;
 type Stage = typeof STAGES[number];
@@ -224,44 +234,19 @@ export default factories.createCoreController('api::application.application' as 
   async whoami(ctx) {
     try {
       const authHeader = String(ctx.request.header?.authorization || ctx.request.header?.Authorization || '');
-      const hasAuthHeader = !!authHeader;
-      const bearerToken = hasAuthHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-
-      // Resolve the plugin jwt service (v5-compatible)
-      const jwtService =
-        (strapi as any).service?.('plugin::users-permissions.jwt') ??
-        (strapi as any).plugin?.('users-permissions')?.service?.('jwt') ??
-        (strapi as any).plugins?.['users-permissions']?.services?.jwt;
-
-      let verifyOk = false;
-      let userId: number | string | null = null;
-      let reason: string | null = null;
-
-      if (bearerToken && jwtService?.verify) {
-        try {
-          const payload = await jwtService.verify(bearerToken);
-          userId = (payload?.id ?? payload?.sub ?? (payload as any)?._id) || null;
-          verifyOk = !!userId;
-        } catch (e: any) {
-          reason = e?.message || 'verify_failed';
-        }
-      } else if (!bearerToken) {
-        reason = 'no_bearer_token';
-      } else {
-        reason = 'jwt_service_unavailable';
-      }
+      const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+      const decodedId = token ? decodeJwtId(token) : null;
+      const user = await ensureUserOnCtx(ctx, strapi);
 
       ctx.body = {
-        hasAuthHeader,
-        verifyOk,
-        userId,
-        reason,
-        // for sanity: report if global middleware already populated ctx.state.user
-        hasCtxUser: !!ctx.state?.user,
+        hasAuthHeader: !!authHeader,
+        hasBearer: !!token,
+        decodedId: decodedId ?? null,
+        hasCtxUser: !!user,
+        userId: user?.id ?? null,
       };
     } catch (e: any) {
-      // absolutely never 500 here
-      ctx.body = { diagError: e?.message || 'whoami_unexpected_error' };
+      ctx.body = { diagError: e?.message || 'whoami_error' }; // never 500
     }
   },
 
