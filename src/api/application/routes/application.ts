@@ -1,8 +1,8 @@
 import { factories } from '@strapi/strapi';
 
 export default {
+  type: 'content-api', // ✅ make this a content API route set
   routes: [
-    // Core CRUD (auth required)
     {
       method: 'GET',
       path: '/applications',
@@ -33,32 +33,24 @@ export default {
       handler: 'application.delete',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
-
-    // Custom: stats
     {
       method: 'GET',
       path: '/applications/stats',
       handler: 'application.stats',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
-
-    // Custom: weekly summary
     {
       method: 'GET',
       path: '/applications/weekly',
       handler: 'application.weekly',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
-
-    // Custom: transition
     {
       method: 'POST',
       path: '/applications/:id/transition',
       handler: 'application.transition',
       config: { policies: ['plugin::users-permissions.isAuthenticated'] }
     },
-
-    // Optional dev-only verify route (uses x-verify-secret header)
     {
       method: 'POST',
       path: '/applications/:id/verify',
@@ -67,3 +59,4 @@ export default {
     }
   ]
 };
+
