@@ -4,12 +4,12 @@ const STAGES = ['Saved', 'Phase1', 'Phase2', 'Assessment', 'Interview', 'Rejecte
 type Stage = typeof STAGES[number];
 
 function toData(entity: any) {
-  // Basic Strapi-style wrapper; populate as needed later
   return { id: entity.id, attributes: entity };
 }
 
 export default factories.createCoreController('api::application.application' as any, ({ strapi }) => ({
 
+  // LIST (owner scoped)
   async find(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -21,21 +21,33 @@ export default factories.createCoreController('api::application.application' as 
 
     const [results, total] = await Promise.all([
       strapi.db.query('api::application.application').findMany({
-        where, orderBy: sort.map((s: string) => {
-          const [field, dir] = s.split(':');
-          return { [field]: dir || 'asc' };
-        }),
-        limit: Number(pageSize), offset: (Number(page) - 1) * Number(pageSize)
+        where,
+        orderBy: Array.isArray(sort)
+          ? sort.map((s: string) => {
+              const [field, dir] = s.split(':');
+              return { [field]: (dir || 'asc') as 'asc' | 'desc' };
+            })
+          : undefined,
+        limit: Number(pageSize),
+        offset: (Number(page) - 1) * Number(pageSize),
       }),
       strapi.db.query('api::application.application').count({ where }),
     ]);
 
     ctx.body = {
       data: results.map(toData),
-      meta: { pagination: { page: Number(page), pageSize: Number(pageSize), pageCount: Math.ceil(total / Number(pageSize)), total } }
+      meta: {
+        pagination: {
+          page: Number(page),
+          pageSize: Number(pageSize),
+          pageCount: Math.max(1, Math.ceil(total / Number(pageSize || 1))),
+          total,
+        },
+      },
     };
   },
 
+  // GET ONE (owner scoped)
   async findOne(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -43,12 +55,13 @@ export default factories.createCoreController('api::application.application' as 
     const id = Number(ctx.params.id);
     const entity = await strapi.db.query('api::application.application').findOne({
       where: { id, owner: userId },
-      populate: { owner: true }
+      populate: { owner: true },
     });
     if (!entity) return ctx.notFound();
     ctx.body = { data: toData(entity) };
   },
 
+  // CREATE (force owner)
   async create(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -57,19 +70,21 @@ export default factories.createCoreController('api::application.application' as 
     if (body.stage && !STAGES.includes(body.stage)) return ctx.badRequest('Invalid stage');
 
     const created = await strapi.entityService.create('api::application.application' as any, {
-      data: { ...body, owner: userId }
+      data: { ...body, owner: userId },
     });
 
     ctx.body = { data: toData(created) };
   },
 
+  // UPDATE (owner check)
   async update(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id }, populate: { owner: true }
+      where: { id },
+      populate: { owner: true },
     });
     if (!existing) return ctx.notFound();
     if (existing.owner?.id !== userId) return ctx.forbidden();
@@ -82,13 +97,15 @@ export default factories.createCoreController('api::application.application' as 
     ctx.body = { data: toData(updated) };
   },
 
+  // DELETE (owner check)
   async delete(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
     const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id }, populate: { owner: true }
+      where: { id },
+      populate: { owner: true },
     });
     if (!existing) return ctx.notFound();
     if (existing.owner?.id !== userId) return ctx.forbidden();
@@ -97,27 +114,42 @@ export default factories.createCoreController('api::application.application' as 
     ctx.body = { data: toData(deleted) };
   },
 
+  // STATS
   async stats(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const counts: Record<Stage, number> = {
-      Saved: 0, Phase1: 0, Phase2: 0, Assessment: 0, Interview: 0, Rejected: 0, Offer: 0
+      Saved: 0,
+      Phase1: 0,
+      Phase2: 0,
+      Assessment: 0,
+      Interview: 0,
+      Rejected: 0,
+      Offer: 0,
     } as any;
 
     await Promise.all(
       STAGES.map(async (s) => {
         counts[s] = await strapi.db.query('api::application.application').count({
-          where: { owner: userId, stage: s }
+          where: { owner: userId, stage: s },
         });
       })
     );
 
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    const donut = { total, phase1: counts.Phase1, phase2: counts.Phase2, assessment: counts.Assessment, interview: counts.Interview };
+    const donut = {
+      total,
+      phase1: counts.Phase1,
+      phase2: counts.Phase2,
+      assessment: counts.Assessment,
+      interview: counts.Interview,
+    };
+
     ctx.body = { counts, donut };
   },
 
+  // WEEKLY
   async weekly(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -130,15 +162,16 @@ export default factories.createCoreController('api::application.application' as 
     start.setDate(start.getDate() - diffToMonday);
 
     const submittedThisWeek = await strapi.db.query('api::application.application').count({
-      where: { owner: userId, createdAt: { $gte: start.toISOString() } }
+      where: { owner: userId, createdAt: { $gte: start.toISOString() } },
     });
     const verifiedThisWeek = await strapi.db.query('api::application.application').count({
-      where: { owner: userId, createdAt: { $gte: start.toISOString() }, verified: true }
+      where: { owner: userId, createdAt: { $gte: start.toISOString() }, verified: true },
     });
 
     ctx.body = { submittedThisWeek, verifiedThisWeek, weekStartISO: start.toISOString() };
   },
 
+  // TRANSITION
   async transition(ctx) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -148,7 +181,8 @@ export default factories.createCoreController('api::application.application' as 
     if (!stage || !STAGES.includes(stage)) return ctx.badRequest('Invalid or missing stage');
 
     const existing = await strapi.db.query('api::application.application').findOne({
-      where: { id }, populate: { owner: true }
+      where: { id },
+      populate: { owner: true },
     });
     if (!existing) return ctx.notFound();
     if (existing.owner?.id !== userId) return ctx.forbidden();
@@ -157,6 +191,27 @@ export default factories.createCoreController('api::application.application' as 
     ctx.body = { data: toData(updated) };
   },
 
+  // VERIFY (dev-only, optional)
+  async verify(ctx) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
+
+    const secret = (ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret']) as string | undefined;
+    if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
+
+    const id = Number(ctx.params.id);
+    const existing = await strapi.db.query('api::application.application').findOne({
+      where: { id },
+      populate: { owner: true },
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
+
+    const updated = await strapi.entityService.update('api::application.application' as any, id, { data: { verified: true } });
+    ctx.body = { data: toData(updated) };
+  },
+
+  // DIAG (never throws)
   async whoami(ctx) {
     try {
       const authHeader = String(ctx.request.header?.authorization || ctx.request.header?.Authorization || '');
@@ -174,7 +229,12 @@ export default factories.createCoreController('api::application.application' as 
           }
         } catch {}
       }
-      ctx.body = { hasAuthHeader: !!authHeader, hasBearer: !!token, decodedId, hasCtxUserId: ctx.state?.jwtUserId ?? null };
+      ctx.body = {
+        hasAuthHeader: !!authHeader,
+        hasBearer: !!token,
+        decodedId,
+        hasCtxUserId: ctx.state?.jwtUserId ?? null,
+      };
     } catch (e: any) {
       ctx.body = { diagError: e?.message || 'whoami_error' };
     }
