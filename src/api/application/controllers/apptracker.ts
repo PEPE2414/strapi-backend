@@ -198,7 +198,7 @@ export default {
     ctx.body = { data: toData(updated) };
   },
 
-  // ✅ VERIFY (dev-only, optional; needed because route exists)
+  // VERIFY (dev-only, optional; route exists)
   async verify(ctx: any) {
     const userId = ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
@@ -237,10 +237,6 @@ export default {
           decodedId = payload?.id ?? payload?.sub ?? payload?._id ?? null;
         } catch {}
       }
-      
-      async ping(ctx: any) {
-        ctx.body = { ok: true, from: 'api::application.apptracker' };
-      },
 
       ctx.body = {
         hasAuthHeader: !!authHeader,
@@ -251,5 +247,10 @@ export default {
     } catch (e: any) {
       ctx.body = { diagError: e?.message || 'whoami_error' };
     }
+  },
+
+  // PING (to confirm handler resolution for this controller)
+  async ping(ctx: any) {
+    ctx.body = { ok: true, from: 'api::application.apptracker' };
   },
 };
