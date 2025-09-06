@@ -237,6 +237,10 @@ export default {
           decodedId = payload?.id ?? payload?.sub ?? payload?._id ?? null;
         } catch {}
       }
+      
+      async ping(ctx: any) {
+        ctx.body = { ok: true, from: 'api::application.apptracker' };
+      },
 
       ctx.body = {
         hasAuthHeader: !!authHeader,
