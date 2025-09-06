@@ -198,6 +198,29 @@ export default {
     ctx.body = { data: toData(updated) };
   },
 
+  // ✅ VERIFY (dev-only, optional; needed because route exists)
+  async verify(ctx: any) {
+    const userId = ctx.state?.jwtUserId;
+    if (!userId) return ctx.unauthorized();
+
+    const secret = (ctx.request.header['x-verify-secret'] || ctx.request.header['X-Verify-Secret']) as string | undefined;
+    if (!secret || secret !== process.env.VERIFY_SECRET) return ctx.forbidden('Bad verify secret');
+
+    const id = Number(ctx.params.id);
+    const existing = await strapi.db.query('api::application.application').findOne({
+      where: { id },
+      populate: { owner: true },
+    });
+    if (!existing) return ctx.notFound();
+    if (existing.owner?.id !== userId) return ctx.forbidden();
+
+    const updated = await strapi.entityService.update('api::application.application' as any, id, {
+      data: { verified: true },
+    });
+
+    ctx.body = { data: toData(updated) };
+  },
+
   // WHOAMI diag
   async whoami(ctx: any) {
     try {
