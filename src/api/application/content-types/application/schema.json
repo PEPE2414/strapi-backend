@@ -19,6 +19,7 @@
     "location": { "type": "string" },
     "link": { "type": "string" },
     "jobId": { "type": "string" },
+    "cardColor": { "type": "string" },
     "source": {
       "type": "enumeration",
       "enum": ["LinkedIn", "Company", "Indeed", "Other"]
