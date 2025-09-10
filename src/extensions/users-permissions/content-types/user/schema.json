@@ -1,19 +1,4 @@
 {
-  "collectionName": "up_users",
-  "info": { "name": "user" },
-  "options": { "draftAndPublish": false },
-  "pluginOptions": { "users-permissions": { "controller": "user" } },
-  "attributes": {
-    "...": {},
-    "plan": { "type": "string" },
-    "packages": { "type": "json", "default": [] },
-    "addons": { "type": "json", "default": [] },
-    "weeklyGoal": { "type": "integer", "default": 12 }
-  }
-},
-
-
-{
   "kind": "collectionType",
   "collectionName": "up_users",
   "info": {
@@ -81,18 +66,18 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "preferredName": {
-      "type": "string"
-    },
-    "university": {
-      "type": "string"
-    },
+
+    /* -------- Your custom profile fields -------- */
+    "preferredName": { "type": "string" },
+    "university": { "type": "string" },
     "studyField": { "type": "string" },
-    "course": {
-      "type": "string"
-    },
-    "keyStats": {
-      "type": "json"
-    }
+    "course": { "type": "string" },
+    "keyStats": { "type": "json" },
+
+    /* -------- Entitlements & settings -------- */
+    "plan": { "type": "string" },
+    "packages": { "type": "json", "default": [] },
+    "addons": { "type": "json", "default": [] },
+    "weeklyGoal": { "type": "integer", "default": 12 }
   }
 }
