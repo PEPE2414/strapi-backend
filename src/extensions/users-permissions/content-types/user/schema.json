@@ -66,15 +66,11 @@
       "inversedBy": "users",
       "configurable": false
     },
-
-    /* -------- Your custom profile fields -------- */
     "preferredName": { "type": "string" },
     "university": { "type": "string" },
     "studyField": { "type": "string" },
     "course": { "type": "string" },
     "keyStats": { "type": "json" },
-
-    /* -------- Entitlements & settings -------- */
     "plan": { "type": "string" },
     "packages": { "type": "json", "default": [] },
     "addons": { "type": "json", "default": [] },
