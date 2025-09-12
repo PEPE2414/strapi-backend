@@ -8,9 +8,7 @@
     "pluralName": "users",
     "displayName": "User"
   },
-  "options": {
-    "draftAndPublish": false
-  },
+  "options": { "draftAndPublish": false },
   "pluginOptions": {},
   "attributes": {
     "username": {
@@ -26,10 +24,7 @@
       "configurable": false,
       "required": true
     },
-    "provider": {
-      "type": "string",
-      "configurable": false
-    },
+    "provider": { "type": "string", "configurable": false },
     "password": {
       "type": "password",
       "minLength": 6,
@@ -49,16 +44,8 @@
       "private": true,
       "searchable": false
     },
-    "confirmed": {
-      "type": "boolean",
-      "default": false,
-      "configurable": false
-    },
-    "blocked": {
-      "type": "boolean",
-      "default": false,
-      "configurable": false
-    },
+    "confirmed": { "type": "boolean", "default": false, "configurable": false },
+    "blocked": { "type": "boolean", "default": false, "configurable": false },
     "role": {
       "type": "relation",
       "relation": "manyToOne",
@@ -66,16 +53,9 @@
       "inversedBy": "users",
       "configurable": false
     },
-    {
-      "kind": "collectionType",
-      "collectionName": "users",
-      "info": { "singularName": "user", "pluralName": "users", "displayName": "User" },
-      "options": { "draftAndPublish": false },
-      "pluginOptions": {},
-      "attributes": {
-        "jobPrefs": { "type": "json", "default": null }
-      }
-    },
+
+    /* === Your custom fields === */
+    "jobPrefs": { "type": "json", "default": null },
     "preferredName": { "type": "string" },
     "university": { "type": "string" },
     "studyField": { "type": "string" },
