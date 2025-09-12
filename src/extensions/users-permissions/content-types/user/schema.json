@@ -66,6 +66,16 @@
       "inversedBy": "users",
       "configurable": false
     },
+    {
+      "kind": "collectionType",
+      "collectionName": "users",
+      "info": { "singularName": "user", "pluralName": "users", "displayName": "User" },
+      "options": { "draftAndPublish": false },
+      "pluginOptions": {},
+      "attributes": {
+        "jobPrefs": { "type": "json", "default": null }
+      }
+    },
     "preferredName": { "type": "string" },
     "university": { "type": "string" },
     "studyField": { "type": "string" },
