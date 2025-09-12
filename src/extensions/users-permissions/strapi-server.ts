@@ -1,47 +1,55 @@
-// Extend users-permissions to allow PUT /api/users/me for updating jobPrefs only
-export default (plugin) => {
-  // --- Controller ---
+// Allow authenticated users to PUT /api/users/me to update jobPrefs (and only jobPrefs)
+module.exports = (plugin) => {
+  // --- Ensure controllers container exists
+  plugin.controllers = plugin.controllers || {};
+  plugin.controllers.user = plugin.controllers.user || {};
+
+  // --- Controller: updateMe
   plugin.controllers.user.updateMe = async (ctx) => {
-    const authUser = ctx.state?.user;
+    const authUser = ctx.state && ctx.state.user;
     if (!authUser) return ctx.unauthorized('You must be logged in.');
 
     const body = ctx.request.body || {};
     const { jobPrefs } = body;
 
-    // Optional sanity check: if provided, jobPrefs must be an object (or null)
-    if (typeof jobPrefs !== 'undefined' && (jobPrefs === null ? false : typeof jobPrefs !== 'object')) {
-      return ctx.badRequest('jobPrefs must be an object.');
+    if (typeof jobPrefs !== 'undefined' && jobPrefs !== null && typeof jobPrefs !== 'object') {
+      return ctx.badRequest('jobPrefs must be an object or null.');
     }
 
-    // Persist only jobPrefs on the current user
-    const updated = await strapi
-      .query('plugin::users-permissions.user')
-      .update({
-        where: { id: authUser.id },
-        data: { jobPrefs },
-      });
+    try {
+      const updated = await strapi.entityService.update(
+        'plugin::users-permissions.user',
+        authUser.id,
+        { data: { jobPrefs } }
+      );
 
-    // Minimal, safe response (avoid exposing private fields)
-    ctx.body = {
-      id: updated.id,
-      jobPrefs: updated.jobPrefs ?? null,
-    };
+      ctx.body = { ok: true, id: updated.id, jobPrefs: updated.jobPrefs ?? null };
+    } catch (err) {
+      strapi.log.error('users-permissions:updateMe failed', err);
+      ctx.throw(400, 'Failed to update profile');
+    }
   };
 
-  // --- Route (content API) ---
-  const ca = plugin.routes['content-api'] || { type: 'content-api', routes: [] };
-  ca.routes.push({
+  // --- Ensure content-api routes container exists
+  plugin.routes = plugin.routes || {};
+  const ca = plugin.routes['content-api'];
+  if (!ca || !Array.isArray(ca.routes)) {
+    plugin.routes['content-api'] = { type: 'content-api', routes: (ca && ca.routes) || [] };
+  }
+
+  // --- Register route
+  plugin.routes['content-api'].routes.push({
     method: 'PUT',
     path: '/users/me',
     handler: 'user.updateMe',
     config: {
-      // Parse & validate JWT; sets ctx.state.user or 401 if missing/invalid.
+      // Use JWT middleware so only logged-in users can call it,
+      // and skip the role/permission matrix that caused the 403.
       middlewares: ['plugin::users-permissions.jwt'],
-      // IMPORTANT: skip the role/permission gate that causes 403 in prod.
-      policies: [],
+      policies: []
+      // Do NOT set auth:true here, that re-enables the permissions gate.
     },
   });
-  plugin.routes['content-api'] = ca;
 
   return plugin;
 };
