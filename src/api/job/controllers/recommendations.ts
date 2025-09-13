@@ -1,4 +1,4 @@
-// backend/src/api/jobs/controllers/recommendations.ts
+// backend/src/api/job/controllers/recommendations.ts
 type JWTPayload = { id?: number; sub?: number };
 
 const JOB_UID = 'api::job.job'; // <-- CHANGE ME if your UID differs
