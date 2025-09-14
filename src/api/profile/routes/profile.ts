@@ -17,7 +17,6 @@ export default {
       path: '/profile/cv',
       handler: 'api::profile.profile.getCv',
       config: {
-        auth: true,
         policies: ['global::is-authenticated'],
         middlewares: [],
       },
@@ -27,7 +26,6 @@ export default {
       path: '/profile/cv',
       handler: 'api::profile.profile.setCv',
       config: {
-        auth: true,
         policies: ['global::is-authenticated'],
         middlewares: [],
       },
