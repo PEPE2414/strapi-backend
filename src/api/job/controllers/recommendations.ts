@@ -1,44 +1,54 @@
 // src/api/job/controllers/recommendations.ts
+
+// NOTE: If your UID differs from api::job.job, change JOB_UID below.
+const JOB_UID = 'api::job.job';
+
 type JWTPayload = { id?: number; sub?: number };
 
-const JOB_UID = 'api::job.job'; // matches your folder src/api/job/
-
+// ---------- Normalizer ----------
 function normalizeJob(j: any) {
   const title = (j.title || '').trim();
   const company = (j.company || '').trim();
   const location = (j.location || '').trim();
   const description = (j.description || '').trim();
-  const jobTypeRaw = (j.job_type || '').trim();
+
+  const jobTypeRaw = (j.job_type || '').trim(); // "Graduate" | "Internship" | "Placement/Year in Industry"
   const startDate = j.start_date ? new Date(j.start_date) : null;
   const endDate = j.end_date ? new Date(j.end_date) : null;
   const salaryRaw = (j.salary || '').trim();
-  const visaNotes = (j.visa_notes || '').trim?.() || '';
+  const visaNotes = (j.visa_notes || '').trim(); // optional in your schema for now
+  const relatedDegree = (j.related_degree || '').trim();
 
-  const jobTypes = jobTypeRaw
+  // Job types to array
+  const jobTypes: string[] = jobTypeRaw
     ? jobTypeRaw.split(/[\/,]| or /i).map((s: string) => s.trim()).filter(Boolean)
     : [];
 
-  const text = `${title} ${location} ${description}`.toLowerCase();
-  const isRemote = /\bremote\b/.test(text);
-  const isHybrid = /\bhybrid\b/.test(text);
+  // Remote / Hybrid detection
+  const textAll = `${title} ${location} ${description}`.toLowerCase();
+  const isRemote = /\bremote\b/i.test(textAll);
+  const isHybrid = /\bhybrid\b/i.test(textAll);
 
-  function toBand(s: string): string {
-    if (!s) return 'Unknown';
-    const s£ = s.replace(/[, ]/g, '').toLowerCase();
-    if (/\b(30k|£30|30000)\b/.test(s£)) return '£30k+';
-    if (/\b(25k|£25|25000)\b/.test(s£)) return '£25k+';
-    if (/\b(20k|£20|20000)\b/.test(s£)) return '£20k+';
-    if (/\b(10k|£10|10000)\b/.test(s£)) return '£10k+';
+  // Salary band from string (ASCII-safe, no '£' in regex)
+  function toBand(salary: string): string {
+    if (!salary) return 'Unknown';
+    const norm = salary.replace(/[, ]/g, '').toLowerCase();
+    if (/\b(30k|30000)\b/.test(norm)) return '£30k+';
+    if (/\b(25k|25000)\b/.test(norm)) return '£25k+';
+    if (/\b(20k|20000)\b/.test(norm)) return '£20k+';
+    if (/\b(10k|10000)\b/.test(norm)) return '£10k+';
     return 'Unknown';
   }
 
+  // Work rights bucket from visaNotes
   let workRights: 'any' | 'uk-right' | 'visa-sponsor' | 'unknown' = 'unknown';
   if (visaNotes) {
     const v = visaNotes.toLowerCase();
     if (/\bsponsorship\b/.test(v)) workRights = 'visa-sponsor';
-    else if (/\bno sponsorship\b|\bnot sponsor/i.test(v)) workRights = 'uk-right';
+    else if (/\bno sponsorship\b|\bnot sponsor\b/.test(v)) workRights = 'uk-right';
   }
 
+  // Start date bucket
   function startBucket(d: Date | null): string {
     if (!d) return 'Any';
     const now = new Date();
@@ -46,11 +56,19 @@ function normalizeJob(j: any) {
     if (diffDays <= 30) return 'ASAP';
     const m = d.toLocaleString('en-GB', { month: 'short' });
     const y = d.getFullYear();
-    return `${m} ${y}`;
+    return `${m} ${y}`; // e.g., 'Sep 2025'
   }
 
+  // Study fields – basic mapping from related_degree (expand later)
   const studyFields: string[] = [];
-  if (j.related_degree) studyFields.push(String(j.related_degree).trim());
+  if (relatedDegree) studyFields.push(relatedDegree);
+
+  // Safe deadline
+  const deadline: Date | null = j.deadline
+    ? new Date(j.deadline)
+    : endDate
+    ? endDate
+    : null;
 
   return {
     id: j.id,
@@ -59,89 +77,92 @@ function normalizeJob(j: any) {
     location,
     description,
     applyURL: j.applyURL || j.apply_url || j.applyLink,
-    deadline: endDate || (j.deadline ? new Date(j.deadline) : null),
-    jobTypes,
+    deadline,
+    jobTypes, // ['Graduate','Internship',...]
     isRemote,
     isHybrid,
     salaryBand: toBand(salaryRaw),
-    workRights,
+    workRights, // 'any'|'uk-right'|'visa-sponsor'|'unknown'
     startDateBucket: startBucket(startDate),
     studyFields,
-    industries: Array.isArray(j.industries) ? j.industries : [],
+    industries: Array.isArray(j.industries) ? (j.industries as string[]) : [],
   };
 }
 
-function weightsFromRank(rank: string[]) {
-  const base = 0.85;
-  const entries = (rank || []).map((name, i) => [name, Math.pow(base, i)] as const);
-  const sum = entries.reduce((a, [, w]) => a + w, 0) || 1;
-  const map: Record<string, number> = {};
-  entries.forEach(([name, w]) => (map[name] = w / sum));
-  return map;
-}
-
-function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, explain = false) {
+// ---------- Scoring ----------
+function scoreJob(
+  job: ReturnType<typeof normalizeJob>,
+  prefs: any,
+  weightMap: Record<string, number>,
+  explain = false
+) {
   const values = prefs?.values || {};
   const reasons: string[] = [];
   let total = 0;
-  const add = (factor: string, s: number, why?: string) => {
+
+  function add(factor: string, s: number, why?: string) {
     const w = weightMap[factor] || 0;
     total += w * s;
     if (explain && why) reasons.push(`${factor}: ${why} (×${w.toFixed(2)})`);
-  };
+  }
 
   // Location
   {
-    const picks = values['Location'] || [];
+    const picks: string[] = Array.isArray(values['Location']) ? values['Location'] : [];
     let s = 0.5;
-    if (Array.isArray(picks) && picks.length) {
-      const lower = picks.map((p: string) => p.toLowerCase());
+    if (picks.length) {
+      const lower = picks.map((p) => String(p).toLowerCase());
       const loc = (job.location || '').toLowerCase();
       if (job.isRemote || job.isHybrid) s = 0.8;
-      if (lower.some((p: string) => loc.includes(p))) s = 1;
+      if (lower.some((p) => loc.includes(p))) s = 1;
       else if (!loc) s = 0.5;
       else s = 0.0;
     }
-    add('Location', s, s === 1 ? `matched (${job.location || 'remote/hybrid'})` :
-      s === 0.8 ? 'remote/hybrid' : s === 0.5 ? 'unknown/neutral' : 'no match');
+    add(
+      'Location',
+      s,
+      s === 1 ? `matched (${job.location || 'remote/hybrid'})` :
+      s === 0.8 ? 'remote/hybrid' :
+      s === 0.5 ? 'unknown/neutral' : 'no match'
+    );
   }
 
   // Job type
   {
-    const picks = values['Job type'] || [];
+    const picks: string[] = Array.isArray(values['Job type']) ? values['Job type'] : [];
     let s = 0.5;
-    if (Array.isArray(picks) && picks.length) {
-      const a = new Set(job.jobTypes.map((x: string) => x.toLowerCase()));
-      const b = new Set(picks.map((x: string) => x.toLowerCase()));
-      const inter = [...a].filter((x) => b.has(x)).length;
+    if (picks.length) {
+      const a = new Set<string>(job.jobTypes.map((x) => x.toLowerCase()));
+      const b = new Set<string>(picks.map((x) => x.toLowerCase()));
+      const inter = [...a].filter((x) => b.has(x as string)).length;
       s = picks.length ? inter / picks.length : 0.5;
     }
-    add('Job type', s, `${(s * 100).toFixed(0)}% of your types`);
+    add('Job type', s, `${Math.round(s * 100)}% of your types`);
   }
 
   // Industry
   {
-    const picks = values['Industry'] || [];
+    const picks: string[] = Array.isArray(values['Industry']) ? values['Industry'] : [];
     let s = 0.5;
-    if (Array.isArray(picks) && picks.length) {
-      const jobInd = (job.industries || []).map((x: string) => x.toLowerCase());
-      const b = new Set(picks.map((x: string) => x.toLowerCase()));
-      const inter = jobInd.filter((x: string) => b.has(x)).length;
-      if (!jobInd.length) s = 0.5; else s = picks.length ? inter / picks.length : 0.5;
+    if (picks.length) {
+      const jobInd: string[] = (job.industries || []).map((x) => String(x).toLowerCase());
+      const b = new Set<string>(picks.map((x) => x.toLowerCase()));
+      const inter = jobInd.filter((x) => b.has(x)).length;
+      s = jobInd.length ? (picks.length ? inter / picks.length : 0.5) : 0.5;
     }
-    add('Industry', s, job.industries?.length ? `${(s * 100).toFixed(0)}% overlap` : 'unknown');
+    add('Industry', s, job.industries?.length ? `${Math.round(s * 100)}% overlap` : 'unknown');
   }
 
   // Salary
   {
-    const pref = values['Salary'] || 'Any';
-    const ladder = ['Any', '£10k+', '£20k+', '£25k+', '£30k+'];
+    const pref: string = values['Salary'] || 'Any';
+    const ladder = ['Any', '£10k+', '£20k+', '£25k+', '£30k+'] as const;
     const jb = job.salaryBand || 'Unknown';
     let s = 0.5;
     if (pref === 'Any') s = jb === 'Unknown' ? 0.5 : 1.0;
     else {
-      const jp = ladder.indexOf(jb);
-      const pp = ladder.indexOf(pref);
+      const jp = ladder.indexOf(jb as any);
+      const pp = ladder.indexOf(pref as any);
       s = jp === -1 ? 0.5 : jp >= pp ? 1.0 : 0.0;
     }
     add('Salary', s, `${jb} vs ${pref}`);
@@ -149,17 +170,22 @@ function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, expla
 
   // Work rights
   {
-    const pref = values['Work rights'] || 'Any';
+    const pref: string = values['Work rights'] || 'Any';
     let s = 0.7;
     if (pref === 'Any') s = job.workRights === 'unknown' ? 0.7 : 1.0;
-    else if (pref === 'Right to work (UK)') s = job.workRights === 'visa-sponsor' ? 0.2 : 1.0;
-    else if (pref === 'Visa sponsorship') s = job.workRights === 'visa-sponsor' ? 1.0 : job.workRights === 'unknown' ? 0.5 : 0.2;
-    add('Work rights', s, `${job.workRights}`);
+    else if (pref === 'Right to work (UK)') {
+      s = job.workRights === 'visa-sponsor' ? 0.2 : 1.0;
+    } else if (pref === 'Visa sponsorship') {
+      if (job.workRights === 'visa-sponsor') s = 1.0;
+      else if (job.workRights === 'unknown') s = 0.5;
+      else s = 0.2;
+    }
+    add('Work rights', s, job.workRights);
   }
 
   // Start date
   {
-    const pref = values['Start date'] || 'Any';
+    const pref: string = values['Start date'] || 'Any';
     const actual = job.startDateBucket || 'Any';
     let s = 0.6;
     if (pref === 'Any') s = 1.0;
@@ -167,10 +193,10 @@ function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, expla
     else if (actual === pref) s = 1.0;
     else {
       const near = (a: string, b: string) => {
-        const pa = a.split(' '), pb = b.split(' ');
+        const pa = a.split(' '); const pb = b.split(' ');
         if (pa.length === 2 && pb.length === 2) {
-          const da = new Date(pa[1] + '-' + pa[0] + '-01');
-          const db = new Date(pb[1] + '-' + pb[0] + '-01');
+          const da = new Date(`${pa[1]}-${pa[0]}-01`);
+          const db = new Date(`${pb[1]}-${pb[0]}-01`);
           const diff = Math.abs(da.getTime() - db.getTime()) / (1000 * 60 * 60 * 24 * 30);
           return diff <= 1.01;
         }
@@ -183,15 +209,13 @@ function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, expla
 
   // Study field
   {
-    const pref = values['Study field'] || '';
+    const pref: string = values['Study field'] || '';
     let s = 0.6;
-    if (!pref) s = 0.6;
-    else if ((job.studyFields || []).some((f: string) => f.toLowerCase() === pref.toLowerCase())) s = 1.0;
-    else s = 0.6;
+    if (pref && (job.studyFields || []).some((f) => f.toLowerCase() === pref.toLowerCase())) s = 1.0;
     add('Study field', s, pref ? `targeted: ${pref}` : 'not set');
   }
 
-  // Keywords
+  // Keywords (title weighted)
   {
     const kws: string[] = Array.isArray(values['Keywords']) ? values['Keywords'] : [];
     let s = 0.5;
@@ -200,9 +224,10 @@ function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, expla
       const bodyText = (job.description || '').toLowerCase();
       let titleHits = 0, bodyHits = 0;
       kws.forEach((kw) => {
-        const k = (kw || '').trim().toLowerCase();
+        const k = String(kw || '').trim().toLowerCase();
         if (!k) return;
-        const re = new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+        const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(`\\b${escaped}\\b`, 'g');
         titleHits += (titleText.match(re) || []).length;
         bodyHits += (bodyText.match(re) || []).length;
       });
@@ -212,20 +237,25 @@ function scoreJob(job: any, prefs: any, weightMap: Record<string, number>, expla
     add('Keywords', s, kws.length ? 'hits weighted' : 'none set');
   }
 
-  // Sink senior-ish roles just in case
-  {
-    const t = (job.title + ' ' + job.description).toLowerCase();
-    if (/\b(senior|lead|principal|manager)\b/.test(t)) total *= 0.4;
-  }
-
   return { score: total, reasons };
 }
 
+// ---------- Weights ----------
+function weightsFromRank(rank: string[]) {
+  const base = 0.85;
+  const entries = (rank || []).map((name, i) => [name, Math.pow(base, i)] as const);
+  const sum = entries.reduce((a, [, w]) => a + w, 0) || 1;
+  const map: Record<string, number> = {};
+  entries.forEach(([name, w]) => (map[name] = w / sum));
+  return map;
+}
+
+// ---------- Controller ----------
 export default {
-  async find(ctx) {
-    // JWT verify
-    const auth = ctx.request.header.authorization || '';
-    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+  async find(ctx: any) {
+    // 1) JWT verify
+    const authHeader = ctx.request.header.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) return ctx.unauthorized('Missing Authorization header');
 
     let userId: number | undefined;
@@ -238,7 +268,7 @@ export default {
     }
     if (!userId) return ctx.unauthorized('Invalid token payload');
 
-    // Fetch user (prefs + packages for gating)
+    // 2) Fetch user (jobPrefs + packages)
     const user = await (strapi as any).entityService.findOne('plugin::users-permissions.user', userId, {
       fields: ['id', 'jobPrefs', 'packages'],
     });
@@ -249,14 +279,17 @@ export default {
       return;
     }
 
-    // (Optional) backend gating by package
+    // Optional backend gating (Fast-Track / Effort Free)
     const pkgs: string[] = Array.isArray(user?.packages) ? user.packages : [];
     const hasAccess = pkgs.some((p) =>
       ['fast-track', 'effort-free', 'find-track'].includes(String(p).toLowerCase())
     );
-    if (!hasAccess) return ctx.forbidden('Package required');
+    if (!hasAccess) {
+      // Comment this out if you want frontend-only gating
+      return ctx.forbidden('Package required');
+    }
 
-    // Query candidates
+    // 3) Fetch candidate jobs
     const qLimit = Math.min(Math.max(parseInt(String(ctx.request.query.limit || '50'), 10) || 50, 1), 200);
     const poolMax = Math.min(Math.max(parseInt(String(ctx.request.query.poolMax || '1200'), 10) || 1200, 50), 5000);
     const explain = String(ctx.request.query.explain || 'false') === 'true';
@@ -270,22 +303,29 @@ export default {
       filters: {
         $or: [
           { deadline: { $gt: nowISO } },
-          { createdAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60).toISOString() } }
+          { createdAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60).toISOString() } } // last 60 days
         ],
       },
       sort: ['deadline:asc', 'createdAt:desc'],
       pagination: { page: 1, pageSize: poolMax },
     });
 
-    // Score
-    const weightMap = weightsFromRank(jobPrefs.rank);
+    // 4) Score
+    const weightMap = weightsFromRank(jobPrefs.rank as string[]);
     const rows = (candidates || []).map((j: any) => {
       const nj = normalizeJob(j);
       const { score, reasons } = scoreJob(nj, jobPrefs, weightMap, explain);
       return { job: nj, score, reasons };
     });
 
-    rows.sort((a: any, b: any) => b.score - a.score);
+    // Sink obviously senior roles (safety net)
+    rows.forEach((r) => {
+      const t = (r.job.title + ' ' + r.job.description).toLowerCase();
+      if (/\b(senior|lead|principal|manager)\b/.test(t)) r.score *= 0.4;
+    });
+
+    // 5) Sort + slice + respond
+    rows.sort((a, b) => b.score - a.score);
     const top = rows.slice(0, qLimit);
 
     ctx.body = {
