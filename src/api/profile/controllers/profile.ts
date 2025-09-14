@@ -35,7 +35,7 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
