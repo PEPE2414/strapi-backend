@@ -63,5 +63,12 @@
     "packages": { "type": "json", "default": [] },
     "addons": { "type": "json", "default": [] },
     "weeklyGoal": { "type": "integer", "default": 12 }
+    
+    "cvFile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["files"],
+      "required": false
+    }
   }
 }
