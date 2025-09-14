@@ -1,7 +1,6 @@
 // config/plugins.ts
 export default ({ env }) => {
   const mode = env('UPLOAD_PROVIDER', 'local');
-  const isAws = mode === 'aws' || mode === 'aws-s3';
 
   return {
     'users-permissions': {
@@ -12,19 +11,30 @@ export default ({ env }) => {
         jwt: { expiresIn: '7d' },
       },
     },
+
     upload: {
-      config: isAws
+      config: mode === 'aws'
         ? {
-            provider: '@strapi/provider-upload-aws-s3', // requires the package installed
+            provider: 'aws-s3', // v5 style id
             providerOptions: {
-              accessKeyId: env('S3_ACCESS_KEY_ID'),
-              secretAccessKey: env('S3_SECRET_ACCESS_KEY'),
-              region: env('S3_REGION'),
-              params: { Bucket: env('S3_BUCKET') },
+              baseUrl: env('CDN_URL'),      // optional (CloudFront etc.)
+              rootPath: env('CDN_ROOT_PATH'), // optional
+              s3Options: {
+                credentials: {
+                  accessKeyId: env('S3_ACCESS_KEY_ID'),
+                  secretAccessKey: env('S3_SECRET_ACCESS_KEY'),
+                },
+                region: env('S3_REGION'),
+                params: {
+                  Bucket: env('S3_BUCKET'),
+                  // ACL: 'private',           // uncomment if bucket is private
+                  // signedUrlExpires: 900,    // seconds (optional)
+                },
+              },
             },
             actionOptions: { upload: {}, uploadStream: {}, delete: {} },
           }
-        : {}, // local (dev)
+        : {}, // local in dev
     },
   };
 };
