@@ -1,4 +1,20 @@
 // src/api/profile/controllers/profile.ts
+import { errors } from '@strapi/utils';
+const { UnauthorizedError, ValidationError } = errors;
+
+const sanitizeFile = (f: any) => {
+  if (!f) return null;
+  return {
+    id: f.id,
+    name: f.name,
+    size: f.size,   // bytes
+    ext: f.ext,
+    mime: f.mime,
+    url: f.url,
+    updatedAt: f.updatedAt,
+  };
+};
+
 export default ({ strapi }: { strapi: any }) => ({
   async updateProfile(ctx: any) {
     try {
@@ -19,7 +35,7 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
@@ -32,21 +48,35 @@ export default ({ strapi }: { strapi: any }) => ({
       if (data.keyStats !== undefined) {
         if (typeof data.keyStats === 'string') {
           const s = data.keyStats.trim();
-          // If it looks like JSON, try to parse; otherwise wrap as an object
           if ((s.startsWith('{') && s.endsWith('}')) || (s.startsWith('[') && s.endsWith(']'))) {
             try {
               data.keyStats = JSON.parse(s);
             } catch {
-              data.keyStats = { notes: s }; // fallback to JSON object
+              data.keyStats = { notes: s };
             }
           } else if (s.length) {
-            data.keyStats = { notes: s };   // wrap free text
+            data.keyStats = { notes: s };
           } else {
-            data.keyStats = null;           // allow clearing
+            data.keyStats = null;
           }
         }
       }
 
+      // coverLetterPoints -> ensure array of non-empty strings
+      if (data.coverLetterPoints !== undefined) {
+        let pts = data.coverLetterPoints;
+        if (typeof pts === 'string') {
+          // backward-compat: allow newline-separated string
+          pts = pts.split('\n').map((s: string) => s.trim()).filter(Boolean);
+        }
+        if (!Array.isArray(pts)) {
+          pts = [];
+        } else {
+          pts = pts.map((s: any) => String(s || '').trim()).filter((s: string) => s.length > 0);
+        }
+        data.coverLetterPoints = pts;
+      }
+            
       // 4) Try entityService first
       try {
         const updated = await strapi.entityService.update(
@@ -75,5 +105,53 @@ export default ({ strapi }: { strapi: any }) => ({
       console.error('[profile:update] unexpected error:', e?.message || e);
       ctx.throw(500, 'Profile update failed');
     }
+  },
+
+  // ====== NEW: get current CV ======
+  async getCv(ctx: any) {
+    const user = ctx.state.user;
+    if (!user) throw new UnauthorizedError();
+
+    const me = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+      populate: { cvFile: true },
+    });
+
+    ctx.body = { data: sanitizeFile(me?.cvFile) };
+  },
+
+  // ====== NEW: set/replace current CV (expects { fileId }) ======
+  async setCv(ctx: any) {
+    const user = ctx.state.user;
+    if (!user) throw new UnauthorizedError();
+
+    const { fileId } = ctx.request.body || {};
+    if (!fileId) throw new ValidationError('Missing fileId');
+
+    // Verify the file exists
+    const file = await strapi.entityService.findOne('plugin::upload.file', fileId);
+    if (!file) throw new ValidationError('File not found');
+
+    // Get previous CV (if any)
+    const me = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+      populate: { cvFile: true },
+    });
+    const prev = me?.cvFile;
+
+    // Attach the new file
+    await strapi.entityService.update('plugin::users-permissions.user', user.id, {
+      data: { cvFile: fileId },
+    });
+
+    // Try to remove the old one (only if different id)
+    if (prev && prev.id !== fileId) {
+      try {
+        const uploadService = strapi.plugin('upload').service('upload');
+        await uploadService.remove(prev);
+      } catch (e) {
+        // ignore clean-up failure
+      }
+    }
+
+    ctx.body = { data: sanitizeFile(file) };
   },
 });

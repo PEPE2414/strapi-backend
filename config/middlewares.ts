@@ -70,5 +70,6 @@ export default [
   },
 
   'strapi::favicon',
+  'global::with-jwt-id',
   'strapi::public',
 ];

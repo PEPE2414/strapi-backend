@@ -1,0 +1,46 @@
+{
+  "collectionName": "applications",
+  "info": {
+    "singularName": "application",
+    "pluralName": "applications",
+    "displayName": "Application",
+    "description": "Job applications per user with stage + verification"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-type-builder": { "visible": true }
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "company": { "type": "string", "required": true },
+    "location": { "type": "string" },
+    "link": { "type": "string" },
+    "jobId": { "type": "string" },
+    "cardColor": { "type": "string" },
+    "source": {
+      "type": "enumeration",
+      "enum": ["LinkedIn", "Company", "Indeed", "Other"]
+    },
+    "deadline": { "type": "date" },
+    "stage": {
+      "type": "enumeration",
+      "enum": ["Saved", "Phase1", "Phase2", "Assessment", "Interview", "Rejected", "Offer"],
+      "default": "Saved",
+      "required": true
+    },
+    "nextAction": { "type": "string" },
+    "nextActionDate": { "type": "datetime" },
+    "verified": { "type": "boolean", "default": false },
+    "notes": { "type": "richtext" },
+    "tags": { "type": "json" },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    }
+  }
+}

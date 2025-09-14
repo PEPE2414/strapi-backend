@@ -1,0 +1,2218 @@
+[
+  {
+    "phrase": "python",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "pandas, numpy, scikit-learn",
+    "variants": ["py", "python scripting"],
+    "field": "Data Science",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "worked on",
+    "category": "weak",
+    "suggestion": "developed, implemented, delivered",
+    "variants": ["involved in", "participated in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "team player",
+    "category": "bad",
+    "weight": -2.2,
+    "suggestion": "collaborated on, liaised with, partnered with",
+    "variants": ["great team player", "works well in a team"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "autocad",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "revit, solidworks, microstation",
+    "variants": ["auto cad", "autocad lt"],
+    "field": "Civil Engineering",
+    "role": "CAD Technician"
+  },
+  {
+    "phrase": "responsible for",
+    "category": "weak",
+    "suggestion": "managed, executed, owned",
+    "variants": ["tasked with", "in charge of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hard-working",
+    "category": "bad",
+    "suggestion": "achieved, completed, delivered",
+    "variants": ["hardworking", "diligent"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "javascript",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "react, node.js, es6",
+    "variants": ["js", "ecmascript"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "analysed",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "evaluated, assessed, modelled",
+    "variants": ["analyzed", "analysing"],
+    "field": null,
+    "role": "Analyst"
+  },
+  {
+    "phrase": "go-getter",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "initiated, proactive, delivered",
+    "variants": ["go getter", "self-starter"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "swot analysis",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "pestle analysis, porter's five forces, competitor analysis",
+    "variants": ["swot"],
+    "field": "Business Management",
+    "role": "Business Analyst"
+  },
+  {
+    "phrase": "helped",
+    "category": "weak",
+    "suggestion": "supported, contributed to, facilitated",
+    "variants": ["assisted", "aided"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "results-driven",
+    "category": "bad",
+    "suggestion": "increased by x%, achieved y, reduced z",
+    "variants": ["results driven", "results-oriented"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dcf modelling",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "lbo modelling, valuation, financial modelling",
+    "variants": ["dcf", "discounted cash flow"],
+    "field": "Accounting & Finance",
+    "role": "Financial Analyst"
+  },
+  {
+    "phrase": "liaised with",
+    "category": "good",
+    "suggestion": "coordinated with, collaborated with, consulted with",
+    "variants": ["liaise with"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "looked at",
+    "category": "weak",
+    "suggestion": "investigated, researched, audited",
+    "variants": ["researched"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "think outside the box",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "innovated, created, conceptualised",
+    "variants": ["creative thinker"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "revit",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "bim, navisworks, autocad",
+    "variants": ["autodesk revit"],
+    "field": "Architecture",
+    "role": "Architectural Assistant"
+  },
+  {
+    "phrase": "familiar with",
+    "category": "weak",
+    "weight": 0.5,
+    "suggestion": "proficient in, skilled in, applied",
+    "variants": ["have experience with", "knowledge of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "passionate",
+    "category": "bad",
+    "suggestion": "specialised in, demonstrated expertise in, developed",
+    "variants": ["passion for"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sql",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "postgresql, mysql, t-sql",
+    "variants": ["structured query language"],
+    "field": "Data Science",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "managed",
+    "category": "good",
+    "suggestion": "led, coordinated, supervised",
+    "variants": ["management"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gave support",
+    "category": "weak",
+    "suggestion": "enabled, facilitated, provided",
+    "variants": ["provided support"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "excellent communication skills",
+    "category": "bad",
+    "suggestion": "presented to, authored, negotiated",
+    "variants": ["strong communicator"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "matlab",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "simulink, numerical analysis, mathematical modelling",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Engineer"
+  },
+  {
+    "phrase": "improved",
+    "category": "good",
+    "suggestion": "optimised, enhanced, streamlined",
+    "variants": ["increased efficiency"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did research",
+    "category": "weak",
+    "suggestion": "investigated, analysed, evaluated",
+    "variants": ["conducted research"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dynamic",
+    "category": "bad",
+    "suggestion": "adapted, multi-tasked, led",
+    "variants": ["energetic"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bloomberg terminal",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "factset, reuters eikon, financial data analysis",
+    "variants": ["bloomberg professional service"],
+    "field": "Economics",
+    "role": "Analyst"
+  },
+  {
+    "phrase": "git",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "version control, github, gitlab",
+    "variants": ["github", "gitlab", "bitbucket"],
+    "field": "Software Engineering",
+    "role": "Developer"
+  },
+  {
+    "phrase": "was part of",
+    "category": "weak",
+    "suggestion": "contributed to, collaborated on, executed",
+    "variants": ["member of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "problem solver",
+    "category": "bad",
+    "suggestion": "resolved, debugged, troubleshot",
+    "variants": ["strong problem-solving skills"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "eurocode 3",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "steel design, bs en 1993, structural analysis",
+    "variants": ["ec3"],
+    "field": "Civil Engineering",
+    "role": "Structural Engineer"
+  },
+  {
+    "phrase": "created",
+    "category": "good",
+    "suggestion": "designed, built, developed",
+    "variants": ["create"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "learned about",
+    "category": "weak",
+    "suggestion": "applied, utilised, mastered",
+    "variants": ["gained knowledge in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "highly motivated",
+    "category": "bad",
+    "suggestion": "achieved, initiated, exceeded",
+    "variants": ["self-motivated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "c++",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "object-oriented programming, data structures, algorithms",
+    "variants": ["cpp"],
+    "field": "Computer Science",
+    "role": "Software Engineer"
+  },
+  {
+    "phrase": "negotiated",
+    "category": "good",
+    "suggestion": "secured, finalised, brokered",
+    "variants": ["negotiate"],
+    "field": "Business Management",
+    "role": null
+  },
+  {
+    "phrase": "tried to",
+    "category": "weak",
+    "suggestion": "implemented, resolved, completed",
+    "variants": ["attempted to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "detail-oriented",
+    "category": "bad",
+    "suggestion": "audited, validated, reconciled",
+    "variants": ["attention to detail"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "solidworks",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "cad, fea, 3d modelling",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Design Engineer"
+  },
+  {
+    "phrase": "led",
+    "category": "good",
+    "suggestion": "directed, supervised, orchestrated",
+    "variants": ["lead"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dealt with",
+    "category": "weak",
+    "suggestion": "managed, resolved, handled",
+    "variants": ["handled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fast learner",
+    "category": "bad",
+    "suggestion": "mastered, proficient in, certified in",
+    "variants": ["quick learner"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "react",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "redux, hooks, component-based architecture",
+    "variants": ["react.js", "reactjs"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "presented",
+    "category": "good",
+    "suggestion": "communicated, briefed, demonstrated",
+    "variants": ["presenting"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had to",
+    "category": "weak",
+    "suggestion": "executed, performed, completed",
+    "variants": ["was required to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "proactive",
+    "category": "bad",
+    "suggestion": "initiated, identified, anticipated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "qualitative analysis",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "thematic analysis, interviews, focus groups",
+    "variants": ["qualitative research"],
+    "field": "Psychology",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "aws",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "azure, gcp, cloud computing",
+    "variants": ["amazon web services"],
+    "field": "Computer Science",
+    "role": "Cloud Engineer"
+  },
+  {
+    "phrase": "used",
+    "category": "weak",
+    "suggestion": "applied, utilised, implemented",
+    "variants": ["utilised"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "can-do attitude",
+    "category": "bad",
+    "weight": -2.5,
+    "suggestion": "completed, overcame, delivered",
+    "variants": ["can do attitude"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "java",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "spring framework, oop, hibernate",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "researched",
+    "category": "good",
+    "suggestion": "investigated, analysed, discovered",
+    "variants": ["researching"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "got involved with",
+    "category": "weak",
+    "suggestion": "managed, executed, led",
+    "variants": ["was involved in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "people person",
+    "category": "bad",
+    "suggestion": "mentored, collaborated with, presented to",
+    "variants": ["good with people"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "spss",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "stata, r, statistical analysis",
+    "variants": [],
+    "field": "Psychology",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "streamlined",
+    "category": "good",
+    "suggestion": "optimised, refined, automated",
+    "variants": ["streamline"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tasked with",
+    "category": "weak",
+    "suggestion": "delivered, achieved, executed",
+    "variants": ["was tasked with"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "visionary",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "strategised, founded, designed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "adobe creative suite",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "photoshop, illustrator, indesign",
+    "variants": ["adobe cs", "creative cloud"],
+    "field": "Design",
+    "role": "Graphic Designer"
+  },
+  {
+    "phrase": "achieved",
+    "category": "good",
+    "suggestion": "attained, completed, delivered",
+    "variants": ["achieve"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did",
+    "category": "weak",
+    "suggestion": "performed, executed, completed",
+    "variants": ["done"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ninja",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "expert in, specialist, proficient in",
+    "variants": ["guru", "rockstar"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "patient care",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "clinical assessment, care planning, patient advocacy",
+    "variants": ["patient-centered care"],
+    "field": "Nursing",
+    "role": "Nurse"
+  },
+  {
+    "phrase": "developed",
+    "category": "good",
+    "suggestion": "created, built, designed",
+    "variants": ["developing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "made",
+    "category": "weak",
+    "suggestion": "produced, constructed, authored",
+    "variants": ["make"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "world-class",
+    "category": "bad",
+    "suggestion": "top-performing, award-winning, high-impact",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "legal research",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "case law analysis, lexisnexis, westlaw",
+    "variants": [],
+    "field": "Law",
+    "role": "Paralegal"
+  },
+  {
+    "phrase": "implemented",
+    "category": "good",
+    "suggestion": "executed, deployed, integrated",
+    "variants": ["implementing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "understanding of",
+    "category": "weak",
+    "suggestion": "applied, demonstrated, analysed",
+    "variants": ["good understanding of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "perfectionist",
+    "category": "bad",
+    "suggestion": "ensured accuracy, maintained standards, validated data",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "financial modelling",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "dcf, lbo, valuation",
+    "variants": ["financial models"],
+    "field": "Accounting & Finance",
+    "role": "Analyst"
+  },
+  {
+    "phrase": "coordinated",
+    "category": "good",
+    "suggestion": "organised, managed, scheduled",
+    "variants": ["co-ordinated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "my duties included",
+    "category": "weak",
+    "suggestion": "managed, performed, executed",
+    "variants": ["duties included"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thought leader",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "published, presented at, developed framework",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "r",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "ggplot2, shiny, statistical modelling",
+    "variants": ["r programming"],
+    "field": "Data Science",
+    "role": "Data Scientist"
+  },
+  {
+    "phrase": "pcr",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "gel electrophoresis, qpcr, dna sequencing",
+    "variants": ["polymerase chain reaction"],
+    "field": "Biology",
+    "role": "Lab Technician"
+  },
+  {
+    "phrase": "worked with",
+    "category": "weak",
+    "suggestion": "collaborated with, managed, advised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "meticulous",
+    "category": "bad",
+    "suggestion": "audited, proofread, quality assured",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "seo",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "sem, google analytics, keyword research",
+    "variants": ["search engine optimisation", "search engine optimization"],
+    "field": "Marketing",
+    "role": "Marketing Executive"
+  },
+  {
+    "phrase": "supervised",
+    "category": "good",
+    "suggestion": "mentored, trained, led",
+    "variants": ["supervising"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped to build",
+    "category": "weak",
+    "suggestion": "designed, developed, engineered",
+    "variants": ["assisted in building"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "synergy",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "collaboration, integration, partnership",
+    "variants": ["synergistic"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gis",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "arcgis, qgis, spatial analysis",
+    "variants": ["geographic information system"],
+    "field": "Geography",
+    "role": "GIS Analyst"
+  },
+  {
+    "phrase": "validated",
+    "category": "good",
+    "suggestion": "verified, confirmed, tested",
+    "variants": ["validating"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was able to",
+    "category": "weak",
+    "suggestion": "achieved, accomplished, delivered",
+    "variants": ["managed to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "seasoned",
+    "category": "bad",
+    "suggestion": "experienced in, proficient in, skilled in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "finite element analysis",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "ansys, abaqus, structural mechanics",
+    "variants": ["fea"],
+    "field": "Mechanical Engineering",
+    "role": "Analysis Engineer"
+  },
+  {
+    "phrase": "authored",
+    "category": "good",
+    "suggestion": "wrote, published, documented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gained experience in",
+    "category": "weak",
+    "suggestion": "applied, mastered, executed",
+    "variants": ["developed skills in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "master",
+    "category": "bad",
+    "suggestion": "expert, specialist, proficient in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "clinical audit",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "quality improvement, nice guidelines, data collection",
+    "variants": ["audit cycle"],
+    "field": "Medicine",
+    "role": "Junior Doctor"
+  },
+  {
+    "phrase": "trained",
+    "category": "good",
+    "suggestion": "mentored, coached, instructed",
+    "variants": ["training"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had exposure to",
+    "category": "weak",
+    "weight": 0.5,
+    "suggestion": "utilised, implemented, configured",
+    "variants": ["exposure to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dependable",
+    "category": "bad",
+    "suggestion": "delivered on time, met deadlines, maintained uptime",
+    "variants": ["reliable"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "agile methodology",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "scrum, kanban, jira",
+    "variants": ["agile"],
+    "field": "Software Engineering",
+    "role": null
+  },
+  {
+    "phrase": "forecasted",
+    "category": "good",
+    "suggestion": "predicted, projected, modelled",
+    "variants": ["forecasting"],
+    "field": "Economics",
+    "role": "Economist"
+  },
+  {
+    "phrase": "showed",
+    "category": "weak",
+    "suggestion": "demonstrated, proved, presented",
+    "variants": ["demonstrated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "loyal",
+    "category": "bad",
+    "suggestion": "committed to, long-term contributor, consistent performer",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "photoshop",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "illustrator, indesign, photo editing",
+    "variants": ["adobe photoshop"],
+    "field": "Design",
+    "role": "Graphic Designer"
+  },
+  {
+    "phrase": "increased",
+    "category": "good",
+    "suggestion": "grew, expanded, boosted",
+    "variants": ["increase"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "went to",
+    "category": "weak",
+    "suggestion": "attended, participated in, represented",
+    "variants": ["attended"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "out-of-the-box thinker",
+    "category": "bad",
+    "weight": -2.7,
+    "suggestion": "devised, conceptualised, innovated",
+    "variants": ["creative"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "c#",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": ".net framework, asp.net, entity framework",
+    "variants": ["c sharp"],
+    "field": "Computer Science",
+    "role": "Software Developer"
+  },
+  {
+    "phrase": "reduced",
+    "category": "good",
+    "suggestion": "decreased, minimised, lowered",
+    "variants": ["reduction"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was responsible for",
+    "category": "weak",
+    "suggestion": "owned, directed, oversaw",
+    "variants": ["had responsibility for"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "motivated",
+    "category": "bad",
+    "suggestion": "achieved x, delivered y, completed z",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cad",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "autocad, solidworks, technical drawing",
+    "variants": ["computer-aided design"],
+    "field": "Mechanical Engineering",
+    "role": "Design Engineer"
+  },
+  {
+    "phrase": "nmr spectroscopy",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "mass spectrometry, hplc, structural elucidation",
+    "variants": ["nmr"],
+    "field": "Chemistry",
+    "role": "Chemist"
+  },
+  {
+    "phrase": "studied",
+    "category": "weak",
+    "suggestion": "analysed, investigated, evaluated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "organised",
+    "category": "bad",
+    "suggestion": "coordinated, scheduled, planned",
+    "variants": ["organized", "well-organized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "econometrics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "stata, time series analysis, regression analysis",
+    "variants": [],
+    "field": "Economics",
+    "role": "Economist"
+  },
+  {
+    "phrase": "launched",
+    "category": "good",
+    "suggestion": "initiated, deployed, released",
+    "variants": ["launch"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "took part in",
+    "category": "weak",
+    "suggestion": "contributed to, executed, delivered",
+    "variants": ["participated"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "enthusiastic",
+    "category": "bad",
+    "suggestion": "specialised in, committed to, proficient in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "power bi",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "tableau, data visualisation, dax",
+    "variants": ["powerbi"],
+    "field": "Data Science",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "mentored",
+    "category": "good",
+    "suggestion": "coached, trained, guided",
+    "variants": ["mentor"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "became familiar with",
+    "category": "weak",
+    "suggestion": "mastered, implemented, configured",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hard worker",
+    "category": "bad",
+    "suggestion": "delivered, achieved, exceeded targets",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "risk assessment",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "risk analysis, hazard identification, method statement",
+    "variants": ["risk analysis"],
+    "field": "Civil Engineering",
+    "role": "Site Engineer"
+  },
+  {
+    "phrase": "pytorch",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "tensorflow, keras, deep learning",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Machine Learning Engineer"
+  },
+  {
+    "phrase": "was given the task of",
+    "category": "weak",
+    "suggestion": "executed, completed, managed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "references available upon request",
+    "category": "bad",
+    "weight": -2.5,
+    "suggestion": "omit this phrase, use space for skills, focus on achievements",
+    "variants": ["references on request"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "docker",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "kubernetes, containerisation, microservices",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "DevOps Engineer"
+  },
+  {
+    "phrase": "automated",
+    "category": "good",
+    "suggestion": "scripted, programmed, streamlined",
+    "variants": ["automation"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "knows how to",
+    "category": "weak",
+    "suggestion": "proficient in, skilled in, expert in",
+    "variants": ["can"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "successful",
+    "category": "bad",
+    "suggestion": "achieved x, delivered y, resulted in z",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "circuit design",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "pcb layout, spice, vhdl",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Electronics Engineer"
+  },
+  {
+    "phrase": "c",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "embedded systems, memory management, pointers",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Embedded Engineer"
+  },
+  {
+    "phrase": "looked into",
+    "category": "weak",
+    "suggestion": "investigated, analysed, evaluated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "trustworthy",
+    "category": "bad",
+    "suggestion": "managed confidential data, handled budgets, ensured compliance",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ifrs",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "gaap, financial reporting, accounting standards",
+    "variants": ["international financial reporting standards"],
+    "field": "Accounting & Finance",
+    "role": "Accountant"
+  },
+  {
+    "phrase": "negotiating",
+    "category": "good",
+    "suggestion": "brokering, finalising, persuading",
+    "variants": [],
+    "field": "Law",
+    "role": "Solicitor"
+  },
+  {
+    "phrase": "put together",
+    "category": "weak",
+    "suggestion": "assembled, compiled, created",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "puncutal",
+    "category": "bad",
+    "suggestion": "met deadlines, managed schedules, delivered on-time",
+    "variants": ["on time"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data analysis",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "data modelling, data visualisation, statistical analysis",
+    "variants": ["data analytics"],
+    "field": "Data Science",
+    "role": "Analyst"
+  },
+  {
+    "phrase": "figma",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "sketch, adobe xd, ui/ux design",
+    "variants": [],
+    "field": "Design",
+    "role": "UX/UI Designer"
+  },
+  {
+    "phrase": "communicated",
+    "category": "good",
+    "suggestion": "presented, reported, briefed",
+    "variants": ["communication"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped out",
+    "category": "weak",
+    "suggestion": "supported, facilitated, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ambitious",
+    "category": "bad",
+    "suggestion": "exceeded targets, promoted, led initiatives",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "vhdl",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "verilog, fpga, digital logic design",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Hardware Engineer"
+  },
+  {
+    "phrase": "drafting",
+    "category": "good",
+    "suggestion": "autocad, technical drawing, contract drafting",
+    "variants": ["drafted"],
+    "field": "Law",
+    "role": "Paralegal"
+  },
+  {
+    "phrase": "was a member of",
+    "category": "weak",
+    "suggestion": "contributed to, collaborated in, participated in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "experienced",
+    "category": "bad",
+    "suggestion": "proficient in, skilled at, delivered",
+    "variants": ["well-versed"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "project management",
+    "category": "good",
+    "suggestion": "agile, prince2, stakeholder management",
+    "variants": ["project managed"],
+    "field": "Business Management",
+    "role": "Project Manager"
+  },
+  {
+    "phrase": "user research",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "usability testing, user interviews, persona development",
+    "variants": [],
+    "field": "Design",
+    "role": "UX Researcher"
+  },
+  {
+    "phrase": "reviewed",
+    "category": "weak",
+    "suggestion": "audited, critiqued, evaluated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "team-oriented",
+    "category": "bad",
+    "suggestion": "collaborated with, coordinated projects, facilitated workshops",
+    "variants": ["team oriented"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "google analytics",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "seo, google ads, data analysis",
+    "variants": ["ga4"],
+    "field": "Marketing",
+    "role": "Digital Marketer"
+  },
+  {
+    "phrase": "supervised",
+    "category": "good",
+    "suggestion": "led, managed, mentored",
+    "variants": [],
+    "field": null,
+    "role": "Manager"
+  },
+  {
+    "phrase": "carried out",
+    "category": "weak",
+    "suggestion": "executed, performed, conducted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "customer-focused",
+    "category": "bad",
+    "suggestion": "improved user satisfaction, resolved client issues, managed client relationships",
+    "variants": ["client-focused"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "excel",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "pivot tables, vlookup, financial modelling",
+    "variants": ["microsoft excel"],
+    "field": "Accounting & Finance",
+    "role": "Analyst"
+  },
+  {
+    "phrase": "advised",
+    "category": "good",
+    "suggestion": "consulted, recommended, guided",
+    "variants": ["advise"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had a hand in",
+    "category": "weak",
+    "suggestion": "contributed to, influenced, developed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "likeable",
+    "category": "bad",
+    "suggestion": "built relationships, collaborated effectively, liaised with stakeholders",
+    "variants": ["personable"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "stakeholder management",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "communication, negotiation, relationship building",
+    "variants": ["stakeholder engagement"],
+    "field": "Business Management",
+    "role": "Project Manager"
+  },
+  {
+    "phrase": "reinforced concrete",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "eurocode 2, structural design, concrete detailing",
+    "variants": ["rc design"],
+    "field": "Civil Engineering",
+    "role": "Structural Engineer"
+  },
+  {
+    "phrase": "got",
+    "category": "weak",
+    "suggestion": "obtained, achieved, secured",
+    "variants": ["get"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "multitasker",
+    "category": "bad",
+    "suggestion": "managed multiple projects, prioritised tasks, met competing deadlines",
+    "variants": ["ability to multitask"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "regression analysis",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "statistical modelling, econometrics, predictive analysis",
+    "variants": [],
+    "field": "Economics",
+    "role": "Analyst"
+  },
+  {
+    "phrase": "collaborated",
+    "category": "good",
+    "suggestion": "partnered, liaised, worked with",
+    "variants": ["collaboration"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wrote",
+    "category": "weak",
+    "suggestion": "authored, documented, composed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "overachiever",
+    "category": "bad",
+    "suggestion": "exceeded targets by x%, delivered ahead of schedule, ranked top performer",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "scikit-learn",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "machine learning, pandas, numpy",
+    "variants": ["sklearn"],
+    "field": "Data Science",
+    "role": "Data Scientist"
+  },
+  {
+    "phrase": "node.js",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "express.js, backend development, api development",
+    "variants": ["node"],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "tried my best",
+    "category": "weak",
+    "suggestion": "completed, delivered, achieved",
+    "variants": ["did my best"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "strategic thinker",
+    "category": "bad",
+    "suggestion": "developed strategy, planned, forecast",
+    "variants": ["strategic planning"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thermodynamics",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "fluid mechanics, heat transfer, energy systems",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Engineer"
+  },
+  {
+    "phrase": "budgeting",
+    "category": "good",
+    "suggestion": "forecasting, financial planning, cost control",
+    "variants": ["budget management"],
+    "field": "Accounting & Finance",
+    "role": "Accountant"
+  },
+  {
+    "phrase": "oversaw",
+    "category": "weak",
+    "suggestion": "managed, directed, supervised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "value-add",
+    "category": "bad",
+    "suggestion": "increased revenue, reduced costs, improved efficiency",
+    "variants": ["value add"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "swift",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "ios development, xcode, objective-c",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Mobile Developer"
+  },
+  {
+    "phrase": "lectured",
+    "category": "good",
+    "suggestion": "taught, presented, instructed",
+    "variants": [],
+    "field": "Education",
+    "role": "Teacher"
+  },
+  {
+    "phrase": "checked",
+    "category": "weak",
+    "suggestion": "verified, validated, audited",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "expert",
+    "category": "bad",
+    "suggestion": "specialised in, proficient in, certified in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "nmc",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "nursing standards, code of conduct, professional registration",
+    "variants": ["nursing and midwifery council"],
+    "field": "Nursing",
+    "role": "Nurse"
+  },
+  {
+    "phrase": "hplc",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "chromatography, analytical chemistry, mass spectrometry",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Analytical Chemist"
+  },
+  {
+    "phrase": "talked to",
+    "category": "weak",
+    "suggestion": "liaised with, briefed, consulted",
+    "variants": ["spoke with"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "well-rounded",
+    "category": "bad",
+    "suggestion": "skilled in x, proficient in y, experienced in z",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "case law",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "legal precedent, statutory interpretation, legal research",
+    "variants": [],
+    "field": "Law",
+    "role": "Solicitor"
+  },
+  {
+    "phrase": "facilitated",
+    "category": "good",
+    "suggestion": "enabled, coordinated, moderated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was in a team",
+    "category": "weak",
+    "suggestion": "collaborated on, partnered with, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "works well under pressure",
+    "category": "bad",
+    "suggestion": "met tight deadlines, managed crisis situations, delivered in fast-paced environment",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quantum mechanics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "statistical mechanics, theoretical physics, mathematical physics",
+    "variants": [],
+    "field": "Physics",
+    "role": "Physicist"
+  },
+  {
+    "phrase": "rest api",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "api development, microservices, backend development",
+    "variants": ["restful api"],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "followed instructions",
+    "category": "weak",
+    "suggestion": "executed, implemented, complied with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "willing to learn",
+    "category": "bad",
+    "suggestion": "quickly mastered, adapted to, became proficient in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "blender",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "3d modelling, animation, rendering",
+    "variants": [],
+    "field": "Design",
+    "role": "3D Artist"
+  },
+  {
+    "phrase": "mentoring",
+    "category": "good",
+    "suggestion": "coaching, training, advising",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped to organise",
+    "category": "weak",
+    "suggestion": "coordinated, planned, scheduled",
+    "variants": ["assisted in organising"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "teamwork",
+    "category": "bad",
+    "suggestion": "collaborated on, liaised with, partnered with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "plc programming",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "siemens s7, ladder logic, industrial automation",
+    "variants": ["plc"],
+    "field": "Electrical Engineering",
+    "role": "Automation Engineer"
+  },
+  {
+    "phrase": "audited",
+    "category": "good",
+    "suggestion": "inspected, examined, verified",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Auditor"
+  },
+  {
+    "phrase": "reported to",
+    "category": "weak",
+    "suggestion": "liaised with, provided updates to, presented findings to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "go-to person",
+    "category": "bad",
+    "suggestion": "subject matter expert, advised on, trained others in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "environmental impact assessment",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "eia, sustainability, environmental regulations",
+    "variants": ["eia"],
+    "field": "Environmental Science",
+    "role": "Environmental Consultant"
+  },
+  {
+    "phrase": "tensorflow",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "keras, pytorch, neural networks",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Machine Learning Engineer"
+  },
+  {
+    "phrase": "gave a hand",
+    "category": "weak",
+    "suggestion": "supported, assisted, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "people skills",
+    "category": "bad",
+    "suggestion": "negotiated, collaborated, mentored",
+    "variants": ["interpersonal skills"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "content management system",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "wordpress, drupal, content strategy",
+    "variants": ["cms"],
+    "field": "Communications",
+    "role": "Content Manager"
+  },
+  {
+    "phrase": "generated",
+    "category": "good",
+    "suggestion": "produced, created, yielded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had knowledge of",
+    "category": "weak",
+    "suggestion": "applied, utilised, implemented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "rockstar",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "high-performer, specialist, expert",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "psychometric testing",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "personality assessment, cognitive tests, statistical analysis",
+    "variants": [],
+    "field": "Psychology",
+    "role": "Organisational Psychologist"
+  },
+  {
+    "phrase": "pioneered",
+    "category": "good",
+    "suggestion": "founded, established, created",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "filled in for",
+    "category": "weak",
+    "suggestion": "managed, assumed responsibility for, covered duties of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "guru",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "specialist, expert, proficient in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "international relations theory",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "realism, liberalism, foreign policy analysis",
+    "variants": ["ir theory"],
+    "field": "Politics / International Relations",
+    "role": "Policy Analyst"
+  },
+  {
+    "phrase": "django",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "python, flask, backend development",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "contributed to",
+    "category": "weak",
+    "suggestion": "developed, improved, added",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "works independently",
+    "category": "bad",
+    "suggestion": "managed projects autonomously, self-directed, completed tasks without supervision",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "genetics",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "molecular biology, dna sequencing, bioinformatics",
+    "variants": [],
+    "field": "Biology",
+    "role": "Geneticist"
+  },
+  {
+    "phrase": "kubernetes",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "docker, container orchestration, microservices",
+    "variants": ["k8s"],
+    "field": "Software Engineering",
+    "role": "DevOps Engineer"
+  },
+  {
+    "phrase": "took on",
+    "category": "weak",
+    "suggestion": "managed, led, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "driven",
+    "category": "bad",
+    "suggestion": "achieved x, delivered y, exceeded z",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "archival research",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "primary sources, historiography, data analysis",
+    "variants": [],
+    "field": "History",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "prescribing",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "pharmacology, bnf, medication management",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Doctor"
+  },
+  {
+    "phrase": "attended meetings",
+    "category": "weak",
+    "suggestion": "contributed to meetings, presented in meetings, briefed stakeholders",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "creative",
+    "category": "bad",
+    "suggestion": "designed, conceptualised, innovated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "prince2",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "project management, agile, pmp",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Project Manager"
+  },
+  {
+    "phrase": "taught",
+    "category": "good",
+    "suggestion": "instructed, trained, educated",
+    "variants": [],
+    "field": "Education",
+    "role": "Teacher"
+  },
+  {
+    "phrase": "watched",
+    "category": "weak",
+    "suggestion": "monitored, supervised, observed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "strong work ethic",
+    "category": "bad",
+    "suggestion": "completed projects on time, exceeded performance targets, delivered high-quality work",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cfa",
+    "category": "good",
+    "weight": 3.0,
+    "suggestion": "financial analysis, investment management, portfolio management",
+    "variants": ["chartered financial analyst"],
+    "field": "Accounting & Finance",
+    "role": "Financial Analyst"
+  },
+  {
+    "phrase": "powerpoint",
+    "category": "good",
+    "weight": 1.8,
+    "suggestion": "presentations, public speaking, data visualisation",
+    "variants": ["ms powerpoint"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was there for",
+    "category": "weak",
+    "suggestion": "supported, managed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "aquisition",
+    "category": "bad",
+    "suggestion": "misspelling of acquisition, check spelling, use specific action verbs",
+    "variants": ["acquistion"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data structures",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "algorithms, complexity analysis, object-oriented programming",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Software Engineer"
+  },
+  {
+    "phrase": "recruited",
+    "category": "good",
+    "suggestion": "hired, sourced, interviewed",
+    "variants": [],
+    "field": "Business Management",
+    "role": "HR"
+  },
+  {
+    "phrase": "observed",
+    "category": "weak",
+    "suggestion": "analysed, monitored, evaluated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "results-oriented",
+    "category": "bad",
+    "suggestion": "achieved, increased, reduced",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "social media marketing",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "content strategy, community management, campaign analysis",
+    "variants": ["smm"],
+    "field": "Marketing",
+    "role": "Social Media Manager"
+  },
+  {
+    "phrase": "html",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "css, javascript, web development",
+    "variants": ["html5"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "sent",
+    "category": "weak",
+    "suggestion": "communicated, distributed, issued",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "phone",
+    "category": "bad",
+    "suggestion": "provide number in contact details, do not write out 'phone', use professional email",
+    "variants": ["telephone"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "riai",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "riba, architectural design, building regulations",
+    "variants": ["royal institute of the architects of ireland"],
+    "field": "Architecture",
+    "role": "Architect"
+  },
+  {
+    "phrase": "finalised",
+    "category": "good",
+    "suggestion": "completed, secured, concluded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sat in on",
+    "category": "weak",
+    "suggestion": "observed, contributed to, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i think",
+    "category": "bad",
+    "suggestion": "analysed, recommended, concluded",
+    "variants": ["i believe"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "foreign policy",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "international relations, diplomacy, political analysis",
+    "variants": [],
+    "field": "Politics / International Relations",
+    "role": "Policy Advisor"
+  },
+  {
+    "phrase": "css",
+    "category": "good",
+    "weight": 2.1,
+    "suggestion": "html, sass, responsive design",
+    "variants": ["css3"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "was a trainee",
+    "category": "weak",
+    "suggestion": "trained in, developed skills in, applied knowledge of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "responsible",
+    "category": "bad",
+    "suggestion": "managed, executed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "logic",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "critical thinking, formal reasoning, argumentation",
+    "variants": [],
+    "field": "Philosophy",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "translated",
+    "category": "good",
+    "suggestion": "interpreted, localised, adapted",
+    "variants": [],
+    "field": "Languages",
+    "role": "Translator"
+  },
+  {
+    "phrase": "tried",
+    "category": "weak",
+    "suggestion": "implemented, tested, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "objective",
+    "category": "bad",
+    "weight": -2.3,
+    "suggestion": "use professional summary, highlight key skills, tailor to the job",
+    "variants": ["career objective"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "geotechnical engineering",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "soil mechanics, foundation design, slope stability",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Geotechnical Engineer"
+  },
+  {
+    "phrase": "optimised",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "streamlined, improved, refined",
+    "variants": ["optimized", "optimise", "optimizing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did some work on",
+    "category": "weak",
+    "suggestion": "developed, analysed, implemented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "salary negotiable",
+    "category": "bad",
+    "weight": -2.5,
+    "suggestion": "omit salary details, discuss during interview, focus on value",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ansys",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "fea, cfd, mechanical simulation",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Analysis Engineer"
+  },
+  {
+    "phrase": "organised",
+    "category": "good",
+    "suggestion": "coordinated, planned, arranged",
+    "variants": ["organized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was told to",
+    "category": "weak",
+    "suggestion": "executed, completed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "microsoft office",
+    "category": "bad",
+    "suggestion": "specify excel, detail powerpoint skills, mention word expertise",
+    "variants": ["ms office"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "pedagogy",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "curriculum design, lesson planning, assessment methods",
+    "variants": [],
+    "field": "Education",
+    "role": "Teacher"
+  },
+  {
+    "phrase": "cpr",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "basic life support, first aid, emergency medicine",
+    "variants": ["cardiopulmonary resuscitation"],
+    "field": "Medicine",
+    "role": "Healthcare Assistant"
+  },
+  {
+    "phrase": "ran",
+    "category": "weak",
+    "suggestion": "managed, executed, operated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "etc.",
+    "category": "bad",
+    "suggestion": "be specific, list key skills, provide concrete examples",
+    "variants": ["and so on"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "azure",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "aws, gcp, cloud services",
+    "variants": ["microsoft azure"],
+    "field": "Computer Science",
+    "role": "Cloud Engineer"
+  },
+  {
+    "phrase": "maintained",
+    "category": "good",
+    "suggestion": "upheld, supported, preserved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "started",
+    "category": "weak",
+    "suggestion": "initiated, launched, founded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "I",
+    "category": "bad",
+    "suggestion": "use action verbs, write in first-person implied, focus on achievements",
+    "variants": ["my"],
+    "field": null,
+    "role": null
+  }
+]

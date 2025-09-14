@@ -1,75 +1,81 @@
 [
 {
-"phrase": "developed",
+"phrase": "led",
 "category": "good",
-"suggestion": null,
-"variants": ["developing", "built", "created"],
-"field": null,
+"suggestion": "managed, directed, oversaw",
+"variants": ["lead", "leading"],
+"field":null,
 "role": null
 },
 {
-"phrase": "designed",
+"phrase": "developed",
 "category": "good",
-"suggestion": null,
-"variants": ["designing", "engineered"],
+"suggestion": "built, created, designed",
+"variants": ["developing", "develops"],
 "field": null,
 "role": null
 },
 {
 "phrase": "analyzed",
 "category": "good",
-"suggestion": null,
-"variants": ["analysed", "analysing", "examined"],
+"suggestion": "examined, assessed, evaluated",
+"variants": ["analysed", "analyzing", "analyse"],
+"field": null,
+"role": null
+},
+{
+"phrase": "designed",
+"category": "good",
+"suggestion": "created, planned, architected",
+"variants": ["designing", "designs"],
 "field": null,
 "role": null
 },
 {
 "phrase": "implemented",
 "category": "good",
-"suggestion": null,
-"variants": ["implementing", "deployed"],
+"suggestion": "deployed, executed, integrated",
+"variants": ["implementing", "implements"],
 "field": null,
 "role": null
 },
 {
 "phrase": "managed",
 "category": "good",
-"suggestion": null,
-"variants": ["managing", "oversaw"],
+"suggestion": "oversaw, coordinated, handled",
+"variants": ["managing", "manages"],
 "field": null,
 "role": null
 },
 {
-"phrase": "led",
+"phrase": "created",
 "category": "good",
-"suggestion": null,
-"variants": ["leading", "headed"],
+"suggestion": "built, produced, generated",
+"variants": ["creating", "creates"],
+"field": null,
+"role": null
+},
+{
+"phrase": "researched",
+"category": "good",
+"suggestion": "investigated, explored, studied",
+"variants": ["researching", "researches"],
+"field": null,
+"role": null
+},
+{
+"phrase": "presented",
+"category": "good",
+"suggestion": "delivered, showcased, communicated",
+"variants": ["presenting", "presents"],
 "field": null,
 "role": null
 },
 {
 "phrase": "collaborated",
 "category": "good",
-"suggestion": null,
-"variants": ["collaborating", "worked with"],
-"field": null,
-"role": null
-},
-{
-"phrase": "reduced costs",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["cost reduction", "lowered expenses"],
-"field": null,
-"role": null
-},
-{
-"phrase": "increased efficiency",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["boosted productivity", "improved performance"],
+"suggestion": "partnered, teamed, cooperated",
+"variants": ["collaborating", "collaborates"],
 "field": null,
 "role": null
 },
@@ -77,52 +83,178 @@
 "phrase": "python",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
+"suggestion": "pandas, numpy, django",
 "variants": ["py", "python3"],
 "field": "Computer Science",
+"role": null
+},
+{
+"phrase": "java",
+"category": "good",
+"weight": 2.5,
+"suggestion": "spring, hibernate, maven",
+"variants": ["jdk", "jvm"],
+"field": "Software Engineering",
 "role": null
 },
 {
 "phrase": "sql",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["structured query language", "mysql", "postgresql"],
+"suggestion": "joins, queries, indexes",
+"variants": ["structured query language"],
 "field": "Data Science",
-"role": "Analyst"
+"role": null
 },
 {
 "phrase": "autocad",
 "category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["auto cad", "cad software"],
+"weight": 2.5,
+"suggestion": "drafting, modeling, layouts",
+"variants": ["auto cad"],
 "field": "Civil Engineering",
 "role": null
 },
 {
-"phrase": "revit",
+"phrase": "bim",
 "category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["autodesk revit", "bim revit"],
+"weight": 2.5,
+"suggestion": "revit, navisworks, clash detection",
+"variants": ["building information modeling", "building information modelling"],
 "field": "Architecture",
+"role": null
+},
+{
+"phrase": "ansys",
+"category": "good",
+"weight": 2.5,
+"suggestion": "fea, simulation, meshing",
+"variants": ["ansys workbench"],
+"field": "Mechanical Engineering",
 "role": null
 },
 {
 "phrase": "matlab",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
+"suggestion": "simulink, toolboxes, scripting",
 "variants": ["mathworks matlab"],
-"field": "Mechanical Engineering",
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "excel",
+"category": "good",
+"weight": 2.0,
+"suggestion": "vlookup, pivot tables, formulas",
+"variants": ["ms excel", "microsoft excel"],
+"field": "Accounting & Finance",
+"role": "Analyst"
+},
+{
+"phrase": "r",
+"category": "good",
+"weight": 2.5,
+"suggestion": "ggplot, dplyr, tidyr",
+"variants": ["r programming"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "tableau",
+"category": "good",
+"weight": 2.5,
+"suggestion": "dashboards, visualizations, data blending",
+"variants": [],
+"field": "Business Management",
+"role": "Analyst"
+},
+{
+"phrase": "assisted",
+"category": "weak",
+"weight": 0.8,
+"suggestion": "supported, contributed, aided",
+"variants": ["assisting", "assist"],
+"field": null,
+"role": null
+},
+{
+"phrase": "helped",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "facilitated, enabled, contributed",
+"variants": ["helping", "help with"],
+"field": null,
+"role": null
+},
+{
+"phrase": "involved in",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "participated, engaged, contributed",
+"variants": ["part of"],
+"field": null,
+"role": null
+},
+{
+"phrase": "familiar with",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "proficient in, experienced with, skilled at",
+"variants": ["acquainted with"],
+"field": null,
+"role": null
+},
+{
+"phrase": "team player",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "collaborated, partnered, coordinated",
+"variants": ["good team player"],
+"field": null,
+"role": null
+},
+{
+"phrase": "dynamic",
+"category": "bad",
+"weight": -1.8,
+"suggestion": "adaptable, flexible, versatile",
+"variants": ["energetic"],
+"field": null,
+"role": null
+},
+{
+"phrase": "passionate",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "dedicated, committed, motivated",
+"variants": ["enthusiastic"],
+"field": null,
+"role": null
+},
+{
+"phrase": "guru",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "expert, specialist, proficient",
+"variants": ["expert in"],
+"field": null,
+"role": null
+},
+{
+"phrase": "expert",
+"category": "bad",
+"weight": -1.5,
+"suggestion": "skilled, experienced, knowledgeable",
+"variants": ["specialist"],
+"field": null,
 "role": null
 },
 {
 "phrase": "react",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
+"suggestion": "hooks, components, redux",
 "variants": ["react.js", "reactjs"],
 "field": "Software Engineering",
 "role": "Frontend"
@@ -131,1088 +263,1907 @@
 "phrase": "node.js",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
+"suggestion": "express, mongodb, api",
 "variants": ["nodejs", "node js"],
 "field": "Software Engineering",
 "role": "Backend"
 },
 {
-"phrase": "aws",
+"phrase": "machine learning",
 "category": "good",
 "weight": 2.8,
-"suggestion": null,
-"variants": ["amazon web services", "ec2", "s3"],
-"field": "DevOps",
-"role": "Cloud Engineer"
-},
-{
-"phrase": "financial modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["financial modelling", "dcf modeling"],
-"field": "Accounting & Finance",
-"role": "Analyst"
-},
-{
-"phrase": "bloomberg terminal",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["bloomberg", "bberg"],
-"field": "Finance",
-"role": "Equity Research"
-},
-{
-"phrase": "seo optimization",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["seo optimisation", "search engine optimization"],
-"field": "Marketing",
-"role": "Growth"
-},
-{
-"phrase": "assisted",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "Specify your contribution and impact, e.g., 'assisted in auditing 15 client accounts, identifying £50k in discrepancies'.",
-"variants": ["helped", "supported"],
-"field": null,
-"role": null
-},
-{
-"phrase": "familiar with",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Demonstrate proficiency with examples, e.g., 'used Python to analyze datasets of 10k+ entries, reducing processing time by 40%'.",
-"variants": ["knowledge of", "aware of"],
-"field": null,
-"role": null
-},
-{
-"phrase": "exposure to",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Quantify experience and outcomes, e.g., 'gained exposure to BIM tools by modeling 5 building structures, ensuring compliance with BS standards'.",
-"variants": ["experienced in"],
-"field": null,
-"role": null
-},
-{
-"phrase": "team player",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Provide evidence of collaboration, e.g., 'collaborated with 8 engineers on bridge design, delivering project 2 weeks early'.",
-"variants": ["good collaborator"],
-"field": null,
-"role": null
-},
-{
-"phrase": "passionate about",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Show passion through achievements, e.g., 'developed ML model for predictive maintenance, improving uptime by 25%'.",
-"variants": ["enthusiastic for"],
-"field": null,
-"role": null
-},
-{
-"phrase": "dynamic",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Use specific examples, e.g., 'adapted marketing strategy to increase engagement by 30% during campaign pivot'.",
-"variants": ["energetic", "proactive"],
-"field": null,
-"role": null
-},
-{
-"phrase": "bim",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["building information modelling", "building information modeling"],
-"field": "Civil Engineering",
+"suggestion": "neural networks, supervised learning, clustering",
+"variants": ["ml"],
+"field": "Data Science",
 "role": null
 },
 {
 "phrase": "finite element analysis",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["fea", "finite elements"],
-"field": "Structural Engineering",
-"role": null
-},
-{
-"phrase": "solidworks",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["solid works"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "plc programming",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["programmable logic controller", "ladder logic"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "gis mapping",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["geographic information systems", "arcgis"],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "machine learning",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["ml", "supervised learning"],
-"field": "Data Science",
-"role": null
-},
-{
-"phrase": "kubernetes",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["k8s", "container orchestration"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "selenium testing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["selenium webdriver", "automated testing"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "tax compliance",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["hmrc compliance", "vat returns"],
-"field": "Accounting",
-"role": "Tax"
-},
-{
-"phrase": "equity valuation",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["stock valuation", "comparable analysis"],
-"field": "Finance",
-"role": "Equity Research"
-},
-{
-"phrase": "content creation",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["copywriting", "blog writing"],
-"field": "Marketing",
-"role": "Content"
-},
-{
-"phrase": "legal research",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["case law research", "westlaw"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "patient care",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["clinical care", "nursing care"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "lesson planning",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["curriculum development", "teaching plans"],
-"field": "Education",
-"role": "Tutor"
-},
-{
-"phrase": "ux design",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["user experience design", "figma"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "involved in",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Detail your role and results, e.g., 'led site surveys for 3 projects, ensuring 100% compliance with safety standards'.",
-"variants": ["part of"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "helped with",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "Quantify assistance, e.g., 'helped develop API endpoints using Node.js, handling 1k requests per minute'.",
-"variants": ["aided in"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "basic knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Build on it with specifics, e.g., 'applied basic cybersecurity principles to secure network with firewalls, preventing breaches'.",
-"variants": ["fundamental understanding"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "guru",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Use professional terms, e.g., 'expert in Python scripting for data automation, processing 500GB datasets daily'.",
-"variants": ["expert", "ninja"],
-"field": null,
-"role": null
-},
-{
-"phrase": "rockstar",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Highlight skills quantitatively, e.g., 'developed full-stack app with React and AWS, serving 10k users'.",
-"variants": ["superstar"],
-"field": null,
-"role": null
-},
-{
-"phrase": "go-getter",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Demonstrate initiative, e.g., 'initiated SEO audit, increasing organic traffic by 45%'.",
-"variants": ["self-starter"],
-"field": null,
-"role": null
-},
-{
-"phrase": "etabs",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["csi etabs", "structural analysis software"],
-"field": "Structural Engineering",
-"role": null
-},
-{
-"phrase": "ansys",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["ansys workbench", "cfd simulation"],
+"suggestion": "stress analysis, simulation, modeling",
+"variants": ["fea"],
 "field": "Mechanical Engineering",
 "role": null
 },
 {
 "phrase": "circuit design",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["pcb design", "altium designer"],
-"field": "Electronic Engineering",
+"weight": 2.3,
+"suggestion": "pcb layout, schematics, simulation",
+"variants": ["circuit simulation"],
+"field": "Electrical Engineering",
 "role": null
 },
 {
-"phrase": "sustainable design",
+"phrase": "structural analysis",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["green building", "leed certification"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "site supervision",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["construction supervision", "on-site management"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "environmental impact assessment",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["eia", "impact assessment"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "remote sensing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["satellite imagery", "qgis"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "java",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["java se", "spring boot"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "angular",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["angularjs", "angular framework"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "docker",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["containerization", "docker compose"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "penetration testing",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["pentesting", "ethical hacking"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "jenkins",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["ci/cd pipeline", "jenkins pipeline"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "pytest",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["python testing", "unit testing"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "audit procedures",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["financial audit", "ifrs compliance"],
-"field": "Accounting",
-"role": "Audit"
-},
-{
-"phrase": "budget forecasting",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["financial forecasting", "fp&a"],
-"field": "Finance",
-"role": "FP&A"
-},
-{
-"phrase": "market analysis",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["swot analysis", "competitor analysis"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "social media management",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["hootsuite", "content scheduling"],
-"field": "Marketing",
-"role": "Growth"
-},
-{
-"phrase": "press releases",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["media relations", "pr campaigns"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "contract drafting",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["legal drafting", "agreement preparation"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "clinical trials",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["phase i trials", "gcp compliance"],
-"field": "Medicine",
-"role": "Assistant"
-},
-{
-"phrase": "cognitive behavioral therapy",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["cbt", "behavioral interventions"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "wireframing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["sketch wireframes", "balsamiq"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "participated in",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Highlight your input and metrics, e.g., 'participated in tax filings for 20 clients, ensuring zero penalties'.",
-"variants": ["took part in"],
-"field": "Accounting",
-"role": "Tax"
-},
-{
-"phrase": "some experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Specify level and outcomes, e.g., 'gained experience in GIS mapping for urban planning, analyzing 50 sq km areas'.",
-"variants": ["limited experience"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "general skills",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "List concrete tools, e.g., 'utilized SolidWorks for 3D modeling, reducing prototype iterations by 30%'.",
-"variants": ["basic skills"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "synergistic",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Focus on real collaboration, e.g., 'integrated team efforts to complete audit cycle 15% faster'.",
-"variants": ["synergy-focused"],
-"field": null,
-"role": null
-},
-{
-"phrase": "outside the box",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Describe innovative solutions, e.g., 'devised custom algorithm in Python, solving optimization problem in half the time'.",
-"variants": ["creative thinker"],
-"field": null,
-"role": null
-},
-{
-"phrase": "detail-oriented",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Prove it with examples, e.g., 'reviewed 100+ legal documents, spotting errors that saved £10k in potential fines'.",
-"variants": ["meticulous"],
-"field": null,
-"role": null
-},
-{
-"phrase": "staad pro",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["staad.pro", "structural design software"],
+"suggestion": "load calculations, beam design, seismic",
+"variants": [],
 "field": "Civil Engineering",
 "role": "Structural Engineer"
 },
 {
-"phrase": "thermodynamics",
+"phrase": "cad",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["heat transfer", "fluid mechanics"],
+"suggestion": "solidworks, inventor, fusion 360",
+"variants": ["computer aided design"],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "photoshop",
+"category": "good",
+"weight": 2.0,
+"suggestion": "layers, masks, retouching",
+"variants": ["adobe photoshop"],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "calculus",
+"category": "good",
+"weight": 1.8,
+"suggestion": "derivatives, integrals, limits",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "quantum mechanics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "wave functions, schrodinger equation, operators",
+"variants": ["qm"],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "organic chemistry",
+"category": "good",
+"weight": 2.2,
+"suggestion": "reactions, synthesis, mechanisms",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "genetics",
+"category": "good",
+"weight": 2.0,
+"suggestion": "dna sequencing, mendelian inheritance, mutations",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "anatomy",
+"category": "good",
+"weight": 2.0,
+"suggestion": "systems, organs, physiology",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "patient care",
+"category": "good",
+"weight": 2.0,
+"suggestion": "assessment, monitoring, intervention",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "contract law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "offer acceptance, consideration, breach",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "international relations",
+"category": "good",
+"weight": 2.0,
+"suggestion": "diplomacy, treaties, global politics",
+"variants": ["ir"],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "cognitive psychology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "memory, perception, attention",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "gis",
+"category": "good",
+"weight": 2.5,
+"suggestion": "arcgis, mapping, spatial analysis",
+"variants": ["geographic information systems"],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "climate change",
+"category": "good",
+"weight": 2.0,
+"suggestion": "mitigation, adaptation, emissions",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "seo",
+"category": "good",
+"weight": 2.2,
+"suggestion": "keywords, backlinks, optimization",
+"variants": ["search engine optimization", "search engine optimisation"],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "public relations",
+"category": "good",
+"weight": 2.0,
+"suggestion": "media outreach, crisis management, branding",
+"variants": ["pr"],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "lesson planning",
+"category": "good",
+"weight": 1.8,
+"suggestion": "objectives, activities, assessment",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "translation",
+"category": "good",
+"weight": 2.0,
+"suggestion": "interpretation, localization, bilingual",
+"variants": ["translating"],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical analysis",
+"category": "good",
+"weight": 1.8,
+"suggestion": "sources, timelines, interpretations",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "ethical reasoning",
+"category": "good",
+"weight": 1.8,
+"suggestion": "arguments, dilemmas, theories",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "financial modeling",
+"category": "good",
+"weight": 2.5,
+"suggestion": "dcf, valuation, forecasts",
+"variants": ["financial modelling"],
+"field": "Economics",
+"role": "Analyst"
+},
+{
+"phrase": "auditing",
+"category": "good",
+"weight": 2.2,
+"suggestion": "internal controls, compliance, risk assessment",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "algorithms",
+"category": "good",
+"weight": 2.5,
+"suggestion": "sorting, searching, complexity",
+"variants": ["data algorithms"],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "data visualization",
+"category": "good",
+"weight": 2.3,
+"suggestion": "charts, graphs, dashboards",
+"variants": ["data visualisation"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "agile",
+"category": "good",
+"weight": 2.0,
+"suggestion": "scrum, sprints, kanban",
+"variants": ["agile methodology"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "plc",
+"category": "good",
+"weight": 2.5,
+"suggestion": "ladder logic, programming, automation",
+"variants": ["programmable logic controller"],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "thermodynamics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "laws, cycles, heat transfer",
+"variants": [],
 "field": "Mechanical Engineering",
 "role": null
 },
 {
-"phrase": "power systems",
+"phrase": "geotechnical engineering",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["electrical power", "grid analysis"],
-"field": "Electrical Engineering",
+"weight": 2.5,
+"suggestion": "soil mechanics, foundations, site investigation",
+"variants": [],
+"field": "Civil Engineering",
 "role": null
 },
 {
 "phrase": "urban planning",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["city planning", "zoning regulations"],
+"suggestion": "zoning, sustainability, master plans",
+"variants": [],
 "field": "Architecture",
 "role": null
 },
 {
-"phrase": "cost estimation",
+"phrase": "ux design",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["quantity takeoff", "bill of quantities"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "climate modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["climate models", "ipcc scenarios"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "spatial analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["geospatial analysis", "esri arcgis"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "c++",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["cpp", "c plus plus"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "vue.js",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["vuejs", "vue framework"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "express.js",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["expressjs", "node express"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "terraform",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["iac", "infrastructure as code"],
-"field": "DevOps",
-"role": "Cloud"
-},
-{
-"phrase": "firewall configuration",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["network security", "cisco asa"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "ansible",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["configuration management", "ansible playbooks"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "junit",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["java testing", "test cases"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "ifrs standards",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["international financial reporting", "ias"],
-"field": "Accounting",
-"role": "Audit"
-},
-{
-"phrase": "cash flow analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["dcf analysis", "npv calculation"],
-"field": "Finance",
-"role": "IB"
-},
-{
-"phrase": "econometric modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["econometrics", "stata"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "supply chain optimization",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["logistics optimization", "erp systems"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "google analytics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["ga4", "web analytics"],
-"field": "Marketing",
-"role": "SEO"
-},
-{
-"phrase": "crisis communication",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["reputation management", "media crisis"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "case briefing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["legal briefs", "court cases"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "vital signs monitoring",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["patient monitoring", "ecg reading"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "educational assessment",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["student evaluation", "formative assessment"],
-"field": "Education",
-"role": "Assistant"
-},
-{
-"phrase": "statistical analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["spss", "r analysis"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "prototyping",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["invision studio", "rapid prototyping"],
+"weight": 2.3,
+"suggestion": "wireframes, prototypes, user testing",
+"variants": ["user experience design"],
 "field": "Design",
-"role": "UX"
-},
-{
-"phrase": "tasked with",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "Describe achievements, e.g., 'tasked with financial modeling, created DCF for 5 deals valued at £2m'.",
-"variants": ["assigned to"],
-"field": "Finance",
-"role": "Analyst"
-},
-{
-"phrase": "worked as",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Add impact, e.g., 'worked as paralegal, drafted 30 contracts reducing review time by 20%'.",
-"variants": ["served as"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "interested in",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Show through actions, e.g., 'pursued interest in ML by building model predicting sales with 85% accuracy'.",
-"variants": ["keen on"],
-"field": "Data Science",
 "role": null
 },
 {
-"phrase": "perfectionist",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Emphasize quality control, e.g., 'ensured code quality with 95% test coverage in Jest'.",
-"variants": ["detail fanatic"],
-"field": null,
-"role": null
-},
-{
-"phrase": "game changer",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Quantify changes, e.g., 'introduced DevOps practices, reducing deployment time from days to hours'.",
-"variants": ["disruptor"],
-"field": null,
-"role": null
-},
-{
-"phrase": "thought leader",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Cite contributions, e.g., 'published paper on sustainable architecture, cited 50 times'.",
-"variants": ["industry expert"],
-"field": null,
-"role": null
-},
-{
-"phrase": "eurocode 3",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["ec3", "steel design"],
-"field": "Structural Engineering",
-"role": null
-},
-{
-"phrase": "cnc machining",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["computer numerical control", "g-code"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "embedded systems",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["microcontrollers", "arduino"],
-"field": "Electronic Engineering",
-"role": null
-},
-{
-"phrase": "rendering software",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["3ds max", "v-ray"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "risk assessment",
+"phrase": "statistics",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["hazard identification", "coshh"],
-"field": "Construction",
+"suggestion": "hypothesis testing, regression, probability",
+"variants": [],
+"field": "Mathematics",
 "role": null
 },
 {
-"phrase": "biodiversity surveys",
+"phrase": "relativity",
+"category": "good",
+"weight": 2.5,
+"suggestion": "special relativity, general relativity, spacetime",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "spectroscopy",
 "category": "good",
 "weight": 2.2,
-"suggestion": null,
-"variants": ["ecological surveys", "habitat assessment"],
-"field": "Environmental Science",
+"suggestion": "nmr, ir, mass spec",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "ecology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "ecosystems, biodiversity, food webs",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "surgery",
+"category": "good",
+"weight": 2.5,
+"suggestion": "procedures, techniques, recovery",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "wound care",
+"category": "good",
+"weight": 2.0,
+"suggestion": "dressings, assessment, healing",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "tort law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "negligence, damages, liability",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "geopolitics",
+"category": "good",
+"weight": 2.0,
+"suggestion": "alliances, conflicts, power dynamics",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "behavioral therapy",
+"category": "good",
+"weight": 2.0,
+"suggestion": "cbt, exposure, conditioning",
+"variants": ["behavioural therapy"],
+"field": "Psychology",
 "role": null
 },
 {
 "phrase": "cartography",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["map making", "geovisualization"],
+"suggestion": "maps, projections, symbology",
+"variants": [],
 "field": "Geography",
 "role": null
 },
 {
-"phrase": "algorithm design",
+"phrase": "renewable energy",
 "category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["data structures", "big o notation"],
-"field": "Computer Science",
+"weight": 2.2,
+"suggestion": "solar, wind, biomass",
+"variants": [],
+"field": "Environmental Science",
 "role": null
 },
 {
-"phrase": "rest api",
+"phrase": "content marketing",
 "category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["restful services", "api development"],
-"field": "Software Engineering",
-"role": "Full-stack"
-},
-{
-"phrase": "graphql",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["apollo server", "query language"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "azure",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["microsoft azure", "azure devops"],
-"field": "DevOps",
-"role": "Cloud"
-},
-{
-"phrase": "vulnerability scanning",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["nessus", "owasp"],
-"field": "Cybersecurity",
+"weight": 2.0,
+"suggestion": "blogs, seo, social media",
+"variants": [],
+"field": "Marketing",
 "role": null
 },
 {
-"phrase": "prometheus monitoring",
+"phrase": "journalism",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["grafana", "system monitoring"],
-"field": "DevOps",
+"weight": 1.8,
+"suggestion": "reporting, interviewing, editing",
+"variants": [],
+"field": "Communications",
 "role": null
 },
 {
-"phrase": "cypress",
+"phrase": "curriculum development",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["end-to-end testing", "e2e tests"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "gaap principles",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["uk gaap", "generally accepted accounting"],
-"field": "Accounting",
+"weight": 2.0,
+"suggestion": "standards, objectives, resources",
+"variants": [],
+"field": "Education",
 "role": null
 },
 {
-"phrase": "merger modeling",
+"phrase": "linguistics",
 "category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["m&a modeling", "accretion dilution"],
-"field": "Finance",
-"role": "IB"
+"weight": 1.8,
+"suggestion": "phonetics, syntax, semantics",
+"variants": [],
+"field": "Languages",
+"role": null
 },
 {
-"phrase": "regression analysis",
+"phrase": "archival research",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["linear regression", "econometric regression"],
+"weight": 1.8,
+"suggestion": "documents, preservation, cataloging",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "logic",
+"category": "good",
+"weight": 1.8,
+"suggestion": "propositions, deductions, fallacies",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "macro economics",
+"category": "good",
+"weight": 2.0,
+"suggestion": "gdp, inflation, fiscal policy",
+"variants": ["macroeconomics"],
 "field": "Economics",
 "role": null
 },
 {
-"phrase": "lean manufacturing",
+"phrase": "taxation",
 "category": "good",
 "weight": 2.2,
-"suggestion": null,
-"variants": ["six sigma", "kaizen"],
-"field": "Business",
-"role": "Operations"
+"suggestion": "compliance, deductions, vat",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
 },
 {
-"phrase": "email marketing",
+"phrase": "database management",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["mailchimp", "campaign monitor"],
-"field": "Marketing",
-"role": "Content"
+"weight": 2.3,
+"suggestion": "normalization, queries, backups",
+"variants": [],
+"field": "Computer Science",
+"role": null
 },
 {
-"phrase": "stakeholder engagement",
+"phrase": "big data",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["public relations", "community outreach"],
-"field": "Communications",
-"role": "PR"
+"weight": 2.5,
+"suggestion": "hadoop, spark, data lakes",
+"variants": [],
+"field": "Data Science",
+"role": null
 },
 {
-"phrase": "discovery process",
+"phrase": "devops",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["legal discovery", "e-discovery"],
-"field": "Law",
-"role": "Paralegal"
+"weight": 2.5,
+"suggestion": "ci cd, docker, kubernetes",
+"variants": [],
+"field": "Software Engineering",
+"role": null
 },
 {
-"phrase": "wound care",
+"phrase": "power systems",
+"category": "good",
+"weight": 2.3,
+"suggestion": "transmission, distribution, grid",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "fluid mechanics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "flow, pressure, viscosity",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "transportation engineering",
+"category": "good",
+"weight": 2.3,
+"suggestion": "traffic analysis, road design, signals",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "sustainable design",
+"category": "good",
+"weight": 2.2,
+"suggestion": "leed, energy efficiency, materials",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "graphic design",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["dressing changes", "infection control"],
+"suggestion": "typography, layout, branding",
+"variants": [],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "linear algebra",
+"category": "good",
+"weight": 2.0,
+"suggestion": "matrices, vectors, eigenvalues",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "electromagnetism",
+"category": "good",
+"weight": 2.2,
+"suggestion": "fields, waves, maxwell equations",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "inorganic chemistry",
+"category": "good",
+"weight": 2.0,
+"suggestion": "compounds, reactions, coordination",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "microbiology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "bacteria, viruses, cultures",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "pharmacology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "drugs, interactions, dosage",
+"variants": [],
 "field": "Medicine",
-"role": "Nursing"
+"role": null
+},
+{
+"phrase": "health assessment",
+"category": "good",
+"weight": 2.0,
+"suggestion": "vitals, history, examination",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "constitutional law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "rights, amendments, judiciary",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "foreign policy",
+"category": "good",
+"weight": 2.0,
+"suggestion": "strategies, alliances, diplomacy",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "social psychology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "groups, attitudes, conformity",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "remote sensing",
+"category": "good",
+"weight": 2.3,
+"suggestion": "satellite imagery, lidar, gis",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "conservation",
+"category": "good",
+"weight": 2.0,
+"suggestion": "biodiversity, habitats, policies",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "digital marketing",
+"category": "good",
+"weight": 2.2,
+"suggestion": "ppc, email campaigns, analytics",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "crisis communication",
+"category": "good",
+"weight": 2.0,
+"suggestion": "strategies, messaging, response",
+"variants": [],
+"field": "Communications",
+"role": null
 },
 {
 "phrase": "classroom management",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["student discipline", "teaching strategies"],
+"weight": 1.8,
+"suggestion": "discipline, engagement, routines",
+"variants": [],
 "field": "Education",
-"role": "Tutor"
+"role": null
 },
 {
-"phrase": "survey design",
+"phrase": "language acquisition",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["questionnaire development", "qualtrics"],
-"field": "Psychology",
-"role": "Assistant"
+"weight": 1.8,
+"suggestion": "immersion, vocabulary, grammar",
+"variants": [],
+"field": "Languages",
+"role": null
 },
 {
-"phrase": "user testing",
+"phrase": "historiography",
+"category": "good",
+"weight": 1.8,
+"suggestion": "methods, interpretations, sources",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "metaphysics",
+"category": "good",
+"weight": 1.8,
+"suggestion": "existence, reality, ontology",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "micro economics",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["usability testing", "a/b testing"],
+"suggestion": "supply demand, elasticity, markets",
+"variants": ["microeconomics"],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "financial statements",
+"category": "good",
+"weight": 2.2,
+"suggestion": "balance sheet, income statement, cash flow",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "cyber security",
+"category": "good",
+"weight": 2.5,
+"suggestion": "firewalls, encryption, vulnerability",
+"variants": ["cybersecurity"],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "predictive modeling",
+"category": "good",
+"weight": 2.5,
+"suggestion": "regression, classification, forecasting",
+"variants": ["predictive modelling"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "cloud computing",
+"category": "good",
+"weight": 2.5,
+"suggestion": "aws, azure, gcp",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "embedded systems",
+"category": "good",
+"weight": 2.5,
+"suggestion": "microcontrollers, firmware, rt os",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "cad cam",
+"category": "good",
+"weight": 2.3,
+"suggestion": "cnc, machining, prototyping",
+"variants": ["cad/cam"],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "water resources",
+"category": "good",
+"weight": 2.2,
+"suggestion": "hydrology, irrigation, drainage",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "building codes",
+"category": "good",
+"weight": 2.0,
+"suggestion": "compliance, standards, regulations",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "illustration",
+"category": "good",
+"weight": 2.0,
+"suggestion": "digital art, sketching, vector",
+"variants": [],
 "field": "Design",
-"role": "UX"
+"role": null
+},
+{
+"phrase": "differential equations",
+"category": "good",
+"weight": 2.2,
+"suggestion": "ode, pde, solutions",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "particle physics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "quarks, bosons, accelerators",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "analytical chemistry",
+"category": "good",
+"weight": 2.2,
+"suggestion": "chromatography, titration, spectrometry",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "botany",
+"category": "good",
+"weight": 2.0,
+"suggestion": "plants, photosynthesis, taxonomy",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "pathology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "diseases, diagnostics, histology",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "medication administration",
+"category": "good",
+"weight": 2.0,
+"suggestion": "dosage, routes, monitoring",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "criminal law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "offenses, defenses, sentencing",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "political theory",
+"category": "good",
+"weight": 2.0,
+"suggestion": "ideologies, thinkers, systems",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "developmental psychology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "stages, milestones, theories",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "human geography",
+"category": "good",
+"weight": 2.0,
+"suggestion": "population, urban, cultural",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental impact",
+"category": "good",
+"weight": 2.0,
+"suggestion": "assessment, mitigation, sustainability",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "brand management",
+"category": "good",
+"weight": 2.0,
+"suggestion": "strategy, positioning, equity",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "media production",
+"category": "good",
+"weight": 2.0,
+"suggestion": "editing, filming, scripting",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "educational technology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "e learning, tools, integration",
+"variants": ["edtech"],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "literary translation",
+"category": "good",
+"weight": 2.0,
+"suggestion": "texts, idioms, cultural adaptation",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "oral history",
+"category": "good",
+"weight": 1.8,
+"suggestion": "interviews, narratives, preservation",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "epistemology",
+"category": "good",
+"weight": 1.8,
+"suggestion": "knowledge, belief, justification",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "econometrics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "regression, time series, modeling",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "cost accounting",
+"category": "good",
+"weight": 2.2,
+"suggestion": "variance analysis, budgeting, allocation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "artificial intelligence",
+"category": "good",
+"weight": 2.8,
+"suggestion": "neural nets, nlp, computer vision",
+"variants": ["ai"],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "data mining",
+"category": "good",
+"weight": 2.3,
+"suggestion": "patterns, association rules, clustering",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "full stack",
+"category": "good",
+"weight": 2.5,
+"suggestion": "frontend backend, mern, mean",
+"variants": ["full-stack"],
+"field": "Software Engineering",
+"role": "Developer"
+},
+{
+"phrase": "signal processing",
+"category": "good",
+"weight": 2.5,
+"suggestion": "fourier transform, filters, dsp",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "robotics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "kinematics, control systems, sensors",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "construction management",
+"category": "good",
+"weight": 2.3,
+"suggestion": "scheduling, budgeting, safety",
+"variants": [],
+"field": "Civil Engineering",
+"role": "Project Manager"
+},
+{
+"phrase": "interior design",
+"category": "good",
+"weight": 2.0,
+"suggestion": "space planning, materials, lighting",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "web design",
+"category": "good",
+"weight": 2.2,
+"suggestion": "html css, responsive, ui",
+"variants": [],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "probability",
+"category": "good",
+"weight": 2.0,
+"suggestion": "distributions, bayes theorem, random variables",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "astrophysics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "stars, galaxies, cosmology",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "biochemistry",
+"category": "good",
+"weight": 2.2,
+"suggestion": "enzymes, metabolism, proteins",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "zoology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "animals, behavior, classification",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "radiology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "imaging, x rays, mri",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "community health",
+"category": "good",
+"weight": 2.0,
+"suggestion": "promotion, prevention, outreach",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "international law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "treaties, human rights, jurisdiction",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "electoral systems",
+"category": "good",
+"weight": 2.0,
+"suggestion": "voting, representation, campaigns",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "clinical psychology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "diagnosis, therapy, assessment",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "physical geography",
+"category": "good",
+"weight": 2.0,
+"suggestion": "landforms, climate, geomorphology",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "pollution control",
+"category": "good",
+"weight": 2.0,
+"suggestion": "air quality, water treatment, waste management",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "market research",
+"category": "good",
+"weight": 2.2,
+"suggestion": "surveys, analysis, insights",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "speech writing",
+"category": "good",
+"weight": 1.8,
+"suggestion": "rhetoric, structure, delivery",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "inclusive education",
+"category": "good",
+"weight": 2.0,
+"suggestion": "diversity, accessibility, support",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "phonology",
+"category": "good",
+"weight": 1.8,
+"suggestion": "sounds, phonemes, prosody",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "cultural history",
+"category": "good",
+"weight": 1.8,
+"suggestion": "artifacts, traditions, societies",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "aesthetics",
+"category": "good",
+"weight": 1.8,
+"suggestion": "beauty, art, perception",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "game theory",
+"category": "good",
+"weight": 2.2,
+"suggestion": "nash equilibrium, strategies, payoffs",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "forensic accounting",
+"category": "good",
+"weight": 2.5,
+"suggestion": "fraud detection, investigation, litigation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "operating systems",
+"category": "good",
+"weight": 2.3,
+"suggestion": "linux, windows, kernels",
+"variants": ["os"],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "natural language processing",
+"category": "good",
+"weight": 2.8,
+"suggestion": "sentiment analysis, tokenization, bert",
+"variants": ["nlp"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "microservices",
+"category": "good",
+"weight": 2.5,
+"suggestion": "api gateway, containers, orchestration",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "renewable energy systems",
+"category": "good",
+"weight": 2.5,
+"suggestion": "solar pv, wind turbines, storage",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "materials science",
+"category": "good",
+"weight": 2.2,
+"suggestion": "properties, composites, testing",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "environmental engineering",
+"category": "good",
+"weight": 2.3,
+"suggestion": "waste treatment, air pollution, sustainability",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "landscape architecture",
+"category": "good",
+"weight": 2.0,
+"suggestion": "site design, planting, ecology",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "motion graphics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "after effects, animation, transitions",
+"variants": [],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "number theory",
+"category": "good",
+"weight": 2.0,
+"suggestion": "primes, congruences, diophantine",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "optics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "lenses, lasers, diffraction",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "physical chemistry",
+"category": "good",
+"weight": 2.2,
+"suggestion": "kinetics, thermodynamics, quantum",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "evolutionary biology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "natural selection, adaptation, speciation",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "immunology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "antibodies, vaccines, immune response",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "mental health nursing",
+"category": "good",
+"weight": 2.2,
+"suggestion": "crisis intervention, therapy, support",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "corporate law",
+"category": "good",
+"weight": 2.2,
+"suggestion": "mergers, governance, contracts",
+"variants": [],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "comparative politics",
+"category": "good",
+"weight": 2.0,
+"suggestion": "systems, institutions, regimes",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "neuropsychology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "brain functions, cognition, disorders",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "hydrology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "water cycle, runoff, groundwater",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "ecotoxicology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "pollutants, effects, risk assessment",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "social media marketing",
+"category": "good",
+"weight": 2.2,
+"suggestion": "engagement, content strategy, analytics",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "broadcasting",
+"category": "good",
+"weight": 2.0,
+"suggestion": "production, scripting, on air",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "pedagogy",
+"category": "good",
+"weight": 1.8,
+"suggestion": "teaching methods, learning theories, instruction",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "sociolinguistics",
+"category": "good",
+"weight": 1.8,
+"suggestion": "dialects, variation, identity",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "economic history",
+"category": "good",
+"weight": 1.8,
+"suggestion": "growth, industrialization, trade",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "existentialism",
+"category": "good",
+"weight": 1.8,
+"suggestion": "freedom, absurdity, authenticity",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "monetary policy",
+"category": "good",
+"weight": 2.2,
+"suggestion": "interest rates, inflation targeting, central banking",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "investment analysis",
+"category": "good",
+"weight": 2.3,
+"suggestion": "portfolio, risk return, valuation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": "Analyst"
+},
+{
+"phrase": "software testing",
+"category": "good",
+"weight": 2.2,
+"suggestion": "unit tests, integration, qa",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "deep learning",
+"category": "good",
+"weight": 2.8,
+"suggestion": "cnn, rnn, tensorflow",
+"variants": ["dl"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "version control",
+"category": "good",
+"weight": 2.0,
+"suggestion": "git, svn, branching",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "control systems",
+"category": "good",
+"weight": 2.3,
+"suggestion": "feedback, pid, stability",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "manufacturing processes",
+"category": "good",
+"weight": 2.2,
+"suggestion": "casting, machining, welding",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "site surveying",
+"category": "good",
+"weight": 2.0,
+"suggestion": "levels, gps, topography",
+"variants": [],
+"field": "Civil Engineering",
+"role": "Surveyor"
+},
+{
+"phrase": "parametric design",
+"category": "good",
+"weight": 2.2,
+"suggestion": "rhino, grasshopper, algorithms",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "ui design",
+"category": "good",
+"weight": 2.2,
+"suggestion": "figma, sketch, prototypes",
+"variants": ["user interface design"],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "graph theory",
+"category": "good",
+"weight": 2.2,
+"suggestion": "nodes, edges, paths",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "thermodynamics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "entropy, enthalpy, cycles",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "polymer chemistry",
+"category": "good",
+"weight": 2.2,
+"suggestion": "synthesis, properties, applications",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "cell biology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "organelles, mitosis, signaling",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "oncology",
+"category": "good",
+"weight": 2.5,
+"suggestion": "cancer treatment, chemotherapy, radiation",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "palliative care",
+"category": "good",
+"weight": 2.0,
+"suggestion": "symptom management, support, end life",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "intellectual property",
+"category": "good",
+"weight": 2.2,
+"suggestion": "patents, trademarks, copyright",
+"variants": ["ip"],
+"field": "Law",
+"role": null
+},
+{
+"phrase": "security studies",
+"category": "good",
+"weight": 2.0,
+"suggestion": "threats, defense, intelligence",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "forensic psychology",
+"category": "good",
+"weight": 2.2,
+"suggestion": "criminal behavior, assessment, testimony",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "climatology",
+"category": "good",
+"weight": 2.0,
+"suggestion": "weather patterns, models, forecasts",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "sustainable development",
+"category": "good",
+"weight": 2.2,
+"suggestion": "goals, indicators, policies",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "consumer behavior",
+"category": "good",
+"weight": 2.0,
+"suggestion": "motivation, perception, decision making",
+"variants": ["consumer behaviour"],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "advertising",
+"category": "good",
+"weight": 2.0,
+"suggestion": "campaigns, copywriting, media planning",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "assessment strategies",
+"category": "good",
+"weight": 1.8,
+"suggestion": "formative, summative, rubrics",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "syntax",
+"category": "good",
+"weight": 1.8,
+"suggestion": "grammar, sentences, parsing",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "military history",
+"category": "good",
+"weight": 1.8,
+"suggestion": "battles, strategies, leaders",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "political philosophy",
+"category": "good",
+"weight": 1.8,
+"suggestion": "justice, rights, state",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "international trade",
+"category": "good",
+"weight": 2.2,
+"suggestion": "tariffs, exports, wto",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "risk management",
+"category": "good",
+"weight": 2.2,
+"suggestion": "identification, mitigation, insurance",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "strategic planning",
+"category": "good",
+"weight": 2.0,
+"suggestion": "swot, objectives, execution",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "project management",
+"category": "good",
+"weight": 2.3,
+"suggestion": "gantt charts, stakeholders, milestones",
+"variants": [],
+"field": null,
+"role": "Project Manager"
+},
+{
+"phrase": "supply chain",
+"category": "good",
+"weight": 2.2,
+"suggestion": "logistics, procurement, inventory",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "human resources",
+"category": "good",
+"weight": 2.0,
+"suggestion": "recruitment, training, performance",
+"variants": ["hr"],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "business analytics",
+"category": "good",
+"weight": 2.5,
+"suggestion": "kpi, dashboards, forecasting",
+"variants": [],
+"field": "Business Management",
+"role": "Analyst"
+},
+{
+"phrase": "entrepreneurship",
+"category": "good",
+"weight": 2.0,
+"suggestion": "startup, innovation, business plan",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "organizational behavior",
+"category": "good",
+"weight": 2.0,
+"suggestion": "motivation, leadership, culture",
+"variants": ["organisational behaviour"],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "corporate finance",
+"category": "good",
+"weight": 2.3,
+"suggestion": "capital budgeting, wacc, dividends",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "worked with",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "collaborated on, contributed to, developed with",
+"variants": ["used"],
+"field": null,
+"role": null
+},
+{
+"phrase": "knowledge of",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "experienced in, skilled in, applied",
+"variants": ["aware of"],
+"field": null,
+"role": null
+},
+{
+"phrase": "exposure to",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "hands on, implemented, utilized",
+"variants": ["familiarity with"],
+"field": null,
+"role": null
+},
+{
+"phrase": "basic understanding",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "proficient understanding, advanced knowledge, expert level",
+"variants": ["fundamental knowledge"],
+"field": null,
+"role": null
+},
+{
+"phrase": "handled",
+"category": "weak",
+"weight": 0.8,
+"suggestion": "managed, coordinated, executed",
+"variants": ["dealt with"],
+"field": null,
+"role": null
+},
+{
+"phrase": "supported",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "enabled, facilitated, bolstered",
+"variants": ["aided in"],
+"field": null,
+"role": null
 },
 {
 "phrase": "contributed to",
 "category": "weak",
-"weight": 0.7,
-"suggestion": "Specify your part, e.g., 'contributed to BIM model, coordinating 10 disciplines for clash detection'.",
+"weight": 0.8,
+"suggestion": "developed, enhanced, improved",
 "variants": ["added to"],
-"field": "Civil Engineering",
+"field": null,
+"role": null
+},
+{
+"phrase": "participated in",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "led, organized, executed",
+"variants": ["took part in"],
+"field": null,
+"role": null
+},
+{
+"phrase": "engaged with",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "collaborated with, partnered with, interacted with",
+"variants": ["interacted with"],
+"field": null,
 "role": null
 },
 {
 "phrase": "learned about",
 "category": "weak",
-"weight": 0.6,
-"suggestion": "Apply knowledge, e.g., 'learned cybersecurity best practices and implemented them to patch 50 vulnerabilities'.",
-"variants": ["studied"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "various tasks",
-"category": "weak",
 "weight": 0.5,
-"suggestion": "List specifics, e.g., 'handled various marketing tasks including SEO that boosted rankings by 20 positions'.",
-"variants": ["multiple duties"],
-"field": "Marketing",
+"suggestion": "mastered, applied, utilized",
+"variants": ["studied"],
+"field": null,
 "role": null
 },
 {
 "phrase": "motivated",
 "category": "bad",
-"weight": -1.5,
-"suggestion": "Show motivation via results, e.g., 'motivated team to exceed sales targets by 15% through data-driven strategies'.",
-"variants": ["driven"],
+"weight": -1.8,
+"suggestion": "driven, committed, proactive",
+"variants": ["self motivated"],
 "field": null,
 "role": null
 },
 {
 "phrase": "innovative",
 "category": "bad",
+"weight": -2.0,
+"suggestion": "creative, inventive, original",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "results oriented",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "outcome focused, performance driven, goal achieved",
+"variants": ["result oriented"],
+"field": null,
+"role": null
+},
+{
+"phrase": "detail oriented",
+"category": "bad",
+"weight": -1.5,
+"suggestion": "meticulous, precise, thorough",
+"variants": ["detail-orientated"],
+"field": null,
+"role": null
+},
+{
+"phrase": "quick learner",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "adaptable learner, fast adapter, rapid acquirer",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "proactive",
+"category": "bad",
 "weight": -1.8,
-"suggestion": "Detail innovations, e.g., 'developed innovative GIS tool for flood mapping, used in 3 council projects'.",
-"variants": ["creative"],
+"suggestion": "initiative taking, forward thinking, anticipatory",
+"variants": [],
 "field": null,
 "role": null
 },
@@ -1220,1349 +2171,17 @@
 "phrase": "reliable",
 "category": "bad",
 "weight": -1.5,
-"suggestion": "Prove reliability, e.g., 'maintained 99.9% uptime for cloud infrastructure over 6 months'.",
-"variants": ["dependable"],
+"suggestion": "dependable, consistent, trustworthy",
+"variants": [],
 "field": null,
-"role": null
-},
-{
-"phrase": "sap2000",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["csi sap2000", "seismic analysis"],
-"field": "Structural Engineering",
-"role": null
-},
-{
-"phrase": "robotics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["robotic systems", "ros"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "signal processing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["dsp", "fourier transform"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "parametric design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["grasshopper", "rhino"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "procurement management",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["tendering", "supplier negotiation"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "water quality testing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["environmental testing", "ph analysis"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "geodatabase management",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["spatial databases", "postgis"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "database design",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["erd", "normalization"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "sass",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["scss", "css preprocessor"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "mongodb",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["nosql database", "mongo db"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "gcp",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["google cloud platform", "bigquery"],
-"field": "DevOps",
-"role": "Cloud"
-},
-{
-"phrase": "encryption algorithms",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["aes encryption", "rsa"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "gitlab ci",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["continuous integration", "ci pipelines"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "postman",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["api testing", "rest client"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "vat calculations",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["value added tax", "hmrc vat"],
-"field": "Accounting",
-"role": "Tax"
-},
-{
-"phrase": "lbo modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["leveraged buyout", "irr calculation"],
-"field": "Finance",
-"role": "IB"
-},
-{
-"phrase": "time series forecasting",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["arima", "prophet model"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "inventory management",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["stock control", "just in time"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "ppc campaigns",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["pay per click", "google ads"],
-"field": "Marketing",
-"role": "Growth"
-},
-{
-"phrase": "brand strategy",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["branding", "positioning strategy"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "litigation support",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["trial preparation", "evidence gathering"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "medication administration",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["drug administration", "iv therapy"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "inclusive education",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["sen support", "differentiated learning"],
-"field": "Education",
-"role": "Assistant"
-},
-{
-"phrase": "experimental design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["research methods", "control groups"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "adobe xd",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["xd prototyping", "ui design tool"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "handled",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "Add details and metrics, e.g., 'handled procurement for £500k project, negotiating 10% cost savings'.",
-"variants": ["managed routine"],
-"field": "Construction",
-"role": null
-},
-{
-"phrase": "aware of",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Demonstrate application, e.g., 'aware of IFRS and applied them in preparing 5 annual reports'.",
-"variants": ["know about"],
-"field": "Accounting",
-"role": null
-},
-{
-"phrase": "did some",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Quantify, e.g., 'did some user testing on 20 prototypes, improving UX scores by 25%'.",
-"variants": ["tried"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "fast learner",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Show learning curve, e.g., 'quickly learned Revit and modeled 4 buildings in first month'.",
-"variants": ["quick learner"],
-"field": null,
-"role": null
-},
-{
-"phrase": "people person",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Highlight interpersonal skills, e.g., 'built relationships with 15 clients, increasing retention by 30%'.",
-"variants": ["good with people"],
-"field": null,
-"role": null
-},
-{
-"phrase": "results-driven",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Provide results, e.g., 'drove PPC campaigns to achieve 200% ROI'.",
-"variants": ["outcome-focused"],
-"field": null,
-"role": null
-},
-{
-"phrase": "bs 8110",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["british standard 8110", "concrete code"],
-"field": "Civil Engineering",
-"role": "Structural Engineer"
-},
-{
-"phrase": "cad/cam",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["computer aided design", "mastercam"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "renewable energy",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["solar power", "wind turbines"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "building regulations",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["part l compliance", "uk building regs"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "value engineering",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["cost optimization", "ve process"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "carbon footprint",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["ghg emissions", "sustainability metrics"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "hydrological modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["water modeling", "hec-ras"],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "object oriented programming",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["oop", "classes inheritance"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "bootstrap",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["css framework", "responsive design"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "redis",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["in-memory database", "caching layer"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "helm charts",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["kubernetes helm", "package manager"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "siem tools",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["splunk", "security information management"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "elk stack",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["elasticsearch logstash kibana", "logging platform"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "jmeter",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["performance testing", "load testing"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "payroll processing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["hmrc payroll", "sage payroll"],
-"field": "Accounting",
-"role": null
-},
-{
-"phrase": "portfolio management",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["asset allocation", "risk adjusted returns"],
-"field": "Finance",
-"role": "Analyst"
-},
-{
-"phrase": "macroeconomic analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["gdp forecasting", "fiscal policy"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "crm systems",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["salesforce", "customer relationship management"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "conversion optimization",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["cro", "landing page optimization"],
-"field": "Marketing",
-"role": "Growth"
-},
-{
-"phrase": "event planning",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["press events", "corporate events"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "intellectual property",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["ip law", "patent filing"],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "health assessments",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["patient assessments", "physical exams"],
-"field": "Medicine",
-"role": "Assistant"
-},
-{
-"phrase": "e-learning platforms",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["moodle", "online teaching"],
-"field": "Education",
-"role": "Tutor"
-},
-{
-"phrase": "qualitative research",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["interviews", "thematic analysis"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "interaction design",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["ixd", "user flows"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "supported",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "Detail support and impact, e.g., 'supported clinical trials by managing data for 100 participants, ensuring 99% accuracy'.",
-"variants": ["backed"],
-"field": "Medicine",
-"role": null
-},
-{
-"phrase": "general understanding",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Apply understanding, e.g., 'had general understanding of lean methods and implemented them to cut waste by 25%'.",
-"variants": ["broad knowledge"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "miscellaneous duties",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Specify, e.g., 'performed miscellaneous duties including event planning that attracted 200 attendees'.",
-"variants": ["other tasks"],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "loyal",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Show loyalty through tenure or contributions, e.g., 'contributed to company for 3 years, leading 5 successful projects'.",
-"variants": ["committed"],
-"field": null,
-"role": null
-},
-{
-"phrase": "visionary",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Describe vision, e.g., 'envisioned and implemented cloud migration strategy saving £50k annually'.",
-"variants": ["forward-thinking"],
-"field": null,
-"role": null
-},
-{
-"phrase": "multitasker",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Highlight efficiency, e.g., 'managed multiple audits simultaneously, completing all under budget'.",
-"variants": ["juggling expert"],
-"field": null,
-"role": null
-},
-{
-"phrase": "geotechnical engineering",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["soil mechanics", "foundation design"],
-"field": "Civil Engineering",
-"role": null
-},
-{
-"phrase": "mechatronics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["electro-mechanical systems", "automation"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "control systems",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["feedback control", "pid controllers"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "sketchup",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["google sketchup", "3d modeling"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "contract administration",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["nec contracts", "jct forms"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "ecosystem restoration",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["habitat restoration", "rewilding"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "dem analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["digital elevation model", "terrain analysis"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "cloud computing",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["saas", "iaas"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "tailwind css",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["utility first css", "tailwindcss"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "rabbitmq",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["message queue", "amqp"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "istqb certified",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["istqb certification", "software testing cert"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "forensic accounting",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["fraud investigation", "financial forensics"],
-"field": "Accounting",
-"role": "Audit"
-},
-{
-"phrase": "hedging strategies",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["risk hedging", "derivatives trading"],
-"field": "Finance",
-"role": null
-},
-{
-"phrase": "panel data",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["longitudinal data", "fixed effects model"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "kpi tracking",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["key performance indicators", "dashboard creation"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "influencer marketing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["influencer partnerships", "affiliate programs"],
-"field": "Marketing",
-"role": "Content"
-},
-{
-"phrase": "media monitoring",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["clipping services", "sentiment analysis"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "compliance checks",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["regulatory compliance", "gdpr checks"],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "diagnostic testing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["lab tests", "blood work"],
-"field": "Medicine",
-"role": "Assistant"
-},
-{
-"phrase": "pedagogy",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["teaching methods", "active learning"],
-"field": "Education",
-"role": "Tutor"
-},
-{
-"phrase": "neuropsychological assessment",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["neuropsych testing", "cognitive assessment"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "accessibility standards",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["wcag", "ada compliance"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "team member",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Specify role, e.g., 'served as team member in agile sprints, delivering 8 features on time'.",
-"variants": ["group participant"],
-"field": null,
-"role": null
-},
-{
-"phrase": "entry level",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Highlight transferable skills, e.g., 'entry level in finance but modeled 3 portfolios with 15% returns'.",
-"variants": ["beginner"],
-"field": null,
-"role": null
-},
-{
-"phrase": "average skills",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Focus on strengths, e.g., 'possessed average skills in SQL but queried databases for reports reducing time by 50%'.",
-"variants": ["moderate proficiency"],
-"field": null,
-"role": null
-},
-{
-"phrase": "punctual",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "It's expected; instead, note 'met all deadlines for 20 projects with zero delays'.",
-"variants": ["on time"],
-"field": null,
-"role": null
-},
-{
-"phrase": "honest",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Assumed; show integrity, e.g., 'handled confidential data in compliance with GDPR for 50 clients'.",
-"variants": ["trustworthy"],
-"field": null,
-"role": null
-},
-{
-"phrase": "friendly",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Demonstrate, e.g., 'built friendly client relationships leading to 25% repeat business'.",
-"variants": ["amiable"],
-"field": null,
-"role": null
-},
-{
-"phrase": "surveying",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["land surveying", "topographic survey"],
-"field": "Civil Engineering",
-"role": null
-},
-{
-"phrase": "vibration analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["modal analysis", "fft"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "iot devices",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["internet of things", "raspberry pi"],
-"field": "Electronic Engineering",
-"role": null
-},
-{
-"phrase": "lumion",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["architectural visualization", "rendering tool"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "delay analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["critical path method", "cpm scheduling"],
-"field": "Construction",
-"role": null
-},
-{
-"phrase": "air quality monitoring",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["pollution monitoring", "pm2.5 analysis"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "raster data",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["pixel data", "satellite raster"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "agile methodology",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["scrum", "kanban"],
-"field": "Software Engineering",
-"role": "Full-stack"
-},
-{
-"phrase": "next.js",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["nextjs", "react framework"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "nestjs",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["nest js", "node framework"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "mlops pipelines",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["machine learning operations", "kubeflow"],
-"field": "Data Science",
-"role": "MLOps"
-},
-{
-"phrase": "incident response",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["cyber incident", "forensics response"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "tensor flow",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["tensorflow", "tf lite"],
-"field": "Data Science",
-"role": "ML"
-},
-{
-"phrase": "appium",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["mobile testing", "automation framework"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "transfer pricing",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["tp documentation", "oecd guidelines"],
-"field": "Accounting",
-"role": "Tax"
-},
-{
-"phrase": "capm",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["capital asset pricing model", "beta calculation"],
-"field": "Finance",
-"role": "Equity Research"
-},
-{
-"phrase": "garch models",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["volatility modeling", "arch models"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "vendor management",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["supplier management", "sla monitoring"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "video editing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["premiere pro", "final cut"],
-"field": "Marketing",
-"role": "Content"
-},
-{
-"phrase": "copy editing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["proofreading", "style guides"],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "estate planning",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["wills trusts", "inheritance tax"],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "radiology",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["x-ray interpretation", "mri scans"],
-"field": "Medicine",
-"role": null
-},
-{
-"phrase": "stem education",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["science teaching", "math curriculum"],
-"field": "Education",
-"role": "Assistant"
-},
-{
-"phrase": "counseling skills",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["therapy sessions", "client counseling"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "visual design",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["graphic design", "illustrator"],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "daily tasks",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Make impactful, e.g., 'performed daily tasks in lab, analyzing 50 samples with 98% accuracy'.",
-"variants": ["routine work"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "some familiarity",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Build with examples, e.g., 'had some familiarity with Agile and used it in 2 sprints to deliver features'.",
-"variants": ["slight knowledge"],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "assorted projects",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Detail one, e.g., 'worked on assorted projects including SEO that increased traffic by 40%'.",
-"variants": ["diverse assignments"],
-"field": "Marketing",
 "role": null
 },
 {
 "phrase": "enthusiastic",
 "category": "bad",
-"weight": -1.8,
-"suggestion": "Channel enthusiasm, e.g., 'enthusiastically led PR campaign reaching 1m impressions'.",
-"variants": ["eager"],
-"field": null,
-"role": null
-},
-{
-"phrase": "ambitious",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Show ambition through goals met, e.g., 'ambitiously targeted and achieved 120% of sales quota'.",
-"variants": ["goal-oriented"],
-"field": null,
-"role": null
-},
-{
-"phrase": "organized",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Prove organization, e.g., 'organized 10 events with budgets under £5k each'.",
-"variants": ["well-organized"],
-"field": null,
-"role": null
-},
-{
-"phrase": "traffic engineering",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["transport planning", "signal timing"],
-"field": "Civil Engineering",
-"role": null
-},
-{
-"phrase": "materials science",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["material properties", "composites"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "power electronics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["inverters", "converters"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "photoshop",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["adobe photoshop", "image editing"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "feasibility studies",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["project feasibility", "cost benefit analysis"],
-"field": "Construction",
-"role": null
-},
-{
-"phrase": "soil sampling",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["geotechnical sampling", "core sampling"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "vector data",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["shapefiles", "polygons lines"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "devsecops",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["security in devops", "secure pipelines"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "flutter",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["dart framework", "mobile development"],
-"field": "Software Engineering",
-"role": "Full-stack"
-},
-{
-"phrase": "scikit-learn",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["sklearn", "ml library"],
-"field": "Data Science",
-"role": "ML"
-},
-{
-"phrase": "burp suite",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["web vulnerability scanner", "proxy tool"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "pytorch",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["torch", "deep learning framework"],
-"field": "Data Science",
-"role": "ML"
-},
-{
-"phrase": "soapui",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["api testing tool", "soap testing"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "corporate tax",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["ct returns", "tax planning"],
-"field": "Accounting",
-"role": "Tax"
-},
-{
-"phrase": "fixed income",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["bonds analysis", "yield curves"],
-"field": "Finance",
-"role": "Analyst"
-},
-{
-"phrase": "bayesian statistics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["bayes theorem", "mcmc"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "process improvement",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["bpm", "workflow optimization"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "ux writing",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["microcopy", "content design"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "arbitration",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["dispute resolution", "adr"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "pharmacy assistance",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["drug dispensing", "prescription filling"],
-"field": "Medicine",
-"role": "Assistant"
-},
-{
-"phrase": "literacy programs",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["reading intervention", "phonics teaching"],
-"field": "Education",
-"role": "Tutor"
-},
-{
-"phrase": "group therapy",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["support groups", "facilitation skills"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "heuristic evaluation",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["usability heuristics", "nielsen principles"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "office duties",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Specify, e.g., 'performed office duties including data entry for 500 records with zero errors'.",
-"variants": ["admin tasks"],
-"field": null,
-"role": null
-},
-{
-"phrase": "basic exposure",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Expand, e.g., 'had basic exposure to CAD and used it to draft 10 plans'.",
-"variants": ["initial contact"],
-"field": "Civil Engineering",
-"role": null
-},
-{
-"phrase": "helped out",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Quantify help, e.g., 'helped out in lab experiments, contributing to 3 published papers'.",
-"variants": ["assisted occasionally"],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "positive attitude",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Show through actions, e.g., 'maintained positive attitude during tight deadlines, delivering project early'.",
-"variants": ["optimistic"],
-"field": null,
-"role": null
-},
-{
-"phrase": "flexible",
-"category": "bad",
-"weight": -1.5,
-"suggestion": "Demonstrate flexibility, e.g., 'adapted flexibly to change in project scope, completing on time'.",
-"variants": ["adaptable"],
+"weight": -2.0,
+"suggestion": "eager, zealous, passionate",
+"variants": [],
 "field": null,
 "role": null
 },
@@ -2570,1341 +2189,3156 @@
 "phrase": "dedicated",
 "category": "bad",
 "weight": -1.8,
-"suggestion": "Prove dedication, e.g., 'dedicated extra hours to optimize code, improving speed by 50%'.",
-"variants": ["committed worker"],
+"suggestion": "committed, loyal, devoted",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "hydraulics",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["fluid dynamics", "pump design"],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "vlsi design",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["very large scale integration", "verilog"],
-"field": "Electronic Engineering",
-"role": null
-},
-{
-"phrase": "energy modeling",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["energy simulation", "epc ratings"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "dispute resolution",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["claim management", "adjudication"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "wetland delineation",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["wetland mapping", "ecological delineation"],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "geostatistics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["kriging", "spatial statistics"],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "big data",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["hadoop", "spark"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "svelte",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["sveltejs", "reactive framework"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "kafka",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["apache kafka", "streaming platform"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "airflow",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["apache airflow", "workflow orchestration"],
-"field": "Data Science",
-"role": "MLOps"
-},
-{
-"phrase": "wireshark",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["packet analyzer", "network troubleshooting"],
-"field": "Cybersecurity",
-"role": null
-},
-{
-"phrase": "keras",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["keras api", "neural networks"],
-"field": "Data Science",
-"role": "ML"
-},
-{
-"phrase": "loadrunner",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["performance tool", "stress testing"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "internal controls",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["sox compliance", "risk controls"],
-"field": "Accounting",
-"role": "Audit"
-},
-{
-"phrase": "alternative investments",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["private equity", "hedge funds"],
-"field": "Finance",
-"role": "Equity Research"
-},
-{
-"phrase": "structural equation modeling",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["sem", "amos software"],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "change management",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["organizational change", "prosci"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "semrush",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["seo tool", "keyword research"],
-"field": "Marketing",
-"role": "SEO"
-},
-{
-"phrase": "storytelling",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["narrative development", "content storytelling"],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "immigration law",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["visa applications", "asylum cases"],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "surgical assistance",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["or assistance", "sterile techniques"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "blended learning",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["hybrid teaching", "online offline mix"],
-"field": "Education",
-"role": "Assistant"
-},
-{
-"phrase": "crisis intervention",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["emergency counseling", "de-escalation"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "color theory",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["color palettes", "visual harmony"],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "various responsibilities",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "List key ones, e.g., 'had various responsibilities in finance, including budgeting that saved 10% costs'.",
-"variants": ["diverse roles"],
-"field": "Finance",
-"role": null
-},
-{
-"phrase": "introductory level",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Advance with examples, e.g., 'at introductory level in Python but scripted automation for 20 tasks'.",
-"variants": ["beginner level"],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "occasional help",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Make it substantial, e.g., 'provided occasional help in testing, identifying 15 bugs'.",
-"variants": ["sporadic assistance"],
-"field": "QA",
+"phrase": "creative thinker",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "innovative problem solver, original ideator, imaginative",
+"variants": [],
+"field": null,
 "role": null
 },
 {
 "phrase": "good communicator",
 "category": "bad",
 "weight": -2.0,
-"suggestion": "Show communication, e.g., 'communicated project updates to stakeholders, ensuring alignment on deliverables'.",
-"variants": ["effective communicator"],
-"field": null,
-"role": null
-},
-{
-"phrase": "strategic thinker",
-"category": "bad",
-"weight": -1.8,
-"suggestion": "Detail strategy, e.g., 'developed strategic marketing plan increasing leads by 35%'.",
-"variants": ["big picture thinker"],
+"suggestion": "effective communicator, articulate, persuasive",
+"variants": [],
 "field": null,
 "role": null
 },
 {
 "phrase": "problem solver",
 "category": "bad",
-"weight": -2.0,
-"suggestion": "Give example, e.g., 'solved complex data issues using SQL queries, resolving 90% of errors'.",
-"variants": ["troubleshooter"],
+"weight": -2.5,
+"suggestion": "analytical thinker, troubleshooter, resolver",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "drainage design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["stormwater management", "suds"],
-"field": "Civil Engineering",
+"phrase": "multitasker",
+"category": "bad",
+"weight": -1.5,
+"suggestion": "efficient manager, prioritizer",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "aerodynamics",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["fluid flow", "cfd analysis"],
-"field": "Mechanical Engineering",
+"phrase": "people person",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "interpersonal skilled, sociable, relational",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "antenna design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["rf design", "hfss software"],
-"field": "Electrical Engineering",
+"phrase": "go getter",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "ambitious, driven, achiever",
+"variants": ["go-getter"],
+"field": null,
 "role": null
 },
 {
-"phrase": "site analysis",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["context analysis", "swot site"],
-"field": "Architecture",
+"phrase": "synergize",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "collaborate, integrate, combine",
+"variants": ["synergise"],
+"field": null,
 "role": null
 },
 {
-"phrase": "progress reporting",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["project reporting", "earned value"],
-"field": "Construction",
+"phrase": "think outside the box",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "innovate, create, ideate",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "invasive species",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["non-native species", "control measures"],
-"field": "Environmental Science",
+"phrase": "rockstar",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "top performer, star, elite",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "location intelligence",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["business gis", "site selection"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "natural language processing",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["nlp", "sentiment analysis"],
-"field": "Data Science",
-"role": "ML"
-},
-{
-"phrase": "webpack",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["module bundler", "js bundling"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "elasticsearch",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["search engine", "lucene based"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "sagemaker",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["aws sagemaker", "ml platform"],
-"field": "Data Science",
-"role": "MLOps"
-},
-{
-"phrase": "metasploit",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["exploit framework", "pen testing tool"],
-"field": "Cybersecurity",
+"phrase": "ninja",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "expert, master, specialist",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "tableau",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["data visualization", "dashboards"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "testrail",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["test management", "case tracking"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "consolidation accounting",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["group accounts", "subsidiary consolidation"],
-"field": "Accounting",
+"phrase": "wizard",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "magician, expert, genius",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "credit analysis",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["credit risk", "loan assessment"],
-"field": "Finance",
-"role": null
-},
-{
-"phrase": "input-output models",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["leontief model", "economic impact"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "agile coaching",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["scrum master", "agile facilitation"],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "ahrefs",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["seo analysis", "backlink checker"],
-"field": "Marketing",
-"role": "SEO"
-},
-{
-"phrase": "podcast production",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["audio editing", "episode scripting"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "family law",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["divorce cases", "child custody"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "rehabilitation",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["physical therapy", "recovery plans"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "esl teaching",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["english second language", "tefl"],
-"field": "Education",
-"role": "Tutor"
-},
-{
-"phrase": "biofeedback",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["neurofeedback", "stress management"],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "typography",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["font selection", "kerning"],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "general assistance",
+"phrase": "seasoned",
 "category": "weak",
-"weight": 0.5,
-"suggestion": "Specify, e.g., 'provided general assistance in audits, reviewing 200 transactions'.",
-"variants": ["broad support"],
-"field": "Accounting",
+"weight": 0.8,
+"suggestion": "experienced, veteran, accomplished",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "limited involvement",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Maximize, e.g., 'had limited involvement in design but contributed to 2 key features'.",
-"variants": ["minimal participation"],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "helped team",
+"phrase": "versatile",
 "category": "weak",
 "weight": 0.7,
-"suggestion": "Detail, e.g., 'helped team with data analysis, identifying trends that improved forecasts by 20%'.",
-"variants": ["team aid"],
-"field": "Data Science",
-"role": null
-},
-{
-"phrase": "seasoned professional",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Use experience, e.g., 'with 5 years in engineering, designed 10 structures'.",
-"variants": ["experienced pro"],
+"suggestion": "adaptable, multi skilled, flexible",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "jack of all trades",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Focus on specialties, e.g., 'versatile in full-stack dev, building apps with React and Node'.",
-"variants": ["all-rounder"],
+"phrase": "various tasks",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "specific duties, key responsibilities, core functions",
+"variants": ["miscellaneous duties"],
 "field": null,
 "role": null
 },
 {
-"phrase": "world-class",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Provide evidence, e.g., 'delivered world-class SEO results with top Google rankings'.",
-"variants": ["top-tier"],
+"phrase": "general skills",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "specialized skills, technical abilities, professional competencies",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "bridge design",
+"phrase": "did some",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "completed, achieved, executed",
+"variants": ["did a bit of"],
+"field": null,
+"role": null
+},
+{
+"phrase": "tried to",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "attempted, endeavored, pursued",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "sort of",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "kind of, somewhat, approximately",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "around",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "approximately, roughly, circa",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "approximately",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "exactly, precisely, specifically",
+"variants": ["approx"],
+"field": null,
+"role": null
+},
+{
+"phrase": "some experience",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "extensive experience, considerable expertise, proven track record",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "achieved",
+"category": "good",
+"suggestion": "accomplished, attained, realized",
+"variants": ["achieving"],
+"field": null,
+"role": null
+},
+{
+"phrase": "enhanced",
+"category": "good",
+"suggestion": "improved, boosted, upgraded",
+"variants": ["enhancing"],
+"field": null,
+"role": null
+},
+{
+"phrase": "generated",
+"category": "good",
+"suggestion": "produced, created, developed",
+"variants": ["generating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "streamlined",
+"category": "good",
+"suggestion": "optimized, simplified, refined",
+"variants": ["streamlining"],
+"field": null,
+"role": null
+},
+{
+"phrase": "coordinated",
+"category": "good",
+"suggestion": "organized, arranged, managed",
+"variants": ["coordinating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "executed",
+"category": "good",
+"suggestion": "implemented, carried out, performed",
+"variants": ["executing"],
+"field": null,
+"role": null
+},
+{
+"phrase": "facilitated",
+"category": "good",
+"suggestion": "enabled, assisted, supported",
+"variants": ["facilitating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "integrated",
+"category": "good",
+"suggestion": "combined, merged, incorporated",
+"variants": ["integrating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "monitored",
+"category": "good",
+"suggestion": "tracked, observed, supervised",
+"variants": ["monitoring"],
+"field": null,
+"role": null
+},
+{
+"phrase": "negotiated",
+"category": "good",
+"suggestion": "bargained, discussed, agreed",
+"variants": ["negotiating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "planned",
+"category": "good",
+"suggestion": "organized, scheduled, arranged",
+"variants": ["planning"],
+"field": null,
+"role": null
+},
+{
+"phrase": "resolved",
+"category": "good",
+"suggestion": "solved, fixed, addressed",
+"variants": ["resolving"],
+"field": null,
+"role": null
+},
+{
+"phrase": "trained",
+"category": "good",
+"suggestion": "educated, instructed, mentored",
+"variants": ["training"],
+"field": null,
+"role": null
+},
+{
+"phrase": "utilized",
+"category": "good",
+"suggestion": "used, applied, employed",
+"variants": ["utilised", "utilizing"],
+"field": null,
+"role": null
+},
+{
+"phrase": "validated",
+"category": "good",
+"suggestion": "verified, confirmed, authenticated",
+"variants": ["validating"],
+"field": null,
+"role": null
+},
+{
+"phrase": "quantified",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["structural bridge", "aashto standards"],
-"field": "Civil Engineering",
-"role": "Structural Engineer"
+"suggestion": "measured, calculated, assessed",
+"variants": ["quantifying"],
+"field": null,
+"role": null
 },
 {
-"phrase": "tribology",
+"phrase": "reduced",
 "category": "good",
 "weight": 2.2,
-"suggestion": null,
-"variants": ["friction wear", "lubrication"],
-"field": "Mechanical Engineering",
+"suggestion": "decreased, minimized, lowered",
+"variants": ["reducing"],
+"field": null,
 "role": null
 },
 {
-"phrase": "fpga programming",
+"phrase": "increased",
+"category": "good",
+"weight": 2.2,
+"suggestion": "boosted, raised, expanded",
+"variants": ["increasing"],
+"field": null,
+"role": null
+},
+{
+"phrase": "saved",
+"category": "good",
+"weight": 2.3,
+"suggestion": "conserved, preserved, economized",
+"variants": ["saving"],
+"field": null,
+"role": null
+},
+{
+"phrase": "delivered",
+"category": "good",
+"suggestion": "provided, supplied, executed",
+"variants": ["delivering"],
+"field": null,
+"role": null
+},
+{
+"phrase": "exceeded",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["vhdl", "field programmable gate array"],
-"field": "Electronic Engineering",
+"suggestion": "surpassed, outperformed, transcended",
+"variants": ["exceeding"],
+"field": null,
 "role": null
 },
 {
-"phrase": "concept development",
+"phrase": "improved efficiency",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["design concepts", "mood boards"],
-"field": "Architecture",
+"weight": 2.5,
+"suggestion": "enhanced productivity, optimized processes, boosted performance",
+"variants": ["efficiency improvement"],
+"field": null,
 "role": null
 },
 {
-"phrase": "nec3",
+"phrase": "cost savings",
 "category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["nec contracts", "engineering construction contract"],
-"field": "Construction",
-"role": "Quantity Surveyor"
+"weight": 2.5,
+"suggestion": "expense reduction, budget cuts, financial efficiencies",
+"variants": [],
+"field": null,
+"role": null
 },
 {
-"phrase": "renewable resources",
+"phrase": "revenue growth",
+"category": "good",
+"weight": 2.5,
+"suggestion": "sales increase, profit expansion, income boost",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "customer satisfaction",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["sustainable resources", "bioenergy"],
+"suggestion": "client feedback, service quality, nps score",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "key performance indicators",
+"category": "good",
+"weight": 2.3,
+"suggestion": "kpis, metrics, benchmarks",
+"variants": ["kpi"],
+"field": null,
+"role": null
+},
+{
+"phrase": "process improvement",
+"category": "good",
+"weight": 2.2,
+"suggestion": "workflow optimization, lean methods, six sigma",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "data analysis",
+"category": "good",
+"weight": 2.5,
+"suggestion": "statistical analysis, trend identification, insights extraction",
+"variants": ["data analytics"],
+"field": null,
+"role": "Analyst"
+},
+{
+"phrase": "team leadership",
+"category": "good",
+"weight": 2.3,
+"suggestion": "group management, delegation, motivation",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "stakeholder management",
+"category": "good",
+"weight": 2.2,
+"suggestion": "relationship building, communication, engagement",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "quality assurance",
+"category": "good",
+"weight": 2.0,
+"suggestion": "qa testing, standards compliance, audits",
+"variants": ["qa"],
+"field": null,
+"role": null
+},
+{
+"phrase": "risk assessment",
+"category": "good",
+"weight": 2.3,
+"suggestion": "hazard identification, probability analysis, mitigation plans",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "compliance",
+"category": "good",
+"weight": 2.0,
+"suggestion": "regulatory adherence, standards, audits",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "budget management",
+"category": "good",
+"weight": 2.2,
+"suggestion": "financial planning, cost control, forecasting",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "vendor management",
+"category": "good",
+"weight": 2.0,
+"suggestion": "supplier relations, contracts, negotiations",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "performance metrics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "kpis, benchmarks, dashboards",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "continuous improvement",
+"category": "good",
+"weight": 2.0,
+"suggestion": "kaizen, process enhancement, optimization",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "change management",
+"category": "good",
+"weight": 2.2,
+"suggestion": "transition planning, adoption, training",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "sustainability practices",
+"category": "good",
+"weight": 2.2,
+"suggestion": "green initiatives, eco friendly, carbon reduction",
+"variants": [],
 "field": "Environmental Science",
 "role": null
 },
 {
-"phrase": "geofencing",
+"phrase": "diversity inclusion",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["location based services", "virtual boundaries"],
-"field": "Geography",
-"role": "GIS"
+"weight": 2.0,
+"suggestion": "equity, belonging, dei strategies",
+"variants": ["d&i"],
+"field": null,
+"role": null
 },
 {
-"phrase": "computer vision",
+"phrase": "agile scrum",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["opencv", "image recognition"],
-"field": "Data Science",
-"role": "ML"
+"suggestion": "sprints, backlogs, daily standups",
+"variants": [],
+"field": "Software Engineering",
+"role": null
 },
 {
-"phrase": "jest",
+"phrase": "ci cd",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["js testing", "react testing"],
+"weight": 2.5,
+"suggestion": "jenkins, pipelines, automation",
+"variants": ["continuous integration", "continuous deployment"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "docker",
+"category": "good",
+"weight": 2.5,
+"suggestion": "containers, images, compose",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "kubernetes",
+"category": "good",
+"weight": 2.5,
+"suggestion": "pods, clusters, orchestration",
+"variants": ["k8s"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "rest api",
+"category": "good",
+"weight": 2.5,
+"suggestion": "endpoints, http methods, json",
+"variants": ["restful api"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "graphql",
+"category": "good",
+"weight": 2.5,
+"suggestion": "queries, mutations, schemas",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "html css",
+"category": "good",
+"weight": 2.0,
+"suggestion": "markup, styling, responsive design",
+"variants": ["html5", "css3"],
 "field": "Software Engineering",
 "role": "Frontend"
 },
 {
-"phrase": "prisma",
+"phrase": "javascript",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["orm tool", "database client"],
+"weight": 2.5,
+"suggestion": "es6, dom manipulation, async",
+"variants": ["js"],
+"field": "Software Engineering",
+"role": "Frontend"
+},
+{
+"phrase": "angular",
+"category": "good",
+"weight": 2.5,
+"suggestion": "components, directives, services",
+"variants": [],
+"field": "Software Engineering",
+"role": "Frontend"
+},
+{
+"phrase": "vue",
+"category": "good",
+"weight": 2.5,
+"suggestion": "components, reactivity, router",
+"variants": ["vue.js"],
+"field": "Software Engineering",
+"role": "Frontend"
+},
+{
+"phrase": "express js",
+"category": "good",
+"weight": 2.5,
+"suggestion": "middleware, routes, server",
+"variants": ["express.js"],
 "field": "Software Engineering",
 "role": "Backend"
 },
 {
-"phrase": "vertex ai",
+"phrase": "mongodb",
 "category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["gcp ml", "ai platform"],
-"field": "Data Science",
-"role": "MLOps"
+"weight": 2.5,
+"suggestion": "nosql, documents, collections",
+"variants": [],
+"field": "Software Engineering",
+"role": "Backend"
 },
 {
-"phrase": "ids systems",
+"phrase": "mysql",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["intrusion detection", "snort"],
-"field": "Cybersecurity",
+"weight": 2.5,
+"suggestion": "tables, queries, joins",
+"variants": [],
+"field": "Software Engineering",
+"role": "Backend"
+},
+{
+"phrase": "postgresql",
+"category": "good",
+"weight": 2.5,
+"suggestion": "schemas, transactions, indexes",
+"variants": ["postgres"],
+"field": "Software Engineering",
+"role": "Backend"
+},
+{
+"phrase": "aws",
+"category": "good",
+"weight": 2.5,
+"suggestion": "ec2, s3, lambda",
+"variants": ["amazon web services"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "azure",
+"category": "good",
+"weight": 2.5,
+"suggestion": "virtual machines, app services, blob storage",
+"variants": ["microsoft azure"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "gcp",
+"category": "good",
+"weight": 2.5,
+"suggestion": "compute engine, cloud storage, bigquery",
+"variants": ["google cloud platform"],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "tensorflow",
+"category": "good",
+"weight": 2.8,
+"suggestion": "models, layers, training",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "pytorch",
+"category": "good",
+"weight": 2.8,
+"suggestion": "tensors, autograd, nn modules",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "scikit learn",
+"category": "good",
+"weight": 2.5,
+"suggestion": "classifiers, regression, clustering",
+"variants": ["sklearn"],
+"field": "Data Science",
 "role": null
 },
 {
 "phrase": "power bi",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["microsoft powerbi", "data dashboards"],
+"suggestion": "dax, visuals, reports",
+"variants": [],
 "field": "Data Science",
-"role": "Analytics"
+"role": "Analyst"
 },
 {
-"phrase": "bugzilla",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["bug tracking", "issue management"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "depreciation schedules",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["asset depreciation", "straight line method"],
-"field": "Accounting",
-"role": null
-},
-{
-"phrase": "esg investing",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["sustainable investing", "environmental social governance"],
-"field": "Finance",
-"role": "Equity Research"
-},
-{
-"phrase": "game theory",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["nash equilibrium", "strategic interactions"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "tableau prep",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["data preparation", "etl tool"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "hubspot",
+"phrase": "hadoop",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["crm marketing", "inbound tool"],
-"field": "Marketing",
-"role": "Growth"
-},
-{
-"phrase": "social listening",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["brand monitoring", "talkwalker"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "tort law",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["negligence cases", "liability law"],
-"field": "Law",
+"suggestion": "mapreduce, hdfs, yarn",
+"variants": [],
+"field": "Data Science",
 "role": null
 },
 {
-"phrase": "telemedicine",
+"phrase": "spark",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["virtual consultations", "remote healthcare"],
-"field": "Medicine",
-"role": "Assistant"
+"weight": 2.5,
+"suggestion": "rdd, dataframes, streaming",
+"variants": ["apache spark"],
+"field": "Data Science",
+"role": null
 },
 {
-"phrase": "montessori method",
+"phrase": "etabs",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["child-centered learning", "practical life skills"],
-"field": "Education",
-"role": null
-},
-{
-"phrase": "mindfulness training",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["meditation techniques", "stress reduction"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "grid systems",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["layout grids", "responsive grids"],
-"field": "Design",
-"role": "UX"
-},
-{
-"phrase": "standard duties",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Enhance with metrics, e.g., 'performed standard duties in nursing, caring for 30 patients daily with high satisfaction'.",
-"variants": ["typical tasks"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "fundamental skills",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Apply fundamentals, e.g., 'used fundamental skills in economics to model supply demand for report'.",
-"variants": ["core abilities"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "supported projects",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Detail support, e.g., 'supported projects with GIS mapping for 5 sites'.",
-"variants": ["aided initiatives"],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "go-to person",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Highlight expertise, e.g., 'served as go-to for DevOps, resolving 50 incidents'.",
-"variants": ["key resource"],
-"field": null,
-"role": null
-},
-{
-"phrase": "cutting-edge",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "Specify tech, e.g., 'used cutting-edge ML tools like TensorFlow for model training'.",
-"variants": ["state-of-the-art"],
-"field": null,
-"role": null
-},
-{
-"phrase": "paradigm shift",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "Describe change, e.g., 'led paradigm shift to agile, improving delivery speed by 40%'.",
-"variants": ["game-changing approach"],
-"field": null,
-"role": null
-},
-{
-"phrase": "pavement design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["road design", "asphalt concrete"],
+"weight": 2.5,
+"suggestion": "structural modeling, analysis, design",
+"variants": [],
 "field": "Civil Engineering",
-"role": null
+"role": "Structural Engineer"
 },
 {
-"phrase": "kinematics",
+"phrase": "staad pro",
 "category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["motion analysis", "dynamics"],
-"field": "Mechanical Engineering",
-"role": null
+"weight": 2.5,
+"suggestion": "frame analysis, load combinations, detailing",
+"variants": ["staad.pro"],
+"field": "Civil Engineering",
+"role": "Structural Engineer"
 },
 {
-"phrase": "telecommunications",
+"phrase": "revit",
 "category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["network telecom", "5g technology"],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "facade design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["building envelope", "cladding systems"],
+"weight": 2.5,
+"suggestion": "bim modeling, families, views",
+"variants": [],
 "field": "Architecture",
 "role": null
 },
 {
-"phrase": "interim valuations",
+"phrase": "sketchup",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["payment certificates", "progress claims"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "conservation biology",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["species conservation", "protected areas"],
-"field": "Environmental Science",
+"suggestion": "3d modeling, extensions, rendering",
+"variants": [],
+"field": "Architecture",
 "role": null
 },
 {
-"phrase": "web mapping",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["leaflet js", "online maps"],
-"field": "Geography",
-"role": "GIS"
-},
-{
-"phrase": "reinforcement learning",
+"phrase": "solidworks",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["rl algorithms", "q-learning"],
-"field": "Data Science",
-"role": "ML"
+"suggestion": "parts, assemblies, drawings",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
 },
 {
-"phrase": "enzyme",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["js testing framework", "react enzyme"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "fastapi",
+"phrase": "catia",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["python api", "async api"],
-"field": "Software Engineering",
-"role": "Backend"
+"suggestion": "surfacing, kinematics, drafting",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
 },
 {
-"phrase": "mlflow",
+"phrase": "labview",
 "category": "good",
 "weight": 2.5,
-"suggestion": null,
-"variants": ["ml tracking", "experiment management"],
-"field": "Data Science",
-"role": "MLOps"
-},
-{
-"phrase": "vpn configuration",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["virtual private network", "openvpn"],
-"field": "Cybersecurity",
+"suggestion": "vi, data acquisition, control",
+"variants": [],
+"field": "Electrical Engineering",
 "role": null
 },
 {
-"phrase": "looker",
+"phrase": "pspice",
 "category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["data exploration", "bi tool"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "zephyr",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["test management tool", "jira zephyr"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "reconciliations",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["bank reconciliations", "account recs"],
-"field": "Accounting",
+"weight": 2.3,
+"suggestion": "circuit simulation, analysis, schematics",
+"variants": [],
+"field": "Electrical Engineering",
 "role": null
 },
 {
-"phrase": "quantitative analysis",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["quant modeling", "monte carlo"],
-"field": "Finance",
-"role": "Analyst"
-},
-{
-"phrase": "wto regulations",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["trade agreements", "gatt"],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "servicenow",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["itsm tool", "incident management"],
-"field": "DevOps",
-"role": null
-},
-{
-"phrase": "canva",
+"phrase": "illustrator",
 "category": "good",
 "weight": 2.0,
-"suggestion": null,
-"variants": ["design tool", "graphic creation"],
-"field": "Marketing",
-"role": "Content"
-},
-{
-"phrase": "adobe premiere",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["video software", "editing suite"],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "environmental law",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["epa regulations", "compliance law"],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "palliative care",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["end of life care", "symptom management"],
-"field": "Medicine",
-"role": "Nursing"
-},
-{
-"phrase": "steam education",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["steam curriculum", "arts integration"],
-"field": "Education",
-"role": null
-},
-{
-"phrase": "art therapy",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["creative therapy", "expressive arts"],
-"field": "Psychology",
-"role": "Assistant"
-},
-{
-"phrase": "motion design",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["after effects", "animation"],
+"suggestion": "vectors, paths, artboards",
+"variants": ["adobe illustrator"],
 "field": "Design",
 "role": null
 },
 {
-"phrase": "routine assistance",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "Add value, e.g., 'provided routine assistance in PR, drafting 10 releases that gained media coverage'.",
-"variants": ["daily support"],
-"field": "Communications",
-"role": "PR"
-},
-{
-"phrase": "entry knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "Build, e.g., 'had entry knowledge in law and researched 5 cases'.",
-"variants": ["basic insight"],
-"field": "Law",
+"phrase": "indesign",
+"category": "good",
+"weight": 2.0,
+"suggestion": "layouts, master pages, typography",
+"variants": ["adobe indesign"],
+"field": "Design",
 "role": null
 },
 {
-"phrase": "minor contributions",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "Highlight, e.g., 'made minor contributions to code but fixed 10 bugs'.",
-"variants": ["small inputs"],
+"phrase": "spss",
+"category": "good",
+"weight": 2.2,
+"suggestion": "data entry, analysis, output",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "arcgis",
+"category": "good",
+"weight": 2.5,
+"suggestion": "layers, geoprocessing, maps",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "google analytics",
+"category": "good",
+"weight": 2.2,
+"suggestion": "traffic, conversions, reports",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "hubspot",
+"category": "good",
+"weight": 2.0,
+"suggestion": "crm, inbound, automation",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "sap",
+"category": "good",
+"weight": 2.5,
+"suggestion": "modules, erp, transactions",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "quickbooks",
+"category": "good",
+"weight": 2.0,
+"suggestion": "bookkeeping, invoices, reports",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "cpa",
+"category": "good",
+"weight": 3.0,
+"suggestion": "certified public accountant, auditing, taxation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "cfa",
+"category": "good",
+"weight": 3.0,
+"suggestion": "chartered financial analyst, investments, ethics",
+"variants": [],
+"field": "Accounting & Finance",
+"role": "Analyst"
+},
+{
+"phrase": "pmp",
+"category": "good",
+"weight": 3.0,
+"suggestion": "project management professional, processes, certification",
+"variants": [],
+"field": null,
+"role": "Project Manager"
+},
+{
+"phrase": "six sigma",
+"category": "good",
+"weight": 2.5,
+"suggestion": "dmaic, black belt, process improvement",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "lean manufacturing",
+"category": "good",
+"weight": 2.3,
+"suggestion": "waste reduction, value stream, kaizen",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "iso 9001",
+"category": "good",
+"weight": 2.5,
+"suggestion": "quality management, standards, certification",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "gdpr",
+"category": "good",
+"weight": 2.5,
+"suggestion": "data protection, compliance, privacy",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "hipaa",
+"category": "good",
+"weight": 2.5,
+"suggestion": "health privacy, security, compliance",
+"variants": [],
+"field": "Medicine",
+"role": null
+},
+{
+"phrase": "os ha",
+"category": "good",
+"weight": 2.3,
+"suggestion": "safety standards, training, inspections",
+"variants": ["osha"],
+"field": "Civil Engineering",
+"role": "Site Engineer"
+},
+{
+"phrase": "eurocode",
+"category": "good",
+"weight": 2.8,
+"suggestion": "design standards, structural, loading",
+"variants": ["eurocodes"],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "bs 8110",
+"category": "good",
+"weight": 2.5,
+"suggestion": "concrete design, british standard, reinforcement",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "ieee standards",
+"category": "good",
+"weight": 2.5,
+"suggestion": "electrical, networking, protocols",
+"variants": ["ieee"],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "asme codes",
+"category": "good",
+"weight": 2.5,
+"suggestion": "mechanical, pressure vessels, boilers",
+"variants": ["asme"],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "breeam",
+"category": "good",
+"weight": 2.5,
+"suggestion": "sustainability assessment, building rating, environmental",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "c++",
+"category": "good",
+"weight": 2.5,
+"suggestion": "oop, pointers, stl",
+"variants": ["cpp"],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "swift",
+"category": "good",
+"weight": 2.5,
+"suggestion": "ios development, optionals, protocols",
+"variants": [],
 "field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "kotlin",
+"category": "good",
+"weight": 2.5,
+"suggestion": "android development, null safety, coroutines",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "flutter",
+"category": "good",
+"weight": 2.5,
+"suggestion": "dart, widgets, cross platform",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "react native",
+"category": "good",
+"weight": 2.5,
+"suggestion": "mobile apps, components, expo",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "jenkins",
+"category": "good",
+"weight": 2.5,
+"suggestion": "pipelines, builds, automation",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "terraform",
+"category": "good",
+"weight": 2.5,
+"suggestion": "iac, providers, modules",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "ansible",
+"category": "good",
+"weight": 2.5,
+"suggestion": "playbooks, roles, configuration",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "prometheus",
+"category": "good",
+"weight": 2.3,
+"suggestion": "monitoring, alerts, metrics",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "grafana",
+"category": "good",
+"weight": 2.3,
+"suggestion": "dashboards, visualizations, queries",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "elasticsearch",
+"category": "good",
+"weight": 2.5,
+"suggestion": "search, indexing, kibana",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "kafka",
+"category": "good",
+"weight": 2.5,
+"suggestion": "streams, topics, producers",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "airflow",
+"category": "good",
+"weight": 2.3,
+"suggestion": "dags, workflows, scheduling",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "jupyter",
+"category": "good",
+"weight": 2.0,
+"suggestion": "notebooks, cells, kernels",
+"variants": ["jupyter notebook"],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "seaborn",
+"category": "good",
+"weight": 2.0,
+"suggestion": "plots, visualizations, heatmaps",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "plotly",
+"category": "good",
+"weight": 2.0,
+"suggestion": "interactive charts, dashboards, graphs",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "sas",
+"category": "good",
+"weight": 2.3,
+"suggestion": "data steps, proc, analytics",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "stata",
+"category": "good",
+"weight": 2.2,
+"suggestion": "do files, regression, data management",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "eviews",
+"category": "good",
+"weight": 2.2,
+"suggestion": "econometric modeling, forecasting, time series",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "bloomberg terminal",
+"category": "good",
+"weight": 2.5,
+"suggestion": "financial data, analytics, news",
+"variants": [],
+"field": "Accounting & Finance",
+"role": "Analyst"
+},
+{
+"phrase": "handled tasks",
+"category": "weak",
+"suggestion": "managed projects, executed duties, coordinated activities",
+"variants": ["managed tasks"],
+"field": null,
+"role": null
+},
+{
+"phrase": "did work",
+"category": "weak",
+"suggestion": "performed analysis, conducted research, developed solutions",
+"variants": ["performed work"],
+"field": null,
+"role": null
+},
+{
+"phrase": "things like",
+"category": "weak",
+"suggestion": "such as, including, for example",
+"variants": ["stuff like"],
+"field": null,
+"role": null
+},
+{
+"phrase": "pretty good",
+"category": "weak",
+"suggestion": "highly proficient, very skilled, excellently performed",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "fairly",
+"category": "weak",
+"suggestion": "moderately, reasonably, adequately",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "more or less",
+"category": "weak",
+"suggestion": "essentially, basically, roughly",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "to some extent",
+"category": "weak",
+"suggestion": "partially, somewhat, in part",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "not bad",
+"category": "weak",
+"suggestion": "competent, capable, proficient",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "okay at",
+"category": "weak",
+"suggestion": "adept at, skilled in, good at",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "seasoned professional",
+"category": "bad",
+"suggestion": "experienced expert, veteran specialist, accomplished practitioner",
+"variants": [],
+"field": null,
 "role": null
 },
 {
 "phrase": "highly motivated",
 "category": "bad",
-"weight": -1.8,
-"suggestion": "Show, e.g., 'highly motivated to complete certification, applying skills in project'.",
-"variants": ["very driven"],
+"suggestion": "driven individual, ambitious worker, enthusiastic contributor",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "exceptional talent",
+"phrase": "excellent communicator",
+"category": "bad",
+"suggestion": "strong speaker, clear writer, effective presenter",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "proven track record",
+"category": "bad",
+"suggestion": "demonstrated success, established achievements, consistent performance",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "strong work ethic",
+"category": "bad",
+"suggestion": "diligent approach, committed attitude, reliable performance",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "attention to detail",
+"category": "bad",
+"suggestion": "precision focused, accuracy oriented, thorough examination",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "ability to work under pressure",
+"category": "bad",
+"suggestion": "thrives in deadlines, handles stress, performs in high stakes",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "self starter",
+"category": "bad",
+"suggestion": "initiative taker, autonomous worker, proactive initiator",
+"variants": ["self-starter"],
+"field": null,
+"role": null
+},
+{
+"phrase": "fast paced environment",
+"category": "bad",
+"suggestion": "dynamic setting, high energy workplace, rapid development",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "outside the box thinker",
+"category": "bad",
+"suggestion": "creative innovator, unconventional problem solver, original thinker",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "perfectionist",
 "category": "bad",
 "weight": -2.5,
-"suggestion": "Prove talent, e.g., 'demonstrated exceptional talent in design by winning award'.",
-"variants": ["gifted"],
+"suggestion": "high standards, quality focused, excellence driven",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "super achiever",
+"phrase": "overachiever",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "high performer, goal surpasser, excellence achiever",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "workaholic",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "dedicated worker, committed professional, tireless contributor",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "visionary",
 "category": "bad",
 "weight": -2.5,
-"suggestion": "List achievements, e.g., 'achieved top sales with 150% quota met'.",
-"variants": ["overachiever"],
+"suggestion": "forward thinker, strategic planner, innovative leader",
+"variants": [],
 "field": null,
 "role": null
 },
 {
-"phrase": "seismic design",
-"category": "good",
-"weight": 2.8,
-"suggestion": null,
-"variants": ["earthquake engineering", "response spectrum"],
-"field": "Structural Engineering",
+"phrase": "game changer",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "transformative influence, disruptive innovator, paradigm shifter",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "heat exchangers",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["thermal transfer", "shell tube"],
-"field": "Mechanical Engineering",
+"phrase": "disruptor",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "innovator, challenger, revolutionary",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "analog circuits",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["op amps", "transistor circuits"],
-"field": "Electrical Engineering",
+"phrase": "thought leader",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "industry expert, influential thinker, knowledge pioneer",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "interior design",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["space planning", "furniture layout"],
-"field": "Architecture",
+"phrase": "influencer",
+"category": "bad",
+"weight": -2.0,
+"suggestion": "opinion shaper, trend setter, authority figure",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "final accounts",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["project closeout", "retention release"],
-"field": "Construction",
-"role": "Quantity Surveyor"
-},
-{
-"phrase": "ecotoxicology",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["toxic effects", "pollutant impact"],
-"field": "Environmental Science",
+"phrase": "maverick",
+"category": "bad",
+"weight": -2.5,
+"suggestion": "independent thinker, unconventional, rebel",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "geocoding",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["address to coordinates", "reverse geocoding"],
-"field": "Geography",
-"role": "GIS"
+"phrase": "unicorn",
+"category": "bad",
+"weight": -3.0,
+"suggestion": "rare talent, exceptional individual, unique asset",
+"variants": [],
+"field": null,
+"role": null
 },
 {
-"phrase": "edge computing",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["distributed computing", "iot edge"],
+"phrase": "assisted with",
+"category": "weak",
+"weight": 0.8,
+"suggestion": "supported in, helped on, contributed to",
+"variants": ["helped with"],
+"field": null,
+"role": null
+},
+{
+"phrase": "tasked with",
+"category": "weak",
+"weight": 0.8,
+"suggestion": "assigned to, responsible for, charged with",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "duties included",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "responsibilities encompassed, roles involved, functions performed",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "roles included",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "positions held, jobs performed, tasks undertaken",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "experience in",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "proficiency in, expertise with, skills at",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "knowledgeable in",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "expert in, skilled in, versed in",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "comfortable with",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "adept with, proficient with, experienced with",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "accustomed to",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "familiar with, used to, habituated to",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "capable of",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "able to, skilled at, competent in",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "able to",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "can, proficient to, qualified to",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "interested in",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "passionate about, keen on, enthusiastic for",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "looking for",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "seeking, pursuing, aiming for",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "seeking opportunity",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "pursuing role, aiming for position, targeting job",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "entry level",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "junior position, starting role, beginner level",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "willing to learn",
+"category": "weak",
+"weight": 0.5,
+"suggestion": "eager to develop, ready to train, open to growth",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "open to",
+"category": "weak",
+"weight": 0.6,
+"suggestion": "receptive to, available for, interested in",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "flexible",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "adaptable, versatile, adjustable",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "adaptable",
+"category": "weak",
+"weight": 0.7,
+"suggestion": "flexible, versatile, adjustable",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "reliable worker",
+"category": "bad",
+"suggestion": "dependable employee, consistent performer, trustworthy team member",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "loyal",
+"category": "bad",
+"suggestion": "committed, dedicated, faithful",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "punctual",
+"category": "bad",
+"suggestion": "on time, timely, prompt",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "honest",
+"category": "bad",
+"suggestion": "integrity, truthful, ethical",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "friendly",
+"category": "bad",
+"suggestion": "amiable, approachable, sociable",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "positive attitude",
+"category": "bad",
+"suggestion": "optimistic outlook, upbeat demeanor, constructive mindset",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "can do attitude",
+"category": "bad",
+"suggestion": "proactive mindset, willing approach, positive disposition",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "eager to please",
+"category": "bad",
+"suggestion": "service oriented, accommodating, responsive",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "people skills",
+"category": "bad",
+"suggestion": "interpersonal abilities, social competencies, relationship building",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "communication skills",
+"category": "bad",
+"suggestion": "verbal abilities, written proficiency, presentation skills",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "leadership skills",
+"category": "bad",
+"suggestion": "management abilities, guidance competencies, direction providing",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "organizational skills",
+"category": "bad",
+"suggestion": "planning abilities, structuring competencies, coordination skills",
+"variants": ["organisational skills"],
+"field": null,
+"role": null
+},
+{
+"phrase": "analytical skills",
+"category": "bad",
+"suggestion": "problem solving abilities, data interpretation, critical thinking",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "time management",
+"category": "bad",
+"suggestion": "prioritization, scheduling, efficiency",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "multitasking",
+"category": "bad",
+"suggestion": "handling multiple tasks, juggling priorities, concurrent management",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "customer service",
+"category": "weak",
+"weight": 1.0,
+"suggestion": "client support, service delivery, satisfaction management",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "sales skills",
+"category": "weak",
+"suggestion": "selling abilities, negotiation competencies, closing techniques",
+"variants": [],
+"field": null,
+"role": null
+},
+{
+"phrase": "marketing skills",
+"category": "weak",
+"suggestion": "promotion abilities, strategy development, campaign management",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "design skills",
+"category": "weak",
+"suggestion": "creative abilities, technical proficiency, conceptual thinking",
+"variants": [],
+"field": "Design",
+"role": null
+},
+{
+"phrase": "programming skills",
+"category": "weak",
+"suggestion": "coding proficiency, algorithm development, debugging abilities",
+"variants": [],
 "field": "Computer Science",
 "role": null
 },
 {
-"phrase": "redux",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["state management", "react redux"],
-"field": "Software Engineering",
-"role": "Frontend"
-},
-{
-"phrase": "flask",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["python web framework", "microservices"],
-"field": "Software Engineering",
-"role": "Backend"
-},
-{
-"phrase": "dvc",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["data version control", "ml versioning"],
-"field": "Data Science",
-"role": "MLOps"
-},
-{
-"phrase": "zero trust",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["zero trust architecture", "security model"],
-"field": "Cybersecurity",
+"phrase": "research skills",
+"category": "weak",
+"suggestion": "investigative abilities, data collection, analysis proficiency",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "alteryx",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["data blending", "analytics workflow"],
-"field": "Data Science",
-"role": "Analytics"
-},
-{
-"phrase": "qtest",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["test tool", "quality management"],
-"field": "QA",
-"role": "Testing"
-},
-{
-"phrase": "accruals",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["expense accruals", "revenue recognition"],
-"field": "Accounting",
+"phrase": "writing skills",
+"category": "weak",
+"suggestion": "composition abilities, editing proficiency, content creation",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "swaps",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["interest rate swaps", "derivatives"],
-"field": "Finance",
-"role": "IB"
-},
-{
-"phrase": "dsge models",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["dynamic stochastic general equilibrium", "macro models"],
-"field": "Economics",
+"phrase": "presentation skills",
+"category": "weak",
+"suggestion": "public speaking, slide design, audience engagement",
+"variants": [],
+"field": null,
 "role": null
 },
 {
-"phrase": "zapier",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["automation tool", "workflow integration"],
-"field": "Business",
-"role": "Operations"
-},
-{
-"phrase": "moz",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["seo software", "domain authority"],
-"field": "Marketing",
-"role": "SEO"
-},
-{
-"phrase": "indesign",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["adobe indesign", "layout software"],
-"field": "Communications",
+"phrase": "teaching skills",
+"category": "weak",
+"suggestion": "instructional abilities, classroom management, curriculum development",
+"variants": [],
+"field": "Education",
 "role": null
 },
 {
-"phrase": "corporate law",
-"category": "good",
-"weight": 2.2,
-"suggestion": null,
-"variants": ["company law", "mergers acquisitions"],
-"field": "Law",
-"role": "Paralegal"
-},
-{
-"phrase": "oncology",
-"category": "good",
-"weight": 2.5,
-"suggestion": null,
-"variants": ["cancer care", "chemotherapy"],
+"phrase": "clinical skills",
+"category": "weak",
+"suggestion": "medical procedures, patient assessment, diagnostic abilities",
+"variants": [],
 "field": "Medicine",
 "role": null
 },
 {
-"phrase": "flipped classroom",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["inverted learning", "student-led"],
-"field": "Education",
-"role": "Tutor"
+"phrase": "legal skills",
+"category": "weak",
+"suggestion": "litigation abilities, contract drafting, research proficiency",
+"variants": [],
+"field": "Law",
+"role": null
 },
 {
-"phrase": "play therapy",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["child therapy", "therapeutic play"],
+"phrase": "engineering skills",
+"category": "weak",
+"suggestion": "technical design, problem solving, project execution",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "scientific skills",
+"category": "weak",
+"suggestion": "experimental methods, data interpretation, hypothesis testing",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "mathematical skills",
+"category": "weak",
+"suggestion": "calculations, modeling, proof writing",
+"variants": [],
+"field": "Mathematics",
+"role": null
+},
+{
+"phrase": "language skills",
+"category": "weak",
+"suggestion": "fluency, translation, interpretation",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical analysis skills",
+"category": "weak",
+"suggestion": "source evaluation, contextual understanding, narrative construction",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical reasoning",
+"category": "weak",
+"suggestion": "argument construction, ethical evaluation, logical deduction",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical mapping",
+"category": "weak",
+"suggestion": "spatial analysis, cartographic design, gis application",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental assessment",
+"category": "weak",
+"suggestion": "impact evaluation, sustainability planning, resource management",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological counseling",
+"category": "weak",
+"suggestion": "therapy techniques, client interaction, mental health support",
+"variants": [],
 "field": "Psychology",
-"role": "Assistant"
+"role": null
 },
 {
-"phrase": "icon design",
-"category": "good",
-"weight": 2.0,
-"suggestion": null,
-"variants": ["app icons", "vector icons"],
-"field": "Design",
-"role": "UX"
+"phrase": "political analysis",
+"category": "weak",
+"suggestion": "policy evaluation, international relations, governance studies",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing care",
+"category": "weak",
+"suggestion": "patient monitoring, medication administration, health promotion",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological experimentation",
+"category": "weak",
+"suggestion": "lab techniques, data collection, hypothesis testing",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical synthesis",
+"category": "weak",
+"suggestion": "reaction planning, compound isolation, purity analysis",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical experimentation",
+"category": "weak",
+"suggestion": "measurement techniques, data recording, theoretical validation",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural drafting",
+"category": "weak",
+"suggestion": "blueprint creation, cad modeling, site planning",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil construction",
+"category": "weak",
+"suggestion": "project oversight, material selection, safety compliance",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical design",
+"category": "weak",
+"suggestion": "prototype development, stress analysis, assembly integration",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical circuitry",
+"category": "weak",
+"suggestion": "wiring diagrams, component selection, power distribution",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software development",
+"category": "weak",
+"suggestion": "code writing, testing, deployment",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data processing",
+"category": "weak",
+"suggestion": "cleaning, transformation, visualization",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing algorithms",
+"category": "weak",
+"suggestion": "complexity analysis, implementation, optimization",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial reporting",
+"category": "weak",
+"suggestion": "statement preparation, audit coordination, compliance checking",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic modeling",
+"category": "weak",
+"suggestion": "forecasting, simulation, policy analysis",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business strategy",
+"category": "weak",
+"suggestion": "planning, execution, evaluation",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications planning",
+"category": "weak",
+"suggestion": "message development, channel selection, audience targeting",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing campaigns",
+"category": "weak",
+"suggestion": "strategy creation, execution, performance tracking",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational instruction",
+"category": "weak",
+"suggestion": "lesson delivery, student engagement, assessment design",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language teaching",
+"category": "weak",
+"suggestion": "grammar instruction, vocabulary building, conversation practice",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical research",
+"category": "weak",
+"suggestion": "archive exploration, source criticism, timeline construction",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical debate",
+"category": "weak",
+"suggestion": "argument presentation, counterpoint analysis, conclusion drawing",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geospatial analysis",
+"category": "weak",
+"suggestion": "data layering, pattern identification, report generation",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental monitoring",
+"category": "weak",
+"suggestion": "data collection, trend analysis, policy recommendation",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological testing",
+"category": "weak",
+"suggestion": "assessment administration, result interpretation, report writing",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political campaigning",
+"category": "weak",
+"suggestion": "strategy development, voter outreach, event organization",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing assessment",
+"category": "weak",
+"suggestion": "vital signs checking, history taking, care planning",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological sampling",
+"category": "weak",
+"suggestion": "specimen collection, lab analysis, data recording",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical analysis",
+"category": "weak",
+"suggestion": "sample preparation, instrument operation, result interpretation",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical measurement",
+"category": "weak",
+"suggestion": "instrument calibration, data acquisition, error analysis",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural planning",
+"category": "weak",
+"suggestion": "concept development, space allocation, regulatory compliance",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil design",
+"category": "weak",
+"suggestion": "structure calculation, material specification, construction drawing",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical assembly",
+"category": "weak",
+"suggestion": "part fabrication, system integration, testing procedures",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical installation",
+"category": "weak",
+"suggestion": "wiring setup, component mounting, safety checking",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software testing",
+"category": "weak",
+"suggestion": "bug identification, test case creation, regression analysis",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data modeling",
+"category": "weak",
+"suggestion": "schema design, relationship definition, query optimization",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing networking",
+"category": "weak",
+"suggestion": "protocol configuration, hardware setup, security implementation",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial auditing",
+"category": "weak",
+"suggestion": "record examination, compliance verification, report preparation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic forecasting",
+"category": "weak",
+"suggestion": "trend analysis, model building, scenario planning",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business operations",
+"category": "weak",
+"suggestion": "process management, resource allocation, performance monitoring",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications strategy",
+"category": "weak",
+"suggestion": "message crafting, media selection, stakeholder engagement",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing analysis",
+"category": "weak",
+"suggestion": "market research, competitor assessment, consumer insights",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational planning",
+"category": "weak",
+"suggestion": "curriculum design, resource allocation, evaluation methods",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language interpretation",
+"category": "weak",
+"suggestion": "simultaneous translation, cultural adaptation, accuracy ensuring",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical interpretation",
+"category": "weak",
+"suggestion": "event analysis, cultural context, narrative development",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical analysis",
+"category": "weak",
+"suggestion": "concept examination, theory critique, ethical consideration",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical surveying",
+"category": "weak",
+"suggestion": "field mapping, data collection, topographic analysis",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental policy",
+"category": "weak",
+"suggestion": "regulation development, compliance monitoring, impact assessment",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological research",
+"category": "weak",
+"suggestion": "study design, participant recruitment, data analysis",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political negotiation",
+"category": "weak",
+"suggestion": "diplomacy practice, agreement drafting, conflict resolution",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing intervention",
+"category": "weak",
+"suggestion": "care delivery, patient education, outcome evaluation",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological conservation",
+"category": "weak",
+"suggestion": "species protection, habitat restoration, biodiversity monitoring",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical engineering",
+"category": "weak",
+"suggestion": "process design, reaction optimization, safety protocols",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical simulation",
+"category": "weak",
+"suggestion": "model building, parameter testing, result validation",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural visualization",
+"category": "weak",
+"suggestion": "rendering techniques, 3d modeling, presentation preparation",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil surveying",
+"category": "weak",
+"suggestion": "land measurement, boundary determination, report generation",
+"variants": [],
+"field": "Civil Engineering",
+"role": "Quantity Surveyor"
+},
+{
+"phrase": "mechanical testing",
+"category": "weak",
+"suggestion": "strength evaluation, failure analysis, quality control",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical diagnostics",
+"category": "weak",
+"suggestion": "fault finding, circuit testing, repair planning",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software architecture",
+"category": "weak",
+"suggestion": "system design, component integration, scalability planning",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data warehousing",
+"category": "weak",
+"suggestion": "etl processes, schema design, query performance",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing security",
+"category": "weak",
+"suggestion": "threat assessment, encryption implementation, vulnerability scanning",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial forecasting",
+"category": "weak",
+"suggestion": "budget projection, trend analysis, risk evaluation",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic policy",
+"category": "weak",
+"suggestion": "fiscal planning, monetary strategies, impact assessment",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business development",
+"category": "weak",
+"suggestion": "market expansion, partnership building, revenue generation",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications management",
+"category": "weak",
+"suggestion": "crisis response, media relations, internal messaging",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing promotion",
+"category": "weak",
+"suggestion": "advertising campaigns, brand awareness, sales support",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational assessment",
+"category": "weak",
+"suggestion": "test design, performance evaluation, feedback provision",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language analysis",
+"category": "weak",
+"suggestion": "structural examination, semantic interpretation, pragmatic study",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical documentation",
+"category": "weak",
+"suggestion": "record keeping, artifact preservation, archival organization",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical inquiry",
+"category": "weak",
+"suggestion": "question posing, evidence gathering, conclusion forming",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical research",
+"category": "weak",
+"suggestion": "field studies, data synthesis, report writing",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental conservation",
+"category": "weak",
+"suggestion": "resource protection, ecosystem management, sustainability practices",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological intervention",
+"category": "weak",
+"suggestion": "behavior modification, cognitive restructuring, emotional support",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political strategy",
+"category": "weak",
+"suggestion": "policy formulation, alliance building, public engagement",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing documentation",
+"category": "weak",
+"suggestion": "record maintenance, care logging, report compilation",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological research",
+"category": "weak",
+"suggestion": "experiment design, data analysis, publication preparation",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical research",
+"category": "weak",
+"suggestion": "hypothesis formulation, lab work, findings presentation",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical research",
+"category": "weak",
+"suggestion": "theory development, experimental verification, peer review",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural construction",
+"category": "weak",
+"suggestion": "building supervision, material procurement, quality assurance",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil management",
+"category": "weak",
+"suggestion": "project coordination, team leadership, budget control",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical maintenance",
+"category": "weak",
+"suggestion": "equipment repair, preventive care, performance optimization",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical maintenance",
+"category": "weak",
+"suggestion": "system upkeep, troubleshooting, upgrade implementation",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software maintenance",
+"category": "weak",
+"suggestion": "bug fixing, code refactoring, update deployment",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data security",
+"category": "weak",
+"suggestion": "encryption methods, access control, breach prevention",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing hardware",
+"category": "weak",
+"suggestion": "component assembly, system configuration, performance tuning",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial management",
+"category": "weak",
+"suggestion": "budget oversight, investment planning, cost control",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic analysis",
+"category": "weak",
+"suggestion": "market evaluation, cost benefit, econometric modeling",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business consulting",
+"category": "weak",
+"suggestion": "advice provision, strategy recommendation, implementation support",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications consulting",
+"category": "weak",
+"suggestion": "strategy advising, message refinement, channel optimization",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing consulting",
+"category": "weak",
+"suggestion": "market advice, campaign planning, brand strategy",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational consulting",
+"category": "weak",
+"suggestion": "curriculum advice, teaching improvement, school management",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language consulting",
+"category": "weak",
+"suggestion": "translation advice, cultural guidance, linguistic expertise",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical consulting",
+"category": "weak",
+"suggestion": "archive advice, interpretation guidance, preservation strategies",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical consulting",
+"category": "weak",
+"suggestion": "ethical advice, reasoning guidance, debate facilitation",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical consulting",
+"category": "weak",
+"suggestion": "spatial advice, mapping guidance, location analysis",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental consulting",
+"category": "weak",
+"suggestion": "sustainability advice, impact guidance, policy development",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological consulting",
+"category": "weak",
+"suggestion": "mental health advice, behavior guidance, therapy planning",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political consulting",
+"category": "weak",
+"suggestion": "campaign advice, policy guidance, election strategy",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing consulting",
+"category": "weak",
+"suggestion": "care advice, health guidance, patient management",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological consulting",
+"category": "weak",
+"suggestion": "life science advice, research guidance, experiment design",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical consulting",
+"category": "weak",
+"suggestion": "material advice, reaction guidance, safety protocols",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical consulting",
+"category": "weak",
+"suggestion": "energy advice, motion guidance, force analysis",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural consulting",
+"category": "weak",
+"suggestion": "design advice, building guidance, space planning",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil consulting",
+"category": "weak",
+"suggestion": "infrastructure advice, project guidance, engineering solutions",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical consulting",
+"category": "weak",
+"suggestion": "machine advice, system guidance, design optimization",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical consulting",
+"category": "weak",
+"suggestion": "power advice, circuit guidance, energy efficiency",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software consulting",
+"category": "weak",
+"suggestion": "application advice, development guidance, tech solutions",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data consulting",
+"category": "weak",
+"suggestion": "analytics advice, insight guidance, big data strategies",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing consulting",
+"category": "weak",
+"suggestion": "it advice, network guidance, software recommendations",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial consulting",
+"category": "weak",
+"suggestion": "investment advice, budget guidance, tax planning",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic consulting",
+"category": "weak",
+"suggestion": "market advice, policy guidance, financial modeling",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business administration",
+"category": "weak",
+"suggestion": "management operations, strategy implementation, team coordination",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications coordination",
+"category": "weak",
+"suggestion": "information dissemination, public relations, media handling",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing coordination",
+"category": "weak",
+"suggestion": "promotion activities, market research, sales support",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational coordination",
+"category": "weak",
+"suggestion": "program organization, student support, teacher training",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language coordination",
+"category": "weak",
+"suggestion": "translation management, cultural exchange, linguistic training",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical coordination",
+"category": "weak",
+"suggestion": "event organization, exhibit curation, research collaboration",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical coordination",
+"category": "weak",
+"suggestion": "debate organization, seminar planning, thought leadership",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical coordination",
+"category": "weak",
+"suggestion": "survey organization, data integration, map production",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental coordination",
+"category": "weak",
+"suggestion": "project organization, stakeholder collaboration, sustainability initiatives",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological coordination",
+"category": "weak",
+"suggestion": "therapy organization, group sessions, mental health programs",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political coordination",
+"category": "weak",
+"suggestion": "campaign organization, policy collaboration, voter mobilization",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing coordination",
+"category": "weak",
+"suggestion": "patient organization, staff scheduling, care protocols",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological coordination",
+"category": "weak",
+"suggestion": "lab organization, research collaboration, data sharing",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical coordination",
+"category": "weak",
+"suggestion": "experiment organization, safety compliance, result compilation",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical coordination",
+"category": "weak",
+"suggestion": "lab setup, equipment calibration, experiment execution",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural coordination",
+"category": "weak",
+"suggestion": "project organization, team collaboration, design review",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil coordination",
+"category": "weak",
+"suggestion": "site organization, contractor management, progress monitoring",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical coordination",
+"category": "weak",
+"suggestion": "production organization, quality control, maintenance scheduling",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical coordination",
+"category": "weak",
+"suggestion": "installation organization, testing procedures, system commissioning",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software coordination",
+"category": "weak",
+"suggestion": "development organization, team collaboration, release management",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data coordination",
+"category": "weak",
+"suggestion": "collection organization, analysis collaboration, report distribution",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing coordination",
+"category": "weak",
+"suggestion": "network organization, software deployment, user support",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial coordination",
+"category": "weak",
+"suggestion": "budget organization, expense tracking, financial reporting",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic coordination",
+"category": "weak",
+"suggestion": "policy organization, data collaboration, forecast distribution",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business coordination",
+"category": "weak",
+"suggestion": "operation organization, team collaboration, goal alignment",
+"variants": [],
+"field": "Business Management",
+"role": null
+},
+{
+"phrase": "communications outreach",
+"category": "weak",
+"suggestion": "community engagement, media relations, public awareness",
+"variants": [],
+"field": "Communications",
+"role": null
+},
+{
+"phrase": "marketing outreach",
+"category": "weak",
+"suggestion": "customer engagement, brand promotion, lead generation",
+"variants": [],
+"field": "Marketing",
+"role": null
+},
+{
+"phrase": "educational outreach",
+"category": "weak",
+"suggestion": "community education, program promotion, student recruitment",
+"variants": [],
+"field": "Education",
+"role": null
+},
+{
+"phrase": "language outreach",
+"category": "weak",
+"suggestion": "cultural exchange, language promotion, community immersion",
+"variants": [],
+"field": "Languages",
+"role": null
+},
+{
+"phrase": "historical outreach",
+"category": "weak",
+"suggestion": "public history, exhibit promotion, educational programs",
+"variants": [],
+"field": "History",
+"role": null
+},
+{
+"phrase": "philosophical outreach",
+"category": "weak",
+"suggestion": "public lectures, discussion groups, ethical workshops",
+"variants": [],
+"field": "Philosophy",
+"role": null
+},
+{
+"phrase": "geographical outreach",
+"category": "weak",
+"suggestion": "community mapping, environmental awareness, location education",
+"variants": [],
+"field": "Geography",
+"role": null
+},
+{
+"phrase": "environmental outreach",
+"category": "weak",
+"suggestion": "sustainability education, conservation promotion, community involvement",
+"variants": [],
+"field": "Environmental Science",
+"role": null
+},
+{
+"phrase": "psychological outreach",
+"category": "weak",
+"suggestion": "mental health awareness, support groups, community counseling",
+"variants": [],
+"field": "Psychology",
+"role": null
+},
+{
+"phrase": "political outreach",
+"category": "weak",
+"suggestion": "voter education, policy promotion, community advocacy",
+"variants": [],
+"field": "Politics / International Relations",
+"role": null
+},
+{
+"phrase": "nursing outreach",
+"category": "weak",
+"suggestion": "health education, community clinics, preventive care",
+"variants": [],
+"field": "Nursing",
+"role": null
+},
+{
+"phrase": "biological outreach",
+"category": "weak",
+"suggestion": "science education, biodiversity promotion, lab demonstrations",
+"variants": [],
+"field": "Biology",
+"role": null
+},
+{
+"phrase": "chemical outreach",
+"category": "weak",
+"suggestion": "experiment demonstrations, safety education, material science promotion",
+"variants": [],
+"field": "Chemistry",
+"role": null
+},
+{
+"phrase": "physical outreach",
+"category": "weak",
+"suggestion": "physics demonstrations, science fairs, educational workshops",
+"variants": [],
+"field": "Physics",
+"role": null
+},
+{
+"phrase": "architectural outreach",
+"category": "weak",
+"suggestion": "design workshops, community planning, building tours",
+"variants": [],
+"field": "Architecture",
+"role": null
+},
+{
+"phrase": "civil outreach",
+"category": "weak",
+"suggestion": "infrastructure education, project tours, engineering workshops",
+"variants": [],
+"field": "Civil Engineering",
+"role": null
+},
+{
+"phrase": "mechanical outreach",
+"category": "weak",
+"suggestion": "machine demonstrations, engineering education, innovation workshops",
+"variants": [],
+"field": "Mechanical Engineering",
+"role": null
+},
+{
+"phrase": "electrical outreach",
+"category": "weak",
+"suggestion": "circuit demonstrations, energy education, technology workshops",
+"variants": [],
+"field": "Electrical Engineering",
+"role": null
+},
+{
+"phrase": "software outreach",
+"category": "weak",
+"suggestion": "coding workshops, app development, tech education",
+"variants": [],
+"field": "Software Engineering",
+"role": null
+},
+{
+"phrase": "data outreach",
+"category": "weak",
+"suggestion": "analytics workshops, insight sharing, data literacy",
+"variants": [],
+"field": "Data Science",
+"role": null
+},
+{
+"phrase": "computing outreach",
+"category": "weak",
+"suggestion": "it workshops, network education, software training",
+"variants": [],
+"field": "Computer Science",
+"role": null
+},
+{
+"phrase": "financial outreach",
+"category": "weak",
+"suggestion": "budget workshops, investment education, financial literacy",
+"variants": [],
+"field": "Accounting & Finance",
+"role": null
+},
+{
+"phrase": "economic outreach",
+"category": "weak",
+"suggestion": "market workshops, policy education, economic literacy",
+"variants": [],
+"field": "Economics",
+"role": null
+},
+{
+"phrase": "business outreach",
+"category": "weak",
+"suggestion": "entrepreneurship workshops, strategy education, management training (be more precise unless the job is explicitely mentions business outreach)",
+"variants": [],
+"field": "Business Management",
+"role": null
 }
 ]

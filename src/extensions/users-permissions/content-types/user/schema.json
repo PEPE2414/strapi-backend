@@ -8,9 +8,7 @@
     "pluralName": "users",
     "displayName": "User"
   },
-  "options": {
-    "draftAndPublish": false
-  },
+  "options": { "draftAndPublish": false },
   "pluginOptions": {},
   "attributes": {
     "username": {
@@ -26,10 +24,7 @@
       "configurable": false,
       "required": true
     },
-    "provider": {
-      "type": "string",
-      "configurable": false
-    },
+    "provider": { "type": "string", "configurable": false },
     "password": {
       "type": "password",
       "minLength": 6,
@@ -49,16 +44,8 @@
       "private": true,
       "searchable": false
     },
-    "confirmed": {
-      "type": "boolean",
-      "default": false,
-      "configurable": false
-    },
-    "blocked": {
-      "type": "boolean",
-      "default": false,
-      "configurable": false
-    },
+    "confirmed": { "type": "boolean", "default": false, "configurable": false },
+    "blocked": { "type": "boolean", "default": false, "configurable": false },
     "role": {
       "type": "relation",
       "relation": "manyToOne",
@@ -66,18 +53,24 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "preferredName": {
-      "type": "string"
-    },
-    "university": {
-      "type": "string"
-    },
+    "jobPrefs": { "type": "json", "default": null },
+    "preferredName": { "type": "string" },
+    "university": { "type": "string" },
     "studyField": { "type": "string" },
-    "course": {
-      "type": "string"
-    },
-    "keyStats": {
-      "type": "json"
+    "course": { "type": "string" },
+    "keyStats": { "type": "json" },
+    "plan": { "type": "string" },
+    "packages": { "type": "json", "default": [] },
+    "addons": { "type": "json", "default": [] },
+    "weeklyGoal": { "type": "integer", "default": 12 },
+    
+    "coverLetterPoints": { "type": "json", "default": [] },
+    
+    "cvFile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["files"],
+      "required": false
     }
   }
 }

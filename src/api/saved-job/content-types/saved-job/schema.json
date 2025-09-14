@@ -1,0 +1,29 @@
+{
+  "collectionName": "saved_jobs",
+  "info": {
+    "singularName": "saved-job",
+    "pluralName": "saved-jobs",
+    "displayName": "Saved Job",
+    "description": "User-saved jobs denormalised from Job Library"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-type-builder": { "visible": true }
+  },
+  "attributes": {
+    "jobId": { "type": "string", "required": true },
+    "title": { "type": "string", "required": true },
+    "company": { "type": "string", "required": true },
+    "link": { "type": "string" },
+    "deadline": { "type": "date" },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    }
+  }
+}
