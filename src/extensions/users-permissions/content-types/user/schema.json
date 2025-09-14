@@ -62,7 +62,9 @@
     "plan": { "type": "string" },
     "packages": { "type": "json", "default": [] },
     "addons": { "type": "json", "default": [] },
-    "weeklyGoal": { "type": "integer", "default": 12 }
+    "weeklyGoal": { "type": "integer", "default": 12 },
+    
+    "coverLetterPoints": { "type": "json", "default": [] },
     
     "cvFile": {
       "type": "media",
