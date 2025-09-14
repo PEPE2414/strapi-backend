@@ -5,12 +5,32 @@ export default {
       method: 'PUT',
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',
-      // Make it public at the router level; we verify JWT inside the controller.
+      // Keep this public; the controller self-verifies JWT
       config: {
         auth: false,
         policies: [],
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/profile/cv',
+      handler: 'api::profile.profile.getCv',
+      config: {
+        auth: true,
+        policies: ['global::is-authenticated'],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/profile/cv',
+      handler: 'api::profile.profile.setCv',
+      config: {
+        auth: true,
+        policies: ['global::is-authenticated'],
+        middlewares: [],
+      },
+    }
   ],
 };
