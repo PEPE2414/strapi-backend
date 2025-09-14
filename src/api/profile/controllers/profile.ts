@@ -62,6 +62,21 @@ export default ({ strapi }: { strapi: any }) => ({
         }
       }
 
+      // coverLetterPoints -> ensure array of non-empty strings
+      if (data.coverLetterPoints !== undefined) {
+        let pts = data.coverLetterPoints;
+        if (typeof pts === 'string') {
+          // backward-compat: allow newline-separated string
+          pts = pts.split('\n').map((s: string) => s.trim()).filter(Boolean);
+        }
+        if (!Array.isArray(pts)) {
+          pts = [];
+        } else {
+          pts = pts.map((s: any) => String(s || '').trim()).filter((s: string) => s.length > 0);
+        }
+        data.coverLetterPoints = pts;
+      }
+            
       // 4) Try entityService first
       try {
         const updated = await strapi.entityService.update(
