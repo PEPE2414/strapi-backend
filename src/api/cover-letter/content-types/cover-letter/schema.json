@@ -18,12 +18,6 @@
       "default": "manual",
       "required": true
     },
-    "coverLetters": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::cover-letter.cover-letter",
-      "mappedBy": "user"
-    },
     "status": {
       "type": "enumeration",
       "enum": ["pending", "ready", "failed"],
