@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cover_letters",
+  "info": {
+    "singularName": "cover-letter",
+    "pluralName": "cover-letters",
+    "displayName": "Cover Letter",
+    "description": "User-requested cover letters and their generation status"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "company": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true },
+    "source": {
+      "type": "enumeration",
+      "enum": ["saved-job", "manual"],
+      "default": "manual",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "ready", "failed"],
+      "default": "pending",
+      "required": true
+    },
+    "savedJobId": { "type": "string" },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["files"]
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "coverLetters"
+    }
+  }
+}
