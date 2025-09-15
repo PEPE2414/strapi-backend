@@ -63,6 +63,13 @@
     "packages": { "type": "json", "default": [] },
     "addons": { "type": "json", "default": [] },
     "weeklyGoal": { "type": "integer", "default": 12 },
+
+    "coverLetters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::cover-letter.cover-letter",
+      "mappedBy": "user"
+    },
     
     "coverLetterPoints": { "type": "json", "default": [] },
     
