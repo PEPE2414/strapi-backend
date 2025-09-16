@@ -127,6 +127,32 @@ export default ({ strapi }: { strapi: any }) => ({
         populate: { cvFile: true },
       });
 
+       // --- NEW: extract text from the CV and store on user ---
+      try {
+        const res = await fetch(f.url);
+        const buf = Buffer.from(await res.arrayBuffer());
+
+        let cvText = '';
+        if (f.mime === 'application/pdf') {
+          const pdfParse = (await import('pdf-parse')).default as any;
+          const out = await pdfParse(buf);
+          cvText = (out?.text || '').trim();
+        } else if (f.mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const mammoth = (await import('mammoth')).default as any;
+          const out = await mammoth.extractRawText({ buffer: buf });
+          cvText = (out?.value || '').trim();
+        } else {
+          // .doc or other types – skip or convert later
+          cvText = '';
+        }
+
+        await strapi.entityService.update('plugin::users-permissions.user', userId, {
+          data: { cvText },
+        });
+      } catch (ex) {
+        strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
+      }
+      
       ctx.body = { data: sanitizeFile(me?.cvFile) };
     } catch (e: any) {
       console.error('[profile:getCv] unexpected error:', e?.message || e);
