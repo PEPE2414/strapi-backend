@@ -78,6 +78,7 @@
       "multiple": false,
       "allowedTypes": ["files"],
       "required": false
-    }
+    },
+    "cvText": { "type": "text" }
   }
 }
