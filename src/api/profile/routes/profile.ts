@@ -13,22 +13,11 @@ export default {
       },
     },
     {
-      method: 'GET',
-      path: '/profile/cv',
-      handler: 'api::profile.profile.getCv',
-      config: {
-        policies: ['global::is-authenticated'],
-        middlewares: [],
-      },
-    },
-    {
       method: 'POST',
       path: '/profile/cv',
-      handler: 'api::profile.profile.setCv',
-      config: {
-        policies: ['global::is-authenticated'],
-        middlewares: [],
-      },
-    }
+      handler: 'api::profile.profile.linkCv',
+      // Public route; controller verifies JWT itself
+      config: { policies: [], middlewares: [] },
+    },
   ],
 };
