@@ -192,11 +192,13 @@ export default ({ strapi }: { strapi: any }) => ({
       
         let cvText = '';
         if (f.mime === 'application/pdf') {
-          const pdfParse = (await import('pdf-parse')).default as any;
+          const pdfMod = await import('pdf-parse');
+          const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
           const out = await pdfParse(buf);
           cvText = (out?.text || '').trim();
         } else if (f.mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-          const mammoth = (await import('mammoth')).default as any;
+          const mmMod = await import('mammoth');
+          const mammoth: any = (mmMod as any).default || (mmMod as any);
           const out = await mammoth.extractRawText({ buffer: buf });
           cvText = (out?.value || '').trim();
         }
