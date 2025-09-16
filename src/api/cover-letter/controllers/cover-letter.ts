@@ -102,6 +102,7 @@ export default {
             // optional extras for your flow:
             cvUrl: me?.cvFile?.url || null,
             points: Array.isArray(me?.coverLetterPoints) ? me.coverLetterPoints : [],
+            cvText: me?.cvText || null,
           }),
         });
       } catch (e) {
