@@ -5,18 +5,21 @@ export default {
       method: 'PUT',
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',
-      // Keep this public; the controller self-verifies JWT
-      config: {
-        auth: false,
-        policies: [],
-        middlewares: [],
-      },
+      // Public; controller verifies JWT
+      config: { policies: [], middlewares: [] },
+    },
+    {
+      method: 'GET',
+      path: '/profile/cv',
+      handler: 'api::profile.profile.getCv',
+      // Public; controller verifies JWT
+      config: { policies: [], middlewares: [] },
     },
     {
       method: 'POST',
       path: '/profile/cv',
       handler: 'api::profile.profile.linkCv',
-      // Public route; controller verifies JWT itself
+      // Public; controller verifies JWT
       config: { policies: [], middlewares: [] },
     },
   ],
