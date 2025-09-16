@@ -106,13 +106,13 @@ export default ({ strapi }: { strapi: any }) => ({
     }
   },
 
-  // ====== NEW: get current CV ======
+   // ====== Get current CV (no extraction here) ======
   async getCv(ctx: any) {
     try {
       const auth = ctx.request?.header?.authorization || '';
       const m = auth.match(/^Bearer\s+(.+)$/i);
       if (!m) return ctx.unauthorized('Missing Authorization');
-
+  
       let payload: any;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
@@ -122,37 +122,11 @@ export default ({ strapi }: { strapi: any }) => ({
       }
       const userId = payload?.id;
       if (!userId) return ctx.unauthorized('Invalid token payload');
-
+  
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { cvFile: true },
       });
-
-       // --- NEW: extract text from the CV and store on user ---
-      try {
-        const res = await fetch(f.url);
-        const buf = Buffer.from(await res.arrayBuffer());
-
-        let cvText = '';
-        if (f.mime === 'application/pdf') {
-          const pdfParse = (await import('pdf-parse')).default as any;
-          const out = await pdfParse(buf);
-          cvText = (out?.text || '').trim();
-        } else if (f.mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-          const mammoth = (await import('mammoth')).default as any;
-          const out = await mammoth.extractRawText({ buffer: buf });
-          cvText = (out?.value || '').trim();
-        } else {
-          // .doc or other types – skip or convert later
-          cvText = '';
-        }
-
-        await strapi.entityService.update('plugin::users-permissions.user', userId, {
-          data: { cvText },
-        });
-      } catch (ex) {
-        strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
-      }
-      
+  
       ctx.body = { data: sanitizeFile(me?.cvFile) };
     } catch (e: any) {
       console.error('[profile:getCv] unexpected error:', e?.message || e);
@@ -211,6 +185,29 @@ export default ({ strapi }: { strapi: any }) => ({
           .update({ where: { id: userId }, data: { cvFile: fileId } });
       }
 
+      // --- Extract text and store on user (PDF/DOCX only) ---
+      try {
+        const res = await fetch(f.url);
+        const buf = Buffer.from(await res.arrayBuffer());
+      
+        let cvText = '';
+        if (f.mime === 'application/pdf') {
+          const pdfParse = (await import('pdf-parse')).default as any;
+          const out = await pdfParse(buf);
+          cvText = (out?.text || '').trim();
+        } else if (f.mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const mammoth = (await import('mammoth')).default as any;
+          const out = await mammoth.extractRawText({ buffer: buf });
+          cvText = (out?.value || '').trim();
+        }
+      
+        await strapi.entityService.update('plugin::users-permissions.user', userId, {
+          data: { cvText },
+        });
+      } catch (ex) {
+        strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
+      }
+      
       // 4) Return minimal file payload to FE
       ctx.body = {
         data: {
