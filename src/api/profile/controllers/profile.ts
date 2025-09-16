@@ -118,6 +118,71 @@ export default ({ strapi }: { strapi: any }) => ({
     ctx.body = { data: sanitizeFile(me?.cvFile) };
   },
 
+  async linkCv(ctx: any) {
+    try {
+      // Verify Bearer token (route will be public; we self-auth here)
+      const auth = ctx.request?.header?.authorization || '';
+      const m = auth.match(/^Bearer\s+(.+)$/i);
+      const allowed = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
+      if (!allowed.includes(f.mime)) {
+        return ctx.badRequest('Unsupported CV type. Please upload a PDF or Word document.');
+      }
+      if (!m) return ctx.unauthorized('Missing Authorization');
+
+      let payload: any;
+      try {
+        payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
+      } catch (e) {
+        console.error('[profile:cv] JWT verify failed:', e);
+        return ctx.unauthorized('Invalid token');
+      }
+      const userId = payload?.id;
+      if (!userId) return ctx.unauthorized('Invalid token payload');
+
+      const body = ctx.request.body || {};
+      const fileId = Number(body?.fileId);
+      if (!fileId) return ctx.badRequest('fileId is required');
+
+      // Validate the file exists
+      const f = await strapi.entityService.findOne('plugin::upload.file', fileId);
+      if (!f) return ctx.badRequest('fileId not found');
+
+      // Link to the user
+      let updated: any;
+      try {
+        updated = await strapi.entityService.update(
+          'plugin::users-permissions.user',
+          userId,
+          { data: { cvFile: fileId } }
+        );
+      } catch (err: any) {
+        console.error('[profile:cv] entityService.update failed:', err?.message || err);
+        // low-level fallback
+        updated = await strapi.db
+          .query('plugin::users-permissions.user')
+          .update({ where: { id: userId }, data: { cvFile: fileId } });
+      }
+
+      // Return a minimal file payload for the FE to show
+      ctx.body = {
+        data: {
+          id: f.id,
+          name: f.name,
+          url: f.url,
+          size: f.size,
+          updatedAt: f.updatedAt,
+        },
+      };
+    } catch (e: any) {
+      console.error('[profile:cv] unexpected error:', e?.message || e);
+      ctx.throw(500, 'CV link failed');
+    }
+  },
+  
   // ====== NEW: set/replace current CV (expects { fileId }) ======
   async setCv(ctx: any) {
     const user = ctx.state.user;
