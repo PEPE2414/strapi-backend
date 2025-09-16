@@ -8,7 +8,7 @@ function toData(entity: any) {
 export default {
 
   async find(ctx: any) {
-    const userId = ctx.state?.jwtUserId;
+    const userId = ctx.state?.user?.id ?? ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const pagination = (ctx.query?.pagination || {}) as any;
@@ -45,7 +45,7 @@ export default {
   },
 
   async findOne(ctx: any) {
-    const userId = ctx.state?.jwtUserId;
+    const userId = ctx.state?.user?.id ?? ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
@@ -58,7 +58,7 @@ export default {
   },
 
   async create(ctx: any) {
-    const userId = ctx.state?.jwtUserId;
+    const userId = ctx.state?.user?.id ?? ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const body = (ctx.request.body?.data || ctx.request.body || {}) as any;
@@ -71,7 +71,7 @@ export default {
   },
 
   async update(ctx: any) {
-    const userId = ctx.state?.jwtUserId;
+    const userId = ctx.state?.user?.id ?? ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
@@ -93,7 +93,7 @@ export default {
   },
 
   async delete(ctx: any) {
-    const userId = ctx.state?.jwtUserId;
+    const userId = ctx.state?.user?.id ?? ctx.state?.jwtUserId;
     if (!userId) return ctx.unauthorized();
 
     const id = Number(ctx.params.id);
