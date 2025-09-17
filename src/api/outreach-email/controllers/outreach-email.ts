@@ -1,18 +1,24 @@
+// src/api/outreach-email/controllers/outreach-email.ts
 import { factories } from '@strapi/strapi';
 import type { UID } from '@strapi/types';
 
 const OUTREACH_UID = 'api::outreach-email.outreach-email' as UID.ContentType;
 
 export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
+
   async me(ctx) {
     const userId = ctx.state.user?.id;
     if (!userId) return ctx.unauthorized('Login required');
 
-    const data = await strapi.entityService.findMany(OUTREACH_UID, {
-      filters: { user: userId },
-      sort: { createdAt: 'desc' },
-      populate: {}
-    });
+    // NOTE: cast filters/options to any to satisfy TS until you generate content-type-specific types
+    const data = await strapi.entityService.findMany(
+      OUTREACH_UID,
+      {
+        filters: { user: userId } as any,
+        sort: { createdAt: 'desc' } as any,
+        populate: {} as any,
+      } as any
+    );
 
     ctx.body = data;
   },
@@ -21,7 +27,9 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     const userId = ctx.state.user?.id;
     if (!userId) return ctx.unauthorized('Login required');
 
-    const { company, title, description = '', jobUrl = '', source = 'manual' } = ctx.request.body || {};
+    const {
+      company, title, description = '', jobUrl = '', source = 'manual'
+    } = ctx.request.body || {};
     if (!company || !title) return ctx.badRequest('company and title are required');
 
     const webhookUrl = process.env.OUTREACH_WEBHOOK_URL;
@@ -37,28 +45,38 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(secret ? { 'x-outreach-secret': secret } : {})
+          ...(secret ? { 'x-outreach-secret': secret } : {}),
         },
-        body: JSON.stringify({ company, title, description, jobUrl, userId })
+        body: JSON.stringify({ company, title, description, jobUrl, userId }),
       });
 
       let json: any = null;
       try { json = await resp.json(); } catch {}
 
       const asArray = Array.isArray(json?.emails) ? json.emails : [];
-      const pick = (role: string) => asArray.find((e: any) => (e.role || '').toLowerCase() === role) || json?.[role];
-      const norm = (e: any) => e ? ({
-        email: e.email || '',
-        confidence: typeof e.confidence === 'number' ? e.confidence :
-                    (typeof e.confidence === 'string' ? parseFloat(e.confidence) : null),
-        message: e.message || e.content || ''
-      }) : null;
+      const pick = (role: string) =>
+        asArray.find((e: any) => (e.role || '').toLowerCase() === role) || json?.[role];
+
+      const norm = (e: any) =>
+        e
+          ? {
+              email: e.email || '',
+              confidence:
+                typeof e.confidence === 'number'
+                  ? e.confidence
+                  : typeof e.confidence === 'string'
+                  ? parseFloat(e.confidence)
+                  : null,
+              message: e.message || e.content || '',
+            }
+          : null;
 
       recruiter = norm(pick('recruiter'));
-      manager   = norm(pick('manager'));
-
+      manager = norm(pick('manager'));
     } catch (err) {
-      strapi.log.warn(`[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`);
+      strapi.log.warn(
+        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
 
     const defaultMsg = `Subject: Quick note re: ${title} @ ${company}
@@ -71,19 +89,25 @@ Thanks so much,
 [Your Name]
 [Phone] • [LinkedIn]`;
 
-    const created = await strapi.entityService.create(OUTREACH_UID, {
-      data: {
-        user: userId,
-        company, title, description, jobUrl, source,
-        recruiterEmail: recruiter?.email || '',
-        recruiterConfidence: recruiter?.confidence ?? null,
-        recruiterMessage: recruiter?.message || defaultMsg,
-        managerEmail: manager?.email || '',
-        managerConfidence: manager?.confidence ?? null,
-        managerMessage: manager?.message || defaultMsg
-      }
-    });
+    // NOTE: cast data/options to any to satisfy TS for the user relation
+    const created = await strapi.entityService.create(
+      OUTREACH_UID,
+      {
+        data: {
+          user: userId,
+          company, title, description, jobUrl, source,
+          recruiterEmail: recruiter?.email || '',
+          recruiterConfidence: recruiter?.confidence ?? null,
+          recruiterMessage: recruiter?.message || defaultMsg,
+          managerEmail: manager?.email || '',
+          managerConfidence: manager?.confidence ?? null,
+          managerMessage: manager?.message || defaultMsg,
+        } as any,
+        populate: {} as any,
+      } as any
+    );
 
     ctx.body = created;
-  }
+  },
+
 }));
