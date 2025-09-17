@@ -79,6 +79,21 @@
       "allowedTypes": ["files"],
       "required": false
     },
-    "cvText": { "type": "text" }
+    "cvText": { "type": "text" },
+    "outreachEmails": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::outreach-email.outreach-email",
+      "mappedBy": "user"
+    },
+    
+    "outreachExample": {
+      "type": "json",
+      "default": {
+        "recruiter": { "email": "", "confidence": null, "message": "…" },
+        "manager":   { "email": "", "confidence": null, "message": "…" }
+      }
+    }
+
   }
 }
