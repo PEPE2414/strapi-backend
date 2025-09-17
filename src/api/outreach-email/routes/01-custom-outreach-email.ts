@@ -4,19 +4,13 @@ export default {
       method: 'GET',
       path: '/outreach-emails/me',
       handler: 'outreach-email.me',
-      config: {
-        auth: false,
-        policies: ['plugin::users-permissions.isAuthenticated']
-      }
+      config: { auth: true }   // <-- was auth:false + policy; now just auth:true
     },
     {
       method: 'POST',
       path: '/outreach-emails/find',
       handler: 'outreach-email.findEmails',
-      config: {
-        auth: false,
-        policies: ['plugin::users-permissions.isAuthenticated']
-      }
+      config: { auth: true }   // <-- same here
     }
   ]
 };
