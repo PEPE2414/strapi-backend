@@ -203,9 +203,23 @@ export default ({ strapi }: { strapi: any }) => ({
           cvText = (out?.value || '').trim();
         }
       
-        await strapi.entityService.update('plugin::users-permissions.user', userId, {
-          data: { cvText },
-        });
+        strapi.log.info(`[profile:cv] extracted ${cvText.length} chars from ${f.mime} (buf=${buf.length})`);
+      
+        // try entityService first…
+        try {
+          await strapi.entityService.update('plugin::users-permissions.user', userId, {
+            data: { cvText },
+          });
+        } catch (e) {
+          strapi.log.warn('[profile:cv] entityService.update(cvText) failed, falling back to db.query(): ' + (e as any)?.message);
+          await strapi.db
+            .query('plugin::users-permissions.user')
+            .update({ where: { id: userId }, data: { cvText } });
+        }
+      
+        // read back to confirm
+        const check = await strapi.entityService.findOne('plugin::users-permissions.user', userId, { fields: ['id', 'cvText'] });
+        strapi.log.info(`[profile:cv] saved cvText length: ${check?.cvText ? String(check.cvText).length : 0}`);
       } catch (ex) {
         strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
       }
