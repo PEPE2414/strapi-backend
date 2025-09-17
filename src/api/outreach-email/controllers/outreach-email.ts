@@ -1,12 +1,14 @@
 import { factories } from '@strapi/strapi';
+import type { UID } from '@strapi/types';
 
-export default factories.createCoreController('api::outreach-email.outreach-email', ({ strapi }) => ({
+const OUTREACH_UID = 'api::outreach-email.outreach-email' as UID.ContentType;
 
+export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
   async me(ctx) {
     const userId = ctx.state.user?.id;
     if (!userId) return ctx.unauthorized('Login required');
 
-    const data = await strapi.entityService.findMany('api::outreach-email.outreach-email', {
+    const data = await strapi.entityService.findMany(OUTREACH_UID, {
       filters: { user: userId },
       sort: { createdAt: 'desc' },
       populate: {}
@@ -59,7 +61,7 @@ export default factories.createCoreController('api::outreach-email.outreach-emai
       strapi.log.warn(`[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`);
     }
 
-    const defaultMsg = (who: string) => `Subject: Quick note re: ${title} @ ${company}
+    const defaultMsg = `Subject: Quick note re: ${title} @ ${company}
 
 Hi {{Name}},
 
@@ -69,20 +71,19 @@ Thanks so much,
 [Your Name]
 [Phone] • [LinkedIn]`;
 
-    const created = await strapi.entityService.create('api::outreach-email.outreach-email', {
+    const created = await strapi.entityService.create(OUTREACH_UID, {
       data: {
         user: userId,
         company, title, description, jobUrl, source,
         recruiterEmail: recruiter?.email || '',
         recruiterConfidence: recruiter?.confidence ?? null,
-        recruiterMessage: recruiter?.message || defaultMsg('Recruiter'),
+        recruiterMessage: recruiter?.message || defaultMsg,
         managerEmail: manager?.email || '',
         managerConfidence: manager?.confidence ?? null,
-        managerMessage: manager?.message || defaultMsg('Manager')
+        managerMessage: manager?.message || defaultMsg
       }
     });
 
     ctx.body = created;
   }
-
 }));
