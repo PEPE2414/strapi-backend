@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "outreach_emails",
+  "info": {
+    "displayName": "Outreach Email",
+    "singularName": "outreach-email",
+    "pluralName": "outreach-emails",
+    "description": "Recruiter/Manager contacts + email bodies for a given job"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "outreachEmails"
+    },
+    "company": { "type": "string", "required": true, "minLength": 1 },
+    "title": { "type": "string", "required": true, "minLength": 1 },
+    "jobUrl": { "type": "string" },
+    "description": { "type": "text" },
+    "source": {
+      "type": "enumeration",
+      "enum": ["saved-job", "manual", "other"],
+      "default": "manual"
+    },
+
+    "recruiterEmail": { "type": "email" },
+    "recruiterConfidence": { "type": "float" },
+    "recruiterMessage": { "type": "text" },
+
+    "managerEmail": { "type": "email" },
+    "managerConfidence": { "type": "float" },
+    "managerMessage": { "type": "text" }
+  }
+}
