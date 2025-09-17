@@ -4,13 +4,13 @@ export default {
       method: 'GET',
       path: '/outreach-emails/me',
       handler: 'outreach-email.me',
-      config: { auth: true }   // <-- was auth:false + policy; now just auth:true
+      // config: { auth: true }  <-- remove this line entirely
     },
     {
       method: 'POST',
       path: '/outreach-emails/find',
       handler: 'outreach-email.findEmails',
-      config: { auth: true }   // <-- same here
+      // config: { auth: true }  <-- remove this line entirely
     }
   ]
 };
