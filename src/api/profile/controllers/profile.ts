@@ -135,113 +135,158 @@ export default ({ strapi }: { strapi: any }) => ({
   },
 
   async linkCv(ctx: any) {
-    // --- Extract text and store on user (S3-first; robust key) ---
     try {
-      // 0) Build a Buffer of the file contents
-      let buf: Buffer | null = null;
-    
-      // Prefer S3 GetObject using the provider key saved by Strapi
+      // 0) Verify Bearer token (route is public; we self-auth here)
+      const auth = ctx.request?.header?.authorization || '';
+      const m = auth.match(/^Bearer\s+(.+)$/i);
+      if (!m) return ctx.unauthorized('Missing Authorization');
+
+      let payload: any;
       try {
-        const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
-        const region = process.env.S3_REGION;
-        const bucket = process.env.S3_BUCKET;
-        if (!region || !bucket) throw new Error('missing_s3_env');
-    
-        // Use the exact key from provider_metadata when available
-        const keyFromProvider = (f as any)?.provider_metadata?.key as string | undefined;
-    
-        // If not present, derive from URL safely
-        let key = keyFromProvider;
-        if (!key) {
-          const url = String(f.url || '');
-          if (!url) throw new Error('no_file_url');
-          // handle absolute or relative urls
-          const path =
-            url.startsWith('http://') || url.startsWith('https://')
-              ? new URL(url).pathname
-              : url; // if relative, treat it as a path already
-          key = path.replace(/^\/+/, ''); // strip leading slash
-        }
-    
-        const s3 = new S3Client({
-          region,
-          credentials: {
-            accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-          },
+        payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
+      } catch (e) {
+        console.error('[profile:cv] JWT verify failed:', e);
+        return ctx.unauthorized('Invalid token');
+      }
+      const userId = payload?.id;
+      if (!userId) return ctx.unauthorized('Invalid token payload');
+
+      // 1) Validate input and load file from Upload plugin
+      const body = ctx.request.body || {};
+      const fileId = Number(body?.fileId);
+      if (!fileId) return ctx.badRequest('fileId is required');
+
+      const f = await strapi.entityService.findOne('plugin::upload.file', fileId);
+      if (!f) return ctx.badRequest('fileId not found');
+
+      // 2) Enforce allowed MIME types (PDF/DOCX/older DOC optional)
+      const mime = String(f.mime || '').toLowerCase();
+      const ext = String(f.ext || '').toLowerCase();
+      const ok =
+        mime === 'application/pdf' ||
+        mime === 'application/msword' ||
+        mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        ext === '.pdf' || ext === '.doc' || ext === '.docx';
+      if (!ok) {
+        return ctx.badRequest('Unsupported CV type. Please upload a PDF or Word document.');
+      }
+
+      // 3) Link the uploaded file to the user (user.cvFile = fileId)
+      try {
+        await strapi.entityService.update('plugin::users-permissions.user', userId, {
+          data: { cvFile: fileId },
         });
-    
-        const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key! }));
-        // @ts-ignore - v3 helper on Node 18+
-        const bytes = await out.Body?.transformToByteArray();
-        if (!bytes) throw new Error('no_body');
-        buf = Buffer.from(bytes);
-      } catch (e) {
-        strapi.log.warn('[profile:cv] S3 GetObject failed, falling back to HTTP: ' + (e as any)?.message);
-      }
-    
-      // Fallback: public HTTP fetch (only if S3 path failed)
-      if (!buf) {
-        const url = String(f.url || '');
-        if (!url.startsWith('http')) throw new Error('no_absolute_url_for_http_fetch');
-        const res = await fetch(url);
-        const ab = await res.arrayBuffer();
-        buf = Buffer.from(ab);
-      }
-    
-      // 1) Extract text
-      let cvText = '';
-      try {
-        const mime = String(f.mime || '').toLowerCase();
-        const ext = String(f.ext || '').toLowerCase();
-    
-        if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
-          const pdfMod = await import('pdf-parse');
-          const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
-          const out = await pdfParse(buf);
-          cvText = (out?.text || '').trim();
-        } else if (
-          ext === '.docx' ||
-          mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        ) {
-          const mmMod = await import('mammoth');
-          const mammoth: any = (mmMod as any).default || (mmMod as any);
-          const out = await mammoth.extractRawText({ buffer: buf });
-          cvText = (out?.value || '').trim();
-        } else {
-          // leave blank for unsupported; you can add .doc later
-          cvText = '';
-        }
-      } catch (e) {
-        strapi.log.warn('[profile:cv] extractor error: ' + (e as any)?.message);
-        cvText = '';
-      }
-    
-      strapi.log.info(
-        `[profile:cv] extracted ${cvText.length} chars from ${f.mime} (size=${buf.length})`
-      );
-    
-      // 2) Save cvText (entityService, then fallback)
-      try {
-        await strapi.entityService.update('plugin::users-permissions.user', userId, { data: { cvText } });
-      } catch (e) {
-        strapi.log.warn('[profile:cv] entityService.update(cvText) failed, using db.query(): ' + (e as any)?.message);
+      } catch (err: any) {
+        console.warn('[profile:cv] entityService.update failed, using db.query():', err?.message || err);
         await strapi.db
           .query('plugin::users-permissions.user')
-          .update({ where: { id: userId }, data: { cvText } });
+          .update({ where: { id: userId }, data: { cvFile: fileId } });
       }
-    
-      // 3) Read back and log
-      const check = await strapi.entityService.findOne(
-        'plugin::users-permissions.user',
-        userId,
-        { fields: ['id', 'cvText'] }
-      );
-      strapi.log.info(
-        `[profile:cv] saved cvText length: ${check?.cvText ? String(check.cvText).length : 0}`
-      );
-    } catch (ex) {
-      strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
+
+      // 4) Extract text and store on user.cvText (S3-first; robust key)
+      try {
+        // 4a) Read bytes from S3 (provider key) or fall back to HTTP
+        let buf: Buffer | null = null;
+        try {
+          const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
+          const region = process.env.S3_REGION;
+          const bucket = process.env.S3_BUCKET;
+          if (!region || !bucket) throw new Error('missing_s3_env');
+
+          const keyFromProvider = (f as any)?.provider_metadata?.key as string | undefined;
+
+          let key = keyFromProvider;
+          if (!key) {
+            const url = String(f.url || '');
+            if (!url) throw new Error('no_file_url');
+            const path =
+              url.startsWith('http://') || url.startsWith('https://')
+                ? new URL(url).pathname
+                : url;
+            key = path.replace(/^\/+/, '');
+          }
+
+          const s3 = new S3Client({
+            region,
+            credentials: {
+              accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+            },
+          });
+          const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key! }));
+          // @ts-ignore Node 18+ helper
+          const bytes = await out.Body?.transformToByteArray();
+          if (!bytes) throw new Error('no_body');
+          buf = Buffer.from(bytes);
+        } catch (e) {
+          strapi.log.warn('[profile:cv] S3 GetObject failed, falling back to HTTP: ' + (e as any)?.message);
+        }
+
+        if (!buf) {
+          const url = String(f.url || '');
+          if (!url.startsWith('http')) throw new Error('no_absolute_url_for_http_fetch');
+          const res = await fetch(url);
+          const ab = await res.arrayBuffer();
+          buf = Buffer.from(ab);
+        }
+
+        // 4b) Parse text (PDF or DOCX). Leave others empty for now.
+        let cvText = '';
+        try {
+          if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
+            const pdfMod = await import('pdf-parse');
+            const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
+            const out = await pdfParse(buf);
+            cvText = (out?.text || '').trim();
+          } else if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            const mmMod = await import('mammoth');
+            const mammoth: any = (mmMod as any).default || (mmMod as any);
+            const out = await mammoth.extractRawText({ buffer: buf });
+            cvText = (out?.value || '').trim();
+          } else {
+            // .doc or other types – you can add an extractor later
+            cvText = '';
+          }
+        } catch (e) {
+          strapi.log.warn('[profile:cv] extractor error: ' + (e as any)?.message);
+          cvText = '';
+        }
+
+        strapi.log.info(`[profile:cv] extracted ${cvText.length} chars from ${f.mime} (size=${buf.length})`);
+
+        // 4c) Save cvText (entityService, then fallback), then read back & log
+        try {
+          await strapi.entityService.update('plugin::users-permissions.user', userId, { data: { cvText } });
+        } catch (e) {
+          strapi.log.warn('[profile:cv] entityService.update(cvText) failed, using db.query(): ' + (e as any)?.message);
+          await strapi.db
+            .query('plugin::users-permissions.user')
+            .update({ where: { id: userId }, data: { cvText } });
+        }
+
+        const check = await strapi.entityService.findOne(
+          'plugin::users-permissions.user',
+          userId,
+          { fields: ['id', 'cvText'] }
+        );
+        strapi.log.info(`[profile:cv] saved cvText length: ${check?.cvText ? String(check.cvText).length : 0}`);
+      } catch (ex) {
+        strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
+      }
+
+      // 5) Return minimal file payload for the FE
+      ctx.body = {
+        data: {
+          id: f.id,
+          name: f.name,
+          url: f.url,
+          size: f.size,
+          updatedAt: f.updatedAt,
+        },
+      };
+    } catch (e: any) {
+      console.error('[profile:cv] unexpected error:', e?.message || e);
+      ctx.throw(500, 'CV link failed');
     }
   },
   
