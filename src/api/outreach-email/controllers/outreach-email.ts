@@ -37,79 +37,88 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
   
     if (!company || !title) return ctx.badRequest('company and title are required');
   
-    const webhookUrl = process.env.OUTREACH_WEBHOOK_URL;
+    // ---- Webhook URLs (primary + optional fallback) ----
+    const urls = [
+      (process.env.OUTREACH_WEBHOOK_URL ?? '').trim(),
+      (process.env.OUTREACH_WEBHOOK_URL_ALT ?? '').trim(),
+    ].filter(Boolean);
+  
     const secret = process.env.OUTREACH_WEBHOOK_SECRET;
   
+    type EmailBlock = { email?: string | null; confidence?: number | null; message?: string | null; };
     let recruiter: EmailBlock | null = null;
-    let manager: EmailBlock | null = null;
+    let manager:   EmailBlock | null = null;
   
     const safeUrl = (raw?: string | null) => {
       try { if (!raw) return '(unset)'; const u = new URL(raw); return `${u.origin}${u.pathname}`; }
       catch { return '(invalid URL)'; }
     };
   
+    const callWebhook = async (url: string) => {
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(secret ? { 'x-outreach-secret': secret } : {}),
+        },
+        body: JSON.stringify({ company, title, description, jobUrl, userId }),
+      });
+    };
+  
     try {
-      if (!webhookUrl) throw new Error('Missing OUTREACH_WEBHOOK_URL');
+      if (!urls.length) throw new Error('Missing OUTREACH_WEBHOOK_URL');
   
-      strapi.log.info(`[outreach] webhook → ${safeUrl(webhookUrl)}`);
+      let parsed: any = null;
   
-      const callWebhook = async (url: string) => {
-        return fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(secret ? { 'x-outreach-secret': secret } : {}),
-          },
-          body: JSON.stringify({ company, title, description, jobUrl, userId }),
-        });
-      };
+      for (const url of urls) {
+        strapi.log.info(`[outreach] webhook try → ${safeUrl(url)}`);
+        const resp = await callWebhook(url);
+        const rawText = await resp.text();
+        strapi.log.info(`[outreach] webhook status ${resp.status} for ${safeUrl(url)}`);
+        if (rawText) strapi.log.debug(`[outreach] webhook body (first 500): ${rawText.slice(0, 500)}`);
   
-      let resp = await callWebhook(webhookUrl);
-  
-      if (resp.status === 404 && webhookUrl.includes('/webhook-test/')) {
-        const prodUrl = webhookUrl.replace('/webhook-test/', '/webhook/');
-        strapi.log.warn(`[outreach] 404 on test URL, retrying production URL: ${prodUrl}`);
-        resp = await callWebhook(prodUrl);
+        // Accept any 2xx as success and stop trying others
+        if (resp.ok) {
+          try { parsed = rawText ? JSON.parse(rawText) : null; } catch { parsed = null; }
+          break;
+        }
+        // Otherwise try next URL (if provided)
       }
   
-      const rawText = await resp.text();
-      strapi.log.info(`[outreach] webhook status ${resp.status}`);
-      if (rawText) strapi.log.debug(`[outreach] webhook body (first 500): ${rawText.slice(0, 500)}`);
+      // Normalize response if we got one
+      if (parsed) {
+        const asArray = Array.isArray(parsed?.emails) ? parsed.emails : [];
+        const pick = (role: string) =>
+          asArray.find((e: any) => String(e.role || '').toLowerCase() === role) || parsed?.[role];
   
-      let json: any = null;
-      try { json = JSON.parse(rawText); } catch {}
+        const norm = (e: any): EmailBlock | null => {
+          if (!e) return null;
+          const conf =
+            typeof e.confidence === 'number'
+              ? e.confidence
+              : typeof e.confidence === 'string'
+              ? parseFloat(e.confidence)
+              : null;
   
-      const asArray = Array.isArray(json?.emails) ? json.emails : [];
-      const pick = (role: string) =>
-        asArray.find((e: any) => String(e.role || '').toLowerCase() === role) || json?.[role];
+          const email =
+            typeof e.email === 'string' && e.email.trim() ? e.email.trim() : null;
   
-      const norm = (e: any): EmailBlock | null => {
-        if (!e) return null;
-        const conf =
-          typeof e.confidence === 'number'
-            ? e.confidence
-            : typeof e.confidence === 'string'
-            ? parseFloat(e.confidence)
-            : null;
+          const message =
+            typeof e.message === 'string'
+              ? e.message
+              : typeof e.content === 'string'
+              ? e.content
+              : '';
   
-        const email =
-          typeof e.email === 'string' && e.email.trim() ? e.email.trim() : null;
+          return { email, confidence: Number.isFinite(conf as number) ? conf! : null, message };
+        };
   
-        const message =
-          typeof e.message === 'string'
-            ? e.message
-            : typeof e.content === 'string'
-            ? e.content
-            : '';
-  
-        return { email, confidence: Number.isFinite(conf as number) ? conf! : null, message };
-      };
-  
-      recruiter = norm(pick('recruiter'));
-      manager   = norm(pick('manager'));
+        recruiter = norm(pick('recruiter'));
+        manager   = norm(pick('manager'));
+      }
     } catch (err) {
       strapi.log.warn(
-        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)} (to ${safeUrl(webhookUrl)})`
+        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`
       );
     }
   
@@ -123,7 +132,7 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
   [Your Name]
   [Phone] • [LinkedIn]`;
   
-    const created = await strapi.entityService.create(OUTREACH_UID, {
+    const created = await strapi.entityService.create('api::outreach-email.outreach-email', {
       data: {
         user: userId,
         company,
