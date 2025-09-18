@@ -43,8 +43,19 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     let recruiter: EmailBlock | null = null;
     let manager: EmailBlock | null = null;
 
+    // Helper to log the URL without query / secrets
+    const safeUrl = (raw?: string | null) => {
+      try {
+        if (!raw) return '(unset)';
+        const u = new URL(raw);
+        return `${u.origin}${u.pathname}`;
+      } catch { return '(invalid URL)'; }
+    };
+
     try {
       if (!webhookUrl) throw new Error('Missing OUTREACH_WEBHOOK_URL');
+
+      strapi.log.info(`[outreach] webhook → ${safeUrl(webhookUrl)}`);
 
       const resp = await fetch(webhookUrl, {
         method: 'POST',
@@ -55,8 +66,13 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
         body: JSON.stringify({ company, title, description, jobUrl, userId }),
       });
 
+      const rawText = await resp.text(); // read once
+      strapi.log.info(`[outreach] webhook status ${resp.status}`);
+      if (rawText) strapi.log.debug(`[outreach] webhook body (first 500): ${rawText.slice(0, 500)}`);
+
+      // Try to parse JSON from the text we already read
       let json: any = null;
-      try { json = await resp.json(); } catch { /* ignore non-JSON */ }
+      try { json = JSON.parse(rawText); } catch { /* ignore */ }
 
       const asArray = Array.isArray(json?.emails) ? json.emails : [];
       const pick = (role: string) =>
@@ -85,10 +101,10 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
       };
 
       recruiter = norm(pick('recruiter'));
-      manager = norm(pick('manager'));
+      manager   = norm(pick('manager'));
     } catch (err) {
       strapi.log.warn(
-        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`
+        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)} (to ${safeUrl(webhookUrl)})`
       );
     }
 
@@ -100,9 +116,8 @@ I’m applying for the ${title} role at ${company}. I wanted to introduce myself
 
 Thanks so much,
 [Your Name]
-[Phone] | [LinkedIn]`;
+[Phone] • [LinkedIn]`;
 
-    // Create entry; IMPORTANT: null for missing emails (not empty string)
     const created = await strapi.entityService.create(OUTREACH_UID, {
       data: {
         user: userId,
@@ -120,7 +135,7 @@ Thanks so much,
       } as any,
     } as any);
 
-    // (Optional) expose whether webhook returned anything
+    // Header lets you confirm from the browser if webhook data came through
     ctx.set('x-outreach-webhook', recruiter || manager ? 'ok' : 'fallback');
 
     ctx.body = created;
