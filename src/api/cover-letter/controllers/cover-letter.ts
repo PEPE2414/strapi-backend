@@ -1,163 +1,151 @@
-// src/api/cover-letter/controllers/cover-letter.ts
-import { errors } from '@strapi/utils';
-const { UnauthorizedError, NotFoundError, ValidationError } = errors;
+import type { Core } from '@strapi/strapi';
 
-const sanitizeFile = (f: any) =>
-  f
-    ? { id: f.id, name: f.name, url: f.url, size: f.size, mime: f.mime, updatedAt: f.updatedAt }
-    : null;
-
-const sanitize = (e: any) => {
-  if (!e) return null;
-  const a = e; // entityService returns plain objects
-  return {
-    id: a.id,
-    title: a.title,
-    company: a.company,
-    description: a.description,
-    source: a.source,
-    status: a.status,
-    savedJobId: a.savedJobId || null,
-    file: sanitizeFile(a.file),
-    user: a.user ? { id: a.user.id, email: a.user.email } : null,
-    createdAt: a.createdAt,
-    updatedAt: a.updatedAt,
-  };
-};
-
-export default {
-  // GET /api/cover-letters  (current user's)
-  async find(ctx) {
-    const user = ctx.state.user;
-    if (!user) throw new UnauthorizedError();
-
-    const rows = await strapi.entityService.findMany('api::cover-letter.cover-letter', {
-      filters: { user: user.id },
-      sort: { createdAt: 'desc' },
-      populate: { file: true, user: true },
-    });
-
-    ctx.body = { data: rows.map(sanitize) };
-  },
-
-  // GET /api/cover-letters/:id (owner only)
-  async findOne(ctx) {
-    const user = ctx.state.user;
-    if (!user) throw new UnauthorizedError();
-
-    const id = Number(ctx.params.id);
-    const row = await strapi.entityService.findOne('api::cover-letter.cover-letter', id, {
-      populate: { file: true, user: true },
-    });
-    if (!row || row.user?.id !== user.id) throw new NotFoundError();
-    ctx.body = { data: sanitize(row) };
-  },
-
-  // POST /api/cover-letters/generate  (creates pending + optional webhook forward)
+export default ({ strapi }: { strapi: Core.Strapi }) => ({
+  /**
+   * POST /api/cover-letters/generate
+   * Body: { title, company, description, source, savedJobId }
+   * Self-auth via ctx.state.user; debits 1 coverLetterCredit, creates usage-log, creates CL (pending),
+   * then posts webhook to n8n with x-cl-webhook-secret.
+   */
   async generate(ctx) {
     const user = ctx.state.user;
-    if (!user) throw new UnauthorizedError();
+    if (!user) return ctx.unauthorized('Auth required');
 
-    const { title, company, description, source = 'manual', savedJobId } = ctx.request.body || {};
-    if (!title || !company || !description) throw new ValidationError('Missing title/company/description');
+    const { title, company, description, source, savedJobId } = ctx.request.body || {};
+    if (!title || !company || !description) return ctx.badRequest('title, company, description required');
 
-    // Create pending entry
-    const created = await strapi.entityService.create('api::cover-letter.cover-letter', {
-      data: {
-        title: String(title).trim(),
-        company: String(company).trim(),
-        description: String(description).trim(),
-        source,
-        status: 'pending',
-        savedJobId: savedJobId ? String(savedJobId) : null,
-        user: user.id,
-      },
-      populate: { file: true, user: true },
+    const webhookUrl = process.env.COVERLETTER_WEBHOOK_URL;
+    const webhookSecret = process.env.CL_WEBHOOK_SECRET;
+
+    const trxRes = await strapi.db.connection.transaction(async (trx) => {
+      // fresh user (credits)
+      const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: { id: user.id },
+        select: ['id', 'coverLetterCredits', 'coverLetterPoints', 'cvText'],
+        transacting: trx
+      });
+
+      const credits = freshUser?.coverLetterCredits ?? 0;
+      if (credits <= 0) {
+        ctx.throw(402, 'No cover letter credits');
+      }
+
+      // create CL (pending)
+      const cl = await strapi.entityService.create('api::cover-letter.cover-letter', {
+        data: {
+          title, company, description,
+          source: source || 'manual',
+          savedJobId: savedJobId || null,
+          status: 'pending',
+          user: user.id
+        },
+        transacting: trx
+      });
+
+      // idempotent usage-log for this CL
+      const existing = await strapi.db.query('api::usage-log.usage-log').findOne({
+        where: { type: 'cover_letter', resourceId: cl.id },
+        transacting: trx
+      });
+      if (existing) ctx.throw(409, 'Duplicate usage for this cover letter');
+
+      await strapi.entityService.create('api::usage-log.usage-log', {
+        data: {
+          user: user.id,
+          type: 'cover_letter',
+          resourceId: cl.id,
+          meta: { source: source || 'manual' }
+        },
+        transacting: trx
+      });
+
+      // decrement credits
+      await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: { coverLetterCredits: credits - 1 },
+        transacting: trx
+      });
+
+      // pass through useful fields for webhook
+      return {
+        clId: cl.id,
+        cvText: freshUser?.cvText || '',
+        points: Array.isArray((freshUser as any)?.coverLetterPoints) ? (freshUser as any).coverLetterPoints : []
+      };
     });
 
-    // Optional: forward to external webhook (n8n/zap/etc)
-    const url = process.env.COVERLETTER_WEBHOOK_URL;
-    const secret = process.env.COVERLETTER_WEBHOOK_SECRET;
-    if (url) {
-      try {
-        // include helpful context for n8n
-        const me = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
-          populate: { cvFile: true },
-        });
+    // fire webhook (non-blocking for user response)
+    try {
+      if (webhookUrl) {
+        const payload = {
+          coverLetterId: trxRes.clId,
+          userId: user.id,
+          title,
+          company,
+          description,
+          source: source || 'manual',
+          savedJobId: savedJobId || null,
+          cvUrl: null,
+          cvText: trxRes.cvText || '',
+          points: trxRes.points || []
+        };
 
-        await fetch(url, {
+        await fetch(webhookUrl, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            ...(secret ? { 'x-cl-secret': secret } : {}),
+            'content-type': 'application/json',
+            ...(webhookSecret ? { 'x-cl-webhook-secret': webhookSecret } : {})
           },
-          body: JSON.stringify({
-            coverLetterId: created.id,
-            userId: user.id,
-            title: created.title,
-            company: created.company,
-            description: created.description,
-            source: created.source,
-            savedJobId: created.savedJobId || null,
-            // optional extras for your flow:
-            cvUrl: me?.cvFile?.url || null,
-            points: Array.isArray(me?.coverLetterPoints) ? me.coverLetterPoints : [],
-            cvText: me?.cvText || null,
-          }),
+          body: JSON.stringify(payload)
         });
-      } catch (e) {
-        // Don’t fail the request; user can still see “pending”
-        strapi.log.warn(`[cover-letter.generate] webhook forward failed: ${e}`);
       }
+    } catch (e) {
+      strapi.log.warn('[cover-letters] webhook post failed', e);
+      // Keep CL pending; you can retry manually if needed
     }
 
-    ctx.body = { data: sanitize(created) };
+    ctx.body = { ok: true, id: trxRes.clId };
   },
 
-  // POST /api/cover-letters/:id/complete
-  // Accepts either:
-  //  - secret header x-cl-secret === COVERLETTER_WEBHOOK_SECRET  (n8n/server)
-  //  - OR authenticated user who owns the record
-  // Body: { status: 'ready'|'failed', fileId?: number, title?: string, company?: string }
+  /**
+   * POST /api/cover-letters/:id/complete
+   * Accepts either { fileId } OR { contentHtml, contentText } plus optional { score, cvAudit, cvAuditScore }
+   * Guarded by header x-cl-secret == COVERLETTER_PROCESSING_SECRET
+   */
   async complete(ctx) {
+    const { id } = ctx.params;
     const secret = ctx.request.headers['x-cl-secret'];
-    const serverOK = secret && process.env.COVERLETTER_WEBHOOK_SECRET && secret === process.env.COVERLETTER_WEBHOOK_SECRET;
+    if (secret !== process.env.COVERLETTER_PROCESSING_SECRET) return ctx.unauthorized();
 
-    let userId: number | null = null;
-    if (!serverOK) {
-      const user = ctx.state.user;
-      if (!user) throw new UnauthorizedError();
-      userId = user.id;
-    }
+    const { fileId, contentHtml, contentText, score, cvAudit, cvAuditScore } = ctx.request.body || {};
+    if (!fileId && !contentText) return ctx.badRequest('fileId or contentText required');
 
-    const id = Number(ctx.params.id);
-    const row = await strapi.entityService.findOne('api::cover-letter.cover-letter', id, {
-      populate: { file: true, user: true },
-    });
-    if (!row) throw new NotFoundError();
-    if (!serverOK && row.user?.id !== userId) throw new UnauthorizedError();
+    const data: any = { status: 'ready' };
+    if (fileId) data.file = fileId;
+    if (typeof contentHtml === 'string') data.contentHtml = contentHtml;
+    if (typeof contentText === 'string') data.contentText = contentText;
+    if (Number.isInteger(score)) data.score = score;
+    if (Number.isInteger(cvAuditScore)) data.cvAuditScore = cvAuditScore;
+    if (cvAudit && typeof cvAudit === 'object') data.cvAudit = cvAudit;
 
-    const { status, fileId, title, company } = ctx.request.body || {};
-    if (!status || !['ready', 'failed', 'pending'].includes(status)) {
-      throw new ValidationError('Invalid status');
-    }
-
-    // If fileId provided, make sure it exists
-    if (fileId) {
-      const f = await strapi.entityService.findOne('plugin::upload.file', Number(fileId));
-      if (!f) throw new ValidationError('fileId not found');
-    }
-
-    const updated = await strapi.entityService.update('api::cover-letter.cover-letter', id, {
-      data: {
-        status,
-        ...(fileId ? { file: Number(fileId) } : {}),
-        ...(title ? { title: String(title).trim() } : {}),
-        ...(company ? { company: String(company).trim() } : {}),
-      },
-      populate: { file: true, user: true },
-    });
-
-    ctx.body = { data: sanitize(updated) };
+    const updated = await strapi.entityService.update('api::cover-letter.cover-letter', id, { data });
+    ctx.body = { ok: true, id: updated.id };
   },
-};
+
+  /**
+   * POST /api/cover-letters/:id/fail
+   * Guarded by header x-cl-secret == COVERLETTER_PROCESSING_SECRET
+   */
+  async fail(ctx) {
+    const { id } = ctx.params;
+    const secret = ctx.request.headers['x-cl-secret'];
+    if (secret !== process.env.COVERLETTER_PROCESSING_SECRET) return ctx.unauthorized();
+
+    const { error } = ctx.request.body || {};
+    await strapi.entityService.update('api::cover-letter.cover-letter', id, {
+      data: { status: 'failed' }
+    });
+    strapi.log.warn(`[cover-letters] ${id} failed: ${error || 'unknown'}`);
+    ctx.body = { ok: true };
+  }
+});
