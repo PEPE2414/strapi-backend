@@ -35,6 +35,12 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "coverLetters"
-    }
+    },
+    "contentHtml": { "type": "text" },
+    "contentText": { "type": "text" },
+    "score": { "type": "integer" },
+
+    "cvAuditScore": { "type": "integer" },
+    "cvAudit": { "type": "json" }
   }
 }
