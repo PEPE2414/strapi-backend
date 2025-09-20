@@ -87,26 +87,27 @@
       "mappedBy": "user"
     },
     
+    /* if you keep outreachExample, make sure it is CLOSED properly */
     "outreachExample": {
       "type": "json",
       "default": {
         "recruiter": { "email": "", "confidence": null, "message": "…" },
-        "manager":   { "email": "", "confidence": null, "message": "…" },
+        "manager":   { "email": "", "confidence": null, "message": "…" }
+      }
+    },
 
+    /* ✅ new credits (OUTSIDE outreachExample) */
     "coverLetterCredits": { "type": "integer", "default": 0 },
     "emailCredits": { "type": "integer", "default": 0 },
     "interviewQuestionCredits": { "type": "integer", "default": 0 },
     "mockInterviewMinutes": { "type": "integer", "default": 0 },
 
+    /* ✅ reverse relation for logs */
     "usageLogs": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::usage-log.usage-log",
       "mappedBy": "user"
     }
-        
-      }
-    }
-
   }
 }
