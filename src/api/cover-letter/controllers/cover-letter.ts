@@ -3,8 +3,8 @@ import type { Core } from '@strapi/strapi';
 export default ({ strapi }: { strapi: Core.Strapi }) => ({
   /**
    * POST /api/cover-letters/generate
-   * Body: { title, company, description, source, savedJobId }
-   * Self-auth via ctx.state.user; debits 1 coverLetterCredit, creates usage-log, creates CL (pending),
+   * Body: { title, company, description, source?, savedJobId? }
+   * Debits 1 coverLetterCredit, creates usage-log, creates CL (pending),
    * then posts webhook to n8n with x-cl-webhook-secret.
    */
   async generate(ctx) {
@@ -12,105 +12,96 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     if (!user) return ctx.unauthorized('Auth required');
 
     const { title, company, description, source, savedJobId } = ctx.request.body || {};
-    if (!title || !company || !description) return ctx.badRequest('title, company, description required');
+    if (!title || !company || !description) {
+      return ctx.badRequest('title, company, description required');
+    }
 
-    const webhookUrl = process.env.COVERLETTER_WEBHOOK_URL;
-    const webhookSecret = process.env.CL_WEBHOOK_SECRET;
+    // 1) Reload user to get latest credits/points/cvText
+    const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+      where: { id: user.id },
+      select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints'],
+    });
 
-    const trxRes = await strapi.db.connection.transaction(async (trx) => {
-      // fresh user (credits)
-      const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
-        where: { id: user.id },
-        select: ['id', 'coverLetterCredits', 'coverLetterPoints', 'cvText'],
-        transacting: trx
-      });
+    const credits = freshUser?.coverLetterCredits ?? 0;
+    if (credits <= 0) {
+      return ctx.throw(402, 'No cover letter credits');
+    }
 
-      const credits = freshUser?.coverLetterCredits ?? 0;
-      if (credits <= 0) {
-        ctx.throw(402, 'No cover letter credits');
-      }
+    // 2) Create cover letter (pending)
+    const cl = await strapi.entityService.create('api::cover-letter.cover-letter' as any, {
+      data: {
+        title,
+        company,
+        description,
+        source: source || 'manual',
+        savedJobId: savedJobId || null,
+        status: 'pending',
+        user: user.id,
+      },
+    });
 
-      // create CL (pending)
-      const cl = await strapi.entityService.create('api::cover-letter.cover-letter', {
-        data: {
-          title, company, description,
-          source: source || 'manual',
-          savedJobId: savedJobId || null,
-          status: 'pending',
-          user: user.id
-        },
-        transacting: trx
-      });
-
-      // idempotent usage-log for this CL
-      const existing = await strapi.db.query('api::usage-log.usage-log').findOne({
-        where: { type: 'cover_letter', resourceId: cl.id },
-        transacting: trx
-      });
-      if (existing) ctx.throw(409, 'Duplicate usage for this cover letter');
-
-      await strapi.entityService.create('api::usage-log.usage-log', {
+    // 3) Idempotent usage log (app-level)
+    const existingLog = await strapi.db.query('api::usage-log.usage-log').findOne({
+      where: { type: 'cover_letter', resourceId: cl.id },
+    });
+    if (!existingLog) {
+      await strapi.entityService.create('api::usage-log.usage-log' as any, {
         data: {
           user: user.id,
           type: 'cover_letter',
           resourceId: cl.id,
-          meta: { source: source || 'manual' }
+          meta: { source: source || 'manual' },
         },
-        transacting: trx
       });
+    }
 
-      // decrement credits
-      await strapi.db.query('plugin::users-permissions.user').update({
-        where: { id: user.id },
-        data: { coverLetterCredits: credits - 1 },
-        transacting: trx
-      });
-
-      // pass through useful fields for webhook
-      return {
-        clId: cl.id,
-        cvText: freshUser?.cvText || '',
-        points: Array.isArray((freshUser as any)?.coverLetterPoints) ? (freshUser as any).coverLetterPoints : []
-      };
+    // 4) Decrement credits
+    await strapi.db.query('plugin::users-permissions.user').update({
+      where: { id: user.id },
+      data: { coverLetterCredits: Math.max(0, credits - 1) },
     });
 
-    // fire webhook (non-blocking for user response)
+    // 5) Fire webhook to n8n (non-blocking)
     try {
-      if (webhookUrl) {
-        const payload = {
-          coverLetterId: trxRes.clId,
-          userId: user.id,
-          title,
-          company,
-          description,
-          source: source || 'manual',
-          savedJobId: savedJobId || null,
-          cvUrl: null,
-          cvText: trxRes.cvText || '',
-          points: trxRes.points || []
-        };
+      const payload = {
+        coverLetterId: cl.id,
+        userId: user.id,
+        title,
+        company,
+        description,
+        source: source || 'manual',
+        savedJobId: savedJobId || null,
+        cvUrl: null,
+        cvText: freshUser?.cvText || '',
+        points: Array.isArray((freshUser as any)?.coverLetterPoints)
+          ? (freshUser as any).coverLetterPoints
+          : [],
+      };
 
-        await fetch(webhookUrl, {
+      const url = process.env.COVERLETTER_WEBHOOK_URL;
+      const secret = process.env.CL_WEBHOOK_SECRET;
+      if (url) {
+        await fetch(url, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
-            ...(webhookSecret ? { 'x-cl-webhook-secret': webhookSecret } : {})
+            ...(secret ? { 'x-cl-webhook-secret': secret } : {}),
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         });
       }
     } catch (e) {
-      strapi.log.warn('[cover-letters] webhook post failed', e);
-      // Keep CL pending; you can retry manually if needed
+      strapi.log.warn('[cover-letters] webhook post failed', e as any);
+      // keep CL pending; can retry
     }
 
-    ctx.body = { ok: true, id: trxRes.clId };
+    ctx.body = { ok: true, id: cl.id };
   },
 
   /**
    * POST /api/cover-letters/:id/complete
-   * Accepts either { fileId } OR { contentHtml, contentText } plus optional { score, cvAudit, cvAuditScore }
-   * Guarded by header x-cl-secret == COVERLETTER_PROCESSING_SECRET
+   * Accepts { fileId } OR { contentHtml, contentText } (+ optional score / cvAudit*)
+   * Guarded by x-cl-secret == COVERLETTER_PROCESSING_SECRET
    */
   async complete(ctx) {
     const { id } = ctx.params;
@@ -128,13 +119,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     if (Number.isInteger(cvAuditScore)) data.cvAuditScore = cvAuditScore;
     if (cvAudit && typeof cvAudit === 'object') data.cvAudit = cvAudit;
 
-    const updated = await strapi.entityService.update('api::cover-letter.cover-letter', id, { data });
+    const updated = await strapi.entityService.update('api::cover-letter.cover-letter' as any, id, { data });
     ctx.body = { ok: true, id: updated.id };
   },
 
   /**
    * POST /api/cover-letters/:id/fail
-   * Guarded by header x-cl-secret == COVERLETTER_PROCESSING_SECRET
+   * Guarded by x-cl-secret == COVERLETTER_PROCESSING_SECRET
    */
   async fail(ctx) {
     const { id } = ctx.params;
@@ -142,10 +133,10 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     if (secret !== process.env.COVERLETTER_PROCESSING_SECRET) return ctx.unauthorized();
 
     const { error } = ctx.request.body || {};
-    await strapi.entityService.update('api::cover-letter.cover-letter', id, {
-      data: { status: 'failed' }
+    await strapi.entityService.update('api::cover-letter.cover-letter' as any, id, {
+      data: { status: 'failed' },
     });
     strapi.log.warn(`[cover-letters] ${id} failed: ${error || 'unknown'}`);
     ctx.body = { ok: true };
-  }
+  },
 });
