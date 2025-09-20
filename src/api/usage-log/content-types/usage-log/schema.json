@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "usage_logs",
+  "info": {
+    "singularName": "usage-log",
+    "pluralName": "usage-logs",
+    "displayName": "Usage Log"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "usageLogs"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["cover_letter", "email", "interview_questions", "mock_interview"],
+      "required": true
+    },
+    "resourceId": { "type": "integer", "required": true },
+    "meta": { "type": "json" }
+  }
+}
