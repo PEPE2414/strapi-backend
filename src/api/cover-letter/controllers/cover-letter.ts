@@ -23,10 +23,23 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     });
 
     const credits = freshUser?.coverLetterCredits ?? 0;
-    if (credits <= 0) {
+    const packagesArr = Array.isArray((freshUser as any)?.packages) ? (freshUser as any).packages : [];
+    const entitled = packagesArr.includes('find-track') || packagesArr.includes('fast-track');
+    
+    // Decide if we allow this generation:
+    const allow = entitled || credits > 0;
+    if (!allow) {
       return ctx.throw(402, 'No cover letter credits');
     }
 
+    // 4) Decrement credits only if not entitled
+    if (!entitled) {
+      await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: { coverLetterCredits: Math.max(0, credits - 1) },
+      });
+    }
+        
     // 2) Create cover letter (pending)
     const cl = await strapi.entityService.create('api::cover-letter.cover-letter' as any, {
       data: {
