@@ -1,60 +1,48 @@
-import type { Core } from '@strapi/strapi';
+import { factories } from '@strapi/strapi';
 
-export default ({ strapi }: { strapi: Core.Strapi }) => ({
+export default factories.createCoreController('api::cover-letter.cover-letter', ({ strapi }) => ({
   /**
    * POST /api/cover-letters/generate
    * Body: { title, company, description, source?, savedJobId? }
-   * Debits 1 coverLetterCredit, creates usage-log, creates CL (pending),
-   * then posts webhook to n8n with x-cl-webhook-secret.
+   * Debits 1 coverLetterCredit (unless entitled), creates usage-log, creates CL (pending),
+   * then posts webhook to n8n with x-cl-secret (or x-cl-webhook-secret – keep consistent with n8n).
    */
   async generate(ctx) {
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized('Auth required');
 
     const { title, company, description, source, savedJobId } = ctx.request.body || {};
-    const cleanSavedJobId = savedJobId == null ? null : String(savedJobId);
     if (!title || !company || !description) {
       return ctx.badRequest('title, company, description required');
     }
+    const cleanSavedJobId = savedJobId == null ? null : String(savedJobId);
 
-    // 1) Reload user to get latest credits/points/cvText
+    // Load latest credits/points/cvText/packages
     const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
       where: { id: user.id },
-      select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints'],
+      select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints', 'packages'],
     });
 
     const credits = freshUser?.coverLetterCredits ?? 0;
     const packagesArr = Array.isArray((freshUser as any)?.packages) ? (freshUser as any).packages : [];
     const entitled = packagesArr.includes('find-track') || packagesArr.includes('fast-track');
-    
-    // Decide if we allow this generation:
     const allow = entitled || credits > 0;
-    if (!allow) {
-      return ctx.throw(402, 'No cover letter credits');
-    }
+    if (!allow) return ctx.throw(402, 'No cover letter credits');
 
-    // 4) Decrement credits only if not entitled
-    if (!entitled) {
-      await strapi.db.query('plugin::users-permissions.user').update({
-        where: { id: user.id },
-        data: { coverLetterCredits: Math.max(0, credits - 1) },
-      });
-    }
-        
-    // 2) Create cover letter (pending)
+    // Create CL (pending)
     const cl = await strapi.entityService.create('api::cover-letter.cover-letter' as any, {
       data: {
         title,
         company,
         description,
         source: source || 'manual',
-        savedJobId: cleanSavedJobId || null, 
+        savedJobId: cleanSavedJobId,
         status: 'pending',
         user: user.id,
       },
     });
 
-    // 3) Idempotent usage log (app-level)
+    // Idempotent usage-log
     const existingLog = await strapi.db.query('api::usage-log.usage-log').findOne({
       where: { type: 'cover_letter', resourceId: cl.id },
     });
@@ -69,13 +57,15 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       });
     }
 
-    // 4) Decrement credits
-    await strapi.db.query('plugin::users-permissions.user').update({
-      where: { id: user.id },
-      data: { coverLetterCredits: Math.max(0, credits - 1) },
-    });
+    // Decrement credits only if not entitled
+    if (!entitled) {
+      await strapi.db.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: { coverLetterCredits: Math.max(0, credits - 1) },
+      });
+    }
 
-    // 5) Fire webhook to n8n (non-blocking)
+    // Fire webhook to n8n
     try {
       const payload = {
         coverLetterId: cl.id,
@@ -84,7 +74,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         company,
         description,
         source: source || 'manual',
-        savedJobId: cleanSavedJobId || null, 
+        savedJobId: cleanSavedJobId,
         cvUrl: null,
         cvText: freshUser?.cvText || '',
         points: Array.isArray((freshUser as any)?.coverLetterPoints)
@@ -93,20 +83,19 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       };
 
       const url = process.env.COVERLETTER_WEBHOOK_URL;
-      const secret = process.env.CL_WEBHOOK_SECRET;
+      const secret = process.env.CL_WEBHOOK_SECRET; // keep name consistent with n8n listener
       if (url) {
         await fetch(url, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
-            ...(secret ? { 'x-cl-webhook-secret': secret } : {}),
+            ...(secret ? { 'x-cl-secret': secret } : {}), // or 'x-cl-webhook-secret' if you prefer; match n8n
           },
           body: JSON.stringify(payload),
         });
       }
     } catch (e) {
       strapi.log.warn('[cover-letters] webhook post failed', e as any);
-      // keep CL pending; can retry
     }
 
     ctx.body = { ok: true, id: cl.id };
@@ -153,4 +142,4 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     strapi.log.warn(`[cover-letters] ${id} failed: ${error || 'unknown'}`);
     ctx.body = { ok: true };
   },
-});
+}));
