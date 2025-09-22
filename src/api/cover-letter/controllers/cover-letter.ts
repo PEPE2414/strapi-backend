@@ -1,8 +1,6 @@
 import { factories } from '@strapi/strapi';
 
-const UID = 'api::cover-letter.cover-letter' as any;
-
-export default factories.createCoreController(UID, ({ strapi }) => ({
+export default factories.createCoreController('api::cover-letter.cover-letter', ({ strapi }) => ({
   /**
    * POST /api/cover-letters/generate
    * Body: { title, company, description, source?, savedJobId? }
