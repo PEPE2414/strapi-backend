@@ -12,6 +12,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     if (!user) return ctx.unauthorized('Auth required');
 
     const { title, company, description, source, savedJobId } = ctx.request.body || {};
+    const cleanSavedJobId = savedJobId == null ? null : String(savedJobId);
     if (!title || !company || !description) {
       return ctx.badRequest('title, company, description required');
     }
@@ -47,7 +48,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         company,
         description,
         source: source || 'manual',
-        savedJobId: savedJobId || null,
+        savedJobId: cleanSavedJobId || null, 
         status: 'pending',
         user: user.id,
       },
@@ -83,7 +84,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
         company,
         description,
         source: source || 'manual',
-        savedJobId: savedJobId || null,
+        savedJobId: cleanSavedJobId || null, 
         cvUrl: null,
         cvText: freshUser?.cvText || '',
         points: Array.isArray((freshUser as any)?.coverLetterPoints)
