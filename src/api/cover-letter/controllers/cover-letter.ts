@@ -1,11 +1,11 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::cover-letter.cover-letter', ({ strapi }) => ({
+export default factories.createCoreController('api::cover-letter.cover-letter' as any, ({ strapi }) => ({
   /**
    * POST /api/cover-letters/generate
    * Body: { title, company, description, source?, savedJobId? }
    * Debits 1 coverLetterCredit (unless entitled), creates usage-log, creates CL (pending),
-   * then posts webhook to n8n with x-cl-secret (or x-cl-webhook-secret – keep consistent with n8n).
+   * then posts webhook to n8n with x-cl-secret (keep header name consistent with n8n).
    */
   async generate(ctx) {
     const user = ctx.state.user;
@@ -83,13 +83,13 @@ export default factories.createCoreController('api::cover-letter.cover-letter', 
       };
 
       const url = process.env.COVERLETTER_WEBHOOK_URL;
-      const secret = process.env.CL_WEBHOOK_SECRET; // keep name consistent with n8n listener
+      const secret = process.env.CL_WEBHOOK_SECRET; // keep in sync with your n8n Webhook header check
       if (url) {
         await fetch(url, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
-            ...(secret ? { 'x-cl-secret': secret } : {}), // or 'x-cl-webhook-secret' if you prefer; match n8n
+            ...(secret ? { 'x-cl-secret': secret } : {}),
           },
           body: JSON.stringify(payload),
         });
