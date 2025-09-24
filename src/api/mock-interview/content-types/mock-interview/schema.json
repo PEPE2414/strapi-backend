@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mock_interviews",
+  "info": {
+    "singularName": "mock-interview",
+    "pluralName": "mock-interviews",
+    "displayName": "Mock Interview",
+    "description": "Mock interview sessions and configuration"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sessionId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "userId": {
+      "type": "string",
+      "required": true
+    },
+    "jobId": {
+      "type": "string"
+    },
+    "jobTitle": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "settings": {
+      "type": "json"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "active", "completed", "failed"],
+      "default": "pending"
+    }
+  }
+}
