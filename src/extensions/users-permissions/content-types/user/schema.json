@@ -30,6 +30,7 @@
     },
 
     "jobPrefs": { "type": "json", "default": null },
+    "preferences": { "type": "json", "default": {} },
     "preferredName": { "type": "string" },
     "university": { "type": "string" },
     "studyField": { "type": "string" },

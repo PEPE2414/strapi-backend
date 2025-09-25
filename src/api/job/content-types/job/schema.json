@@ -1,73 +1,34 @@
 {
   "kind": "collectionType",
   "collectionName": "jobs",
-  "info": {
-    "singularName": "job",
-    "pluralName": "jobs",
-    "displayName": "Job"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
+  "info": { "singularName": "job", "pluralName": "jobs", "displayName": "Job" },
+  "options": { "draftAndPublish": false },
   "attributes": {
-    "title": {
-      "type": "string"
+    "source": { "type": "string", "required": true },
+    "sourceUrl": { "type": "text" },
+    "title": { "type": "string", "required": true },
+    "company": { "type": "json", "required": true }, 
+    "companyLogo": { 
+      "type": "media", 
+      "multiple": false, 
+      "allowedTypes": ["images"] 
     },
-    "slug": {
-      "type": "uid"
-    },
-    "company": {
-      "type": "string"
-    },
-    "location": {
-      "type": "string"
-    },
-    "description": {
-      "type": "blocks"
-    },
-    "applyURL": {
-      "type": "string"
-    },
-    "deadline": {
-      "type": "date"
-    },
-    "job_type": {
-      "type": "string"
-    },
-    "salary": {
-      "type": "string"
-    },
-    "start_date": {
-      "type": "date"
-    },
-    "end_date": {
-      "type": "date"
-    },
-    "related_degree": {
-      "type": "string"
-    },
-    "company_page_link": {
-      "type": "string"
-    },
-    "degree_level": {
-      "type": "string"
-    },
-    "experience": {
-      "type": "string"
-    },
-    "duration": {
-      "type": "string"
-    },
-    "company_logo": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    }
+    "location": { "type": "string" },
+    "descriptionHtml": { "type": "richtext" },
+    "descriptionText": { "type": "text" },
+    "applyUrl": { "type": "text", "required": true },
+    "deadline": { "type": "datetime" },
+    "jobType": { "type": "enumeration", "enum": ["internship","placement","graduate","other"], "required": true },
+    "salary": { "type": "json" },
+    "startDate": { "type": "datetime" },
+    "endDate": { "type": "datetime" },
+    "duration": { "type": "string" },
+    "experience": { "type": "string" },
+    "companyPage": { "type": "text" },
+    "relatedDegree": { "type": "json" },
+    "degreeLevel": { "type": "json" },
+    "postedAt": { "type": "datetime" },
+    "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
+    "hash": { "type": "string", "required": true, "unique": true }
   }
 }
