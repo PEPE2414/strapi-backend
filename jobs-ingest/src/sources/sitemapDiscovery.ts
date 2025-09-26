@@ -96,20 +96,43 @@ async function processSitemap(sitemapUrl: string, domain: string, maxUrls: numbe
 }
 
 function isJobUrl(url: string): boolean {
-  const jobKeywords = [
+  // Focus on university student-relevant job keywords
+  const relevantJobKeywords = [
+    'intern', 'internship', 'graduate', 'placement', 'trainee',
+    'vacation', 'work-experience', 'year-in-industry', 'sandwich',
+    'early-careers', 'new-grad', 'entry-level', 'junior'
+  ];
+  
+  const generalJobKeywords = [
     'job', 'jobs', 'career', 'careers', 'position', 'positions',
     'opportunity', 'opportunities', 'opening', 'openings',
-    'vacancy', 'vacancies', 'role', 'roles', 'employment',
-    'intern', 'internship', 'graduate', 'placement', 'trainee'
+    'vacancy', 'vacancies', 'role', 'roles', 'employment'
   ];
   
   const urlLower = url.toLowerCase();
   
-  // Check for job-related keywords in URL
-  const hasJobKeyword = jobKeywords.some(keyword => urlLower.includes(keyword));
+  // Prioritize university student-relevant keywords
+  const hasRelevantKeyword = relevantJobKeywords.some(keyword => urlLower.includes(keyword));
+  const hasGeneralKeyword = generalJobKeywords.some(keyword => urlLower.includes(keyword));
   
-  // Check for common job page patterns
-  const jobPatterns = [
+  // Check for common job page patterns (focus on student-relevant ones)
+  const relevantJobPatterns = [
+    /\/intern\//,
+    /\/internship\//,
+    /\/graduate\//,
+    /\/placement\//,
+    /\/trainee\//,
+    /\/vacation\//,
+    /\/work-experience\//,
+    /\/year-in-industry\//,
+    /\/sandwich\//,
+    /\/early-careers\//,
+    /\/new-grad\//,
+    /\/entry-level\//,
+    /\/junior\//
+  ];
+  
+  const generalJobPatterns = [
     /\/job\//,
     /\/jobs\//,
     /\/career\//,
@@ -124,17 +147,14 @@ function isJobUrl(url: string): boolean {
     /\/vacancies\//,
     /\/role\//,
     /\/roles\//,
-    /\/employment\//,
-    /\/intern\//,
-    /\/internship\//,
-    /\/graduate\//,
-    /\/placement\//,
-    /\/trainee\//
+    /\/employment\//
   ];
   
-  const matchesPattern = jobPatterns.some(pattern => pattern.test(urlLower));
+  const matchesRelevantPattern = relevantJobPatterns.some(pattern => pattern.test(urlLower));
+  const matchesGeneralPattern = generalJobPatterns.some(pattern => pattern.test(urlLower));
   
-  return hasJobKeyword || matchesPattern;
+  // Include if has relevant keywords/patterns, or general keywords/patterns
+  return hasRelevantKeyword || matchesRelevantPattern || (hasGeneralKeyword || matchesGeneralPattern);
 }
 
 // Company-specific job page discovery

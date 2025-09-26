@@ -3,14 +3,27 @@ import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
-import { classifyJobType, toISO } from '../lib/normalize';
+import { classifyJobType, toISO, isRelevantJobType } from '../lib/normalize';
 
 export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   const api = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs`;
   const { body } = await request(api);
   const json = await body.json() as any;
   const jobs = (json.jobs || []) as any[];
-  return Promise.all(jobs.map(async j => {
+  
+  // Filter for relevant job types only
+  const relevantJobs = jobs.filter(j => {
+    const title = String(j.title || '').trim();
+    const description = String(j.content || '').trim();
+    const location = String(j.location?.name || '').trim();
+    const fullText = `${title} ${description} ${location}`;
+    
+    return isRelevantJobType(fullText);
+  });
+  
+  console.log(`📊 Greenhouse ${board}: ${jobs.length} total jobs, ${relevantJobs.length} relevant jobs`);
+  
+  return Promise.all(relevantJobs.map(async j => {
     const applyUrl = await resolveApplyUrl(j.absolute_url);
     const companyName = j.company?.name || board;
     const title = String(j.title || '').trim();

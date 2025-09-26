@@ -6,7 +6,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
 import { sha256 } from '../lib/hash';
-import { classifyJobType, parseSalary, toISO } from '../lib/normalize';
+import { classifyJobType, parseSalary, toISO, isRelevantJobType } from '../lib/normalize';
 
 export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise<CanonicalJob[]> {
   const out: CanonicalJob[] = [];
@@ -77,6 +77,13 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
 
       const companyPage = jsonld?.hiringOrganization?.sameAs || undefined;
       const companyLogo = pickLogo(html, jsonld);
+
+      // Check if this job is relevant for university students
+      const fullText = title + ' ' + String(descHtml) + ' ' + (location || '');
+      if (!isRelevantJobType(fullText)) {
+        console.log(`⏭️  Skipping irrelevant job: ${title}`);
+        return null;
+      }
 
       const jobType = classifyJobType(title + ' ' + $('#job, main, body').text());
       const company = { name: companyName };
