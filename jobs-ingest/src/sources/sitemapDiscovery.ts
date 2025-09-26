@@ -1,0 +1,180 @@
+// Sitemap discovery for finding job pages at scale
+import { get } from '../lib/fetcher';
+import * as cheerio from 'cheerio';
+import { ScrapingMonitor } from '../lib/monitor';
+
+export interface SitemapUrl {
+  url: string;
+  lastmod?: string;
+  priority?: number;
+  changefreq?: string;
+}
+
+export async function discoverJobUrls(domain: string, maxUrls: number = 10000): Promise<string[]> {
+  console.log(`🔍 Discovering job URLs from ${domain}...`);
+  
+  const monitor = new ScrapingMonitor(maxUrls);
+  const jobUrls = new Set<string>();
+  const sitemapUrls = new Set<string>();
+  const processedSitemaps = new Set<string>();
+  
+  // Start with common sitemap locations
+  const commonSitemaps = [
+    `${domain}/sitemap.xml`,
+    `${domain}/sitemap_index.xml`,
+    `${domain}/sitemaps.xml`,
+    `${domain}/sitemap/sitemap.xml`,
+    `${domain}/robots.txt`
+  ];
+  
+  // Add robots.txt sitemaps
+  try {
+    const { html } = await get(`${domain}/robots.txt`);
+    const robotsSitemaps = html.match(/Sitemap:\s*(.+)/gi) || [];
+    robotsSitemaps.forEach(line => {
+      const url = line.replace(/Sitemap:\s*/i, '').trim();
+      if (url) sitemapUrls.add(url);
+    });
+  } catch (error) {
+    console.warn(`Could not fetch robots.txt from ${domain}:`, error.message);
+  }
+  
+  // Add common sitemaps
+  commonSitemaps.forEach(url => sitemapUrls.add(url));
+  
+  // Process sitemaps
+  for (const sitemapUrl of sitemapUrls) {
+    if (processedSitemaps.has(sitemapUrl)) continue;
+    if (jobUrls.size >= maxUrls) break;
+    
+    try {
+      const urls = await processSitemap(sitemapUrl, domain, maxUrls - jobUrls.size);
+      urls.forEach(url => {
+        if (isJobUrl(url)) {
+          jobUrls.add(url);
+          monitor.recordSuccess();
+        }
+      });
+      processedSitemaps.add(sitemapUrl);
+    } catch (error) {
+      console.warn(`Failed to process sitemap ${sitemapUrl}:`, error.message);
+      monitor.recordFailure();
+    }
+  }
+  
+  monitor.logFinalStats();
+  console.log(`✅ Discovered ${jobUrls.size} job URLs from ${domain}`);
+  
+  return Array.from(jobUrls);
+}
+
+async function processSitemap(sitemapUrl: string, domain: string, maxUrls: number): Promise<string[]> {
+  const { html } = await get(sitemapUrl);
+  const $ = cheerio.load(html);
+  const urls: string[] = [];
+  
+  // Handle sitemap index
+  $('sitemap > loc').each((_, el) => {
+    const childSitemap = $(el).text().trim();
+    if (childSitemap) {
+      // Recursively process child sitemaps
+      processSitemap(childSitemap, domain, maxUrls - urls.length)
+        .then(childUrls => urls.push(...childUrls))
+        .catch(() => {}); // Ignore errors in child sitemaps
+    }
+  });
+  
+  // Handle regular sitemap
+  $('url > loc').each((_, el) => {
+    const url = $(el).text().trim();
+    if (url && urls.length < maxUrls) {
+      urls.push(url);
+    }
+  });
+  
+  return urls;
+}
+
+function isJobUrl(url: string): boolean {
+  const jobKeywords = [
+    'job', 'jobs', 'career', 'careers', 'position', 'positions',
+    'opportunity', 'opportunities', 'opening', 'openings',
+    'vacancy', 'vacancies', 'role', 'roles', 'employment',
+    'intern', 'internship', 'graduate', 'placement', 'trainee'
+  ];
+  
+  const urlLower = url.toLowerCase();
+  
+  // Check for job-related keywords in URL
+  const hasJobKeyword = jobKeywords.some(keyword => urlLower.includes(keyword));
+  
+  // Check for common job page patterns
+  const jobPatterns = [
+    /\/job\//,
+    /\/jobs\//,
+    /\/career\//,
+    /\/careers\//,
+    /\/position\//,
+    /\/positions\//,
+    /\/opportunity\//,
+    /\/opportunities\//,
+    /\/opening\//,
+    /\/openings\//,
+    /\/vacancy\//,
+    /\/vacancies\//,
+    /\/role\//,
+    /\/roles\//,
+    /\/employment\//,
+    /\/intern\//,
+    /\/internship\//,
+    /\/graduate\//,
+    /\/placement\//,
+    /\/trainee\//
+  ];
+  
+  const matchesPattern = jobPatterns.some(pattern => pattern.test(urlLower));
+  
+  return hasJobKeyword || matchesPattern;
+}
+
+// Company-specific job page discovery
+export const COMPANY_JOB_PATTERNS = {
+  'bristol.ac.uk': [
+    'https://www.bristol.ac.uk/jobs/',
+    'https://www.bristol.ac.uk/careers/',
+    'https://www.bristol.ac.uk/opportunities/'
+  ],
+  'imperial.ac.uk': [
+    'https://www.imperial.ac.uk/jobs/',
+    'https://www.imperial.ac.uk/careers/'
+  ],
+  'cambridge.ac.uk': [
+    'https://www.jobs.cam.ac.uk/',
+    'https://www.careers.cam.ac.uk/'
+  ],
+  'oxford.ac.uk': [
+    'https://www.ox.ac.uk/about/jobs/',
+    'https://www.ox.ac.uk/careers/'
+  ]
+};
+
+export async function discoverCompanyJobPages(company: string): Promise<string[]> {
+  const patterns = COMPANY_JOB_PATTERNS[company as keyof typeof COMPANY_JOB_PATTERNS];
+  if (!patterns) {
+    console.warn(`No job patterns defined for ${company}`);
+    return [];
+  }
+  
+  const jobUrls: string[] = [];
+  
+  for (const baseUrl of patterns) {
+    try {
+      const urls = await discoverJobUrls(baseUrl, 1000);
+      jobUrls.push(...urls);
+    } catch (error) {
+      console.warn(`Failed to discover jobs from ${baseUrl}:`, error.message);
+    }
+  }
+  
+  return jobUrls;
+}

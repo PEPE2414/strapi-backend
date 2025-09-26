@@ -10,8 +10,14 @@ import { classifyJobType, parseSalary, toISO } from '../lib/normalize';
 
 export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise<CanonicalJob[]> {
   const out: CanonicalJob[] = [];
-  for (const url of urls) {
-    try {
+  const BATCH_SIZE = 10; // Process in batches for better memory management
+  
+  for (let i = 0; i < urls.length; i += BATCH_SIZE) {
+    const batch = urls.slice(i, i + BATCH_SIZE);
+    console.log(`Processing batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(urls.length/BATCH_SIZE)} (${batch.length} URLs)`);
+    
+    const batchPromises = batch.map(async (url) => {
+      try {
       const { html } = await get(url);
       const jsonld = extractJobPostingJSONLD(html);
       const $ = cheerio.load(html);
@@ -102,7 +108,20 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         slug,
         hash
       });
-    } catch { /* skip bad pages */ }
+    } catch (error) { 
+      console.warn(`Failed to scrape ${url}:`, error.message);
+      return null;
+    }
+    });
+    
+    const batchResults = await Promise.all(batchPromises);
+    const validJobs = batchResults.filter(job => job !== null) as CanonicalJob[];
+    out.push(...validJobs);
+    
+    // Small delay between batches to be respectful
+    if (i + BATCH_SIZE < urls.length) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
   return out;
 }
