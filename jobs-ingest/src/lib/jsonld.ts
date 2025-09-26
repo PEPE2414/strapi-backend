@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from '../../../node_modules/cheerio';
 export function extractJobPostingJSONLD(html: string) {
   const $ = cheerio.load(html);
   const blocks = $('script[type="application/ld+json"]').toArray().map(el => $(el).contents().text());

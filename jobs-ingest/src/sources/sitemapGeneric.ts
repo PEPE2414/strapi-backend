@@ -1,5 +1,5 @@
 import { get } from '../lib/fetcher';
-import * as cheerio from 'cheerio';
+import * as cheerio from '../../../node_modules/cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
 import { resolveApplyUrl } from '../lib/applyUrl';

@@ -54,7 +54,7 @@ async function runAll() {
   // Push to Strapi
   try {
     const r = await upsertJobs(results);
-    console.log('Successfully ingested:', r?.count ?? results.length, 'jobs');
+    console.log('Successfully ingested:', (r as any)?.count ?? results.length, 'jobs');
   } catch (error) {
     console.error('Failed to ingest jobs to Strapi:', error);
     throw error;

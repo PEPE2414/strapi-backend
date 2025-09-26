@@ -9,7 +9,7 @@ function slugify(input: string) {
 
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
   async ingest(ctx) {
-    const secret = ctx.request.header(SECRET_HEADER);
+    const secret = ctx.request.headers[SECRET_HEADER];
     if (!secret || secret !== process.env.SEED_SECRET && secret !== process.env.STRAPI_INGEST_SECRET) {
       return ctx.unauthorized('Invalid secret');
     }
@@ -28,7 +28,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       }
 
       const existing = await strapi.entityService.findMany('api::job.job', {
-        filters: { hash: inJob.hash },
+        filters: { hash: { $eq: inJob.hash } },
         limit: 1
       });
 
@@ -63,7 +63,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 
     const candidates = await strapi.entityService.findMany('api::job.job', {
       filters,
-      sort: { postedAt: 'desc' },
+      sort: { createdAt: 'desc' },
       limit: 400
     });
 
@@ -98,7 +98,7 @@ function score(j:any, W:any, prefs:any) {
     recency: j.postedAt ? timeDecay(j.postedAt) : 0.5,
     remoteType: j.remoteType && prefs.remoteType ? (j.remoteType===prefs.remoteType?1:0.3) : 0.5
   };
-  return 100 * Object.entries(W).reduce((acc,[k,w]) => acc + w*(S as any)[k], 0);
+  return 100 * Object.entries(W).reduce((acc,[k,w]) => acc + (w as number)*(S as any)[k], 0);
 }
 
 function overlap(a?: string[], b?: string[]) {

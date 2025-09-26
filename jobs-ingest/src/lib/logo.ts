@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from '../../../node_modules/cheerio';
 export function pickLogo(html: string, jsonld?: any): string|undefined {
   const first = jsonld?.hiringOrganization?.logo;
   if (first) return toAbs(first);

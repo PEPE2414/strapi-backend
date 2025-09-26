@@ -16,6 +16,6 @@ export async function llmAssist({instruction, text, maxOut=256}: LLMArgs): Promi
       ]
     })
   }).then(r=>r.json()).catch(()=>null);
-  const out = rsp?.choices?.[0]?.message?.content?.trim();
+  const out = (rsp as any)?.choices?.[0]?.message?.content?.trim();
   return out || undefined;
 }
