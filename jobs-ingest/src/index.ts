@@ -4,7 +4,7 @@ import { scrapeFromUrls } from './sources/sitemapGeneric';
 import { discoverJobUrls, discoverCompanyJobPages } from './sources/sitemapDiscovery';
 import { upsertJobs } from './lib/strapi';
 import { llmAssist } from './lib/llm';
-import { GREENHOUSE_BOARDS, LEVER_COMPANIES, MANUAL_URLS } from './config/sources';
+import { GREENHOUSE_BOARDS, LEVER_COMPANIES, MANUAL_URLS, SITEMAP_SOURCES, COMPANY_CAREER_SITEMAPS } from './config/sources';
 import { SCALE_CONFIG } from './config/scale';
 import Bottleneck from 'bottleneck';
 
@@ -34,13 +34,25 @@ async function runAll() {
     batches.push(limiter.schedule(() => scrapeLever(company)));
   }
 
-  // 2) Hand-picked company job URLs (JSON-LD/HTML) - These are slower individual page scrapes
+  // 2) Major job board sitemaps (high volume)
+  if (SITEMAP_SOURCES.length > 0) {
+    console.log(`📋 Scraping ${SITEMAP_SOURCES.length} job board sitemaps...`);
+    batches.push(limiter.schedule(() => scrapeFromUrls(SITEMAP_SOURCES, 'sitemap:jobboards')));
+  }
+
+  // 3) Company career page sitemaps
+  if (COMPANY_CAREER_SITEMAPS.length > 0) {
+    console.log(`🏢 Scraping ${COMPANY_CAREER_SITEMAPS.length} company career sitemaps...`);
+    batches.push(limiter.schedule(() => scrapeFromUrls(COMPANY_CAREER_SITEMAPS, 'sitemap:companies')));
+  }
+
+  // 4) Manual URLs (specific job pages)
   if (MANUAL_URLS.length > 0) {
     console.log(`🌐 Scraping ${MANUAL_URLS.length} manual URLs...`);
     batches.push(limiter.schedule(() => scrapeFromUrls(MANUAL_URLS, 'site:manual')));
   }
 
-  // 3) Large-scale discovery mode (if enabled)
+  // 5) Large-scale discovery mode (if enabled)
   if (process.env.ENABLE_DISCOVERY === 'true') {
     console.log('🔍 Large-scale job discovery enabled...');
     const discoveryDomains = process.env.DISCOVERY_DOMAINS?.split(',') || [];

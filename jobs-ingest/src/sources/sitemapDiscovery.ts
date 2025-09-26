@@ -138,23 +138,44 @@ function isJobUrl(url: string): boolean {
 }
 
 // Company-specific job page discovery
+// NOTE: Most university career pages require authentication
 export const COMPANY_JOB_PATTERNS = {
+  // Public job boards (no auth required)
+  'gradcracker.com': [
+    'https://www.gradcracker.com/sitemap.xml'
+  ],
+  'targetjobs.co.uk': [
+    'https://targetjobs.co.uk/sitemap.xml'
+  ],
+  'prospects.ac.uk': [
+    'https://www.prospects.ac.uk/sitemap.xml'
+  ],
+  'indeed.co.uk': [
+    'https://uk.indeed.com/sitemap.xml'
+  ],
+  'reed.co.uk': [
+    'https://www.reed.co.uk/sitemap.xml'
+  ],
+  
+  // Company career pages (usually public)
+  'arup.com': [
+    'https://www.arup.com/careers/sitemap.xml'
+  ],
+  'atkinsglobal.com': [
+    'https://careers.atkinsglobal.com/sitemap.xml'
+  ],
+  'jacobs.com': [
+    'https://careers.jacobs.com/sitemap.xml'
+  ],
+  
+  // University pages (often require auth - marked for manual review)
   'bristol.ac.uk': [
     'https://www.bristol.ac.uk/jobs/',
-    'https://www.bristol.ac.uk/careers/',
-    'https://www.bristol.ac.uk/opportunities/'
+    'https://www.bristol.ac.uk/careers/'
   ],
   'imperial.ac.uk': [
     'https://www.imperial.ac.uk/jobs/',
     'https://www.imperial.ac.uk/careers/'
-  ],
-  'cambridge.ac.uk': [
-    'https://www.jobs.cam.ac.uk/',
-    'https://www.careers.cam.ac.uk/'
-  ],
-  'oxford.ac.uk': [
-    'https://www.ox.ac.uk/about/jobs/',
-    'https://www.ox.ac.uk/careers/'
   ]
 };
 
