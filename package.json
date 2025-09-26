@@ -13,9 +13,9 @@
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry",
-    "jobs:ingest": "cd jobs-ingest && npm run dev",
-    "jobs:test": "cd jobs-ingest && npm run test",
-    "jobs:build": "cd jobs-ingest && npm run build"
+    "jobs:ingest": "tsx jobs-ingest/src/index.ts",
+    "jobs:test": "tsx jobs-ingest/src/test.ts",
+    "jobs:build": "tsc -p jobs-ingest/tsconfig.json"
   },
   "dependencies": {
     "@strapi/admin": "5.21.0",
@@ -25,13 +25,20 @@
     "@strapi/provider-upload-aws-s3": "^5.23.4",
     "@strapi/strapi": "5.21.0",
     "better-sqlite3": "11.3.0",
+    "bottleneck": "^2.19.5",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.5",
     "google-auth-library": "^9.15.1",
     "mammoth": "^1.10.0",
     "pdf-parse": "^1.1.1",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "robots-parser": "^3.0.1",
+    "undici": "^6.19.8",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "tsx": "^4.16.2",
     "typescript": "^5"
   },
   "engines": {

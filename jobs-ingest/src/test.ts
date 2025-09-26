@@ -66,7 +66,7 @@ async function testComponents() {
 }
 
 // Run tests if this file is executed directly
-if (typeof import.meta !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && process.argv[1].endsWith('test.ts')) {
   testComponents().catch(console.error);
 }
 

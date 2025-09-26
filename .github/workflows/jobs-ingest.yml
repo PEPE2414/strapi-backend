@@ -9,18 +9,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - name: Install jobs-ingest dependencies
-        run: |
-          cd jobs-ingest
-          npm ci
+      - name: Install dependencies
+        run: npm ci
       - name: Build jobs-ingest
-        run: |
-          cd jobs-ingest
-          npm run build
+        run: npm run jobs:build
       - name: Run jobs ingestion
-        run: |
-          cd jobs-ingest
-          node dist/index.js
+        run: npm run jobs:ingest
         env:
           STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
           STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
