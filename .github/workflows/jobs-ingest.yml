@@ -1,0 +1,29 @@
+name: Jobs Ingest
+on:
+  schedule: [{ cron: "13 */2 * * *" }]
+  workflow_dispatch: {}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Install jobs-ingest dependencies
+        run: |
+          cd jobs-ingest
+          npm ci
+      - name: Build jobs-ingest
+        run: |
+          cd jobs-ingest
+          npm run build
+      - name: Run jobs ingestion
+        run: |
+          cd jobs-ingest
+          node dist/index.js
+        env:
+          STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
+          STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
+          USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
