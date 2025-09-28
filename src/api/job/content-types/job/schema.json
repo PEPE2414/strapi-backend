@@ -7,7 +7,7 @@
     "source": { "type": "string", "required": true },
     "sourceUrl": { "type": "text" },
     "title": { "type": "string", "required": true },
-    "company": { "type": "json", "required": true }, 
+    "company": { "type": "json", "required": false, "default": { "name": "Unknown" } }, 
     "companyLogo": { 
       "type": "media", 
       "multiple": false, 
