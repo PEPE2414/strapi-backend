@@ -28,7 +28,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       }
 
             const existing = await strapi.entityService.findMany('api::job.job', {
-              filters: { hash: inJob.hash },
+              filters: { hash: { $eq: inJob.hash } },
               limit: 1
             });
 

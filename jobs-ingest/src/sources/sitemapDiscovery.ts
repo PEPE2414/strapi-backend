@@ -31,7 +31,7 @@ export async function discoverJobUrls(domain: string, maxUrls: number = 10000): 
   try {
     const { html } = await get(`${domain}/robots.txt`);
     const robotsSitemaps = html.match(/Sitemap:\s*(.+)/gi) || [];
-    robotsSitemaps.forEach(line => {
+    robotsSitemaps.forEach((line: string) => {
       const url = line.replace(/Sitemap:\s*/i, '').trim();
       if (url) sitemapUrls.add(url);
     });
