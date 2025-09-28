@@ -3,6 +3,16 @@ import crypto from 'node:crypto';
 
 const SECRET_HEADER = 'x-seed-secret';
 
+// Constant-time comparison to prevent timing attacks
+function constantTimeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
 function slugify(input: string) {
   return input.toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);
 }
@@ -10,11 +20,19 @@ function slugify(input: string) {
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
   async ingest(ctx) {
     const secret = ctx.request.headers[SECRET_HEADER];
-    if (!secret || secret !== process.env.SEED_SECRET && secret !== process.env.STRAPI_INGEST_SECRET) {
+    const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
+    
+    // Validate secret with constant-time comparison
+    if (!secret || !expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
+      console.warn('Invalid ingest secret provided');
       return ctx.unauthorized('Invalid secret');
     }
+    
     const items = ctx.request.body?.data || [];
     if (!Array.isArray(items)) return ctx.badRequest('data must be array');
+    
+    // Safe logging - don't log sensitive data
+    console.log(`Job ingest request: ${items.length} items from ${ctx.request.ip}`);
 
     let count = 0;
     for (const inJob of items) {
@@ -27,8 +45,9 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         slug = `${base}-${inJob.hash.slice(0,8)}`;
       }
 
-            const existing = await strapi.entityService.findMany('api::job.job', {
-              filters: { hash: { $eq: inJob.hash } },
+            // Use raw query to avoid TypeScript issues with hash field
+            const existing = await strapi.db.query('api::job.job').findMany({
+              where: { hash: inJob.hash },
               limit: 1
             });
 

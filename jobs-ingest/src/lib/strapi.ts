@@ -3,7 +3,11 @@ import { CanonicalJob } from '../types';
 const BASE = process.env.STRAPI_API_URL || 'https://api.effort-free.co.uk/api';
 const SECRET = process.env.STRAPI_INGEST_SECRET || 'changeme';
 
-console.log('🔧 Strapi config:', { BASE, SECRET: SECRET ? '***' + SECRET.slice(-4) : 'NOT SET' });
+// Safe logging - don't expose secrets
+console.log('🔧 Strapi config:', { 
+  BASE, 
+  SECRET_SET: !!SECRET && SECRET !== 'changeme' 
+});
 
 export async function upsertJobs(jobs: CanonicalJob[]) {
   const res = await fetch(`${BASE}/jobs/ingest`, {
