@@ -19,7 +19,8 @@ function slugify(input: string) {
 
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
   async ingest(ctx) {
-    const secret = ctx.request.headers[SECRET_HEADER];
+    const secretHeader = ctx.request.headers[SECRET_HEADER];
+    const secret = Array.isArray(secretHeader) ? secretHeader[0] : secretHeader;
     const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
     
     // Validate secret with constant-time comparison
