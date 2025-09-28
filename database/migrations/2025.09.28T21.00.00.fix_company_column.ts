@@ -18,35 +18,35 @@ export async function up(knex: Knex): Promise<void> {
       return;
     }
     
-    // Get a sample of existing data to understand the current format
-    const sampleData = await knex('jobs').select('id', 'company').limit(10);
-    console.log('Sample company data:', sampleData);
+    console.log('Dropping and recreating company column to fix JSON conversion...');
     
-    if (sampleData.length === 0) {
-      console.log('No existing data to migrate');
-      return;
-    }
+    // Step 1: Create a temporary column with the new JSON format
+    await knex.schema.alterTable('jobs', (table) => {
+      table.json('company_temp').defaultTo(JSON.stringify({ name: 'Unknown' }));
+    });
     
-    // Check if the first record's company field is a string (not JSON)
-    const firstRecord = sampleData[0];
-    if (firstRecord.company && typeof firstRecord.company === 'string') {
-      console.log('Converting string company values to JSON format...');
-      
-      // Convert all string company values to JSON format
-      await knex.raw(`
-        UPDATE jobs 
-        SET company = CASE 
-          WHEN company IS NULL OR company = '' THEN '{"name": "Unknown"}'
-          WHEN company::text ~ '^[^{]' THEN json_build_object('name', company::text)
-          ELSE company::jsonb
-        END
-        WHERE company IS NOT NULL
-      `);
-      
-      console.log('Company column migration completed successfully');
-    } else {
-      console.log('Company column is already in JSON format or empty');
-    }
+    // Step 2: Migrate data from old column to new column
+    await knex.raw(`
+      UPDATE jobs 
+      SET company_temp = CASE 
+        WHEN company IS NULL OR company = '' THEN '{"name": "Unknown"}'
+        WHEN company::text ~ '^[^{]' THEN json_build_object('name', company::text)
+        ELSE company::jsonb
+      END
+      WHERE company IS NOT NULL
+    `);
+    
+    // Step 3: Drop the old column
+    await knex.schema.alterTable('jobs', (table) => {
+      table.dropColumn('company');
+    });
+    
+    // Step 4: Rename the temporary column to the original name
+    await knex.schema.alterTable('jobs', (table) => {
+      table.renameColumn('company_temp', 'company');
+    });
+    
+    console.log('Company column migration completed successfully');
     
   } catch (error) {
     console.error('Error during company column migration:', error);

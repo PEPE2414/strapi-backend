@@ -42,7 +42,8 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       // ensure slug exists (defensive)
       let slug = inJob.slug;
       if (!slug) {
-        const base = slugify(`${inJob.title}-${inJob.company?.name || ''}-${inJob.location || ''}`);
+        const companyName = inJob.company?.name || 'Unknown';
+        const base = slugify(`${inJob.title}-${companyName}-${inJob.location || ''}`);
         slug = `${base}-${inJob.hash.slice(0,8)}`;
       }
 
