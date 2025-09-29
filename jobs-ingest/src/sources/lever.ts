@@ -3,23 +3,24 @@ import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
-import { classifyJobType, toISO, isRelevantJobType } from '../lib/normalize';
+import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 
 export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
   const api = `https://api.lever.co/v0/postings/${company}?mode=json`;
   const { body } = await request(api);
   const postings = await body.json() as any[];
   
-  // Filter for relevant job types only
-  const relevantPostings = postings.filter(p => {
-    const title = String(p.text || '').trim();
-    const description = String(p.description || '').trim();
-    const location = String(p.categories?.location || '').trim();
-    const team = String(p.categories?.team || '').trim();
-    const fullText = `${title} ${description} ${location} ${team}`;
-    
-    return isRelevantJobType(fullText);
-  });
+    // Filter for relevant job types and UK locations only
+    const relevantPostings = postings.filter(p => {
+      const title = String(p.text || '').trim();
+      const description = String(p.description || '').trim();
+      const location = String(p.categories?.location || '').trim();
+      const team = String(p.categories?.team || '').trim();
+      const fullText = `${title} ${description} ${location} ${team}`;
+      
+      // Must be relevant job type AND UK-based
+      return isRelevantJobType(fullText) && isUKJob(fullText);
+    });
   
   console.log(`📊 Lever ${company}: ${postings.length} total jobs, ${relevantPostings.length} relevant jobs`);
   

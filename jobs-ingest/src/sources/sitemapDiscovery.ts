@@ -2,6 +2,7 @@
 import { get } from '../lib/fetcher';
 import * as cheerio from 'cheerio';
 import { ScrapingMonitor } from '../lib/monitor';
+import { isUKJob } from '../lib/normalize';
 
 export interface SitemapUrl {
   url: string;
@@ -153,8 +154,19 @@ function isJobUrl(url: string): boolean {
   const matchesRelevantPattern = relevantJobPatterns.some(pattern => pattern.test(urlLower));
   const matchesGeneralPattern = generalJobPatterns.some(pattern => pattern.test(urlLower));
   
-  // Include if has relevant keywords/patterns, or general keywords/patterns
-  return hasRelevantKeyword || matchesRelevantPattern || (hasGeneralKeyword || matchesGeneralPattern);
+  // Check if URL contains UK location indicators
+  const ukLocationKeywords = [
+    'uk', 'united-kingdom', 'britain', 'british',
+    'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh',
+    'bristol', 'liverpool', 'newcastle', 'sheffield', 'belfast', 'cardiff',
+    'cambridge', 'oxford', 'bath', 'york', 'canterbury', 'durham',
+    'england', 'scotland', 'wales', 'northern-ireland'
+  ];
+  
+  const hasUKLocation = ukLocationKeywords.some(keyword => urlLower.includes(keyword));
+  
+  // Include if has relevant keywords/patterns AND UK location indicators
+  return (hasRelevantKeyword || matchesRelevantPattern || (hasGeneralKeyword || matchesGeneralPattern)) && hasUKLocation;
 }
 
 // Company-specific job page discovery

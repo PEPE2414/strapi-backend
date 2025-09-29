@@ -65,6 +65,42 @@ export function isRelevantJobType(text: string): boolean {
   return hasPositive && !hasNegative;
 }
 
+// Check if a job is UK-based
+export function isUKJob(text: string): boolean {
+  const t = text.toLowerCase();
+  
+  // UK location keywords
+  const ukKeywords = [
+    'united kingdom', 'uk', 'britain', 'british',
+    'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh',
+    'bristol', 'liverpool', 'newcastle', 'sheffield', 'belfast', 'cardiff',
+    'cambridge', 'oxford', 'bath', 'york', 'canterbury', 'durham',
+    'england', 'scotland', 'wales', 'northern ireland',
+    'remote uk', 'hybrid uk', 'uk remote', 'uk hybrid'
+  ];
+  
+  // Non-UK keywords (exclude these)
+  const nonUKKeywords = [
+    'united states', 'usa', 'us', 'america', 'american',
+    'canada', 'canadian', 'toronto', 'vancouver', 'montreal',
+    'australia', 'australian', 'sydney', 'melbourne',
+    'germany', 'german', 'berlin', 'munich',
+    'france', 'french', 'paris', 'lyon',
+    'netherlands', 'dutch', 'amsterdam', 'rotterdam',
+    'singapore', 'singaporean',
+    'remote us', 'hybrid us', 'us remote', 'us hybrid'
+  ];
+  
+  // Check for UK keywords
+  const hasUK = ukKeywords.some(keyword => t.includes(keyword));
+  
+  // Check for non-UK keywords
+  const hasNonUK = nonUKKeywords.some(keyword => t.includes(keyword));
+  
+  // Include if has UK keywords AND no non-UK keywords
+  return hasUK && !hasNonUK;
+}
+
 export function parseSalary(text?: string): SalaryNorm|undefined {
   if (!text) return undefined;
   // very light parser; prefer JSON-LD if present

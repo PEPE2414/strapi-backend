@@ -3,7 +3,7 @@ import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
-import { classifyJobType, toISO, isRelevantJobType } from '../lib/normalize';
+import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 
 export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   const api = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs`;
@@ -11,15 +11,16 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   const json = await body.json() as any;
   const jobs = (json.jobs || []) as any[];
   
-  // Filter for relevant job types only
-  const relevantJobs = jobs.filter(j => {
-    const title = String(j.title || '').trim();
-    const description = String(j.content || '').trim();
-    const location = String(j.location?.name || '').trim();
-    const fullText = `${title} ${description} ${location}`;
-    
-    return isRelevantJobType(fullText);
-  });
+    // Filter for relevant job types and UK locations only
+    const relevantJobs = jobs.filter(j => {
+      const title = String(j.title || '').trim();
+      const description = String(j.content || '').trim();
+      const location = String(j.location?.name || '').trim();
+      const fullText = `${title} ${description} ${location}`;
+      
+      // Must be relevant job type AND UK-based
+      return isRelevantJobType(fullText) && isUKJob(fullText);
+    });
   
   console.log(`📊 Greenhouse ${board}: ${jobs.length} total jobs, ${relevantJobs.length} relevant jobs`);
   
