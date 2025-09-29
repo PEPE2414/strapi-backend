@@ -7,9 +7,31 @@ import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/norma
 
 export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   const api = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs`;
-  const { body } = await request(api);
-  const json = await body.json() as any;
-  const jobs = (json.jobs || []) as any[];
+  
+  try {
+    const { body } = await request(api);
+    const json = await body.json() as any;
+    
+    // Check if API returned an error
+    if (json.error) {
+      console.warn(`Greenhouse API error for ${board}:`, json.error);
+      return [];
+    }
+    
+    const jobs = (json.jobs || []) as any[];
+    
+    // Log some debug info for the first few companies
+    if (board === 'stripe' || board === 'airbnb') {
+      console.log(`Debug ${board}:`, {
+        hasJobs: !!json.jobs,
+        jobsLength: jobs.length,
+        sampleJob: jobs[0] ? {
+          title: jobs[0].title,
+          location: jobs[0].location?.name,
+          hasContent: !!jobs[0].content
+        } : null
+      });
+    }
   
     // Filter for relevant job types and UK locations only
     const relevantJobs = jobs.filter(j => {
@@ -57,4 +79,9 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
     };
     return job;
   }));
+  
+  } catch (error) {
+    console.warn(`Failed to scrape Greenhouse board ${board}:`, error instanceof Error ? error.message : String(error));
+    return [];
+  }
 }

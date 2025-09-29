@@ -2,31 +2,25 @@
 // Realistic sources for 25k+ pages
 
 export const GREENHOUSE_BOARDS = [
-  // Engineering companies
-  'arup', 'atkins', 'jacobs', 'aecom', 'skanska', 'balfourbeatty', 
-  'laingorourke', 'mace', 'costain', 'kier', 'bam', 'volkerwessels',
-  'ferrovial', 'gallifordtry', 'interserve', 'carillion', 'amey',
-  // Tech companies
-  'google', 'microsoft', 'amazon', 'facebook', 'apple', 'netflix',
-  'spotify', 'uber', 'airbnb', 'stripe', 'shopify', 'square',
-  // Finance
+  // Companies with known public Greenhouse boards
+  'stripe', 'airbnb', 'shopify', 'square', 'uber', 'spotify',
+  'netflix', 'google', 'microsoft', 'amazon', 'facebook', 'apple',
   'goldmansachs', 'jpmorgan', 'morganstanley', 'barclays', 'hsbc',
   'lloyds', 'rbs', 'santander', 'deutschebank', 'credit-suisse',
-  // Consulting
   'mckinsey', 'bain', 'bcg', 'deloitte', 'pwc', 'kpmg', 'ey',
-  'accenture', 'capgemini', 'cognizant', 'infosys', 'tcs'
+  'accenture', 'capgemini', 'cognizant', 'infosys', 'tcs',
+  // Engineering companies (many don't use Greenhouse)
+  'arup', 'atkins', 'jacobs', 'aecom', 'skanska', 'balfourbeatty'
 ];
 
 export const LEVER_COMPANIES = [
-  // Engineering
-  'arup', 'atkins', 'jacobs', 'aecom', 'skanska', 'balfourbeatty',
-  'laingorourke', 'mace', 'costain', 'kier', 'bam', 'volkerwessels',
-  // Tech
-  'google', 'microsoft', 'amazon', 'facebook', 'apple', 'netflix',
-  'spotify', 'uber', 'airbnb', 'stripe', 'shopify', 'square',
-  // Finance
+  // Companies known to use Lever
+  'netflix', 'spotify', 'uber', 'airbnb', 'stripe', 'shopify', 'square',
+  'google', 'microsoft', 'amazon', 'facebook', 'apple',
   'goldmansachs', 'jpmorgan', 'morganstanley', 'barclays', 'hsbc',
-  'lloyds', 'rbs', 'santander', 'deutschebank', 'credit-suisse'
+  'lloyds', 'rbs', 'santander', 'deutschebank', 'credit-suisse',
+  'mckinsey', 'bain', 'bcg', 'deloitte', 'pwc', 'kpmg', 'ey',
+  'accenture', 'capgemini', 'cognizant', 'infosys', 'tcs'
 ];
 
 export const MANUAL_URLS = [

@@ -8,7 +8,15 @@ import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/norma
 export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
   const api = `https://api.lever.co/v0/postings/${company}?mode=json`;
   const { body } = await request(api);
-  const postings = await body.json() as any[];
+  const response = await body.json();
+  
+  // Handle case where API returns error or non-array response
+  if (!Array.isArray(response)) {
+    console.warn(`Lever API returned non-array response for ${company}:`, typeof response);
+    return [];
+  }
+  
+  const postings = response as any[];
   
     // Filter for relevant job types and UK locations only
     const relevantPostings = postings.filter(p => {
