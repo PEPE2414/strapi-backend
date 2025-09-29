@@ -11,7 +11,6 @@ export default factories.createCoreController('api::cheat-sheet.cheat-sheet' as 
       const data = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet' as any, {
         filters: { userId: user.id },
         sort: { createdAt: 'desc' },
-        populate: false,
       });
 
       return { data };
