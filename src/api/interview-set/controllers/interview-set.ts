@@ -1,14 +1,14 @@
 import { factories } from '@strapi/strapi';
 import crypto from 'crypto';
 
-export default factories.createCoreController('api::interview-set.interview-set', ({ strapi }) => ({
+export default factories.createCoreController('api::interview-set.interview-set' as any, ({ strapi }) => ({
 
   async listMine(ctx) {
     const userId = ctx.state.user?.id;
     if(!userId) return ctx.unauthorized();
-    const data = await strapi.entityService.findMany('api::interview-set.interview-set', {
-      filters: { userId },
-      sort: { createdAt: 'DESC' },
+    const data = await strapi.entityService.findMany('api::interview-set.interview-set' as any, {
+      filters: { userId: { $eq: userId } },
+      sort: { createdAt: 'desc' },
       limit: 20
     });
     ctx.body = { data };
@@ -26,9 +26,14 @@ export default factories.createCoreController('api::interview-set.interview-set'
     const idem = crypto.createHash('sha256').update([userId, jobTitle, company, jdHash].join('|')).digest('hex');
 
     // Optional: check recent duplicate (last 24h)
-    const existing = await strapi.entityService.findMany('api::interview-set.interview-set', {
-      filters: { userId, jobTitle, company, jdHash },
-      sort: { createdAt: 'DESC' },
+    const existing = await strapi.entityService.findMany('api::interview-set.interview-set' as any, {
+      filters: { 
+        userId: { $eq: userId }, 
+        jobTitle: { $eq: jobTitle }, 
+        company: { $eq: company }, 
+        jdHash: { $eq: jdHash } 
+      },
+      sort: { createdAt: 'desc' },
       limit: 1
     });
     // Call n8n
@@ -67,7 +72,7 @@ export default factories.createCoreController('api::interview-set.interview-set'
     }
 
     // Save
-    const created = await strapi.entityService.create('api::interview-set.interview-set', {
+    const created = await strapi.entityService.create('api::interview-set.interview-set' as any, {
       data: { userId, jobId, jobTitle, company, jdHash, questions }
     });
 

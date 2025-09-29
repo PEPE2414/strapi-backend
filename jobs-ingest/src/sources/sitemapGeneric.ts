@@ -122,7 +122,7 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
     });
     
           const batchResults = await Promise.all(batchPromises);
-          const validJobs = batchResults.filter((job): job is CanonicalJob => job !== null);
+          const validJobs = batchResults.filter(job => job !== null) as CanonicalJob[];
           out.push(...validJobs);
     
     // Small delay between batches to be respectful
