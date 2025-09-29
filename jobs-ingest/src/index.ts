@@ -10,7 +10,18 @@ import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
-import { GREENHOUSE_BOARDS, LEVER_COMPANIES, MANUAL_URLS, SITEMAP_SOURCES, COMPANY_CAREER_SITEMAPS } from './config/sources';
+import { 
+  GREENHOUSE_BOARDS, 
+  LEVER_COMPANIES, 
+  ALL_JOB_BOARDS, 
+  ALL_COMPANIES,
+  ENGINEERING_COMPANIES,
+  TECH_COMPANIES,
+  FINANCE_COMPANIES,
+  CONSULTING_COMPANIES,
+  MANUFACTURING_COMPANIES,
+  ENERGY_COMPANIES
+} from './config/sources';
 import { SCALE_CONFIG } from './config/scale';
 import Bottleneck from 'bottleneck';
 

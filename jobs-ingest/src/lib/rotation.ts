@@ -18,7 +18,7 @@ export interface CrawlLog {
   errorReason?: string;
 }
 
-// Define source buckets for rotation
+// Define source buckets for rotation with expanded coverage
 export const CRAWL_BUCKETS: CrawlBucket[] = [
   {
     id: 'ats-daily',
@@ -27,39 +27,63 @@ export const CRAWL_BUCKETS: CrawlBucket[] = [
     priority: 'high'
   },
   {
-    id: 'job-boards',
-    name: 'Job Boards (Every 3 days)',
-    sources: ['reed', 'totaljobs', 'monster', 'gradcracker', 'prospects', 'targetjobs'],
+    id: 'major-job-boards',
+    name: 'Major Job Boards (Every 2 days)',
+    sources: ['reed', 'totaljobs', 'monster', 'cv-library', 'jobsite', 'fish4jobs', 'jobs-co-uk', 'careerjet', 'adzuna', 'indeed'],
     priority: 'high'
   },
   {
     id: 'engineering-week1',
-    name: 'Engineering Companies (Week 1)',
-    sources: ['arup', 'atkins', 'wsp', 'aecom', 'mott-macdonald', 'jacobs', 'balfour-beatty', 'costain'],
+    name: 'Engineering & Construction (Week 1)',
+    sources: ['arup', 'atkins', 'wsp', 'aecom', 'mott-macdonald', 'jacobs', 'balfour-beatty', 'costain', 'skanska-uk', 'laing-orourke', 'ramboll', 'stantec-uk', 'buro-happold', 'hoare-lea', 'sweco'],
     priority: 'medium'
   },
   {
     id: 'engineering-week2',
-    name: 'Engineering Companies (Week 2)',
-    sources: ['skanska-uk', 'laing-orourke', 'ramboll', 'stantec-uk', 'buro-happold', 'hoare-lea', 'sweco', 'ayesa-uk'],
+    name: 'Engineering & Construction (Week 2)',
+    sources: ['mace', 'kier', 'galliford-try', 'interserve', 'carillion', 'amey', 'serco', 'capita', 'mitie', 'g4s', 'sodexo', 'compass', 'elior', 'aramex', 'dhl', 'fedex', 'ups', 'royal-mail', 'parcelforce', 'hermes', 'yodel', 'dpd'],
     priority: 'medium'
   },
   {
-    id: 'manufacturing-week3',
-    name: 'Manufacturing & Aerospace (Week 3)',
-    sources: ['rolls-royce', 'bae-systems', 'dyson', 'jaguar-land-rover', 'airbus-uk', 'gkn', 'mbda', 'siemens-uk', 'schneider-electric-uk'],
+    id: 'tech-week3',
+    name: 'Technology (Week 3)',
+    sources: ['google-london', 'microsoft-uk', 'amazon-uk', 'bloomberg-london', 'deepmind', 'facebook-london', 'apple-uk', 'netflix-uk', 'spotify-uk', 'uber-uk', 'airbnb-uk', 'booking-uk', 'arm', 'nvidia-uk', 'intel-uk', 'amd-uk', 'qualcomm-uk', 'broadcom-uk', 'marvell-uk', 'xilinx-uk', 'altera-uk'],
     priority: 'medium'
   },
   {
-    id: 'tech-finance-week4',
-    name: 'Tech & Finance (Week 4)',
-    sources: ['national-grid', 'sse', 'edf-uk', 'octopus-energy', 'shell-uk', 'bp-uk', 'google-london', 'microsoft-uk', 'amazon-uk', 'bloomberg-london', 'deepmind'],
+    id: 'tech-week4',
+    name: 'Technology (Week 4)',
+    sources: ['synopsys-uk', 'cadence-uk', 'mentor-graphics-uk', 'ansys-uk', 'dassault-uk', 'autodesk-uk', 'adobe-uk', 'salesforce-uk', 'oracle-uk', 'ibm-uk', 'hp-uk', 'dell-uk', 'cisco-uk', 'juniper-uk', 'arista-uk', 'palo-alto-uk', 'fortinet-uk', 'checkpoint-uk', 'symantec-uk', 'mcafee-uk', 'trend-micro-uk'],
     priority: 'medium'
   },
   {
-    id: 'consulting-public-week5',
-    name: 'Consulting & Public Sector (Week 5)',
-    sources: ['goldman-sachs-london', 'jpmorgan-london', 'barclays', 'hsbc', 'lloyds', 'natwest', 'deloitte-uk', 'pwc-uk', 'kpmg-uk', 'ey-uk', 'civil-service', 'network-rail', 'tfl', 'hs2'],
+    id: 'finance-week5',
+    name: 'Finance (Week 5)',
+    sources: ['goldman-sachs-london', 'jpmorgan-london', 'barclays', 'hsbc', 'lloyds', 'natwest', 'standard-chartered', 'santander-uk', 'rbs', 'tsb', 'virgin-money', 'first-direct', 'halifax', 'schroders', 'man-group', 'brevan-howard', 'marshall-wace', 'citadel', 'point72', 'millennium', 'balyasny', 'exodus-point'],
+    priority: 'medium'
+  },
+  {
+    id: 'consulting-week6',
+    name: 'Consulting (Week 6)',
+    sources: ['deloitte-uk', 'pwc-uk', 'kpmg-uk', 'ey-uk', 'accenture-uk', 'mckinsey-uk', 'bain-uk', 'bcg-uk', 'oliver-wyman-uk', 'kearney-uk', 'roland-berger-uk', 'at-kearney-uk', 'strategy-uk', 'monitor-uk', 'parthenon-uk', 'le-katz-uk', 'booz-allen-uk'],
+    priority: 'medium'
+  },
+  {
+    id: 'manufacturing-week7',
+    name: 'Manufacturing & Aerospace (Week 7)',
+    sources: ['rolls-royce', 'bae-systems', 'dyson', 'jaguar-land-rover', 'airbus-uk', 'gkn', 'mbda', 'siemens-uk', 'schneider-electric-uk', 'bombardier-uk', 'leonardo-uk', 'thales-uk', 'saab-uk', 'lockheed-martin-uk', 'boeing-uk', 'northrop-grumman-uk', 'raytheon-uk', 'general-dynamics-uk', 'l3harris-uk'],
+    priority: 'medium'
+  },
+  {
+    id: 'energy-week8',
+    name: 'Energy & Utilities (Week 8)',
+    sources: ['national-grid', 'sse', 'edf-uk', 'octopus-energy', 'shell-uk', 'bp-uk', 'centrica', 'e-on-uk', 'npower', 'scottish-power', 'british-gas', 'eon-uk', 'rwe-uk', 'vattenfall-uk', 'statkraft-uk', 'orkla-uk', 'equinor-uk', 'total-uk', 'chevron-uk', 'exxonmobil-uk'],
+    priority: 'medium'
+  },
+  {
+    id: 'specialized-boards',
+    name: 'Specialized Job Boards (Every 4 days)',
+    sources: ['engineering-jobs', 'tech-jobs', 'finance-jobs', 'consulting-jobs', 'university-boards'],
     priority: 'low'
   }
 ];
