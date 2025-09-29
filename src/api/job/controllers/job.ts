@@ -29,7 +29,8 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       secretLength: secret?.length || 0,
       hasExpectedSecret: !!expectedSecret,
       expectedSecretLength: expectedSecret?.length || 0,
-      secretHeaderName: SECRET_HEADER
+      secretHeaderName: SECRET_HEADER,
+      timestamp: new Date().toISOString()
     });
     
     // Validate secret with constant-time comparison
