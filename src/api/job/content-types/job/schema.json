@@ -7,6 +7,7 @@
     "source": { "type": "string", "required": true },
     "sourceUrl": { "type": "text" },
     "title": { "type": "string", "required": true },
+    "company": { "type": "json", "required": false, "default": { "name": "Unknown" } },
     "companyLogo": { 
       "type": "media", 
       "multiple": false, 
@@ -23,6 +24,9 @@
     "duration": { "type": "string" },
     "experience": { "type": "string" },
     "companyPage": { "type": "text" },
+    "salary": { "type": "json" },
+    "relatedDegree": { "type": "json" },
+    "degreeLevel": { "type": "json" },
     "postedAt": { "type": "datetime" },
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
     "hash": { "type": "string", "required": true, "unique": true }
