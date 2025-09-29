@@ -6,17 +6,52 @@ import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 
 export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
-  const api = `https://api.lever.co/v0/postings/${company}?mode=json`;
-  const { body } = await request(api);
-  const response = await body.json();
+  const allPostings: any[] = [];
+  let offset = 0;
+  const limit = 100; // Lever API limit
   
-  // Handle case where API returns error or non-array response
-  if (!Array.isArray(response)) {
-    console.warn(`Lever API returned non-array response for ${company}:`, typeof response);
-    return [];
-  }
-  
-  const postings = response as any[];
+  try {
+    // Paginate through all available postings
+    while (true) {
+      const api = `https://api.lever.co/v0/postings/${company}?mode=json&limit=${limit}&offset=${offset}`;
+      console.log(`🔄 Fetching Lever postings ${offset + 1}-${offset + limit} for ${company}...`);
+      
+      const { body } = await request(api);
+      const response = await body.json();
+      
+      // Handle case where API returns error or non-array response
+      if (!Array.isArray(response)) {
+        console.warn(`Lever API returned non-array response for ${company}:`, typeof response);
+        break;
+      }
+      
+      const postings = response as any[];
+      
+      // If no postings returned, we've reached the end
+      if (postings.length === 0) {
+        console.log(`📄 No more postings at offset ${offset}, stopping pagination`);
+        break;
+      }
+      
+      allPostings.push(...postings);
+      console.log(`📄 Offset ${offset}: Found ${postings.length} postings (Total: ${allPostings.length})`);
+      
+      // If we got fewer postings than requested, we're on the last page
+      if (postings.length < limit) {
+        console.log(`📄 Last page reached (${postings.length} < ${limit})`);
+        break;
+      }
+      
+      offset += limit;
+      
+      // Safety limit to prevent infinite loops
+      if (offset > 5000) {
+        console.log(`⚠️  Reached safety limit of 5000 postings for ${company}`);
+        break;
+      }
+    }
+    
+    const postings = allPostings;
   
     // Filter for relevant job types and UK locations only
     const relevantPostings = postings.filter(p => {
@@ -54,4 +89,9 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
     };
     return job;
   }));
+  
+  } catch (error) {
+    console.warn(`Failed to scrape Lever company ${company}:`, error instanceof Error ? error.message : String(error));
+    return [];
+  }
 }

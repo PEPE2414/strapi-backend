@@ -5,10 +5,12 @@ import { scrapeSuccessFactors } from './sources/successfactors';
 import { scrapeICIMS } from './sources/icims';
 import { scrapeUKCompany } from './sources/ukCompanies';
 import { scrapeFromUrls } from './sources/sitemapGeneric';
+import { scrapeGradcracker } from './sources/gradcracker';
+import { scrapeHighVolumeBoard } from './sources/highVolumeBoards';
 import { discoverJobUrls, discoverCompanyJobPages } from './sources/sitemapDiscovery';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
-import { validateJobRequirements, cleanJobDescription, isJobFresh } from './lib/normalize';
+import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { 
   GREENHOUSE_BOARDS, 
@@ -68,43 +70,76 @@ async function runAll() {
       try {
         let sourceJobs: any[] = [];
         
-        // Route to appropriate scraper
+        // Route to appropriate scraper based on source type
         if (GREENHOUSE_BOARDS.includes(source)) {
+          console.log(`🔄 Scraping Greenhouse: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeGreenhouse(source));
         } else if (LEVER_COMPANIES.includes(source)) {
+          console.log(`🔄 Scraping Lever: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeLever(source));
         } else if (source.startsWith('workday:')) {
           const company = source.replace('workday:', '');
+          console.log(`🔄 Scraping Workday: ${company}`);
           sourceJobs = await limiter.schedule(() => scrapeWorkday(company));
         } else if (source.startsWith('successfactors:')) {
           const company = source.replace('successfactors:', '');
+          console.log(`🔄 Scraping SuccessFactors: ${company}`);
           sourceJobs = await limiter.schedule(() => scrapeSuccessFactors(company));
         } else if (source.startsWith('icims:')) {
           const company = source.replace('icims:', '');
+          console.log(`🔄 Scraping iCIMS: ${company}`);
           sourceJobs = await limiter.schedule(() => scrapeICIMS(company));
         } else if (source.startsWith('uk-company:')) {
           const company = source.replace('uk-company:', '');
+          console.log(`🔄 Scraping UK Company: ${company}`);
           sourceJobs = await limiter.schedule(() => scrapeUKCompany(company));
-        } else if (ALL_JOB_BOARDS.includes(source)) {
+        } else if (ALL_JOB_BOARDS.some(board => source.includes(board))) {
+          console.log(`🔄 Scraping Job Board: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
-        } else if (ALL_JOB_BOARDS.includes(source)) {
-          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:companies'));
-        } else if (ALL_JOB_BOARDS.includes(source)) {
-          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'site:manual'));
+        } else if (ENGINEERING_COMPANIES.includes(source) || TECH_COMPANIES.includes(source) || 
+                   FINANCE_COMPANIES.includes(source) || CONSULTING_COMPANIES.includes(source) ||
+                   MANUFACTURING_COMPANIES.includes(source) || ENERGY_COMPANIES.includes(source)) {
+          console.log(`🔄 Scraping Company Career Page: ${source}`);
+          sourceJobs = await limiter.schedule(() => scrapeUKCompany(source));
+        } else if (source === 'gradcracker') {
+          console.log(`🔄 Scraping Gradcracker (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeGradcracker());
+        } else if (source.startsWith('high-volume:')) {
+          const boardName = source.replace('high-volume:', '');
+          console.log(`🔄 Scraping High Volume Board: ${boardName}`);
+          sourceJobs = await limiter.schedule(() => scrapeHighVolumeBoard(boardName));
+        } else if (ALL_JOB_BOARDS.some(board => source.includes(board))) {
+          console.log(`🔄 Scraping Job Board Sitemap: ${source}`);
+          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
+        } else {
+          console.log(`⚠️  Unknown source type: ${source}`);
+          continue;
         }
 
-        // Validate and filter jobs
+        // Validate and filter jobs (relaxed for testing)
         const validJobs = sourceJobs.filter(job => {
-          // Check if job is fresh
-          if (!isJobFresh(job, 30)) {
+          // Check if job is fresh (relaxed to 90 days for testing)
+          if (!isJobFresh(job, 90)) {
             console.log(`⏭️  Skipping stale job: ${job.title}`);
             return false;
           }
 
-          // Validate job requirements
-          const validation = validateJobRequirements(job);
-          if (!validation.valid) {
-            console.log(`⏭️  Skipping invalid job: ${job.title} - ${validation.reason}`);
+          // Basic validation only (relaxed for testing)
+          if (!job.title || !job.company?.name || !job.applyUrl) {
+            console.log(`⏭️  Skipping job missing basic fields: ${job.title || 'Unknown'}`);
+            return false;
+          }
+
+          // Check UK location (keep this strict)
+          const fullText = `${job.title} ${job.descriptionText || job.descriptionHtml || ''} ${job.location || ''}`;
+          if (!isUKJob(fullText)) {
+            console.log(`⏭️  Skipping non-UK job: ${job.title}`);
+            return false;
+          }
+
+          // Check job type (keep this strict)
+          if (!isRelevantJobType(fullText)) {
+            console.log(`⏭️  Skipping irrelevant job type: ${job.title}`);
             return false;
           }
 

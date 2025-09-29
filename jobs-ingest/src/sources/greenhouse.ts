@@ -6,24 +6,57 @@ import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 
 export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
-  const api = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs`;
+  const allJobs: any[] = [];
+  let page = 0;
+  const perPage = 100; // Greenhouse API limit
   
   try {
-    const { body } = await request(api);
-    const json = await body.json() as any;
+    // Paginate through all available jobs
+    while (true) {
+      const api = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs?page=${page}&per_page=${perPage}`;
+      console.log(`🔄 Fetching page ${page + 1} for ${board}...`);
+      
+      const { body } = await request(api);
+      const json = await body.json() as any;
     
-    // Check if API returned an error
-    if (json.error) {
-      console.warn(`Greenhouse API error for ${board}:`, json.error);
-      return [];
+      // Check if API returned an error
+      if (json.error) {
+        console.warn(`Greenhouse API error for ${board}:`, json.error);
+        break;
+      }
+      
+      const jobs = (json.jobs || []) as any[];
+      
+      // If no jobs returned, we've reached the end
+      if (jobs.length === 0) {
+        console.log(`📄 No more jobs on page ${page + 1}, stopping pagination`);
+        break;
+      }
+      
+      allJobs.push(...jobs);
+      console.log(`📄 Page ${page + 1}: Found ${jobs.length} jobs (Total: ${allJobs.length})`);
+      
+      // If we got fewer jobs than requested, we're on the last page
+      if (jobs.length < perPage) {
+        console.log(`📄 Last page reached (${jobs.length} < ${perPage})`);
+        break;
+      }
+      
+      page++;
+      
+      // Safety limit to prevent infinite loops
+      if (page > 50) {
+        console.log(`⚠️  Reached safety limit of 50 pages for ${board}`);
+        break;
+      }
     }
     
-    const jobs = (json.jobs || []) as any[];
+    const jobs = allJobs;
     
     // Log some debug info for the first few companies
     if (board === 'stripe' || board === 'airbnb') {
       console.log(`Debug ${board}:`, {
-        hasJobs: !!json.jobs,
+        hasJobs: jobs.length > 0,
         jobsLength: jobs.length,
         sampleJob: jobs[0] ? {
           title: jobs[0].title,

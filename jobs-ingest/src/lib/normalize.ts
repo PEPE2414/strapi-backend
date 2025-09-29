@@ -76,7 +76,12 @@ export function isRelevantJobType(text: string): boolean {
     'executive', 'ceo', 'cto', 'cfo', 'coo', 'founder', 'co-founder',
     '5+ years', '10+ years', '15+ years', '20+ years',
     'experienced', 'expert', 'specialist', 'consultant', 'architect',
-    'mid-level', 'mid level', 'intermediate', 'advanced'
+    'mid-level', 'mid level', 'intermediate', 'advanced',
+    // PhD/Research exclusions
+    'phd', 'ph.d', 'ph.d.', 'doctorate', 'doctoral', 'postdoc', 'post-doc', 'post doc',
+    'research assistant', 'research fellow', 'research associate', 'research scientist',
+    'postdoctoral', 'post-doctoral', 'post doctoral', 'research position',
+    'mba only', 'mba required', 'mba preferred', 'mba essential'
   ];
   
   // Check for positive keywords
@@ -164,6 +169,10 @@ export function isUKJob(text: string): boolean {
   const nonUKKeywords = [
     // North America
     'united states', 'usa', 'us', 'america', 'american', 'united states of america',
+    'san francisco', 'new york', 'new york city', 'nyc', 'seattle', 'los angeles',
+    'chicago', 'houston', 'phoenix', 'philadelphia', 'san antonio', 'san diego',
+    'dallas', 'austin', 'jacksonville', 'fort worth', 'columbus', 'charlotte',
+    'san jose', 'indianapolis', 'san francisco bay area', 'bay area',
     'canada', 'canadian', 'toronto', 'vancouver', 'montreal', 'calgary', 'ottawa',
     'edmonton', 'winnipeg', 'quebec', 'hamilton', 'kitchener', 'london ontario',
     'mexico', 'mexican', 'mexico city', 'guadalajara', 'monterrey',

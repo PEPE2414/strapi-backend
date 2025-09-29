@@ -23,13 +23,44 @@ export const CRAWL_BUCKETS: CrawlBucket[] = [
   {
     id: 'ats-daily',
     name: 'ATS Platforms (Daily)',
-    sources: ['greenhouse', 'lever', 'workday', 'successfactors', 'icims'],
+    sources: [
+      'stripe', 'shopify', 'netflix', 'airbnb', 'uber', 'lyft', 'spotify', 'slack', 'zoom',
+      'workday:rolls-royce', 'workday:bp', 'workday:shell', 'workday:unilever',
+      'successfactors:sap', 'successfactors:siemens', 'successfactors:bosch',
+      'icims:jpmorgan', 'icims:goldman-sachs', 'icims:morgan-stanley'
+    ],
     priority: 'high'
   },
   {
     id: 'major-job-boards',
     name: 'Major Job Boards (Every 2 days)',
-    sources: ['reed', 'totaljobs', 'monster', 'cv-library', 'jobsite', 'fish4jobs', 'jobs-co-uk', 'careerjet', 'adzuna', 'indeed'],
+    sources: [
+      'https://www.reed.co.uk/sitemap.xml',
+      'https://www.totaljobs.com/sitemap.xml', 
+      'https://www.monster.co.uk/sitemap.xml',
+      'https://www.cv-library.co.uk/sitemap.xml',
+      'https://www.jobsite.co.uk/sitemap.xml',
+      'https://www.fish4jobs.co.uk/sitemap.xml',
+      'https://www.jobs.co.uk/sitemap.xml',
+      'https://www.careerjet.co.uk/sitemap.xml',
+      'https://www.adzuna.co.uk/sitemap.xml',
+      'https://uk.indeed.com/sitemap.xml'
+    ],
+    priority: 'high'
+  },
+  {
+    id: 'university-job-boards',
+    name: 'University Job Boards (Daily)',
+    sources: [
+      'gradcracker',
+      'high-volume:targetjobs',
+      'high-volume:prospects',
+      'https://www.graduatejobs.com/sitemap.xml',
+      'https://www.milkround.com/sitemap.xml',
+      'https://www.ratemyplacement.co.uk/sitemap.xml',
+      'https://www.studentjob.co.uk/sitemap.xml',
+      'https://www.graduate-jobs.com/sitemap.xml'
+    ],
     priority: 'high'
   },
   {
@@ -105,21 +136,29 @@ export function getCurrentWeekOfMonth(): number {
 export function getBucketsForToday(): CrawlBucket[] {
   const dayOfMonth = getCurrentDayOfMonth();
   const weekOfMonth = getCurrentWeekOfMonth();
+  const dayOfWeek = new Date().getDay();
   
   const buckets: CrawlBucket[] = [];
   
   // Always crawl ATS platforms daily
   buckets.push(CRAWL_BUCKETS.find(b => b.id === 'ats-daily')!);
   
-  // Crawl job boards every 3 days
-  if (dayOfMonth % 3 === 1) {
-    buckets.push(CRAWL_BUCKETS.find(b => b.id === 'job-boards')!);
+  // Always crawl university job boards daily (high volume)
+  buckets.push(CRAWL_BUCKETS.find(b => b.id === 'university-job-boards')!);
+  
+  // Crawl major job boards every 2 days (more frequent)
+  if (dayOfMonth % 2 === 1) {
+    buckets.push(CRAWL_BUCKETS.find(b => b.id === 'major-job-boards')!);
   }
   
-  // Rotate through company buckets weekly
+  // Rotate through company buckets more aggressively (2-3 per day)
   const companyBuckets = CRAWL_BUCKETS.filter(b => b.id.startsWith('engineering') || b.id.startsWith('manufacturing') || b.id.startsWith('tech-finance') || b.id.startsWith('consulting'));
-  const bucketIndex = (weekOfMonth - 1) % companyBuckets.length;
-  buckets.push(companyBuckets[bucketIndex]);
+  
+  // Include 2-3 company buckets per day for faster coverage
+  for (let i = 0; i < Math.min(3, companyBuckets.length); i++) {
+    const bucketIndex = (weekOfMonth - 1 + i) % companyBuckets.length;
+    buckets.push(companyBuckets[bucketIndex]);
+  }
   
   return buckets;
 }
