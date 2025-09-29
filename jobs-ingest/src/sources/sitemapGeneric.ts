@@ -16,7 +16,7 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
     const batch = urls.slice(i, i + BATCH_SIZE);
     console.log(`Processing batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(urls.length/BATCH_SIZE)} (${batch.length} URLs)`);
     
-    const batchPromises = batch.map(async (url) => {
+    const batchPromises: Promise<CanonicalJob | null>[] = batch.map(async (url): Promise<CanonicalJob | null> => {
       try {
       const { html } = await get(url);
       const jsonld = extractJobPostingJSONLD(html);
@@ -91,7 +91,7 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
       const hash = sha256([title, companyName, applyUrl].join('|'));
       const slug = makeUniqueSlug(title, companyName, hash, location);
 
-      out.push({
+      const job: CanonicalJob = {
         source: sourceTag,
         sourceUrl: url,
         title,
@@ -114,7 +114,8 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         postedAt,
         slug,
         hash
-      });
+      };
+      return job;
     } catch (error) {
       console.warn(`Failed to scrape ${url}:`, error instanceof Error ? error.message : String(error));
       return null;
@@ -122,7 +123,7 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
     });
     
           const batchResults = await Promise.all(batchPromises);
-          const validJobs = batchResults.filter(job => job !== null) as CanonicalJob[];
+          const validJobs = batchResults.filter((job): job is CanonicalJob => job !== null);
           out.push(...validJobs);
     
     // Small delay between batches to be respectful
