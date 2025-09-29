@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cheat_sheets",
+  "info": {
+    "singularName": "cheat-sheet",
+    "pluralName": "cheat-sheets",
+    "displayName": "Cheat Sheet",
+    "description": "Interview cheat sheets generated for specific jobs"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "userId": {
+      "type": "integer",
+      "required": true
+    },
+    "jobId": {
+      "type": "integer"
+    },
+    "jobTitle": {
+      "type": "string",
+      "required": true
+    },
+    "company": {
+      "type": "string",
+      "required": true
+    },
+    "sections": {
+      "type": "json",
+      "required": true
+    },
+    "sources": {
+      "type": "json"
+    }
+  }
+}
