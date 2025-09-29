@@ -18,6 +18,20 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
     },
     body: JSON.stringify({ data: jobs })
   });
-  if (!res.ok) throw new Error(`Strapi ingest failed: ${res.status}`);
-  return res.json();
+  
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error(`Strapi ingest failed: ${res.status} - ${errorText}`);
+    console.error('Request details:', {
+      url: `${BASE}/jobs/ingest`,
+      secretHeader: 'x-seed-secret',
+      secretLength: SECRET?.length || 0,
+      jobsCount: jobs.length
+    });
+    throw new Error(`Strapi ingest failed: ${res.status} - ${errorText}`);
+  }
+  
+  const result = await res.json();
+  console.log(`✅ Successfully ingested ${jobs.length} jobs to Strapi`);
+  return result;
 }
