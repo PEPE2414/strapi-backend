@@ -23,6 +23,15 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     const secret = Array.isArray(secretHeader) ? secretHeader[0] : secretHeader;
     const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
     
+    // Debug logging (safe - don't log actual secrets)
+    console.log('Auth debug:', {
+      hasSecretHeader: !!secretHeader,
+      secretLength: secret?.length || 0,
+      hasExpectedSecret: !!expectedSecret,
+      expectedSecretLength: expectedSecret?.length || 0,
+      secretHeaderName: SECRET_HEADER
+    });
+    
     // Validate secret with constant-time comparison
     if (!secret || !expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
       console.warn('Invalid ingest secret provided');
@@ -95,6 +104,25 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       .map(x=>({ ...x.job, _score: Math.round(x.score) }));
 
     ctx.body = { items: scored };
+  },
+
+  // Test endpoint to verify authentication setup
+  async testAuth(ctx) {
+    const secretHeader = ctx.request.headers[SECRET_HEADER];
+    const secret = Array.isArray(secretHeader) ? secretHeader[0] : secretHeader;
+    const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
+    
+    ctx.body = {
+      status: 'ok',
+      auth: {
+        hasSecretHeader: !!secretHeader,
+        secretLength: secret?.length || 0,
+        hasExpectedSecret: !!expectedSecret,
+        expectedSecretLength: expectedSecret?.length || 0,
+        secretHeaderName: SECRET_HEADER,
+        matches: secret && expectedSecret ? constantTimeCompare(secret, expectedSecret) : false
+      }
+    };
   }
 }));
 

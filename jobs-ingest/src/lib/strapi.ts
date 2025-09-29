@@ -9,6 +9,30 @@ console.log('🔧 Strapi config:', {
   SECRET_SET: !!SECRET && SECRET !== 'changeme' 
 });
 
+// Test authentication before attempting to ingest
+export async function testAuth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE}/jobs/test-auth`, {
+      method: 'GET',
+      headers: {
+        'x-seed-secret': SECRET
+      }
+    });
+    
+    if (res.ok) {
+      const result = await res.json();
+      console.log('🔐 Auth test result:', result.auth);
+      return result.auth?.matches || false;
+    } else {
+      console.error('❌ Auth test failed:', res.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Auth test error:', error);
+    return false;
+  }
+}
+
 export async function upsertJobs(jobs: CanonicalJob[]) {
   const res = await fetch(`${BASE}/jobs/ingest`, {
     method:'POST',

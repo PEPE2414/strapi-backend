@@ -2,7 +2,7 @@ import { scrapeGreenhouse } from './sources/greenhouse';
 import { scrapeLever } from './sources/lever';
 import { scrapeFromUrls } from './sources/sitemapGeneric';
 import { discoverJobUrls, discoverCompanyJobPages } from './sources/sitemapDiscovery';
-import { upsertJobs } from './lib/strapi';
+import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { GREENHOUSE_BOARDS, LEVER_COMPANIES, MANUAL_URLS, SITEMAP_SOURCES, COMPANY_CAREER_SITEMAPS } from './config/sources';
 import { SCALE_CONFIG } from './config/scale';
@@ -23,6 +23,15 @@ async function runAll() {
 
   console.log(`🚀 Starting job ingestion at ${new Date().toISOString()}`);
   console.log(`📊 Target sources: ${GREENHOUSE_BOARDS.length} Greenhouse, ${LEVER_COMPANIES.length} Lever, ${MANUAL_URLS.length} Manual URLs`);
+
+  // Test authentication first
+  console.log('🔐 Testing authentication...');
+  const authOk = await testAuth();
+  if (!authOk) {
+    console.error('❌ Authentication failed! Check your STRAPI_INGEST_SECRET environment variable.');
+    process.exit(1);
+  }
+  console.log('✅ Authentication successful!');
 
   // 1) ATS sources (configure in config/sources.ts) - These are fast API calls
   console.log('📡 Scraping ATS sources...');

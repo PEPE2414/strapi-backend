@@ -24,10 +24,11 @@ export const MANUAL_URLS = [
 ];
 
 export const SITEMAP_SOURCES = [
-  // Working job board sitemaps
+  // Working job board sitemaps - let's try some different approaches
   'https://www.reed.co.uk/sitemap.xml',
   'https://www.totaljobs.com/sitemap.xml',
-  'https://www.monster.co.uk/sitemap.xml'
+  'https://www.monster.co.uk/sitemap.xml',
+  'https://www.jobsite.co.uk/sitemap.xml'
 ];
 
 // High-volume company career pages
