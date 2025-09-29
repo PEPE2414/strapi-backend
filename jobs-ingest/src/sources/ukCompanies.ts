@@ -414,7 +414,7 @@ async function parseJobPage(html: string, url: string, company: any): Promise<Ca
   const descriptionText = cleanJobDescription(description);
 
   const job: CanonicalJob = {
-    source: `uk-company:${companyKey}`,
+    source: `uk-company:${company.name}`,
     sourceUrl: url,
     title,
     company: { 

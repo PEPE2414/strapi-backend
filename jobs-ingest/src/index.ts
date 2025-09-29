@@ -85,11 +85,11 @@ async function runAll() {
         } else if (source.startsWith('uk-company:')) {
           const company = source.replace('uk-company:', '');
           sourceJobs = await limiter.schedule(() => scrapeUKCompany(company));
-        } else if (SITEMAP_SOURCES.includes(source)) {
+        } else if (ALL_JOB_BOARDS.includes(source)) {
           sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
-        } else if (COMPANY_CAREER_SITEMAPS.includes(source)) {
+        } else if (ALL_JOB_BOARDS.includes(source)) {
           sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:companies'));
-        } else if (MANUAL_URLS.includes(source)) {
+        } else if (ALL_JOB_BOARDS.includes(source)) {
           sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'site:manual'));
         }
 

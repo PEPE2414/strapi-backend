@@ -71,7 +71,7 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
     throw new Error(`Strapi ingest failed: ${res.status} - ${errorText}`);
   }
   
-  const result = await res.json();
+  const result = await res.json() as any;
   console.log(`✅ Successfully ingested ${result.count || uniqueJobs.length} jobs to Strapi`);
   return result;
 }
