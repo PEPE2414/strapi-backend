@@ -5,7 +5,7 @@ export default {
       path: '/cheat-sheets/me',
       handler: 'cheat-sheet.me',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
       },
     },
     {
@@ -13,7 +13,7 @@ export default {
       path: '/cheat-sheets/generate',
       handler: 'cheat-sheet.generate',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
       },
     },
   ],
