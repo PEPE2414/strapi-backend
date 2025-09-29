@@ -20,7 +20,7 @@ export async function testAuth(): Promise<boolean> {
     });
     
     if (res.ok) {
-      const result = await res.json();
+      const result = await res.json() as any;
       console.log('🔐 Auth test result:', result.auth);
       return result.auth?.matches || false;
     } else {
