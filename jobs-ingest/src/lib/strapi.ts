@@ -34,13 +34,29 @@ export async function testAuth(): Promise<boolean> {
 }
 
 export async function upsertJobs(jobs: CanonicalJob[]) {
+  if (jobs.length === 0) {
+    console.log('No jobs to upsert');
+    return { count: 0, skipped: 0, errors: 0 };
+  }
+
+  // Deduplicate jobs within this batch
+  const uniqueJobs = deduplicateJobs(jobs);
+  console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
+
   const res = await fetch(`${BASE}/jobs/ingest`, {
     method:'POST',
     headers:{
       'content-type':'application/json',
       'x-seed-secret': SECRET
     },
-    body: JSON.stringify({ data: jobs })
+    body: JSON.stringify({ 
+      data: uniqueJobs,
+      metadata: {
+        batchSize: uniqueJobs.length,
+        timestamp: new Date().toISOString(),
+        version: '2.0'
+      }
+    })
   });
   
   if (!res.ok) {
@@ -50,12 +66,93 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
       url: `${BASE}/jobs/ingest`,
       secretHeader: 'x-seed-secret',
       secretLength: SECRET?.length || 0,
-      jobsCount: jobs.length
+      jobsCount: uniqueJobs.length
     });
     throw new Error(`Strapi ingest failed: ${res.status} - ${errorText}`);
   }
   
   const result = await res.json();
-  console.log(`✅ Successfully ingested ${jobs.length} jobs to Strapi`);
+  console.log(`✅ Successfully ingested ${result.count || uniqueJobs.length} jobs to Strapi`);
   return result;
+}
+
+// Enhanced deduplication logic
+function deduplicateJobs(jobs: CanonicalJob[]): CanonicalJob[] {
+  const seen = new Map<string, CanonicalJob>();
+  const duplicates: string[] = [];
+  
+  for (const job of jobs) {
+    // Primary key: hash (most reliable)
+    if (seen.has(job.hash)) {
+      duplicates.push(`Hash: ${job.hash}`);
+      continue;
+    }
+    
+    // Secondary key: applyUrl + company + title (fallback)
+    const secondaryKey = `${job.applyUrl}|${job.company.name}|${job.title}`;
+    if (seen.has(secondaryKey)) {
+      duplicates.push(`Secondary: ${secondaryKey}`);
+      continue;
+    }
+    
+    // Store both keys
+    seen.set(job.hash, job);
+    seen.set(secondaryKey, job);
+  }
+  
+  if (duplicates.length > 0) {
+    console.log(`🔄 Removed ${duplicates.length} duplicate jobs`);
+  }
+  
+  return Array.from(seen.values()).filter(job => job.hash);
+}
+
+// Enhanced job validation before upsert
+export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reason?: string } {
+  // Check required fields
+  if (!job.title || job.title.trim().length < 3) {
+    return { valid: false, reason: 'Invalid title' };
+  }
+  
+  if (!job.company?.name || job.company.name.trim().length < 2) {
+    return { valid: false, reason: 'Invalid company name' };
+  }
+  
+  if (!job.applyUrl || job.applyUrl.trim().length < 10) {
+    return { valid: false, reason: 'Invalid apply URL' };
+  }
+  
+  if (!job.hash || job.hash.trim().length < 10) {
+    return { valid: false, reason: 'Invalid hash' };
+  }
+  
+  if (!job.slug || job.slug.trim().length < 5) {
+    return { valid: false, reason: 'Invalid slug' };
+  }
+  
+  // Check job description quality
+  const description = job.descriptionText || job.descriptionHtml || '';
+  const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  if (cleanDescription.length < 300) {
+    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥300)` };
+  }
+  
+  // Check for company page URL
+  if (!job.companyPageUrl || job.companyPageUrl.trim().length < 10) {
+    return { valid: false, reason: 'Missing company page URL' };
+  }
+  
+  // Validate apply URL is not an aggregator
+  const applyUrl = job.applyUrl.toLowerCase();
+  const aggregatorDomains = [
+    'indeed.com', 'linkedin.com', 'glassdoor.com', 'ziprecruiter.com',
+    'monster.com', 'reed.co.uk', 'totaljobs.com', 'cv-library.co.uk'
+  ];
+  
+  const isAggregator = aggregatorDomains.some(domain => applyUrl.includes(domain));
+  if (isAggregator) {
+    return { valid: false, reason: 'Apply URL is from external aggregator' };
+  }
+  
+  return { valid: true };
 }

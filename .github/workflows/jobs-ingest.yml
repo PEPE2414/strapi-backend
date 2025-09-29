@@ -1,10 +1,27 @@
-name: Jobs Ingest
+name: Enhanced Jobs Ingest
 on:
-  schedule: [{ cron: "13 */2 * * *" }]
-  workflow_dispatch: {}
+  # Smart scheduling: ATS platforms every 12 hours, full crawl every 2 days
+  schedule: 
+    - cron: "0 */12 * * *"  # Every 12 hours for ATS platforms
+    - cron: "0 2 */2 * *"   # Every 2 days at 2 AM for full crawl
+    - cron: "0 6 * * 1"     # Weekly deep refresh on Mondays at 6 AM
+  workflow_dispatch:
+    inputs:
+      crawl_type:
+        description: 'Type of crawl to run'
+        required: true
+        default: 'ats-only'
+        type: choice
+        options:
+          - ats-only
+          - full-crawl
+          - deep-refresh
+          - specific-bucket
+
 jobs:
-  run:
+  ats-daily:
     runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 */12 * * *'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -13,7 +30,7 @@ jobs:
         run: npm ci
       - name: Build jobs-ingest
         run: npm run jobs:build
-      - name: Run jobs ingestion
+      - name: Run ATS-only ingestion
         run: npm run jobs:ingest
         env:
           STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
@@ -21,3 +38,72 @@ jobs:
           USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o-mini
+          CRAWL_TYPE: ats-only
+          MAX_RUNTIME_MINUTES: 15
+
+  full-crawl:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 2 */2 * *'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Install dependencies
+        run: npm ci
+      - name: Build jobs-ingest
+        run: npm run jobs:build
+      - name: Run full crawl
+        run: npm run jobs:ingest
+        env:
+          STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
+          STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
+          USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          CRAWL_TYPE: full-crawl
+          MAX_RUNTIME_MINUTES: 45
+
+  deep-refresh:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 6 * * 1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Install dependencies
+        run: npm ci
+      - name: Build jobs-ingest
+        run: npm run jobs:build
+      - name: Run deep refresh
+        run: npm run jobs:ingest
+        env:
+          STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
+          STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
+          USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          CRAWL_TYPE: deep-refresh
+          MAX_RUNTIME_MINUTES: 60
+          ENABLE_DISCOVERY: true
+
+  manual-run:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Install dependencies
+        run: npm ci
+      - name: Build jobs-ingest
+        run: npm run jobs:build
+      - name: Run manual ingestion
+        run: npm run jobs:ingest
+        env:
+          STRAPI_API_URL: ${{ secrets.STRAPI_API_URL }}
+          STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
+          USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
+          MAX_RUNTIME_MINUTES: 60

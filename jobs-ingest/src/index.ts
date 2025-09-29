@@ -1,9 +1,15 @@
 import { scrapeGreenhouse } from './sources/greenhouse';
 import { scrapeLever } from './sources/lever';
+import { scrapeWorkday } from './sources/workday';
+import { scrapeSuccessFactors } from './sources/successfactors';
+import { scrapeICIMS } from './sources/icims';
+import { scrapeUKCompany } from './sources/ukCompanies';
 import { scrapeFromUrls } from './sources/sitemapGeneric';
 import { discoverJobUrls, discoverCompanyJobPages } from './sources/sitemapDiscovery';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
+import { validateJobRequirements, cleanJobDescription, isJobFresh } from './lib/normalize';
+import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { GREENHOUSE_BOARDS, LEVER_COMPANIES, MANUAL_URLS, SITEMAP_SOURCES, COMPANY_CAREER_SITEMAPS } from './config/sources';
 import { SCALE_CONFIG } from './config/scale';
 import Bottleneck from 'bottleneck';
@@ -18,11 +24,15 @@ const limiter = new Bottleneck({
 });
 
 async function runAll() {
-  const startTime = Date.now();
+  const startTime = new Date();
   const batches = [];
+  let totalJobsFound = 0;
 
-  console.log(`🚀 Starting job ingestion at ${new Date().toISOString()}`);
-  console.log(`📊 Target sources: ${GREENHOUSE_BOARDS.length} Greenhouse, ${LEVER_COMPANIES.length} Lever, ${MANUAL_URLS.length} Manual URLs`);
+  console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
+  
+  // Get today's crawl buckets
+  const todaysBuckets = getBucketsForToday();
+  console.log(`📅 Today's crawl buckets: ${todaysBuckets.map(b => b.name).join(', ')}`);
 
   // Test authentication first
   console.log('🔐 Testing authentication...');
@@ -33,71 +43,94 @@ async function runAll() {
   }
   console.log('✅ Authentication successful!');
 
-  // 1) ATS sources (configure in config/sources.ts) - These are fast API calls
-  console.log('📡 Scraping ATS sources...');
-  for (const board of GREENHOUSE_BOARDS) {
-    batches.push(limiter.schedule(() => scrapeGreenhouse(board)));
-  }
-  
-  for (const company of LEVER_COMPANIES) {
-    batches.push(limiter.schedule(() => scrapeLever(company)));
-  }
-
-  // 2) Major job board sitemaps (high volume)
-  if (SITEMAP_SOURCES.length > 0) {
-    console.log(`📋 Scraping ${SITEMAP_SOURCES.length} job board sitemaps...`);
-    batches.push(limiter.schedule(() => scrapeFromUrls(SITEMAP_SOURCES, 'sitemap:jobboards')));
-  }
-
-  // 3) Company career page sitemaps
-  if (COMPANY_CAREER_SITEMAPS.length > 0) {
-    console.log(`🏢 Scraping ${COMPANY_CAREER_SITEMAPS.length} company career sitemaps...`);
-    batches.push(limiter.schedule(() => scrapeFromUrls(COMPANY_CAREER_SITEMAPS, 'sitemap:companies')));
-  }
-
-  // 4) Manual URLs (specific job pages)
-  if (MANUAL_URLS.length > 0) {
-    console.log(`🌐 Scraping ${MANUAL_URLS.length} manual URLs...`);
-    batches.push(limiter.schedule(() => scrapeFromUrls(MANUAL_URLS, 'site:manual')));
-  }
-
-  // 5) Large-scale discovery mode (if enabled)
-  if (process.env.ENABLE_DISCOVERY === 'true') {
-    console.log('🔍 Large-scale job discovery enabled...');
-    const discoveryDomains = process.env.DISCOVERY_DOMAINS?.split(',') || [];
+  // Process each bucket
+  for (const bucket of todaysBuckets) {
+    console.log(`\n📦 Processing bucket: ${bucket.name}`);
     
-    for (const domain of discoveryDomains) {
-      console.log(`🔍 Discovering jobs from ${domain}...`);
+    // Check for early exit
+    if (shouldExitEarly(totalJobsFound, startTime)) {
+      console.log('⏰ Early exit triggered, stopping crawl');
+      break;
+    }
+
+    for (const source of bucket.sources) {
       try {
-        const discoveredUrls = await discoverJobUrls(domain, 5000);
-        if (discoveredUrls.length > 0) {
-          console.log(`✅ Found ${discoveredUrls.length} job URLs from ${domain}`);
-          batches.push(limiter.schedule(() => scrapeFromUrls(discoveredUrls, `site:${domain}`)));
+        let sourceJobs: any[] = [];
+        
+        // Route to appropriate scraper
+        if (GREENHOUSE_BOARDS.includes(source)) {
+          sourceJobs = await limiter.schedule(() => scrapeGreenhouse(source));
+        } else if (LEVER_COMPANIES.includes(source)) {
+          sourceJobs = await limiter.schedule(() => scrapeLever(source));
+        } else if (source.startsWith('workday:')) {
+          const company = source.replace('workday:', '');
+          sourceJobs = await limiter.schedule(() => scrapeWorkday(company));
+        } else if (source.startsWith('successfactors:')) {
+          const company = source.replace('successfactors:', '');
+          sourceJobs = await limiter.schedule(() => scrapeSuccessFactors(company));
+        } else if (source.startsWith('icims:')) {
+          const company = source.replace('icims:', '');
+          sourceJobs = await limiter.schedule(() => scrapeICIMS(company));
+        } else if (source.startsWith('uk-company:')) {
+          const company = source.replace('uk-company:', '');
+          sourceJobs = await limiter.schedule(() => scrapeUKCompany(company));
+        } else if (SITEMAP_SOURCES.includes(source)) {
+          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
+        } else if (COMPANY_CAREER_SITEMAPS.includes(source)) {
+          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:companies'));
+        } else if (MANUAL_URLS.includes(source)) {
+          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'site:manual'));
         }
+
+        // Validate and filter jobs
+        const validJobs = sourceJobs.filter(job => {
+          // Check if job is fresh
+          if (!isJobFresh(job, 30)) {
+            console.log(`⏭️  Skipping stale job: ${job.title}`);
+            return false;
+          }
+
+          // Validate job requirements
+          const validation = validateJobRequirements(job);
+          if (!validation.valid) {
+            console.log(`⏭️  Skipping invalid job: ${job.title} - ${validation.reason}`);
+            return false;
+          }
+
+          return true;
+        });
+
+        totalJobsFound += validJobs.length;
+        console.log(`✅ ${source}: ${sourceJobs.length} total, ${validJobs.length} valid jobs`);
+
+        // Add to batches for processing
+        if (validJobs.length > 0) {
+          batches.push(validJobs);
+        }
+
       } catch (error) {
-        console.warn(`❌ Failed to discover jobs from ${domain}:`, error instanceof Error ? error.message : String(error));
+        console.warn(`❌ Failed to scrape ${source}:`, error instanceof Error ? error.message : String(error));
       }
     }
   }
 
-  console.log(`⏳ Processing ${batches.length} source batches...`);
-  
-  const results = (await Promise.all(batches)).flat();
-  console.log(`✅ Scraped ${results.length} jobs from all sources`);
+  // Flatten all results
+  const results = batches.flat();
+  console.log(`\n📊 Total valid jobs found: ${results.length}`);
 
-  // Optional LLM cleanup: descriptionText + fallback jobType/salary if unknown
+  // Enhanced LLM processing with better validation
   console.log('🤖 Processing job descriptions with LLM...');
   let llmProcessed = 0;
   const llmPromises = results.map(async (j) => {
     if (!j.descriptionText && j.descriptionHtml) {
       try {
         const plain = await llmAssist({
-          instruction: 'Convert HTML job description to clean plain text. Keep lists as bullets and limit to ~1200 characters.',
+          instruction: 'Convert HTML job description to clean plain text. Remove boilerplate, keep essential information, and limit to ~1200 characters.',
           text: j.descriptionHtml,
           maxOut: 300
         });
         if (plain) {
-          j.descriptionText = plain;
+          j.descriptionText = cleanJobDescription(plain);
           llmProcessed++;
         }
       } catch (error) {
@@ -105,33 +138,38 @@ async function runAll() {
       }
     }
   });
-  
+
   await Promise.all(llmPromises);
-  
+
   if (llmProcessed > 0) {
     console.log(`✅ LLM processed ${llmProcessed} job descriptions`);
   }
 
-  // Push to Strapi in batches to avoid memory issues
+  // Enhanced upsert with better error handling
   console.log('💾 Ingesting jobs to Strapi...');
   const BATCH_SIZE = SCALE_CONFIG.INGEST_BATCH_SIZE;
   let totalIngested = 0;
-  
+  let totalSkipped = 0;
+
   for (let i = 0; i < results.length; i += BATCH_SIZE) {
     const batch = results.slice(i, i + BATCH_SIZE);
     try {
       const r = await upsertJobs(batch);
       const count = (r as any)?.count ?? batch.length;
+      const skipped = batch.length - count;
       totalIngested += count;
-      console.log(`📦 Ingested batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(results.length/BATCH_SIZE)}: ${count} jobs`);
+      totalSkipped += skipped;
+      console.log(`📦 Ingested batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(results.length/BATCH_SIZE)}: ${count} jobs (${skipped} skipped)`);
     } catch (error) {
       console.error(`❌ Failed to ingest batch ${Math.floor(i/BATCH_SIZE) + 1}:`, error);
     }
   }
-  
-  const duration = Math.round((Date.now() - startTime) / 1000);
-  console.log(`🎉 Job ingestion completed!`);
+
+  const duration = Math.round((Date.now() - startTime.getTime()) / 1000);
+  console.log(`\n🎉 Enhanced job ingestion completed!`);
+  console.log(`📊 Total jobs found: ${results.length}`);
   console.log(`📊 Total jobs ingested: ${totalIngested}`);
+  console.log(`📊 Total jobs skipped: ${totalSkipped}`);
   console.log(`⏱️  Duration: ${duration}s`);
   console.log(`🚀 Rate: ${Math.round(totalIngested / duration)} jobs/second`);
 }

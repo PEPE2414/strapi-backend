@@ -23,12 +23,16 @@
     "endDate": { "type": "datetime" },
     "duration": { "type": "string" },
     "experience": { "type": "string" },
-    "companyPage": { "type": "text" },
+    "companyPageUrl": { "type": "text" },
+    "remotePolicy": { "type": "enumeration", "enum": ["on-site", "hybrid", "remote-uk", "remote-anywhere"] },
+    "applyDeadline": { "type": "datetime" },
     "salary": { "type": "json" },
     "relatedDegree": { "type": "json" },
     "degreeLevel": { "type": "json" },
     "postedAt": { "type": "datetime" },
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
-    "hash": { "type": "string", "required": true, "unique": true }
+    "hash": { "type": "string", "required": true, "unique": true },
+    "qualityScore": { "type": "integer", "min": 0, "max": 100 },
+    "lastValidated": { "type": "datetime" }
   }
 }
