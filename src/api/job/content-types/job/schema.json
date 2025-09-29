@@ -17,7 +17,6 @@
     "descriptionHtml": { "type": "richtext" },
     "descriptionText": { "type": "text" },
     "applyUrl": { "type": "text", "required": true },
-    "deadline": { "type": "datetime" },
     "jobType": { "type": "enumeration", "enum": ["internship","placement","graduate","other"], "required": true },
     "startDate": { "type": "datetime" },
     "endDate": { "type": "datetime" },
