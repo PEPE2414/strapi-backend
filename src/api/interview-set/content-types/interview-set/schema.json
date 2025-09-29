@@ -1,0 +1,14 @@
+{
+  "kind": "collectionType",
+  "collectionName": "interview_sets",
+  "info": { "singularName": "interview-set", "pluralName": "interview-sets", "displayName": "Interview Set" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "userId": { "type": "integer", "required": true },
+    "jobId": { "type": "integer" },
+    "jobTitle": { "type": "string", "required": true },
+    "company": { "type": "string", "required": true },
+    "jdHash": { "type": "string" },
+    "questions": { "type": "json", "required": true }
+  }
+}
