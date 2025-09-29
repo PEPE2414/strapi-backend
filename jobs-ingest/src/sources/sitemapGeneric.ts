@@ -115,15 +115,15 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         slug,
         hash
       });
-    } catch (error) { 
-      console.warn(`Failed to scrape ${url}:`, error.message);
+    } catch (error) {
+      console.warn(`Failed to scrape ${url}:`, error instanceof Error ? error.message : String(error));
       return null;
     }
     });
     
-    const batchResults = await Promise.all(batchPromises);
-    const validJobs = batchResults.filter(job => job !== null) as CanonicalJob[];
-    out.push(...validJobs);
+          const batchResults = await Promise.all(batchPromises);
+          const validJobs = batchResults.filter((job): job is CanonicalJob => job !== null);
+          out.push(...validJobs);
     
     // Small delay between batches to be respectful
     if (i + BATCH_SIZE < urls.length) {

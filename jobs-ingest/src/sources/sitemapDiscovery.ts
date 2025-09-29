@@ -36,9 +36,9 @@ export async function discoverJobUrls(domain: string, maxUrls: number = 10000): 
       const url = line.replace(/Sitemap:\s*/i, '').trim();
       if (url) sitemapUrls.add(url);
     });
-  } catch (error) {
-    console.warn(`Could not fetch robots.txt from ${domain}:`, error.message);
-  }
+         } catch (error) {
+           console.warn(`Could not fetch robots.txt from ${domain}:`, error instanceof Error ? error.message : String(error));
+         }
   
   // Add common sitemaps
   commonSitemaps.forEach(url => sitemapUrls.add(url));
@@ -58,7 +58,7 @@ export async function discoverJobUrls(domain: string, maxUrls: number = 10000): 
       });
       processedSitemaps.add(sitemapUrl);
     } catch (error) {
-      console.warn(`Failed to process sitemap ${sitemapUrl}:`, error.message);
+      console.warn(`Failed to process sitemap ${sitemapUrl}:`, error instanceof Error ? error.message : String(error));
       monitor.recordFailure();
     }
   }
@@ -225,7 +225,7 @@ export async function discoverCompanyJobPages(company: string): Promise<string[]
       const urls = await discoverJobUrls(baseUrl, 1000);
       jobUrls.push(...urls);
     } catch (error) {
-      console.warn(`Failed to discover jobs from ${baseUrl}:`, error.message);
+      console.warn(`Failed to discover jobs from ${baseUrl}:`, error instanceof Error ? error.message : String(error));
     }
   }
   

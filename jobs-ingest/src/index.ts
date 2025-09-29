@@ -66,7 +66,7 @@ async function runAll() {
           batches.push(limiter.schedule(() => scrapeFromUrls(discoveredUrls, `site:${domain}`)));
         }
       } catch (error) {
-        console.warn(`❌ Failed to discover jobs from ${domain}:`, error.message);
+        console.warn(`❌ Failed to discover jobs from ${domain}:`, error instanceof Error ? error.message : String(error));
       }
     }
   }
