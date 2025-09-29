@@ -7,6 +7,11 @@ import { scrapeUKCompany } from './sources/ukCompanies';
 import { scrapeFromUrls } from './sources/sitemapGeneric';
 import { scrapeGradcracker } from './sources/gradcracker';
 import { scrapeHighVolumeBoard } from './sources/highVolumeBoards';
+import { scrapeJoblift } from './sources/joblift';
+import { scrapeSaveTheStudent } from './sources/savethestudent';
+import { scrapeJobsAcUk } from './sources/jobsacuk';
+import { scrapeStudentCircus } from './sources/studentcircus';
+import { scrapeGradsmart } from './sources/gradsmart';
 import { discoverJobUrls, discoverCompanyJobPages } from './sources/sitemapDiscovery';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
@@ -104,6 +109,21 @@ async function runAll() {
         } else if (source === 'gradcracker') {
           console.log(`🔄 Scraping Gradcracker (High Volume)`);
           sourceJobs = await limiter.schedule(() => scrapeGradcracker());
+        } else if (source === 'joblift') {
+          console.log(`🔄 Scraping Joblift (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeJoblift());
+        } else if (source === 'savethestudent') {
+          console.log(`🔄 Scraping Save the Student (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeSaveTheStudent());
+        } else if (source === 'jobsacuk') {
+          console.log(`🔄 Scraping jobs.ac.uk (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeJobsAcUk());
+        } else if (source === 'studentcircus') {
+          console.log(`🔄 Scraping Student Circus (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeStudentCircus());
+        } else if (source === 'gradsmart') {
+          console.log(`🔄 Scraping Gradsmart (High Volume)`);
+          sourceJobs = await limiter.schedule(() => scrapeGradsmart());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);

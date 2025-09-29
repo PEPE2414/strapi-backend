@@ -53,6 +53,11 @@ export const CRAWL_BUCKETS: CrawlBucket[] = [
     name: 'University Job Boards (Daily)',
     sources: [
       'gradcracker',
+      'joblift',
+      'savethestudent',
+      'jobsacuk',
+      'studentcircus',
+      'gradsmart',
       'high-volume:targetjobs',
       'high-volume:prospects',
       'https://www.graduatejobs.com/sitemap.xml',
