@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::cheat-sheet.cheat-sheet', ({ strapi }) => ({
+export default factories.createCoreController('api::cheat-sheet.cheat-sheet' as any, ({ strapi }) => ({
   async me(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -8,7 +8,7 @@ export default factories.createCoreController('api::cheat-sheet.cheat-sheet', ({
     }
 
     try {
-      const data = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet', {
+      const data = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet' as any, {
         filters: { userId: user.id },
         sort: { createdAt: 'desc' },
         populate: false,
@@ -35,7 +35,7 @@ export default factories.createCoreController('api::cheat-sheet.cheat-sheet', ({
 
     try {
       // Check for existing cheat sheet (idempotency)
-      const existing = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet', {
+      const existing = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet' as any, {
         filters: {
           userId: user.id,
           jobTitle,
@@ -86,10 +86,10 @@ export default factories.createCoreController('api::cheat-sheet.cheat-sheet', ({
         return ctx.internalServerError('Failed to generate cheat sheet');
       }
 
-      const n8nData = await n8nResponse.json();
+      const n8nData = await n8nResponse.json() as any;
 
       // Save to Strapi
-      const created = await strapi.entityService.create('api::cheat-sheet.cheat-sheet', {
+      const created = await strapi.entityService.create('api::cheat-sheet.cheat-sheet' as any, {
         data: {
           userId: user.id,
           jobId,
