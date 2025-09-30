@@ -292,10 +292,28 @@ export function isUKJob(text: string): boolean {
   // Check for non-UK keywords
   const hasNonUK = nonUKKeywords.some(keyword => t.includes(keyword));
 
-  // Include if has UK keywords
-  // If it has both UK and non-UK, still include it (multi-location jobs)
-  // Only exclude if it has NO UK keywords at all
-  return hasUK;
+  // Must have UK keywords to be included
+  if (!hasUK) return false;
+
+  // If it has both UK and non-UK, be more selective
+  if (hasNonUK) {
+    // Only include if UK appears before non-UK in the text (UK is primary)
+    const ukIndex = Math.min(...ukKeywords.map(k => t.indexOf(k)).filter(i => i >= 0));
+    const nonUKIndex = Math.min(...nonUKKeywords.map(k => t.indexOf(k)).filter(i => i >= 0));
+    
+    // Include if UK appears first, or if it's a clear multi-location job with UK
+    if (ukIndex < nonUKIndex) return true;
+    
+    // Include if it's clearly a multi-location job (contains "london" and other major cities)
+    if (t.includes('london') && (t.includes('dublin') || t.includes('berlin') || t.includes('paris'))) {
+      return true;
+    }
+    
+    // Otherwise exclude
+    return false;
+  }
+
+  return true;
 }
 
 export function parseSalary(text?: string): SalaryNorm|undefined {

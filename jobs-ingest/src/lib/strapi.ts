@@ -79,25 +79,28 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
 // Enhanced deduplication logic
 function deduplicateJobs(jobs: CanonicalJob[]): CanonicalJob[] {
   const seen = new Map<string, CanonicalJob>();
+  const seenHashes = new Set<string>();
+  const seenSecondary = new Set<string>();
   const duplicates: string[] = [];
   
   for (const job of jobs) {
     // Primary key: hash (most reliable)
-    if (seen.has(job.hash)) {
+    if (seenHashes.has(job.hash)) {
       duplicates.push(`Hash: ${job.hash}`);
       continue;
     }
     
     // Secondary key: applyUrl + company + title (fallback)
     const secondaryKey = `${job.applyUrl}|${job.company.name}|${job.title}`;
-    if (seen.has(secondaryKey)) {
+    if (seenSecondary.has(secondaryKey)) {
       duplicates.push(`Secondary: ${secondaryKey}`);
       continue;
     }
     
-    // Store both keys
+    // Store the job and mark both keys as seen
     seen.set(job.hash, job);
-    seen.set(secondaryKey, job);
+    seenHashes.add(job.hash);
+    seenSecondary.add(secondaryKey);
   }
   
   if (duplicates.length > 0) {
