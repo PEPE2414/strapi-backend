@@ -292,8 +292,10 @@ export function isUKJob(text: string): boolean {
   // Check for non-UK keywords
   const hasNonUK = nonUKKeywords.some(keyword => t.includes(keyword));
 
-  // Include if has UK keywords AND no non-UK keywords
-  return hasUK && !hasNonUK;
+  // Include if has UK keywords
+  // If it has both UK and non-UK, still include it (multi-location jobs)
+  // Only exclude if it has NO UK keywords at all
+  return hasUK;
 }
 
 export function parseSalary(text?: string): SalaryNorm|undefined {

@@ -148,6 +148,14 @@ export function getBucketsForToday(): CrawlBucket[] {
   // Always crawl ATS platforms daily (most reliable)
   buckets.push(CRAWL_BUCKETS.find(b => b.id === 'ats-daily')!);
   
+  // Add more reliable ATS companies that we know work
+  buckets.push({
+    id: 'reliable-ats',
+    name: 'Reliable ATS (Daily)',
+    sources: ['stripe', 'airbnb', 'lyft', 'spotify'], // These are working
+    priority: 'high'
+  });
+  
   // Crawl major job boards every 2 days (reliable sitemaps)
   if (dayOfMonth % 2 === 1) {
     buckets.push(CRAWL_BUCKETS.find(b => b.id === 'major-job-boards')!);
@@ -160,6 +168,18 @@ export function getBucketsForToday(): CrawlBucket[] {
     id: 'university-limited',
     name: 'University Job Boards (Limited)',
     sources: [selectedUniversity],
+    priority: 'high'
+  });
+  
+  // Add some major job board sitemaps that are more likely to work
+  buckets.push({
+    id: 'reliable-sitemaps',
+    name: 'Reliable Sitemaps (Daily)',
+    sources: [
+      'https://www.reed.co.uk/sitemap.xml',
+      'https://www.totaljobs.com/sitemap.xml',
+      'https://www.monster.co.uk/sitemap.xml'
+    ],
     priority: 'high'
   });
   
