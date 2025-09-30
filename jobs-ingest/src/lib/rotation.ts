@@ -145,22 +145,29 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Always crawl ATS platforms daily
+  // Always crawl ATS platforms daily (most reliable)
   buckets.push(CRAWL_BUCKETS.find(b => b.id === 'ats-daily')!);
   
-  // Always crawl university job boards daily (high volume)
-  buckets.push(CRAWL_BUCKETS.find(b => b.id === 'university-job-boards')!);
-  
-  // Crawl major job boards every 2 days (more frequent)
+  // Crawl major job boards every 2 days (reliable sitemaps)
   if (dayOfMonth % 2 === 1) {
     buckets.push(CRAWL_BUCKETS.find(b => b.id === 'major-job-boards')!);
   }
   
-  // Rotate through company buckets more aggressively (2-3 per day)
-  const companyBuckets = CRAWL_BUCKETS.filter(b => b.id.startsWith('engineering') || b.id.startsWith('manufacturing') || b.id.startsWith('tech-finance') || b.id.startsWith('consulting'));
+  // Only crawl 1-2 university job boards per day to avoid 403 errors
+  const universityBoards = ['gradcracker', 'joblift']; // Most reliable ones
+  const selectedUniversity = universityBoards[dayOfMonth % universityBoards.length];
+  buckets.push({
+    id: 'university-limited',
+    name: 'University Job Boards (Limited)',
+    sources: [selectedUniversity],
+    priority: 'high'
+  });
   
-  // Include 2-3 company buckets per day for faster coverage
-  for (let i = 0; i < Math.min(3, companyBuckets.length); i++) {
+  // Rotate through company buckets more conservatively (1-2 per day)
+  const companyBuckets = CRAWL_BUCKETS.filter(b => b.id.startsWith('engineering') || b.id.startsWith('tech') || b.id.startsWith('finance'));
+  
+  // Include only 1-2 company buckets per day for better success rate
+  for (let i = 0; i < Math.min(2, companyBuckets.length); i++) {
     const bucketIndex = (weekOfMonth - 1 + i) % companyBuckets.length;
     buckets.push(companyBuckets[bucketIndex]);
   }

@@ -9,17 +9,14 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 export async function scrapeJoblift(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   let page = 1;
-  const maxPages = 30; // Joblift has many pages of results
+  const maxPages = 5; // Reduced to avoid 403 errors
   
   try {
     while (page <= maxPages) {
       // Try different job search URLs for comprehensive coverage
       const urls = [
-        `https://joblift.co.uk/Jobs-for-placement?page=${page}`,
-        `https://joblift.co.uk/Jobs-for-internship?page=${page}`,
         `https://joblift.co.uk/Jobs-for-graduate?page=${page}`,
-        `https://joblift.co.uk/Jobs-for-trainee?page=${page}`,
-        `https://joblift.co.uk/Jobs-for-entry-level?page=${page}`
+        `https://joblift.co.uk/Jobs-for-internship?page=${page}`
       ];
       
       for (const url of urls) {
@@ -97,10 +94,12 @@ export async function scrapeJoblift(): Promise<CanonicalJob[]> {
           }
           
           // Add delay between requests to be respectful
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 2000));
           
         } catch (error) {
           console.warn(`Error scraping ${url}:`, error);
+          // Continue to next URL even if this one fails
+          continue;
         }
       }
       

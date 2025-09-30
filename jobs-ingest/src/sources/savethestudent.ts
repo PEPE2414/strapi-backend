@@ -9,17 +9,14 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 export async function scrapeSaveTheStudent(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   let page = 1;
-  const maxPages = 20; // Save the Student has many graduate jobs
+  const maxPages = 5; // Reduced to avoid 403 errors
   
   try {
     while (page <= maxPages) {
       // Try different job search URLs for comprehensive coverage
       const urls = [
         `https://www.savethestudent.org/graduate-jobs?page=${page}`,
-        `https://www.savethestudent.org/internships?page=${page}`,
-        `https://www.savethestudent.org/placement-year?page=${page}`,
-        `https://www.savethestudent.org/entry-level-jobs?page=${page}`,
-        `https://www.savethestudent.org/graduate-schemes?page=${page}`
+        `https://www.savethestudent.org/internships?page=${page}`
       ];
       
       for (const url of urls) {
@@ -97,10 +94,12 @@ export async function scrapeSaveTheStudent(): Promise<CanonicalJob[]> {
           }
           
           // Add delay between requests to be respectful
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 3000 + Math.random() * 2000));
           
         } catch (error) {
           console.warn(`Error scraping ${url}:`, error);
+          // Continue to next URL even if this one fails
+          continue;
         }
       }
       
