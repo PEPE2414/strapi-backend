@@ -133,26 +133,12 @@ export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reaso
   // Check job description quality
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  if (cleanDescription.length < 300) {
-    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥300)` };
+  if (cleanDescription.length < 150) {
+    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥150)` };
   }
   
-  // Check for company page URL
-  if (!job.companyPageUrl || job.companyPageUrl.trim().length < 10) {
-    return { valid: false, reason: 'Missing company page URL' };
-  }
-  
-  // Validate apply URL is not an aggregator
-  const applyUrl = job.applyUrl.toLowerCase();
-  const aggregatorDomains = [
-    'indeed.com', 'linkedin.com', 'glassdoor.com', 'ziprecruiter.com',
-    'monster.com', 'reed.co.uk', 'totaljobs.com', 'cv-library.co.uk'
-  ];
-  
-  const isAggregator = aggregatorDomains.some(domain => applyUrl.includes(domain));
-  if (isAggregator) {
-    return { valid: false, reason: 'Apply URL is from external aggregator' };
-  }
+  // Company page URL is now optional (removed requirement)
+  // Apply URL aggregator filter removed to allow major job boards
   
   return { valid: true };
 }

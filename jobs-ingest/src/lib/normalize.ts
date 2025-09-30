@@ -334,30 +334,15 @@ export function validateJobRequirements(job: any): { valid: boolean; reason?: st
     return { valid: false, reason: 'Missing or invalid apply URL' };
   }
 
-  // Check job description length (≥300 chars)
+  // Check job description length (≥150 chars)
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  if (cleanDescription.length < 300) {
-    return { valid: false, reason: `Job description too short (${cleanDescription.length} chars, need ≥300)` };
+  if (cleanDescription.length < 150) {
+    return { valid: false, reason: `Job description too short (${cleanDescription.length} chars, need ≥150)` };
   }
 
-  // Check for company page link
-  if (!job.companyPage || job.companyPage.trim().length < 10) {
-    return { valid: false, reason: 'Missing company page link' };
-  }
-
-  // Validate apply URL is not an external aggregator
-  const applyUrl = job.applyUrl.toLowerCase();
-  const aggregatorDomains = [
-    'indeed.com', 'linkedin.com', 'glassdoor.com', 'ziprecruiter.com',
-    'monster.com', 'reed.co.uk', 'totaljobs.com', 'cv-library.co.uk',
-    'jobsite.co.uk', 'fish4jobs.co.uk', 'jobsite.co.uk', 'jobs.co.uk'
-  ];
-  
-  const isAggregator = aggregatorDomains.some(domain => applyUrl.includes(domain));
-  if (isAggregator) {
-    return { valid: false, reason: 'Apply URL is from external aggregator' };
-  }
+  // Company page link is now optional (removed requirement)
+  // Apply URL aggregator filter removed to allow major job boards
 
   // Check if job is currently open (not past deadline)
   if (job.deadline) {
