@@ -44,9 +44,9 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       
       page++;
       
-      // Safety limit to prevent infinite loops
-      if (page > 50) {
-        console.log(`⚠️  Reached safety limit of 50 pages for ${board}`);
+      // Safety limit to prevent infinite loops (reduced for efficiency)
+      if (page > 5) {
+        console.log(`⚠️  Reached safety limit of 5 pages for ${board}`);
         break;
       }
     }

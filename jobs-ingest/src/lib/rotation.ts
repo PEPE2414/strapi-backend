@@ -145,15 +145,31 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Always crawl ATS platforms daily (most reliable)
-  buckets.push(CRAWL_BUCKETS.find(b => b.id === 'ats-daily')!);
-  
-  // Add more reliable ATS companies that we know work
+  // Focus on high-volume job boards instead of individual companies
   buckets.push({
-    id: 'reliable-ats',
-    name: 'Reliable ATS (Daily)',
-    sources: ['stripe', 'airbnb', 'lyft', 'spotify'], // These are working
+    id: 'high-volume-boards',
+    name: 'High-Volume Job Boards (Daily)',
+    sources: [
+      'https://www.reed.co.uk/sitemap.xml',
+      'https://www.totaljobs.com/sitemap.xml', 
+      'https://www.monster.co.uk/sitemap.xml',
+      'https://www.cv-library.co.uk/sitemap.xml',
+      'https://www.jobsite.co.uk/sitemap.xml',
+      'https://www.fish4jobs.co.uk/sitemap.xml',
+      'https://www.jobs.co.uk/sitemap.xml',
+      'https://www.careerjet.co.uk/sitemap.xml',
+      'https://www.adzuna.co.uk/sitemap.xml',
+      'https://uk.indeed.com/sitemap.xml'
+    ],
     priority: 'high'
+  });
+  
+  // Only scrape 1-2 ATS companies per day (not 50+ pages each)
+  buckets.push({
+    id: 'limited-ats',
+    name: 'Limited ATS (Daily)',
+    sources: ['stripe'], // Just one company, but limit pages
+    priority: 'medium'
   });
   
   // Crawl major job boards every 2 days (reliable sitemaps)
@@ -161,14 +177,21 @@ export function getBucketsForToday(): CrawlBucket[] {
     buckets.push(CRAWL_BUCKETS.find(b => b.id === 'major-job-boards')!);
   }
   
-  // Only crawl 1-2 university job boards per day to avoid 403 errors
-  const universityBoards = ['gradcracker', 'joblift']; // Most reliable ones
-  const selectedUniversity = universityBoards[dayOfMonth % universityBoards.length];
+  // Add diverse UK companies (small, medium, large) - rotate daily
+  const ukCompanies = [
+    // Large companies
+    'stripe', 'airbnb', 'spotify',
+    // Medium companies  
+    'deliveroo', 'just-eat', 'revolut', 'monzo', 'starling',
+    // Small companies
+    'bulb', 'octopus-energy', 'citymapper', 'improbable'
+  ];
+  const selectedCompany = ukCompanies[dayOfMonth % ukCompanies.length];
   buckets.push({
-    id: 'university-limited',
-    name: 'University Job Boards (Limited)',
-    sources: [selectedUniversity],
-    priority: 'high'
+    id: 'uk-company-rotation',
+    name: 'UK Company Rotation (Daily)',
+    sources: [selectedCompany],
+    priority: 'medium'
   });
   
   // Add some major job board sitemaps that are more likely to work

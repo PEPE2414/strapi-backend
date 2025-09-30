@@ -69,8 +69,10 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       };
 
       if (existing?.length) {
+        console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
         await strapi.entityService.update('api::job.job', existing[0].id, { data });
       } else {
+        console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
         await strapi.entityService.create('api::job.job', { data });
       }
       count++;
