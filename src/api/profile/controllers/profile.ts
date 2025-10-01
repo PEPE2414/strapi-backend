@@ -55,12 +55,14 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // Validate notificationPrefs (must be an object)
       if (data.notificationPrefs !== undefined) {
+        console.log('[profile:update] notificationPrefs received:', data.notificationPrefs);
         if (typeof data.notificationPrefs !== 'object' || data.notificationPrefs === null) {
           return ctx.badRequest('notificationPrefs must be an object');
         }
         // Ensure it's a valid JSON object
         try {
           data.notificationPrefs = JSON.parse(JSON.stringify(data.notificationPrefs));
+          console.log('[profile:update] notificationPrefs processed:', data.notificationPrefs);
         } catch (e) {
           return ctx.badRequest('notificationPrefs must be a valid JSON object');
         }
@@ -100,11 +102,13 @@ export default ({ strapi }: { strapi: any }) => ({
                   
       // 4) Try entityService first
       try {
+        console.log('[profile:update] Updating user with data:', data);
         const updated = await strapi.entityService.update(
           'plugin::users-permissions.user',
           userId,
           { data }
         );
+        console.log('[profile:update] User updated successfully:', updated);
         ctx.body = updated;
         return;
       } catch (err: any) {
