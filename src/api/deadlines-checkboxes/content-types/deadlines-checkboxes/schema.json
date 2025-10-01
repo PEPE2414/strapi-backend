@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "deadlines_checkboxes",
+  "info": {
+    "singularName": "deadlines-checkboxes",
+    "pluralName": "deadlines-checkboxes",
+    "displayName": "Deadlines Checkboxes",
+    "description": "User checkbox states for deadlines"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "deadlines_checkboxes"
+    },
+    "checkboxes": {
+      "type": "json",
+      "default": {},
+      "customField": "json"
+    }
+  }
+}
