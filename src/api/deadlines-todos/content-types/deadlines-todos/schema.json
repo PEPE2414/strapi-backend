@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "deadlines_todos",
+  "collectionName": "deadline_todos",
   "info": {
-    "singularName": "deadlines-todos",
-    "pluralName": "deadlines-todos",
-    "displayName": "Deadlines Todos",
+    "singularName": "deadline-todo",
+    "pluralName": "deadline-todos",
+    "displayName": "Deadline Todos",
     "description": "User custom todos for deadlines"
   },
   "options": {

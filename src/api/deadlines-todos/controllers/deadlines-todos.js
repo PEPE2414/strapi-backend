@@ -2,7 +2,7 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::deadlines-todos.deadlines-todos', ({ strapi }) => ({
+module.exports = createCoreController('api::deadline-todo.deadline-todo', ({ strapi }) => ({
   async findUserTodos(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -10,7 +10,7 @@ module.exports = createCoreController('api::deadlines-todos.deadlines-todos', ({
     }
 
     try {
-      const todos = await strapi.entityService.findMany('api::deadlines-todos.deadlines-todos', {
+      const todos = await strapi.entityService.findMany('api::deadline-todo.deadline-todo', {
         filters: { user: user.id }
       });
       return ctx.send({ data: todos[0]?.todos || {} });
@@ -32,18 +32,18 @@ module.exports = createCoreController('api::deadlines-todos.deadlines-todos', ({
     }
 
     try {
-      let userTodos = await strapi.entityService.findMany('api::deadlines-todos.deadlines-todos', {
+      let userTodos = await strapi.entityService.findMany('api::deadline-todo.deadline-todo', {
         filters: { user: user.id }
       });
 
       if (userTodos.length > 0) {
         // Update existing
-        userTodos = await strapi.entityService.update('api::deadlines-todos.deadlines-todos', userTodos[0].id, {
+        userTodos = await strapi.entityService.update('api::deadline-todo.deadline-todo', userTodos[0].id, {
           data: { todos }
         });
       } else {
         // Create new
-        userTodos = await strapi.entityService.create('api::deadlines-todos.deadlines-todos', {
+        userTodos = await strapi.entityService.create('api::deadline-todo.deadline-todo', {
           data: { user: user.id, todos }
         });
       }

@@ -2,7 +2,7 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::deadlines-checkboxes.deadlines-checkboxes', {
+module.exports = createCoreRouter('api::deadline-checkbox.deadline-checkbox', {
   routes: [
     {
       method: 'GET',

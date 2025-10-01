@@ -2,7 +2,7 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::deadlines-checkboxes.deadlines-checkboxes', ({ strapi }) => ({
+module.exports = createCoreController('api::deadline-checkbox.deadline-checkbox', ({ strapi }) => ({
   async findUserCheckboxes(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -10,7 +10,7 @@ module.exports = createCoreController('api::deadlines-checkboxes.deadlines-check
     }
 
     try {
-      const checkboxes = await strapi.entityService.findMany('api::deadlines-checkboxes.deadlines-checkboxes', {
+      const checkboxes = await strapi.entityService.findMany('api::deadline-checkbox.deadline-checkbox', {
         filters: { user: user.id }
       });
       return ctx.send({ data: checkboxes[0]?.checkboxes || {} });
@@ -32,18 +32,18 @@ module.exports = createCoreController('api::deadlines-checkboxes.deadlines-check
     }
 
     try {
-      let userCheckboxes = await strapi.entityService.findMany('api::deadlines-checkboxes.deadlines-checkboxes', {
+      let userCheckboxes = await strapi.entityService.findMany('api::deadline-checkbox.deadline-checkbox', {
         filters: { user: user.id }
       });
 
       if (userCheckboxes.length > 0) {
         // Update existing
-        userCheckboxes = await strapi.entityService.update('api::deadlines-checkboxes.deadlines-checkboxes', userCheckboxes[0].id, {
+        userCheckboxes = await strapi.entityService.update('api::deadline-checkbox.deadline-checkbox', userCheckboxes[0].id, {
           data: { checkboxes }
         });
       } else {
         // Create new
-        userCheckboxes = await strapi.entityService.create('api::deadlines-checkboxes.deadlines-checkboxes', {
+        userCheckboxes = await strapi.entityService.create('api::deadline-checkbox.deadline-checkbox', {
           data: { user: user.id, checkboxes }
         });
       }

@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "deadlines_checkboxes",
+  "collectionName": "deadline_checkboxes",
   "info": {
-    "singularName": "deadlines-checkboxes",
-    "pluralName": "deadlines-checkboxes",
-    "displayName": "Deadlines Checkboxes",
+    "singularName": "deadline-checkbox",
+    "pluralName": "deadline-checkboxes",
+    "displayName": "Deadline Checkboxes",
     "description": "User checkbox states for deadlines"
   },
   "options": {
