@@ -35,7 +35,7 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
@@ -43,6 +43,28 @@ export default ({ strapi }: { strapi: any }) => ({
       ['preferredName', 'university', 'course', 'studyField'].forEach((k) => {
         if (typeof data[k] === 'string') data[k] = data[k].trim();
       });
+
+      // Validate weeklyGoal (must be a positive integer between 1 and 30)
+      if (data.weeklyGoal !== undefined) {
+        const goal = Number(data.weeklyGoal);
+        if (!Number.isInteger(goal) || goal < 1 || goal > 30) {
+          return ctx.badRequest('weeklyGoal must be an integer between 1 and 30');
+        }
+        data.weeklyGoal = goal;
+      }
+
+      // Validate notificationPrefs (must be an object)
+      if (data.notificationPrefs !== undefined) {
+        if (typeof data.notificationPrefs !== 'object' || data.notificationPrefs === null) {
+          return ctx.badRequest('notificationPrefs must be an object');
+        }
+        // Ensure it's a valid JSON object
+        try {
+          data.notificationPrefs = JSON.parse(JSON.stringify(data.notificationPrefs));
+        } catch (e) {
+          return ctx.badRequest('notificationPrefs must be a valid JSON object');
+        }
+      }
 
       // keyStats must be valid JSON for PG json/jsonb
       if (data.keyStats !== undefined) {
