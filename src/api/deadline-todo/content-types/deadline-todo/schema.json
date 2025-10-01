@@ -14,9 +14,8 @@
   "attributes": {
     "user": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "deadline_todos"
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     },
     "todos": {
       "type": "json",
