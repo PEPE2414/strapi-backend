@@ -2,12 +2,12 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::deadline-checkbox.deadline-checkbox', {
+module.exports = createCoreRouter('api::deadline-todo.deadline-todo', {
   routes: [
     {
       method: 'GET',
-      path: '/deadlines-checkboxes/user',
-      handler: 'deadlines-checkboxes.findUserCheckboxes',
+      path: '/deadlines-todos/user',
+      handler: 'deadline-todo.findUserTodos',
       config: {
         auth: {
           scope: ['authenticated'],
@@ -16,8 +16,8 @@ module.exports = createCoreRouter('api::deadline-checkbox.deadline-checkbox', {
     },
     {
       method: 'PUT',
-      path: '/deadlines-checkboxes/user',
-      handler: 'deadlines-checkboxes.updateUserCheckboxes',
+      path: '/deadlines-todos/user',
+      handler: 'deadline-todo.updateUserTodos',
       config: {
         auth: {
           scope: ['authenticated'],
