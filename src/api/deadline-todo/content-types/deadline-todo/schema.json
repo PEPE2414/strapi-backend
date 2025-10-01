@@ -16,7 +16,7 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "deadlines_todos"
+      "inversedBy": "deadline_todos"
     },
     "todos": {
       "type": "json",
