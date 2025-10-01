@@ -80,8 +80,20 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
 
             // Check if this job is relevant for university students AND UK-based
             const fullText = title + ' ' + String(descHtml) + ' ' + (location || '');
-            if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
-              console.log(`⏭️  Skipping irrelevant job: ${title}`);
+            
+            // Debug logging
+            if (!title || title.trim().length < 3) {
+              console.log(`⏭️  Skipping job with invalid title: "${title}"`);
+              return null;
+            }
+            
+            if (!isRelevantJobType(fullText)) {
+              console.log(`⏭️  Skipping non-relevant job type: "${title}"`);
+              return null;
+            }
+            
+            if (!isUKJob(fullText)) {
+              console.log(`⏭️  Skipping non-UK job: "${title}" (location: ${location})`);
               return null;
             }
 

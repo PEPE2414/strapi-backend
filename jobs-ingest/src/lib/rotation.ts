@@ -145,21 +145,14 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on high-volume job boards instead of individual companies
+  // Focus on working job sources
   buckets.push({
-    id: 'high-volume-boards',
-    name: 'High-Volume Job Boards (Daily)',
+    id: 'working-sources',
+    name: 'Working Job Sources (Daily)',
     sources: [
-      'https://www.reed.co.uk/sitemap.xml',
-      'https://www.totaljobs.com/sitemap.xml', 
-      'https://www.monster.co.uk/sitemap.xml',
-      'https://www.cv-library.co.uk/sitemap.xml',
-      'https://www.jobsite.co.uk/sitemap.xml',
-      'https://www.fish4jobs.co.uk/sitemap.xml',
-      'https://www.jobs.co.uk/sitemap.xml',
-      'https://www.careerjet.co.uk/sitemap.xml',
-      'https://www.adzuna.co.uk/sitemap.xml',
-      'https://uk.indeed.com/sitemap.xml'
+      'stripe', 'airbnb', 'lyft', 'spotify', // Known working ATS
+      'gradcracker', 'joblift', // University boards
+      'https://www.reed.co.uk/sitemap.xml', // Try Reed again with better parsing
     ],
     priority: 'high'
   });

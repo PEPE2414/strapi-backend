@@ -42,6 +42,17 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
   // Deduplicate jobs within this batch
   const uniqueJobs = deduplicateJobs(jobs);
   console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
+  
+  // Validate jobs before sending to Strapi
+  const validJobs = uniqueJobs.filter(job => {
+    const validation = validateJobForUpsert(job);
+    if (!validation.valid) {
+      console.log(`❌ Job validation failed: ${validation.reason} - "${job.title}" at ${job.company?.name}`);
+      return false;
+    }
+    return true;
+  });
+  console.log(`✅ ${validJobs.length} jobs passed validation (${uniqueJobs.length - validJobs.length} failed)`);
 
   const res = await fetch(`${BASE}/jobs/ingest`, {
     method:'POST',
@@ -50,9 +61,9 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
       'x-seed-secret': SECRET
     },
     body: JSON.stringify({ 
-      data: uniqueJobs,
+      data: validJobs,
       metadata: {
-        batchSize: uniqueJobs.length,
+        batchSize: validJobs.length,
         timestamp: new Date().toISOString(),
         version: '2.0'
       }
@@ -72,7 +83,7 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
   }
   
   const result = await res.json() as any;
-  console.log(`✅ Successfully ingested ${result.count || uniqueJobs.length} jobs to Strapi`);
+  console.log(`✅ Successfully ingested ${result.count || validJobs.length} jobs to Strapi`);
   return result;
 }
 
