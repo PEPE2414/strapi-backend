@@ -5,6 +5,7 @@ import { scrapeSuccessFactors } from './sources/successfactors';
 import { scrapeICIMS } from './sources/icims';
 import { scrapeUKCompany } from './sources/ukCompanies';
 import { scrapeFromUrls } from './sources/sitemapGeneric';
+import { discoverJobUrls } from './sources/sitemapDiscovery';
 import { scrapeGradcracker } from './sources/gradcracker';
 import { scrapeHighVolumeBoard } from './sources/highVolumeBoards';
 import { scrapeJoblift } from './sources/joblift';
@@ -100,7 +101,14 @@ async function runAll() {
           sourceJobs = await limiter.schedule(() => scrapeUKCompany(company));
         } else if (ALL_JOB_BOARDS.some(board => source.includes(board))) {
           console.log(`🔄 Scraping Job Board: ${source}`);
-          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
+          // First discover job URLs from sitemap, then scrape them
+          const jobUrls = await discoverJobUrls(source, 100);
+          console.log(`📊 Found ${jobUrls.length} job URLs from ${source}`);
+          if (jobUrls.length > 0) {
+            sourceJobs = await limiter.schedule(() => scrapeFromUrls(jobUrls.slice(0, 50), 'sitemap:jobboards'));
+          } else {
+            sourceJobs = [];
+          }
         } else if (ENGINEERING_COMPANIES.includes(source) || TECH_COMPANIES.includes(source) || 
                    FINANCE_COMPANIES.includes(source) || CONSULTING_COMPANIES.includes(source) ||
                    MANUFACTURING_COMPANIES.includes(source) || ENERGY_COMPANIES.includes(source)) {
@@ -130,7 +138,14 @@ async function runAll() {
           sourceJobs = await limiter.schedule(() => scrapeHighVolumeBoard(boardName));
         } else if (ALL_JOB_BOARDS.some(board => source.includes(board))) {
           console.log(`🔄 Scraping Job Board Sitemap: ${source}`);
-          sourceJobs = await limiter.schedule(() => scrapeFromUrls([source], 'sitemap:jobboards'));
+          // First discover job URLs from sitemap, then scrape them
+          const jobUrls = await discoverJobUrls(source, 100);
+          console.log(`📊 Found ${jobUrls.length} job URLs from ${source}`);
+          if (jobUrls.length > 0) {
+            sourceJobs = await limiter.schedule(() => scrapeFromUrls(jobUrls.slice(0, 50), 'sitemap:jobboards'));
+          } else {
+            sourceJobs = [];
+          }
         } else {
           console.log(`⚠️  Unknown source type: ${source}`);
           continue;

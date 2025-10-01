@@ -61,7 +61,10 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
         sampleJob: jobs[0] ? {
           title: jobs[0].title,
           location: jobs[0].location?.name,
-          hasContent: !!jobs[0].content
+          hasContent: !!jobs[0].content,
+          contentLength: jobs[0].content?.length || 0,
+          availableFields: Object.keys(jobs[0]),
+          description: jobs[0].description || jobs[0].content || 'NO DESCRIPTION'
         } : null
       });
     }
@@ -93,7 +96,7 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       company: { name: companyName },
       companyLogo: j.company?.logo_url || undefined,
       location: j.location?.name,
-      descriptionHtml: j.content,
+      descriptionHtml: j.content || j.description || j.job_description || '',
       descriptionText: undefined,
       applyUrl,
         applyDeadline: undefined,

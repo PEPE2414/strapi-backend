@@ -152,7 +152,7 @@ export function getBucketsForToday(): CrawlBucket[] {
     sources: [
       'stripe', 'airbnb', 'lyft', 'spotify', // Known working ATS
       'gradcracker', 'joblift', // University boards
-      'https://www.reed.co.uk/sitemap.xml', // Try Reed again with better parsing
+      'savethestudent', 'jobs-ac-uk', 'studentcircus', 'gradsmart', // University job boards
     ],
     priority: 'high'
   });

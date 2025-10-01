@@ -144,11 +144,11 @@ export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reaso
     return { valid: false, reason: 'Invalid slug' };
   }
   
-  // Check job description quality
+  // Check job description quality (temporarily reduced for debugging)
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  if (cleanDescription.length < 150) {
-    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥150)` };
+  if (cleanDescription.length < 50) {
+    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥50)` };
   }
   
   // Company page URL is now optional (removed requirement)
