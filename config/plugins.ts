@@ -6,7 +6,7 @@ export default ({ env }) => {
     'users-permissions': {
       config: {
         register: {
-          allowedFields: ['preferredName','university','course','studyField','keyStats'],
+          allowedFields: ['preferredName','university','course','studyField','keyStats','weeklyGoal','notificationPrefs'],
         },
         jwt: { expiresIn: '7d' },
       },
