@@ -6,7 +6,7 @@ module.exports = createCoreRouter('api::deadline-checkbox.deadline-checkbox', {
   routes: [
     {
       method: 'GET',
-      path: '/deadlines-checkboxes/user',
+      path: '/deadline-checkbox/user',
       handler: 'deadline-checkbox.findUserCheckboxes',
       config: {
         auth: {
@@ -16,7 +16,7 @@ module.exports = createCoreRouter('api::deadline-checkbox.deadline-checkbox', {
     },
     {
       method: 'PUT',
-      path: '/deadlines-checkboxes/user',
+      path: '/deadline-checkbox/user',
       handler: 'deadline-checkbox.updateUserCheckboxes',
       config: {
         auth: {

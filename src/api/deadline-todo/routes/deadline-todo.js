@@ -6,7 +6,7 @@ module.exports = createCoreRouter('api::deadline-todo.deadline-todo', {
   routes: [
     {
       method: 'GET',
-      path: '/deadlines-todos/user',
+      path: '/deadline-todo/user',
       handler: 'deadline-todo.findUserTodos',
       config: {
         auth: {
@@ -16,7 +16,7 @@ module.exports = createCoreRouter('api::deadline-todo.deadline-todo', {
     },
     {
       method: 'PUT',
-      path: '/deadlines-todos/user',
+      path: '/deadline-todo/user',
       handler: 'deadline-todo.updateUserTodos',
       config: {
         auth: {
