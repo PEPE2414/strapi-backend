@@ -264,8 +264,8 @@ async function scrapeJobPage(url: string, boardName: string): Promise<CanonicalJ
       degreeLevel: (() => {
         const t = (title + ' ' + String(descHtml)).toLowerCase();
         if (t.includes('phd') || t.includes('postdoc') || t.includes('doctoral')) return undefined;
-        if (t.includes('master') || t.includes('msc') || t.includes('mba')) return 'PG-taught';
-        return 'UG';
+        if (t.includes('master') || t.includes('msc') || t.includes('mba')) return ['PG-taught'];
+        return ['UG'];
       })(),
       remotePolicy: undefined,
       postedAt: toISO(jsonld?.datePosted),

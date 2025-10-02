@@ -132,7 +132,12 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       experience: undefined,
       companyPageUrl: undefined,
       relatedDegree: undefined,
-      degreeLevel: undefined,
+      degreeLevel: (() => {
+        const t = (title + ' ' + String(description)).toLowerCase();
+        if (t.includes('phd') || t.includes('postdoc') || t.includes('doctoral')) return undefined;
+        if (t.includes('master') || t.includes('msc') || t.includes('mba')) return ['PG-taught'];
+        return ['UG'];
+      })(),
       postedAt: toISO(j.updated_at || j.created_at),
       slug,
       hash
