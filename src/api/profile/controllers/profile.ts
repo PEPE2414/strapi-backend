@@ -35,7 +35,7 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
@@ -97,6 +97,30 @@ export default ({ strapi }: { strapi: any }) => ({
           data.coverLetterPoints = [v.trim()];
         } else {
           data.coverLetterPoints = [];
+        }
+      }
+
+      // Validate deadlineCheckboxes (must be an object)
+      if (data.deadlineCheckboxes !== undefined) {
+        if (typeof data.deadlineCheckboxes !== 'object' || data.deadlineCheckboxes === null) {
+          return ctx.badRequest('deadlineCheckboxes must be an object');
+        }
+        try {
+          data.deadlineCheckboxes = JSON.parse(JSON.stringify(data.deadlineCheckboxes));
+        } catch (e) {
+          return ctx.badRequest('deadlineCheckboxes must be a valid JSON object');
+        }
+      }
+
+      // Validate deadlineTodos (must be an object)
+      if (data.deadlineTodos !== undefined) {
+        if (typeof data.deadlineTodos !== 'object' || data.deadlineTodos === null) {
+          return ctx.badRequest('deadlineTodos must be an object');
+        }
+        try {
+          data.deadlineTodos = JSON.parse(JSON.stringify(data.deadlineTodos));
+        } catch (e) {
+          return ctx.badRequest('deadlineTodos must be a valid JSON object');
         }
       }
                   
