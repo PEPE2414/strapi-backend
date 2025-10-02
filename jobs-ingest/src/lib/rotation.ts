@@ -145,14 +145,14 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on working job sources
+  // Focus on most reliable sources only
   buckets.push({
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
     sources: [
-      'stripe', 'airbnb', 'lyft', 'spotify', // Known working ATS
-      'gradcracker', 'joblift', // University boards
-      'savethestudent', 'jobs-ac-uk', 'studentcircus', 'gradsmart', // University job boards
+      'stripe', // Most reliable ATS
+      'gradcracker', // University board
+      'savethestudent', // University job board
     ],
     priority: 'high'
   });

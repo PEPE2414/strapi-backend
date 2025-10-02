@@ -9,18 +9,14 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 export async function scrapeGradsmart(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   let page = 1;
-  const maxPages = 20; // Gradsmart has many graduate jobs
+  const maxPages = 3; // Reduced to prevent 404 errors
   
   try {
     while (page <= maxPages) {
-      // Try different job search URLs for comprehensive coverage
+      // Try most relevant job search URLs only
       const urls = [
-        `https://www.gradsmart.co.uk/jobs?page=${page}`,
         `https://www.gradsmart.co.uk/graduate-jobs?page=${page}`,
-        `https://www.gradsmart.co.uk/internships?page=${page}`,
-        `https://www.gradsmart.co.uk/placements?page=${page}`,
-        `https://www.gradsmart.co.uk/entry-level?page=${page}`,
-        `https://www.gradsmart.co.uk/graduate-schemes?page=${page}`
+        `https://www.gradsmart.co.uk/internships?page=${page}`
       ];
       
       for (const url of urls) {
@@ -101,7 +97,11 @@ export async function scrapeGradsmart(): Promise<CanonicalJob[]> {
           await new Promise(resolve => setTimeout(resolve, 2000));
           
         } catch (error) {
-          console.warn(`Error scraping ${url}:`, error);
+          if (error instanceof Error && error.message.includes('404')) {
+            console.log(`📄 Page ${page} not found for ${url} - reached end of available pages`);
+          } else {
+            console.warn(`Error scraping ${url}:`, error);
+          }
         }
       }
       

@@ -64,7 +64,7 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
           hasContent: !!jobs[0].content,
           contentLength: jobs[0].content?.length || 0,
           availableFields: Object.keys(jobs[0]),
-          description: jobs[0].description || jobs[0].content || 'NO DESCRIPTION'
+          fullJobObject: JSON.stringify(jobs[0], null, 2).substring(0, 500) + '...'
         } : null
       });
     }
@@ -82,10 +82,33 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   
   console.log(`📊 Greenhouse ${board}: ${jobs.length} total jobs, ${relevantJobs.length} relevant jobs`);
   
-  return Promise.all(relevantJobs.map(async j => {
+  return Promise.all(relevantJobs.slice(0, 10).map(async j => {
     const applyUrl = await resolveApplyUrl(j.absolute_url);
     const companyName = j.company?.name || board;
     const title = String(j.title || '').trim();
+    
+    // Try to fetch full job details for description
+    let description = j.content || j.description || j.job_description || '';
+    if (!description && j.id) {
+      try {
+        const jobDetailUrl = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs/${j.id}`;
+        const { html: jobDetailJson } = await get(jobDetailUrl);
+        const jobDetail = JSON.parse(jobDetailJson);
+        description = jobDetail.content || jobDetail.description || '';
+        
+        if (board === 'stripe') {
+          console.log(`🔍 Job detail for ${title}:`, {
+            hasDescription: !!description,
+            descriptionLength: description.length,
+            availableFields: Object.keys(jobDetail),
+            contentPreview: description.substring(0, 200)
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch job details for ${j.id}:`, error instanceof Error ? error.message : String(error));
+      }
+    }
+    
     const hash = sha256([title, companyName, applyUrl].join('|'));
     const slug = makeUniqueSlug(title, companyName, hash, j.location?.name);
 
@@ -96,7 +119,7 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       company: { name: companyName },
       companyLogo: j.company?.logo_url || undefined,
       location: j.location?.name,
-      descriptionHtml: j.content || j.description || j.job_description || '',
+      descriptionHtml: description,
       descriptionText: undefined,
       applyUrl,
         applyDeadline: undefined,
