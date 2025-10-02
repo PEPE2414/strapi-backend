@@ -13,6 +13,11 @@ import { scrapeSaveTheStudent } from './sources/savethestudent';
 import { scrapeJobsAcUk } from './sources/jobsacuk';
 import { scrapeStudentCircus } from './sources/studentcircus';
 import { scrapeGradsmart } from './sources/gradsmart';
+import { 
+  scrapeTargetJobs, scrapeMilkround, scrapeProspects, scrapeRateMyPlacement,
+  scrapeBrightNetwork, scrapeStudentJobUK, scrapeE4S, scrapeRateMyApprenticeship,
+  scrapeWorkInStartups, scrapeTotalJobs, scrapeReed, scrapeEscapeTheCity
+} from './sources/jobBoards';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -131,6 +136,42 @@ async function runAll() {
         } else if (source === 'gradsmart') {
           console.log(`🔄 Scraping Gradsmart (High Volume)`);
           sourceJobs = await limiter.schedule(() => scrapeGradsmart());
+        } else if (source === 'targetjobs') {
+          console.log(`🔄 Scraping TARGETjobs`);
+          sourceJobs = await limiter.schedule(() => scrapeTargetJobs());
+        } else if (source === 'milkround') {
+          console.log(`🔄 Scraping Milkround`);
+          sourceJobs = await limiter.schedule(() => scrapeMilkround());
+        } else if (source === 'prospects') {
+          console.log(`🔄 Scraping Prospects`);
+          sourceJobs = await limiter.schedule(() => scrapeProspects());
+        } else if (source === 'ratemyplacement') {
+          console.log(`🔄 Scraping RateMyPlacement`);
+          sourceJobs = await limiter.schedule(() => scrapeRateMyPlacement());
+        } else if (source === 'brightnetwork') {
+          console.log(`🔄 Scraping BrightNetwork`);
+          sourceJobs = await limiter.schedule(() => scrapeBrightNetwork());
+        } else if (source === 'studentjob') {
+          console.log(`🔄 Scraping StudentJob UK`);
+          sourceJobs = await limiter.schedule(() => scrapeStudentJobUK());
+        } else if (source === 'e4s') {
+          console.log(`🔄 Scraping Employment 4 Students`);
+          sourceJobs = await limiter.schedule(() => scrapeE4S());
+        } else if (source === 'ratemyapprenticeship') {
+          console.log(`🔄 Scraping RateMyApprenticeship`);
+          sourceJobs = await limiter.schedule(() => scrapeRateMyApprenticeship());
+        } else if (source === 'workinstartups') {
+          console.log(`🔄 Scraping WorkInStartups`);
+          sourceJobs = await limiter.schedule(() => scrapeWorkInStartups());
+        } else if (source === 'totaljobs') {
+          console.log(`🔄 Scraping Totaljobs`);
+          sourceJobs = await limiter.schedule(() => scrapeTotalJobs());
+        } else if (source === 'reed') {
+          console.log(`🔄 Scraping Reed`);
+          sourceJobs = await limiter.schedule(() => scrapeReed());
+        } else if (source === 'escapethecity') {
+          console.log(`🔄 Scraping Escape the City`);
+          sourceJobs = await limiter.schedule(() => scrapeEscapeTheCity());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);

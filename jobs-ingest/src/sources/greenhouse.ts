@@ -1,4 +1,5 @@
 import { request } from 'undici';
+import { get } from '../lib/fetcher';
 import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
 import { sha256 } from '../lib/hash';

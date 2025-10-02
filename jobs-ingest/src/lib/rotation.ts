@@ -145,23 +145,30 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on most reliable sources only
+  // Focus on reliable job boards
   buckets.push({
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
     sources: [
-      'stripe', // Most reliable ATS
       'gradcracker', // University board
       'savethestudent', // University job board
+      'targetjobs', // TARGETjobs
+      'prospects', // Prospects.ac.uk
+      'reed', // Reed.co.uk
     ],
     priority: 'high'
   });
   
-  // Only scrape 1-2 ATS companies per day (not 50+ pages each)
+  // Additional job boards (rotate daily)
   buckets.push({
-    id: 'limited-ats',
-    name: 'Limited ATS (Daily)',
-    sources: ['stripe'], // Just one company, but limit pages
+    id: 'additional-job-boards',
+    name: 'Additional Job Boards (Daily)',
+    sources: [
+      'milkround', // Milkround
+      'ratemyplacement', // RateMyPlacement
+      'brightnetwork', // BrightNetwork
+      'totaljobs', // Totaljobs
+    ],
     priority: 'medium'
   });
   
