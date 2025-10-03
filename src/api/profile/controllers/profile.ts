@@ -21,27 +21,27 @@ export default ({ strapi }: { strapi: any }) => ({
       console.log('[profile:get] Starting getProfile request');
       
       // 1) Extract bearer token
-      const auth = ctx.request.header.authorization || '';
+      const auth = ctx.request?.header?.authorization || '';
       console.log('[profile:get] Authorization header:', auth ? 'Present' : 'Missing');
       
-      const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-      if (!token) {
+      const m = auth.match(/^Bearer\s+(.+)$/i);
+      if (!m) {
         console.log('[profile:get] No token found');
-        return ctx.unauthorized('Missing Authorization header');
+        return ctx.unauthorized('Missing Authorization');
       }
+      const token = m[1];
 
       // 2) Verify via users-permissions JWT service
       let payload: any;
       try {
-        const jwtService = (strapi as any).plugin('users-permissions').service('jwt');
-        payload = await jwtService.verify(token);
+        payload = await strapi.service('plugin::users-permissions.jwt').verify(token);
         console.log('[profile:get] JWT verified successfully, payload:', payload);
       } catch (error) {
         console.log('[profile:get] JWT verification failed:', error);
         return ctx.unauthorized('Invalid token');
       }
 
-      const userId = payload?.id ?? payload?.sub;
+      const userId = payload?.id;
       if (!userId) {
         console.log('[profile:get] No user ID in payload');
         return ctx.unauthorized('Invalid token payload');
