@@ -1,5 +1,5 @@
-// src/api/profile/controllers/profile.js
-const { errors } = require('@strapi/utils');
+// src/api/profile/controllers/profile.ts
+import { errors } from '@strapi/utils';
 const { UnauthorizedError, ValidationError } = errors;
 
 const sanitizeFile = (f: any) => {
@@ -15,7 +15,7 @@ const sanitizeFile = (f: any) => {
   };
 };
 
-module.exports = ({ strapi }) => ({
+export default ({ strapi }: { strapi: any }) => ({
   async getProfile(ctx: any) {
     try {
       console.log('[profile:get] Starting getProfile request');
@@ -76,7 +76,7 @@ module.exports = ({ strapi }) => ({
       let payload: any;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e) {
+      } catch (e: any) {
         console.error('[profile:update] JWT verify failed:', e);
         return ctx.unauthorized('Invalid token');
       }
@@ -113,7 +113,7 @@ module.exports = ({ strapi }) => ({
         try {
           data.notificationPrefs = JSON.parse(JSON.stringify(data.notificationPrefs));
           console.log('[profile:update] notificationPrefs processed:', data.notificationPrefs);
-        } catch (e) {
+        } catch (e: any) {
           return ctx.badRequest('notificationPrefs must be a valid JSON object');
         }
       }
@@ -157,7 +157,7 @@ module.exports = ({ strapi }) => ({
         }
         try {
           data.deadlineCheckboxes = JSON.parse(JSON.stringify(data.deadlineCheckboxes));
-        } catch (e) {
+        } catch (e: any) {
           return ctx.badRequest('deadlineCheckboxes must be a valid JSON object');
         }
       }
@@ -169,7 +169,7 @@ module.exports = ({ strapi }) => ({
         }
         try {
           data.deadlineTodos = JSON.parse(JSON.stringify(data.deadlineTodos));
-        } catch (e) {
+        } catch (e: any) {
           return ctx.badRequest('deadlineTodos must be a valid JSON object');
         }
       }
@@ -217,7 +217,7 @@ module.exports = ({ strapi }) => ({
       let payload: any;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e) {
+      } catch (e: any) {
         console.error('[profile:getCv] JWT verify failed:', e);
         return ctx.unauthorized('Invalid token');
       }
@@ -245,7 +245,7 @@ module.exports = ({ strapi }) => ({
       let payload: any;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e) {
+      } catch (e: any) {
         console.error('[profile:cv] JWT verify failed:', e);
         return ctx.unauthorized('Invalid token');
       }
@@ -319,7 +319,7 @@ module.exports = ({ strapi }) => ({
           const bytes = await out.Body?.transformToByteArray();
           if (!bytes) throw new Error('no_body');
           buf = Buffer.from(bytes);
-        } catch (e) {
+        } catch (e: any) {
           strapi.log.warn('[profile:cv] S3 GetObject failed, falling back to HTTP: ' + (e as any)?.message);
         }
 
@@ -348,7 +348,7 @@ module.exports = ({ strapi }) => ({
             // .doc or other types – you can add an extractor later
             cvText = '';
           }
-        } catch (e) {
+        } catch (e: any) {
           strapi.log.warn('[profile:cv] extractor error: ' + (e as any)?.message);
           cvText = '';
         }
@@ -358,7 +358,7 @@ module.exports = ({ strapi }) => ({
         // 4c) Save cvText (entityService, then fallback), then read back & log
         try {
           await strapi.entityService.update('plugin::users-permissions.user', userId, { data: { cvText } });
-        } catch (e) {
+        } catch (e: any) {
           strapi.log.warn('[profile:cv] entityService.update(cvText) failed, using db.query(): ' + (e as any)?.message);
           await strapi.db
             .query('plugin::users-permissions.user')
@@ -419,7 +419,7 @@ module.exports = ({ strapi }) => ({
       try {
         const uploadService = strapi.plugin('upload').service('upload');
         await uploadService.remove(prev);
-      } catch (e) {
+      } catch (e: any) {
         // ignore clean-up failure
       }
     }

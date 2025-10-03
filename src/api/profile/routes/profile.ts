@@ -1,5 +1,5 @@
 // src/api/profile/routes/profile.ts
-module.exports = {
+export default {
   routes: [
     {
       method: 'GET',
