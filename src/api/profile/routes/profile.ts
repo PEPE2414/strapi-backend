@@ -3,6 +3,15 @@ export default {
   routes: [
     {
       method: 'GET',
+      path: '/profile/test',
+      handler: 'profile.test',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'GET',
       path: '/profile/me',
       handler: 'profile.getProfile',
       config: {

@@ -16,7 +16,12 @@ const sanitizeFile = (f: any) => {
 };
 
 export default {
-  async getProfile(ctx: any) {
+  async test(ctx) {
+    console.log('[profile:test] Test endpoint called');
+    ctx.body = { message: 'Profile controller is working' };
+  },
+
+  async getProfile(ctx) {
     try {
       console.log('[profile:get] Starting getProfile request');
       
@@ -66,7 +71,7 @@ export default {
     }
   },
 
-  async updateProfile(ctx: any) {
+  async updateProfile(ctx) {
     try {
       // 1) Verify Bearer token (route is public; we self-auth here)
       const auth = ctx.request?.header?.authorization || '';
@@ -208,7 +213,7 @@ export default {
   },
 
    // ====== Get current CV (no extraction here) ======
-  async getCv(ctx: any) {
+  async getCv(ctx) {
     try {
       const auth = ctx.request?.header?.authorization || '';
       const m = auth.match(/^Bearer\s+(.+)$/i);
@@ -235,7 +240,7 @@ export default {
     }
   },
 
-  async linkCv(ctx: any) {
+  async linkCv(ctx) {
     try {
       // 0) Verify Bearer token (route is public; we self-auth here)
       const auth = ctx.request?.header?.authorization || '';
@@ -392,7 +397,7 @@ export default {
   },
   
   // ====== NEW: set/replace current CV (expects { fileId }) ======
-  async setCv(ctx: any) {
+  async setCv(ctx) {
     const user = ctx.state.user;
     if (!user) throw new UnauthorizedError();
 
