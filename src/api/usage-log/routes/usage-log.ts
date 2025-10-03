@@ -6,7 +6,7 @@ export default {
       path: '/usage-logs',
       handler: 'usage-log.find',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -15,7 +15,7 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.findOne',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -24,7 +24,7 @@ export default {
       path: '/usage-logs',
       handler: 'usage-log.create',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -33,7 +33,7 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.update',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -42,7 +42,7 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.delete',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },

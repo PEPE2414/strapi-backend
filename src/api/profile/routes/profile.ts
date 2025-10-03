@@ -15,7 +15,7 @@ export default {
       path: '/profile/me',
       handler: 'profile.getProfile',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -24,7 +24,7 @@ export default {
       path: '/profile/me',
       handler: 'profile.updateProfile',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -33,7 +33,7 @@ export default {
       path: '/user/profile',
       handler: 'profile.updateProfile',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -42,7 +42,7 @@ export default {
       path: '/profile/cv',
       handler: 'profile.getCv',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
@@ -51,7 +51,7 @@ export default {
       path: '/profile/cv',
       handler: 'profile.linkCv',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        policies: ['global::is-authenticated'],
         middlewares: [],
       },
     },
