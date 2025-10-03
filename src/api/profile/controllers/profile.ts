@@ -24,6 +24,8 @@ export default {
   async getProfile(ctx) {
     try {
       console.log('[profile:get] Starting getProfile request');
+      console.log('[profile:get] ctx.state:', ctx.state);
+      console.log('[profile:get] ctx.state.user:', ctx.state.user);
       
       // Use Strapi's built-in authentication
       const user = ctx.state.user;
@@ -54,18 +56,28 @@ export default {
 
   async updateProfile(ctx) {
     try {
+      console.log('[profile:update] Starting updateProfile request');
+      console.log('[profile:update] ctx.state:', ctx.state);
+      console.log('[profile:update] ctx.state.user:', ctx.state.user);
+      
       // Use Strapi's built-in authentication
       const user = ctx.state.user;
       if (!user) {
+        console.log('[profile:update] No authenticated user found');
         return ctx.unauthorized('Authentication required');
       }
       const userId = user.id;
+      console.log('[profile:update] User ID:', userId);
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
+      console.log('[profile:update] Request body:', ctx.request.body);
+      console.log('[profile:update] Extracted data:', body);
+      
       const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
+      console.log('[profile:update] Filtered data:', data);
 
       // 3) Normalise types
       ['preferredName', 'university', 'course', 'studyField'].forEach((k) => {
