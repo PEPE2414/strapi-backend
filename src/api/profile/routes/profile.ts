@@ -5,36 +5,51 @@ export default {
       method: 'GET',
       path: '/profile/me',
       handler: 'api::profile.profile.getProfile',
-      // Public; controller verifies JWT
-      config: { policies: [], middlewares: [] },
+      config: {
+        auth: {
+          scope: ['authenticated'],
+        },
+      },
     },
     {
       method: 'PUT',
       path: '/profile/me',
       handler: 'api::profile.profile.updateProfile',
-      // Public; controller verifies JWT
-      config: { policies: [], middlewares: [] },
+      config: {
+        auth: {
+          scope: ['authenticated'],
+        },
+      },
     },
     {
       method: 'PUT',
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',
-      // Public; controller verifies JWT
-      config: { policies: [], middlewares: [] },
+      config: {
+        auth: {
+          scope: ['authenticated'],
+        },
+      },
     },
     {
       method: 'GET',
       path: '/profile/cv',
       handler: 'api::profile.profile.getCv',
-      // Public; controller verifies JWT
-      config: { policies: [], middlewares: [] },
+      config: {
+        auth: {
+          scope: ['authenticated'],
+        },
+      },
     },
     {
       method: 'POST',
       path: '/profile/cv',
       handler: 'api::profile.profile.linkCv',
-      // Public; controller verifies JWT
-      config: { policies: [], middlewares: [] },
+      config: {
+        auth: {
+          scope: ['authenticated'],
+        },
+      },
     },
   ],
 };
