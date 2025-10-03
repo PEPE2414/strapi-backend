@@ -15,7 +15,7 @@ const sanitizeFile = (f: any) => {
   };
 };
 
-export default ({ strapi }: { strapi: any }) => ({
+export default {
   async getProfile(ctx: any) {
     try {
       console.log('[profile:get] Starting getProfile request');
@@ -426,4 +426,4 @@ export default ({ strapi }: { strapi: any }) => ({
 
     ctx.body = { data: sanitizeFile(file) };
   },
-});
+};

@@ -4,7 +4,7 @@ export default {
     {
       method: 'GET',
       path: '/profile/me',
-      handler: 'api::profile.profile.getProfile',
+      handler: 'profile.getProfile',
       config: {
         // Public; controller verifies JWT
         policies: [],
@@ -14,7 +14,7 @@ export default {
     {
       method: 'PUT',
       path: '/profile/me',
-      handler: 'api::profile.profile.updateProfile',
+      handler: 'profile.updateProfile',
       config: {
         // Public; controller verifies JWT
         policies: [],
@@ -24,7 +24,7 @@ export default {
     {
       method: 'PUT',
       path: '/user/profile',
-      handler: 'api::profile.profile.updateProfile',
+      handler: 'profile.updateProfile',
       config: {
         // Public; controller verifies JWT
         policies: [],
@@ -34,7 +34,7 @@ export default {
     {
       method: 'GET',
       path: '/profile/cv',
-      handler: 'api::profile.profile.getCv',
+      handler: 'profile.getCv',
       config: {
         // Public; controller verifies JWT
         policies: [],
@@ -44,7 +44,7 @@ export default {
     {
       method: 'POST',
       path: '/profile/cv',
-      handler: 'api::profile.profile.linkCv',
+      handler: 'profile.linkCv',
       config: {
         // Public; controller verifies JWT
         policies: [],
