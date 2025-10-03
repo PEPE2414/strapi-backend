@@ -2,6 +2,20 @@
 export default {
   routes: [
     {
+      method: 'GET',
+      path: '/profile/me',
+      handler: 'api::profile.profile.getProfile',
+      // Public; controller verifies JWT
+      config: { policies: [], middlewares: [] },
+    },
+    {
+      method: 'PUT',
+      path: '/profile/me',
+      handler: 'api::profile.profile.updateProfile',
+      // Public; controller verifies JWT
+      config: { policies: [], middlewares: [] },
+    },
+    {
       method: 'PUT',
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',

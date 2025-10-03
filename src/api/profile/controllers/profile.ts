@@ -16,6 +16,24 @@ const sanitizeFile = (f: any) => {
 };
 
 export default ({ strapi }: { strapi: any }) => ({
+  async getProfile(ctx: any) {
+    try {
+      const payload = ctx.state?.user;
+      if (!payload?.id) return ctx.unauthorized('Invalid token payload');
+
+      const user = await strapi.entityService.findOne('plugin::users-permissions.user', payload.id, {
+        populate: '*'
+      });
+
+      if (!user) return ctx.notFound('User not found');
+
+      ctx.body = user;
+    } catch (e: any) {
+      console.error('[profile:get] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Internal server error');
+    }
+  },
+
   async updateProfile(ctx: any) {
     try {
       // 1) Verify Bearer token (route is public; we self-auth here)
