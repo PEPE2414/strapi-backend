@@ -15,13 +15,18 @@ const sanitizeFile = (f: any) => {
   };
 };
 
-export default ({ strapi }: { strapi: any }) => ({
+module.exports = ({ strapi }) => ({
   async getProfile(ctx: any) {
     try {
+      console.log('[profile:get] Starting getProfile request');
+      
       // 1) Extract bearer token
       const auth = ctx.request.header.authorization || '';
+      console.log('[profile:get] Authorization header:', auth ? 'Present' : 'Missing');
+      
       const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
       if (!token) {
+        console.log('[profile:get] No token found');
         return ctx.unauthorized('Missing Authorization header');
       }
 
@@ -30,14 +35,19 @@ export default ({ strapi }: { strapi: any }) => ({
       try {
         const jwtService = (strapi as any).plugin('users-permissions').service('jwt');
         payload = await jwtService.verify(token);
-      } catch {
+        console.log('[profile:get] JWT verified successfully, payload:', payload);
+      } catch (error) {
+        console.log('[profile:get] JWT verification failed:', error);
         return ctx.unauthorized('Invalid token');
       }
 
       const userId = payload?.id ?? payload?.sub;
       if (!userId) {
+        console.log('[profile:get] No user ID in payload');
         return ctx.unauthorized('Invalid token payload');
       }
+      
+      console.log('[profile:get] User ID:', userId);
 
       const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: '*'
