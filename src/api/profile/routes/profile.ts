@@ -6,9 +6,9 @@ export default {
       path: '/profile/me',
       handler: 'api::profile.profile.getProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        // Public; controller verifies JWT
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -16,9 +16,9 @@ export default {
       path: '/profile/me',
       handler: 'api::profile.profile.updateProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        // Public; controller verifies JWT
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -26,9 +26,9 @@ export default {
       path: '/user/profile',
       handler: 'api::profile.profile.updateProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        // Public; controller verifies JWT
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -36,9 +36,9 @@ export default {
       path: '/profile/cv',
       handler: 'api::profile.profile.getCv',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        // Public; controller verifies JWT
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -46,9 +46,9 @@ export default {
       path: '/profile/cv',
       handler: 'api::profile.profile.linkCv',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        // Public; controller verifies JWT
+        policies: [],
+        middlewares: [],
       },
     },
   ],

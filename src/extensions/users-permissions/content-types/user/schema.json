@@ -43,6 +43,7 @@
     "notificationPrefs": { "type": "json", "default": {} },
     "deadlineCheckboxes": { "type": "json", "default": {} },
     "deadlineTodos": { "type": "json", "default": {} },
+    "skippedPastApps": { "type": "boolean", "default": false },
 
     "coverLetters": {
       "type": "relation",

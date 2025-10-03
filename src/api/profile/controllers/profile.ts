@@ -18,10 +18,28 @@ const sanitizeFile = (f: any) => {
 export default ({ strapi }: { strapi: any }) => ({
   async getProfile(ctx: any) {
     try {
-      const payload = ctx.state?.user;
-      if (!payload?.id) return ctx.unauthorized('Invalid token payload');
+      // 1) Extract bearer token
+      const auth = ctx.request.header.authorization || '';
+      const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+      if (!token) {
+        return ctx.unauthorized('Missing Authorization header');
+      }
 
-      const user = await strapi.entityService.findOne('plugin::users-permissions.user', payload.id, {
+      // 2) Verify via users-permissions JWT service
+      let payload: any;
+      try {
+        const jwtService = (strapi as any).plugin('users-permissions').service('jwt');
+        payload = await jwtService.verify(token);
+      } catch {
+        return ctx.unauthorized('Invalid token');
+      }
+
+      const userId = payload?.id ?? payload?.sub;
+      if (!userId) {
+        return ctx.unauthorized('Invalid token payload');
+      }
+
+      const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: '*'
       });
 
@@ -57,7 +75,7 @@ export default ({ strapi }: { strapi: any }) => ({
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
