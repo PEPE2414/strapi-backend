@@ -40,6 +40,9 @@
     "packages": { "type": "json", "default": [] },
     "addons": { "type": "json", "default": [] },
     "weeklyGoal": { "type": "integer", "default": 12 },
+    "notificationPrefs": { "type": "json", "default": {} },
+    "deadlineCheckboxes": { "type": "json", "default": {} },
+    "deadlineTodos": { "type": "json", "default": {} },
 
     "coverLetters": {
       "type": "relation",

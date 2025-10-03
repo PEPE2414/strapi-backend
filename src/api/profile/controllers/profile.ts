@@ -27,6 +27,10 @@ export default ({ strapi }: { strapi: any }) => ({
 
       if (!user) return ctx.notFound('User not found');
 
+      console.log('[profile:get] User found:', user.id);
+      console.log('[profile:get] User notificationPrefs:', user.notificationPrefs);
+      console.log('[profile:get] User notificationPrefs type:', typeof user.notificationPrefs);
+
       ctx.body = user;
     } catch (e: any) {
       console.error('[profile:get] unexpected error:', e?.message || e);
@@ -151,6 +155,7 @@ export default ({ strapi }: { strapi: any }) => ({
           { data }
         );
         console.log('[profile:update] User updated successfully:', updated);
+        console.log('[profile:update] Updated user notificationPrefs:', updated.notificationPrefs);
         ctx.body = updated;
         return;
       } catch (err: any) {
