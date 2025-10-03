@@ -8,7 +8,7 @@ export default {
   },
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     try {
-      // Grant permissions to authenticated role for custom API routes
+      // Grant permissions to authenticated role for custom API routes using Strapi v5 API
       const authenticatedRole = await strapi.db.query('plugin::users-permissions.role').findOne({
         where: { type: 'authenticated' },
       });
@@ -27,33 +27,25 @@ export default {
           'api::usage-log.usage-log.delete',
         ];
 
-        // Get existing permissions
-        const existingPermissions = authenticatedRole.permissions || [];
-        const existingActionIds = existingPermissions.map((p: any) => p.action);
-
-        // Add new permissions that don't already exist
-        const newPermissions = [];
+        // Use Strapi's permission service to grant permissions
+        const permissionService = strapi.service('plugin::users-permissions.permission');
+        
         for (const action of customPermissions) {
-          if (!existingActionIds.includes(action)) {
-            newPermissions.push({
+          try {
+            await permissionService.create({
               action,
               subject: null,
               properties: {},
               conditions: [],
               role: authenticatedRole.id,
             });
+            strapi.log.info(`Granted permission: ${action} to authenticated role`);
+          } catch (error: any) {
+            // Permission might already exist, that's okay
+            if (!error.message?.includes('already exists')) {
+              strapi.log.warn(`Failed to grant permission ${action}:`, error.message);
+            }
           }
-        }
-
-        // Update role with new permissions
-        if (newPermissions.length > 0) {
-          await strapi.db.query('plugin::users-permissions.role').update({
-            where: { id: authenticatedRole.id },
-            data: {
-              permissions: [...existingPermissions, ...newPermissions],
-            },
-          });
-          strapi.log.info(`Granted ${newPermissions.length} permissions to authenticated role`);
         }
       }
     } catch (error) {
