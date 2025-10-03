@@ -25,46 +25,27 @@ export default {
     try {
       console.log('[profile:get] Starting getProfile request');
       
-      // 1) Extract bearer token
-      const auth = ctx.request?.header?.authorization || '';
-      console.log('[profile:get] Authorization header:', auth ? 'Present' : 'Missing');
-      
-      const m = auth.match(/^Bearer\s+(.+)$/i);
-      if (!m) {
-        console.log('[profile:get] No token found');
-        return ctx.unauthorized('Missing Authorization');
-      }
-      const token = m[1];
-
-      // 2) Verify via users-permissions JWT service
-      let payload: any;
-      try {
-        payload = await strapi.service('plugin::users-permissions.jwt').verify(token);
-        console.log('[profile:get] JWT verified successfully, payload:', payload);
-      } catch (error) {
-        console.log('[profile:get] JWT verification failed:', error);
-        return ctx.unauthorized('Invalid token');
-      }
-
-      const userId = payload?.id;
-      if (!userId) {
-        console.log('[profile:get] No user ID in payload');
-        return ctx.unauthorized('Invalid token payload');
+      // Use Strapi's built-in authentication
+      const user = ctx.state.user;
+      if (!user) {
+        console.log('[profile:get] No authenticated user found');
+        return ctx.unauthorized('Authentication required');
       }
       
-      console.log('[profile:get] User ID:', userId);
+      console.log('[profile:get] User ID:', user.id);
 
-      const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+      // Get full user data with populated fields
+      const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
         populate: '*'
       });
 
-      if (!user) return ctx.notFound('User not found');
+      if (!fullUser) return ctx.notFound('User not found');
 
-      console.log('[profile:get] User found:', user.id);
-      console.log('[profile:get] User notificationPrefs:', user.notificationPrefs);
-      console.log('[profile:get] User notificationPrefs type:', typeof user.notificationPrefs);
+      console.log('[profile:get] User found:', fullUser.id);
+      console.log('[profile:get] User notificationPrefs:', fullUser.notificationPrefs);
+      console.log('[profile:get] User notificationPrefs type:', typeof fullUser.notificationPrefs);
 
-      ctx.body = user;
+      ctx.body = fullUser;
     } catch (e: any) {
       console.error('[profile:get] unexpected error:', e?.message || e);
       ctx.throw(500, 'Internal server error');
@@ -73,20 +54,12 @@ export default {
 
   async updateProfile(ctx) {
     try {
-      // 1) Verify Bearer token (route is public; we self-auth here)
-      const auth = ctx.request?.header?.authorization || '';
-      const m = auth.match(/^Bearer\s+(.+)$/i);
-      if (!m) return ctx.unauthorized('Missing Authorization');
-
-      let payload: any;
-      try {
-        payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e: any) {
-        console.error('[profile:update] JWT verify failed:', e);
-        return ctx.unauthorized('Invalid token');
+      // Use Strapi's built-in authentication
+      const user = ctx.state.user;
+      if (!user) {
+        return ctx.unauthorized('Authentication required');
       }
-      const userId = payload?.id;
-      if (!userId) return ctx.unauthorized('Invalid token payload');
+      const userId = user.id;
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
@@ -215,19 +188,12 @@ export default {
    // ====== Get current CV (no extraction here) ======
   async getCv(ctx) {
     try {
-      const auth = ctx.request?.header?.authorization || '';
-      const m = auth.match(/^Bearer\s+(.+)$/i);
-      if (!m) return ctx.unauthorized('Missing Authorization');
-  
-      let payload: any;
-      try {
-        payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e: any) {
-        console.error('[profile:getCv] JWT verify failed:', e);
-        return ctx.unauthorized('Invalid token');
+      // Use Strapi's built-in authentication
+      const user = ctx.state.user;
+      if (!user) {
+        return ctx.unauthorized('Authentication required');
       }
-      const userId = payload?.id;
-      if (!userId) return ctx.unauthorized('Invalid token payload');
+      const userId = user.id;
   
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { cvFile: true },
@@ -242,20 +208,12 @@ export default {
 
   async linkCv(ctx) {
     try {
-      // 0) Verify Bearer token (route is public; we self-auth here)
-      const auth = ctx.request?.header?.authorization || '';
-      const m = auth.match(/^Bearer\s+(.+)$/i);
-      if (!m) return ctx.unauthorized('Missing Authorization');
-
-      let payload: any;
-      try {
-        payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
-      } catch (e: any) {
-        console.error('[profile:cv] JWT verify failed:', e);
-        return ctx.unauthorized('Invalid token');
+      // Use Strapi's built-in authentication
+      const user = ctx.state.user;
+      if (!user) {
+        return ctx.unauthorized('Authentication required');
       }
-      const userId = payload?.id;
-      if (!userId) return ctx.unauthorized('Invalid token payload');
+      const userId = user.id;
 
       // 1) Validate input and load file from Upload plugin
       const body = ctx.request.body || {};

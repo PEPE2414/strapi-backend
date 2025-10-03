@@ -1,37 +1,10 @@
-// src/api/profile/routes/profile.ts
+// src/api/usage-log/routes/usage-log.ts
 export default {
   routes: [
     {
       method: 'GET',
-      path: '/profile/test',
-      handler: 'profile.test',
-      config: {
-        policies: [],
-        middlewares: [],
-      },
-    },
-    {
-      method: 'GET',
-      path: '/profile/me',
-      handler: 'profile.getProfile',
-      config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
-        middlewares: [],
-      },
-    },
-    {
-      method: 'PUT',
-      path: '/profile/me',
-      handler: 'profile.updateProfile',
-      config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
-        middlewares: [],
-      },
-    },
-    {
-      method: 'PUT',
-      path: '/user/profile',
-      handler: 'profile.updateProfile',
+      path: '/usage-logs',
+      handler: 'usage-log.find',
       config: {
         policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
@@ -39,8 +12,8 @@ export default {
     },
     {
       method: 'GET',
-      path: '/profile/cv',
-      handler: 'profile.getCv',
+      path: '/usage-logs/:id',
+      handler: 'usage-log.findOne',
       config: {
         policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
@@ -48,8 +21,26 @@ export default {
     },
     {
       method: 'POST',
-      path: '/profile/cv',
-      handler: 'profile.linkCv',
+      path: '/usage-logs',
+      handler: 'usage-log.create',
+      config: {
+        policies: ['plugin::users-permissions.isAuthenticated'],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'PUT',
+      path: '/usage-logs/:id',
+      handler: 'usage-log.update',
+      config: {
+        policies: ['plugin::users-permissions.isAuthenticated'],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'DELETE',
+      path: '/usage-logs/:id',
+      handler: 'usage-log.delete',
       config: {
         policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
