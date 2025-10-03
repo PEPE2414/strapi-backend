@@ -8,13 +8,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
 
-      // Build query with user filter
+      // Build query with forced user scoping (ignore any user filters from client)
       const { query } = ctx;
       const entity = await strapi.entityService.findMany('api::usage-log.usage-log', {
         ...query,
         filters: {
           ...query.filters,
-          user: user.id
+          user: user.id  // force owner scoping for usage logs
         }
       });
 
@@ -37,7 +37,7 @@ export default {
       const entity = await strapi.entityService.findOne('api::usage-log.usage-log', id, {
         populate: '*',
         filters: {
-          user: user.id
+          user: user.id  // force owner scoping for usage logs
         }
       });
 
@@ -91,7 +91,7 @@ export default {
       // First check if the usage log belongs to the user
       const existingEntity = await strapi.entityService.findOne('api::usage-log.usage-log', id, {
         filters: {
-          user: user.id
+          user: user.id  // force owner scoping for usage logs
         }
       });
 
@@ -123,7 +123,7 @@ export default {
       // First check if the usage log belongs to the user
       const existingEntity = await strapi.entityService.findOne('api::usage-log.usage-log', id, {
         filters: {
-          user: user.id
+          user: user.id  // force owner scoping for usage logs
         }
       });
 
