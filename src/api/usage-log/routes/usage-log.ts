@@ -6,7 +6,8 @@ export default {
       path: '/usage-logs',
       handler: 'usage-log.find',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
+        policies: [],
         middlewares: [],
       },
     },
@@ -15,7 +16,8 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.findOne',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
+        policies: [],
         middlewares: [],
       },
     },
@@ -24,7 +26,8 @@ export default {
       path: '/usage-logs',
       handler: 'usage-log.create',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
+        policies: [],
         middlewares: [],
       },
     },
@@ -33,7 +36,8 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.update',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
+        policies: [],
         middlewares: [],
       },
     },
@@ -42,7 +46,8 @@ export default {
       path: '/usage-logs/:id',
       handler: 'usage-log.delete',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: true,
+        policies: [],
         middlewares: [],
       },
     },
