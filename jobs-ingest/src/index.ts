@@ -18,6 +18,9 @@ import {
   scrapeBrightNetwork, scrapeStudentJobUK, scrapeE4S, scrapeRateMyApprenticeship,
   scrapeWorkInStartups, scrapeTotalJobs, scrapeReed, scrapeEscapeTheCity
 } from './sources/jobBoards';
+import { 
+  scrapeWorkingJobBoards, scrapeIndeedUK, scrapeReedWorking 
+} from './sources/workingJobBoards';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -172,6 +175,15 @@ async function runAll() {
         } else if (source === 'escapethecity') {
           console.log(`🔄 Scraping Escape the City`);
           sourceJobs = await limiter.schedule(() => scrapeEscapeTheCity());
+        } else if (source === 'indeed-uk') {
+          console.log(`🔄 Scraping Indeed UK`);
+          sourceJobs = await limiter.schedule(() => scrapeIndeedUK());
+        } else if (source === 'reed-working') {
+          console.log(`🔄 Scraping Reed Working`);
+          sourceJobs = await limiter.schedule(() => scrapeReedWorking());
+        } else if (source === 'working-boards') {
+          console.log(`🔄 Scraping Working Job Boards`);
+          sourceJobs = await limiter.schedule(() => scrapeWorkingJobBoards());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);

@@ -145,16 +145,14 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on reliable job boards
+  // Focus on working job boards
   buckets.push({
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
     sources: [
-      'gradcracker', // University board
-      'savethestudent', // University job board
-      'targetjobs', // TARGETjobs
-      'prospects', // Prospects.ac.uk
-      'reed', // Reed.co.uk
+      'indeed-uk', // Indeed UK (known working)
+      'reed-working', // Reed working scraper
+      'working-boards', // General working boards scraper
     ],
     priority: 'high'
   });

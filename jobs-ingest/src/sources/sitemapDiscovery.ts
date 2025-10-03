@@ -11,16 +11,21 @@ export interface SitemapUrl {
   changefreq?: string;
 }
 
-export async function discoverJobUrls(domain: string, maxUrls: number = 10000): Promise<string[]> {
-  console.log(`🔍 Discovering job URLs from ${domain}...`);
+export async function discoverJobUrls(sitemapUrl: string, maxUrls: number = 10000): Promise<string[]> {
+  console.log(`🔍 Discovering job URLs from ${sitemapUrl}...`);
   
   const monitor = new ScrapingMonitor(maxUrls);
   const jobUrls = new Set<string>();
   const sitemapUrls = new Set<string>();
   const processedSitemaps = new Set<string>();
   
-  // Start with common sitemap locations
+  // Extract domain from sitemap URL
+  const url = new URL(sitemapUrl);
+  const domain = `${url.protocol}//${url.hostname}`;
+  
+  // Start with the provided sitemap URL and common locations
   const commonSitemaps = [
+    sitemapUrl,
     `${domain}/sitemap.xml`,
     `${domain}/sitemap_index.xml`,
     `${domain}/sitemaps.xml`,

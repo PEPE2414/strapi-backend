@@ -15,9 +15,9 @@ const JOB_BOARDS = {
     name: 'TARGETjobs',
     baseUrl: 'https://targetjobs.co.uk',
     searchUrls: [
-      'https://targetjobs.co.uk/careers-advice/job-descriptions',
       'https://targetjobs.co.uk/graduate-jobs',
-      'https://targetjobs.co.uk/internships'
+      'https://targetjobs.co.uk/internships',
+      'https://targetjobs.co.uk/placement-year'
     ],
     sitemapUrl: 'https://targetjobs.co.uk/sitemap.xml'
   },
@@ -35,9 +35,9 @@ const JOB_BOARDS = {
     name: 'Prospects',
     baseUrl: 'https://www.prospects.ac.uk',
     searchUrls: [
-      'https://www.prospects.ac.uk/jobs',
-      'https://www.prospects.ac.uk/graduate-jobs',
-      'https://www.prospects.ac.uk/jobs-and-work-experience'
+      'https://www.prospects.ac.uk/jobs-and-work-experience/graduate-jobs',
+      'https://www.prospects.ac.uk/jobs-and-work-experience/internships',
+      'https://www.prospects.ac.uk/jobs-and-work-experience/work-experience'
     ],
     sitemapUrl: 'https://www.prospects.ac.uk/sitemap.xml'
   },
@@ -115,9 +115,9 @@ const JOB_BOARDS = {
     name: 'Reed',
     baseUrl: 'https://www.reed.co.uk',
     searchUrls: [
-      'https://www.reed.co.uk/graduate-jobs',
-      'https://www.reed.co.uk/internships',
-      'https://www.reed.co.uk/entry-level-jobs'
+      'https://www.reed.co.uk/jobs/graduate-jobs',
+      'https://www.reed.co.uk/jobs/internships',
+      'https://www.reed.co.uk/jobs/entry-level-jobs'
     ],
     sitemapUrl: 'https://www.reed.co.uk/sitemap.xml'
   },
