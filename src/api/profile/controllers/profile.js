@@ -2,7 +2,7 @@
 const { errors } = require('@strapi/utils');
 const { UnauthorizedError, ValidationError } = errors;
 
-const sanitizeFile = (f: any) => {
+const sanitizeFile = (f) => {
   if (!f) return null;
   return {
     id: f.id,
@@ -16,7 +16,7 @@ const sanitizeFile = (f: any) => {
 };
 
 module.exports = ({ strapi }) => ({
-  async getProfile(ctx: any) {
+  async getProfile(ctx) {
     try {
       console.log('[profile:get] Starting getProfile request');
       
@@ -31,7 +31,7 @@ module.exports = ({ strapi }) => ({
       }
 
       // 2) Verify via users-permissions JWT service
-      let payload: any;
+      let payload;
       try {
         const jwtService = (strapi as any).plugin('users-permissions').service('jwt');
         payload = await jwtService.verify(token);
@@ -60,20 +60,20 @@ module.exports = ({ strapi }) => ({
       console.log('[profile:get] User notificationPrefs type:', typeof user.notificationPrefs);
 
       ctx.body = user;
-    } catch (e: any) {
+    } catch (e) {
       console.error('[profile:get] unexpected error:', e?.message || e);
       ctx.throw(500, 'Internal server error');
     }
   },
 
-  async updateProfile(ctx: any) {
+  async updateProfile(ctx) {
     try {
       // 1) Verify Bearer token (route is public; we self-auth here)
       const auth = ctx.request?.header?.authorization || '';
       const m = auth.match(/^Bearer\s+(.+)$/i);
       if (!m) return ctx.unauthorized('Missing Authorization');
 
-      let payload: any;
+      let payload;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
       } catch (e) {
@@ -86,7 +86,7 @@ module.exports = ({ strapi }) => ({
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};
       const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps'];
-      const data: Record<string, any> = {};
+      const data = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
 
       // 3) Normalise types
@@ -186,7 +186,7 @@ module.exports = ({ strapi }) => ({
         console.log('[profile:update] Updated user notificationPrefs:', updated.notificationPrefs);
         ctx.body = updated;
         return;
-      } catch (err: any) {
+      } catch (err) {
         console.error('[profile:update] entityService.update failed:', err?.message || err);
       }
 
@@ -197,24 +197,24 @@ module.exports = ({ strapi }) => ({
           .update({ where: { id: userId }, data });
         ctx.body = updated;
         return;
-      } catch (err: any) {
+      } catch (err) {
         console.error('[profile:update] db.query update failed:', err?.message || err);
         return ctx.badRequest('Could not update profile');
       }
-    } catch (e: any) {
+    } catch (e) {
       console.error('[profile:update] unexpected error:', e?.message || e);
       ctx.throw(500, 'Profile update failed');
     }
   },
 
    // ====== Get current CV (no extraction here) ======
-  async getCv(ctx: any) {
+  async getCv(ctx) {
     try {
       const auth = ctx.request?.header?.authorization || '';
       const m = auth.match(/^Bearer\s+(.+)$/i);
       if (!m) return ctx.unauthorized('Missing Authorization');
   
-      let payload: any;
+      let payload;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
       } catch (e) {
@@ -229,20 +229,20 @@ module.exports = ({ strapi }) => ({
       });
   
       ctx.body = { data: sanitizeFile(me?.cvFile) };
-    } catch (e: any) {
+    } catch (e) {
       console.error('[profile:getCv] unexpected error:', e?.message || e);
       ctx.throw(500, 'Fetch CV failed');
     }
   },
 
-  async linkCv(ctx: any) {
+  async linkCv(ctx) {
     try {
       // 0) Verify Bearer token (route is public; we self-auth here)
       const auth = ctx.request?.header?.authorization || '';
       const m = auth.match(/^Bearer\s+(.+)$/i);
       if (!m) return ctx.unauthorized('Missing Authorization');
 
-      let payload: any;
+      let payload;
       try {
         payload = await strapi.service('plugin::users-permissions.jwt').verify(m[1]);
       } catch (e) {
@@ -277,7 +277,7 @@ module.exports = ({ strapi }) => ({
         await strapi.entityService.update('plugin::users-permissions.user', userId, {
           data: { cvFile: fileId },
         });
-      } catch (err: any) {
+      } catch (err) {
         console.warn('[profile:cv] entityService.update failed, using db.query():', err?.message || err);
         await strapi.db
           .query('plugin::users-permissions.user')
@@ -336,12 +336,12 @@ module.exports = ({ strapi }) => ({
         try {
           if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
             const pdfMod = await import('pdf-parse');
-            const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
+            const pdfParse = pdfMod.default || pdfMod;
             const out = await pdfParse(buf);
             cvText = (out?.text || '').trim();
           } else if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
             const mmMod = await import('mammoth');
-            const mammoth: any = (mmMod as any).default || (mmMod as any);
+            const mammoth = mmMod.default || mmMod;
             const out = await mammoth.extractRawText({ buffer: buf });
             cvText = (out?.value || '').trim();
           } else {
@@ -385,14 +385,14 @@ module.exports = ({ strapi }) => ({
           updatedAt: f.updatedAt,
         },
       };
-    } catch (e: any) {
+    } catch (e) {
       console.error('[profile:cv] unexpected error:', e?.message || e);
       ctx.throw(500, 'CV link failed');
     }
   },
   
   // ====== NEW: set/replace current CV (expects { fileId }) ======
-  async setCv(ctx: any) {
+  async setCv(ctx) {
     const user = ctx.state.user;
     if (!user) throw new UnauthorizedError();
 
