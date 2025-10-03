@@ -199,7 +199,12 @@ export default {
         populate: { cvFile: true },
       });
   
-      ctx.body = { data: sanitizeFile(me?.cvFile) };
+      const cvFile = sanitizeFile(me?.cvFile);
+      if (cvFile) {
+        ctx.body = { hasCv: true, file: cvFile };
+      } else {
+        ctx.body = { hasCv: false };
+      }
     } catch (e: any) {
       console.error('[profile:getCv] unexpected error:', e?.message || e);
       ctx.throw(500, 'Fetch CV failed');
