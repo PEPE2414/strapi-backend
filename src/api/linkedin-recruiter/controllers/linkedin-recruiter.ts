@@ -1,6 +1,4 @@
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreController('api::linkedin-recruiter.linkedin-recruiter' as any, ({ strapi }) => ({
+export default ({ strapi }) => ({
   async search(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -118,4 +116,4 @@ export default factories.createCoreController('api::linkedin-recruiter.linkedin-
       return { data: [] };
     }
   },
-}));
+});

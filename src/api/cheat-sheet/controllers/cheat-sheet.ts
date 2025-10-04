@@ -1,6 +1,4 @@
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreController('api::cheat-sheet.cheat-sheet' as any, ({ strapi }) => ({
+export default ({ strapi }) => ({
   async me(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -117,4 +115,4 @@ export default factories.createCoreController('api::cheat-sheet.cheat-sheet' as 
       return ctx.internalServerError('Failed to generate cheat sheet');
     }
   },
-}));
+});

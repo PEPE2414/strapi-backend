@@ -1,3 +1,3 @@
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreService('api::linkedin-recruiter.linkedin-recruiter' as any);
+export default ({ strapi }) => ({
+  // Custom service methods can be added here if needed
+});
