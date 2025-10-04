@@ -14,10 +14,10 @@ export default {
       });
 
       if (authenticatedRole) {
-        // Define the permissions for our custom routes
+        // Define the permissions for our custom routes (policy-based in Strapi v5)
         const customPermissions = [
           'api::profile.profile.getProfile',
-          'api::profile.profile.updateProfile', 
+          'api::profile.profile.updateProfile',
           'api::profile.profile.getCv',
           'api::profile.profile.linkCv',
           'api::usage-log.usage-log.find',

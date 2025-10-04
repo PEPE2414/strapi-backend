@@ -15,10 +15,7 @@ export default {
       path: '/profile/me',
       handler: 'profile.getProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
-        policies: [],
+        policies: ['is-authenticated'],
         middlewares: [],
       },
     },
@@ -27,10 +24,7 @@ export default {
       path: '/profile/me',
       handler: 'profile.updateProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
-        policies: [],
+        policies: ['is-authenticated'],
         middlewares: [],
       },
     },
@@ -39,10 +33,7 @@ export default {
       path: '/user/profile',
       handler: 'profile.updateProfile',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
-        policies: [],
+        policies: ['is-authenticated'],
         middlewares: [],
       },
     },
@@ -51,10 +42,7 @@ export default {
       path: '/profile/cv',
       handler: 'profile.getCv',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
-        policies: [],
+        policies: ['is-authenticated'],
         middlewares: [],
       },
     },
@@ -63,10 +51,7 @@ export default {
       path: '/profile/cv',
       handler: 'profile.linkCv',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
-        policies: [],
+        policies: ['is-authenticated'],
         middlewares: [],
       },
     },
