@@ -6,27 +6,17 @@ export default ({ strapi }) => ({
     }
 
     try {
-      // Check if the content type exists
-      const contentType = strapi.contentTypes['api::cheat-sheet.cheat-sheet'];
-      if (!contentType) {
-        console.warn('Cheat sheet content type not found, returning empty results');
-        return { data: [] };
-      }
-
-      const data = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet' as any, {
-        filters: { userId: user.id },
-        sort: { createdAt: 'desc' },
+      // Use direct database query like the working saved-job controller
+      const results = await strapi.db.query('api::cheat-sheet.cheat-sheet').findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: 'desc' },
       });
 
-      return { data };
+      ctx.body = { data: results };
     } catch (error) {
       console.error('Failed to fetch cheat sheets:', error);
-      // If it's a 403 or content type not found error, return empty results instead of error
-      if (error.message?.includes('403') || error.message?.includes('not found')) {
-        console.warn('Content type not accessible, returning empty results');
-        return { data: [] };
-      }
-      return { data: [] };
+      // If content type doesn't exist, return empty results
+      ctx.body = { data: [] };
     }
   },
 
@@ -44,13 +34,13 @@ export default ({ strapi }) => ({
 
     try {
       // Check for existing cheat sheet (idempotency)
-      const existing = await strapi.entityService.findMany('api::cheat-sheet.cheat-sheet' as any, {
-        filters: {
+      const existing = await strapi.db.query('api::cheat-sheet.cheat-sheet').findMany({
+        where: {
           userId: user.id,
           jobTitle,
           company,
         },
-        sort: { createdAt: 'desc' },
+        orderBy: { createdAt: 'desc' },
         limit: 1,
       });
 
@@ -60,7 +50,8 @@ export default ({ strapi }) => ({
         
         // Return existing if created within last 24 hours
         if (hoursSinceCreated < 24) {
-          return { data: recent };
+          ctx.body = { data: recent };
+          return;
         }
       }
 
@@ -98,7 +89,7 @@ export default ({ strapi }) => ({
       const n8nData = await n8nResponse.json() as any;
 
       // Save to Strapi
-      const created = await strapi.entityService.create('api::cheat-sheet.cheat-sheet' as any, {
+      const created = await strapi.db.query('api::cheat-sheet.cheat-sheet').create({
         data: {
           userId: user.id,
           jobId,
@@ -109,7 +100,7 @@ export default ({ strapi }) => ({
         },
       });
 
-      return { data: created };
+      ctx.body = { data: created };
     } catch (error) {
       console.error('Failed to generate cheat sheet:', error);
       return ctx.internalServerError('Failed to generate cheat sheet');

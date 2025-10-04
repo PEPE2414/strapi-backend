@@ -77,25 +77,15 @@ export default ({ strapi }) => ({
     }
 
     try {
-      // Check if the content type exists
-      const contentType = strapi.contentTypes['api::linkedin-recruiter.linkedin-recruiter'];
-      if (!contentType) {
-        console.warn('LinkedIn recruiter content type not found, returning empty results');
-        return { data: [] };
-      }
-
-      const data = await strapi.entityService.findMany('api::linkedin-recruiter.linkedin-recruiter' as any, {
-        filters: { owner: user.id },
-        sort: { createdAt: 'desc' },
-        populate: {
-          owner: {
-            fields: ['id']
-          }
-        }
+      // Use direct database query like the working saved-job controller
+      const results = await strapi.db.query('api::linkedin-recruiter.linkedin-recruiter').findMany({
+        where: { owner: user.id },
+        orderBy: { createdAt: 'desc' },
+        populate: { owner: true },
       });
 
       // Transform data to match expected format
-      const transformedData = data.map((item: any) => ({
+      const transformedData = results.map((item: any) => ({
         id: item.id,
         name: item.name,
         title: item.title,
@@ -105,15 +95,11 @@ export default ({ strapi }) => ({
         fetchedAt: item.createdAt
       }));
 
-      return { data: transformedData };
+      ctx.body = { data: transformedData };
     } catch (error) {
       console.error('Failed to fetch recruiter results:', error);
-      // If it's a 403 or content type not found error, return empty results instead of error
-      if (error.message?.includes('403') || error.message?.includes('not found')) {
-        console.warn('Content type not accessible, returning empty results');
-        return { data: [] };
-      }
-      return { data: [] };
+      // If content type doesn't exist, return empty results
+      ctx.body = { data: [] };
     }
   },
 });
