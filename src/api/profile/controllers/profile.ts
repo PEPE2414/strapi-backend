@@ -490,4 +490,153 @@ export default {
 
     ctx.body = { data: sanitizeFile(file) };
   },
+
+  // ====== NEW: Validate text extraction from uploaded file ======
+  async validateText(ctx) {
+    try {
+      console.log('[profile:validateText] Starting validateText request');
+      console.log('[profile:validateText] ctx.state.user:', ctx.state.user);
+      console.log('[profile:validateText] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:validateText] No valid Authorization header');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:validateText] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[profile:validateText] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[profile:validateText] No user found in JWT');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const userId = user.id;
+
+      // 1) Validate input and load file from Upload plugin
+      const body = ctx.request.body || {};
+      const fileId = Number(body?.fileId);
+      if (!fileId) return ctx.badRequest('fileId is required');
+
+      const f = await strapi.entityService.findOne('plugin::upload.file', fileId);
+      if (!f) return ctx.badRequest('fileId not found');
+
+      // 2) Enforce allowed MIME types (PDF/DOCX/older DOC optional)
+      const mime = String(f.mime || '').toLowerCase();
+      const ext = String(f.ext || '').toLowerCase();
+      const ok =
+        mime === 'application/pdf' ||
+        mime === 'application/msword' ||
+        mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        ext === '.pdf' || ext === '.doc' || ext === '.docx';
+      if (!ok) {
+        return ctx.badRequest('Unsupported file type. Please upload a PDF or Word document.');
+      }
+
+      // 3) Extract text and validate
+      let hasText = false;
+      let extractedText = '';
+      
+      try {
+        // 3a) Read bytes from S3 (provider key) or fall back to HTTP
+        let buf: Buffer | null = null;
+        try {
+          const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
+          const region = process.env.S3_REGION;
+          const bucket = process.env.S3_BUCKET;
+          if (!region || !bucket) throw new Error('missing_s3_env');
+
+          const keyFromProvider = (f as any)?.provider_metadata?.key as string | undefined;
+
+          let key = keyFromProvider;
+          if (!key) {
+            const url = String(f.url || '');
+            if (!url) throw new Error('no_file_url');
+            const path =
+              url.startsWith('http://') || url.startsWith('https://')
+                ? new URL(url).pathname
+                : url;
+            key = path.replace(/^\/+/, '');
+          }
+
+          const s3 = new S3Client({
+            region,
+            credentials: {
+              accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+            },
+          });
+          const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key! }));
+          // @ts-ignore Node 18+ helper
+          const bytes = await out.Body?.transformToByteArray();
+          if (!bytes) throw new Error('no_body');
+          buf = Buffer.from(bytes);
+        } catch (e: any) {
+          strapi.log.warn('[profile:validateText] S3 GetObject failed, falling back to HTTP: ' + (e as any)?.message);
+        }
+
+        if (!buf) {
+          const url = String(f.url || '');
+          if (!url.startsWith('http')) throw new Error('no_absolute_url_for_http_fetch');
+          const res = await fetch(url);
+          const ab = await res.arrayBuffer();
+          buf = Buffer.from(ab);
+        }
+
+        // 3b) Parse text (PDF or DOCX). Leave others empty for now.
+        try {
+          if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
+            const pdfMod = await import('pdf-parse');
+            const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
+            const out = await pdfParse(buf);
+            extractedText = (out?.text || '').trim();
+          } else if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            const mmMod = await import('mammoth');
+            const mammoth: any = (mmMod as any).default || (mmMod as any);
+            const out = await mammoth.extractRawText({ buffer: buf });
+            extractedText = (out?.value || '').trim();
+          } else {
+            // .doc or other types – you can add an extractor later
+            extractedText = '';
+          }
+        } catch (e: any) {
+          strapi.log.warn('[profile:validateText] extractor error: ' + (e as any)?.message);
+          extractedText = '';
+        }
+
+        // 3c) Check if text was successfully extracted
+        hasText = extractedText.length > 0;
+        
+        strapi.log.info(`[profile:validateText] extracted ${extractedText.length} chars from ${f.mime} (size=${buf.length}), hasText=${hasText}`);
+
+      } catch (ex) {
+        strapi.log.warn('[profile:validateText] Text extraction failed: ' + (ex as any)?.message);
+        hasText = false;
+      }
+
+      // 4) Return validation result
+      ctx.body = {
+        hasText,
+        extractedTextLength: extractedText.length,
+        fileId: f.id,
+        fileName: f.name,
+        fileSize: f.size,
+      };
+    } catch (e: any) {
+      console.error('[profile:validateText] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Text validation failed');
+    }
+  },
 };
