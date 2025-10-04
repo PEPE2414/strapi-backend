@@ -76,13 +76,33 @@ export default {
       console.log('[profile:update] Starting updateProfile request');
       console.log('[profile:update] ctx.state:', ctx.state);
       console.log('[profile:update] ctx.state.user:', ctx.state.user);
+      console.log('[profile:update] Authorization header:', ctx.request.header.authorization);
       
-      // Use Strapi's built-in authentication
-      const user = ctx.state.user;
-      if (!user) {
-        console.log('[profile:update] No authenticated user found');
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:update] No valid Authorization header');
         return ctx.unauthorized('Authentication required');
       }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:update] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[profile:update] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[profile:update] No user found in JWT');
+        return ctx.unauthorized('Authentication required');
+      }
+      
       const userId = user.id;
       console.log('[profile:update] User ID:', userId);
 
@@ -265,11 +285,35 @@ export default {
 
   async linkCv(ctx) {
     try {
-      // Use Strapi's built-in authentication
-      const user = ctx.state.user;
-      if (!user) {
+      console.log('[profile:linkCv] Starting linkCv request');
+      console.log('[profile:linkCv] ctx.state.user:', ctx.state.user);
+      console.log('[profile:linkCv] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:linkCv] No valid Authorization header');
         return ctx.unauthorized('Authentication required');
       }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:linkCv] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[profile:linkCv] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[profile:linkCv] No user found in JWT');
+        return ctx.unauthorized('Authentication required');
+      }
+      
       const userId = user.id;
 
       // 1) Validate input and load file from Upload plugin

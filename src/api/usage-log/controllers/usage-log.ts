@@ -1,4 +1,34 @@
 // src/api/usage-log/controllers/usage-log.ts
+
+// Helper function for manual JWT verification
+async function verifyJWT(ctx) {
+  const authHeader = ctx.request.header.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('[usage-log] No valid Authorization header');
+    return null;
+  }
+  
+  const token = authHeader.slice(7);
+  let user = null;
+  
+  try {
+    // Use Strapi's JWT service to verify the token
+    const jwtService = strapi.plugin('users-permissions').service('jwt');
+    user = await jwtService.verify(token);
+    console.log('[usage-log] JWT verified, user ID:', user.id);
+  } catch (jwtError) {
+    console.log('[usage-log] JWT verification failed:', jwtError.message);
+    return null;
+  }
+  
+  if (!user || !user.id) {
+    console.log('[usage-log] No user found in JWT');
+    return null;
+  }
+  
+  return user;
+}
+
 export default {
   async find(ctx) {
     try {
@@ -8,27 +38,8 @@ export default {
       console.log('[usage-log:find] Authorization header:', ctx.request.header.authorization);
       
       // Manual JWT verification since auth: false bypasses built-in auth
-      const authHeader = ctx.request.header.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        console.log('[usage-log:find] No valid Authorization header');
-        return ctx.unauthorized('Authentication required');
-      }
-      
-      const token = authHeader.slice(7);
-      let user = null;
-      
-      try {
-        // Use Strapi's JWT service to verify the token
-        const jwtService = strapi.plugin('users-permissions').service('jwt');
-        user = await jwtService.verify(token);
-        console.log('[usage-log:find] JWT verified, user ID:', user.id);
-      } catch (jwtError) {
-        console.log('[usage-log:find] JWT verification failed:', jwtError.message);
-        return ctx.unauthorized('Invalid token');
-      }
-      
-      if (!user || !user.id) {
-        console.log('[usage-log:find] No user found in JWT');
+      const user = await verifyJWT(ctx);
+      if (!user) {
         return ctx.unauthorized('Authentication required');
       }
 
@@ -51,8 +62,11 @@ export default {
 
   async findOne(ctx) {
     try {
-      // Get the authenticated user
-      const user = ctx.state.user;
+      console.log('[usage-log:findOne] Starting findOne request');
+      console.log('[usage-log:findOne] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const user = await verifyJWT(ctx);
       if (!user) {
         return ctx.unauthorized('Authentication required');
       }
@@ -78,8 +92,11 @@ export default {
 
   async create(ctx) {
     try {
-      // Get the authenticated user
-      const user = ctx.state.user;
+      console.log('[usage-log:create] Starting create request');
+      console.log('[usage-log:create] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const user = await verifyJWT(ctx);
       if (!user) {
         return ctx.unauthorized('Authentication required');
       }
@@ -103,8 +120,11 @@ export default {
 
   async update(ctx) {
     try {
-      // Get the authenticated user
-      const user = ctx.state.user;
+      console.log('[usage-log:update] Starting update request');
+      console.log('[usage-log:update] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const user = await verifyJWT(ctx);
       if (!user) {
         return ctx.unauthorized('Authentication required');
       }
@@ -136,8 +156,11 @@ export default {
 
   async delete(ctx) {
     try {
-      // Get the authenticated user
-      const user = ctx.state.user;
+      console.log('[usage-log:delete] Starting delete request');
+      console.log('[usage-log:delete] Authorization header:', ctx.request.header.authorization);
+      
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const user = await verifyJWT(ctx);
       if (!user) {
         return ctx.unauthorized('Authentication required');
       }
