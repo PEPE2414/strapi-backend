@@ -1,8 +1,20 @@
 export default {
   async me(ctx) {
-    const { user } = ctx.state;
-    if (!user) {
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
     }
 
     try {
@@ -21,9 +33,21 @@ export default {
   },
 
   async generate(ctx) {
-    const { user } = ctx.state;
-    if (!user) {
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
     }
 
     const { jobId, jobTitle, company, jdText } = ctx.request.body;

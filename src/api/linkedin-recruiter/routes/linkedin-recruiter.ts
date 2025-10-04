@@ -1,14 +1,13 @@
 export default {
-  type: 'content-api',
   routes: [
     {
       method: 'POST',
       path: '/linkedin-recruiter/search',
       handler: 'linkedin-recruiter.search',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        auth: false,
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -16,9 +15,9 @@ export default {
       path: '/linkedin-recruiter/results',
       handler: 'linkedin-recruiter.results',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        auth: false,
+        policies: [],
+        middlewares: [],
       },
     },
   ],

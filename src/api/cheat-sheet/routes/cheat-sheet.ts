@@ -1,14 +1,13 @@
 export default {
-  type: 'content-api',
   routes: [
     {
       method: 'GET',
       path: '/cheat-sheets/me',
       handler: 'cheat-sheet.me',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        auth: false,
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -16,9 +15,9 @@ export default {
       path: '/cheat-sheets/generate',
       handler: 'cheat-sheet.generate',
       config: {
-        auth: {
-          scope: ['authenticated'],
-        },
+        auth: false,
+        policies: [],
+        middlewares: [],
       },
     },
   ],
