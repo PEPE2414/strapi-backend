@@ -7,10 +7,28 @@ export default {
       console.log('[usage-log:find] ctx.state.user:', ctx.state.user);
       console.log('[usage-log:find] Authorization header:', ctx.request.header.authorization);
       
-      // Get the authenticated user
-      const user = ctx.state.user;
-      if (!user) {
-        console.log('[usage-log:find] No authenticated user found');
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[usage-log:find] No valid Authorization header');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[usage-log:find] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[usage-log:find] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[usage-log:find] No user found in JWT');
         return ctx.unauthorized('Authentication required');
       }
 

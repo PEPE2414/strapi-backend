@@ -28,14 +28,30 @@ export default {
       console.log('[profile:get] ctx.state.user:', ctx.state.user);
       console.log('[profile:get] Authorization header:', ctx.request.header.authorization);
       
-      // Use Strapi's built-in authentication
-      const user = ctx.state.user;
-      if (!user) {
-        console.log('[profile:get] No authenticated user found');
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:get] No valid Authorization header');
         return ctx.unauthorized('Authentication required');
       }
       
-      console.log('[profile:get] User ID:', user.id);
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:get] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[profile:get] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[profile:get] No user found in JWT');
+        return ctx.unauthorized('Authentication required');
+      }
 
       // Get full user data with populated fields
       const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
@@ -205,10 +221,28 @@ export default {
       console.log('[profile:getCv] ctx.state.user:', ctx.state.user);
       console.log('[profile:getCv] Authorization header:', ctx.request.header.authorization);
       
-      // Use Strapi's built-in authentication
-      const user = ctx.state.user;
-      if (!user) {
-        console.log('[profile:getCv] No authenticated user found');
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:getCv] No valid Authorization header');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:getCv] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[profile:getCv] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        console.log('[profile:getCv] No user found in JWT');
         return ctx.unauthorized('Authentication required');
       }
       const userId = user.id;
