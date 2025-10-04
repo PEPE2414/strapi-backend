@@ -17,7 +17,7 @@ export default {
       config: {
         auth: false,
         policies: [],
-        middlewares: [],
+        middlewares: ['global::jwt'],
       },
     },
     {
@@ -27,7 +27,7 @@ export default {
       config: {
         auth: false,
         policies: [],
-        middlewares: [],
+        middlewares: ['global::jwt'],
       },
     },
     {
@@ -37,7 +37,7 @@ export default {
       config: {
         auth: false,
         policies: [],
-        middlewares: [],
+        middlewares: ['global::jwt'],
       },
     },
     {
@@ -47,7 +47,7 @@ export default {
       config: {
         auth: false,
         policies: [],
-        middlewares: [],
+        middlewares: ['global::jwt'],
       },
     },
     {
@@ -57,7 +57,7 @@ export default {
       config: {
         auth: false,
         policies: [],
-        middlewares: [],
+        middlewares: ['global::jwt'],
       },
     },
   ],

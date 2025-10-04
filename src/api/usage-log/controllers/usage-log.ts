@@ -2,9 +2,15 @@
 export default {
   async find(ctx) {
     try {
+      console.log('[usage-log:find] Starting find request');
+      console.log('[usage-log:find] ctx.state:', ctx.state);
+      console.log('[usage-log:find] ctx.state.user:', ctx.state.user);
+      console.log('[usage-log:find] Authorization header:', ctx.request.header.authorization);
+      
       // Get the authenticated user
       const user = ctx.state.user;
       if (!user) {
+        console.log('[usage-log:find] No authenticated user found');
         return ctx.unauthorized('Authentication required');
       }
 

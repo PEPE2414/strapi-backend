@@ -26,6 +26,7 @@ export default {
       console.log('[profile:get] Starting getProfile request');
       console.log('[profile:get] ctx.state:', ctx.state);
       console.log('[profile:get] ctx.state.user:', ctx.state.user);
+      console.log('[profile:get] Authorization header:', ctx.request.header.authorization);
       
       // Use Strapi's built-in authentication
       const user = ctx.state.user;
@@ -200,9 +201,14 @@ export default {
    // ====== Get current CV (no extraction here) ======
   async getCv(ctx) {
     try {
+      console.log('[profile:getCv] Starting getCv request');
+      console.log('[profile:getCv] ctx.state.user:', ctx.state.user);
+      console.log('[profile:getCv] Authorization header:', ctx.request.header.authorization);
+      
       // Use Strapi's built-in authentication
       const user = ctx.state.user;
       if (!user) {
+        console.log('[profile:getCv] No authenticated user found');
         return ctx.unauthorized('Authentication required');
       }
       const userId = user.id;
