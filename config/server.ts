@@ -13,4 +13,9 @@ export default ({ env }) => ({
     // Don’t hard-code keys; read from env in Railway
     keys: env.array('APP_KEYS'),
   },
+
+  // Register global policies
+  policies: {
+    'is-authenticated': require('../src/policies/is-authenticated').default,
+  },
 });
