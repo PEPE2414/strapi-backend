@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "linkedin_recruiters",
+  "info": {
+    "singularName": "linkedin-recruiter",
+    "pluralName": "linkedin-recruiters",
+    "displayName": "LinkedIn Recruiter",
+    "description": "LinkedIn recruiter prospects found through automated search"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "company": {
+      "type": "string",
+      "required": true
+    },
+    "location": {
+      "type": "string"
+    },
+    "linkedinUrl": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "source": {
+      "type": "enumeration",
+      "enum": ["n8n", "manual"],
+      "default": "n8n"
+    },
+    "fetchedAt": {
+      "type": "datetime"
+    }
+  }
+}
