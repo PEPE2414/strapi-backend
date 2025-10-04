@@ -14,8 +14,4 @@ export default ({ env }) => ({
     keys: env.array('APP_KEYS'),
   },
 
-  // Register global policies
-  policies: {
-    'is-authenticated': require('../src/policies/is-authenticated').default,
-  },
 });
