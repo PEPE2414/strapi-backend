@@ -25,6 +25,10 @@ export default {
           'api::usage-log.usage-log.create',
           'api::usage-log.usage-log.update',
           'api::usage-log.usage-log.delete',
+          'api::linkedin-recruiter.linkedin-recruiter.search',
+          'api::linkedin-recruiter.linkedin-recruiter.results',
+          'api::cheat-sheet.cheat-sheet.me',
+          'api::cheat-sheet.cheat-sheet.generate',
         ];
 
         // Get existing permissions
