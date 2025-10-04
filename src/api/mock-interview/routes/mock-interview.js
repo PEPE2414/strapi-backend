@@ -16,9 +16,9 @@ module.exports.routes = [
     path: '/mock-interview/start',
     handler: 'mock-interview.start',
     config: {
-      auth: {
-        scope: ['authenticated']
-      }
+      auth: false,
+      policies: [],
+      middlewares: []
     }
   }
 ];

@@ -8,8 +8,22 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
    * then posts webhook to n8n with x-cl-secret (keep header name consistent with n8n).
    */
   async generate(ctx) {
-    const user = ctx.state.user;
-    if (!user) return ctx.unauthorized('Auth required');
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
 
     const { title, company, description, source, savedJobId } = ctx.request.body || {};
     if (!title || !company || !description) {

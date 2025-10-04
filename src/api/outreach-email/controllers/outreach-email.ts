@@ -12,8 +12,24 @@ type EmailBlock = {
 
 export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
   async me(ctx) {
-    const userId = ctx.state.user?.id;
-    if (!userId) return ctx.unauthorized('Login required');
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    const userId = user.id;
 
     const data = await strapi.entityService.findMany(OUTREACH_UID, {
       filters: { user: userId } as any,
@@ -25,8 +41,24 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
   },
 
   async findEmails(ctx) {
-    const userId = ctx.state.user?.id;
-    if (!userId) return ctx.unauthorized('Login required');
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    const userId = user.id;
 
     const body = (ctx.request.body ?? {}) as Record<string, unknown>;
     const company = String(body.company ?? '').trim();

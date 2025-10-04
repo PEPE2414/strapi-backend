@@ -4,8 +4,24 @@ import crypto from 'crypto';
 export default factories.createCoreController('api::interview-set.interview-set' as any, ({ strapi }) => ({
 
   async listMine(ctx) {
-    const userId = ctx.state.user?.id;
-    if(!userId) return ctx.unauthorized();
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    const userId = user.id;
     const data = await strapi.entityService.findMany('api::interview-set.interview-set' as any, {
       filters: { userId: { $eq: userId } },
       sort: { createdAt: 'desc' },
@@ -15,8 +31,24 @@ export default factories.createCoreController('api::interview-set.interview-set'
   },
 
   async generate(ctx) {
-    const userId = ctx.state.user?.id;
-    if(!userId) return ctx.unauthorized();
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    const userId = user.id;
 
     const { jobId = null, jobTitle, company, jdText = '' } = ctx.request.body || {};
     if(!jobTitle || !company) return ctx.badRequest('jobTitle and company required');
