@@ -13,18 +13,21 @@ export default factories.createCoreController('api::linkedin-recruiter.linkedin-
       return ctx.badRequest('Company is required');
     }
 
-    // Rate limiting: 1 request per 20 seconds per user
-    const rateLimitKey = `linkedin_search_${user.id}`;
-    const lastSearch = await strapi.cache.get(rateLimitKey);
-    const now = Date.now();
+    // Basic rate limiting: Check for recent searches in the last 20 seconds
+    const twentySecondsAgo = new Date(Date.now() - 20000);
+    const recentSearches = await strapi.entityService.findMany('api::linkedin-recruiter.linkedin-recruiter' as any, {
+      filters: { 
+        owner: user.id,
+        createdAt: { $gte: twentySecondsAgo }
+      },
+      limit: 1
+    });
     
-    if (lastSearch && (now - lastSearch) < 20000) {
+    if (recentSearches.length > 0) {
       return ctx.tooManyRequests('Rate limit exceeded. Please wait 20 seconds between searches.');
     }
 
     try {
-      // Set rate limit
-      await strapi.cache.set(rateLimitKey, now, 20000);
 
       // Call n8n webhook
       const n8nUrl = process.env.N8N_LINKEDIN_RECRUITER_WEBHOOK_URL;
