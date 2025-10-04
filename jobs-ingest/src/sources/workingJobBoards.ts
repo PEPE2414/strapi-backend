@@ -138,6 +138,7 @@ export async function scrapeWorkingJobBoards(): Promise<CanonicalJob[]> {
 
 // Individual scrapers for specific boards
 export async function scrapeIndeedUK(): Promise<CanonicalJob[]> {
+  console.log('🚀 Starting Indeed UK scraper...');
   const jobs: CanonicalJob[] = [];
   
   const searchQueries = [
@@ -155,6 +156,8 @@ export async function scrapeIndeedUK(): Promise<CanonicalJob[]> {
       
       const { html } = await get(url);
       const $ = cheerio.load(html);
+      
+      console.log(`📊 Indeed UK ${query}: HTML length = ${html.length}, found ${$('.job_seen_beacon, .jobsearch-SerpJobCard').length} job elements`);
       
       $('.job_seen_beacon, .jobsearch-SerpJobCard').each((i, element) => {
         if (i >= 5) return false; // Limit to 5 jobs per query
@@ -203,6 +206,7 @@ export async function scrapeIndeedUK(): Promise<CanonicalJob[]> {
           };
           
           jobs.push(job);
+          console.log(`✅ Added Indeed job: ${title} at ${company}`);
           
         } catch (error) {
           console.warn(`Error processing Indeed job:`, error);
@@ -222,6 +226,7 @@ export async function scrapeIndeedUK(): Promise<CanonicalJob[]> {
 }
 
 export async function scrapeReedWorking(): Promise<CanonicalJob[]> {
+  console.log('🚀 Starting Reed working scraper...');
   const jobs: CanonicalJob[] = [];
   
   try {
@@ -231,6 +236,8 @@ export async function scrapeReedWorking(): Promise<CanonicalJob[]> {
     
     const { html } = await get(url);
     const $ = cheerio.load(html);
+    
+    console.log(`📊 Reed working: HTML length = ${html.length}, found ${$('.job-result-card, .job-card, .search-result, [data-testid*="job"]').length} job elements`);
     
     // Look for job listings
     $('.job-result-card, .job-card, .search-result, [data-testid*="job"]').each((i, element) => {
@@ -280,6 +287,7 @@ export async function scrapeReedWorking(): Promise<CanonicalJob[]> {
         };
         
         jobs.push(job);
+        console.log(`✅ Added Reed job: ${title} at ${company}`);
         
       } catch (error) {
         console.warn(`Error processing Reed job:`, error);

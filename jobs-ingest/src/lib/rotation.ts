@@ -145,7 +145,7 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on working job boards
+  // Focus ONLY on working job boards - remove all company scrapers
   buckets.push({
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
@@ -156,62 +156,6 @@ export function getBucketsForToday(): CrawlBucket[] {
     ],
     priority: 'high'
   });
-  
-  // Additional job boards (rotate daily)
-  buckets.push({
-    id: 'additional-job-boards',
-    name: 'Additional Job Boards (Daily)',
-    sources: [
-      'milkround', // Milkround
-      'ratemyplacement', // RateMyPlacement
-      'brightnetwork', // BrightNetwork
-      'totaljobs', // Totaljobs
-    ],
-    priority: 'medium'
-  });
-  
-  // Crawl major job boards every 2 days (reliable sitemaps)
-  if (dayOfMonth % 2 === 1) {
-    buckets.push(CRAWL_BUCKETS.find(b => b.id === 'major-job-boards')!);
-  }
-  
-  // Add diverse UK companies (small, medium, large) - rotate daily
-  const ukCompanies = [
-    // Large companies
-    'stripe', 'airbnb', 'spotify',
-    // Medium companies  
-    'deliveroo', 'just-eat', 'revolut', 'monzo', 'starling',
-    // Small companies
-    'bulb', 'octopus-energy', 'citymapper', 'improbable'
-  ];
-  const selectedCompany = ukCompanies[dayOfMonth % ukCompanies.length];
-  buckets.push({
-    id: 'uk-company-rotation',
-    name: 'UK Company Rotation (Daily)',
-    sources: [selectedCompany],
-    priority: 'medium'
-  });
-  
-  // Add some major job board sitemaps that are more likely to work
-  buckets.push({
-    id: 'reliable-sitemaps',
-    name: 'Reliable Sitemaps (Daily)',
-    sources: [
-      'https://www.reed.co.uk/sitemap.xml',
-      'https://www.totaljobs.com/sitemap.xml',
-      'https://www.monster.co.uk/sitemap.xml'
-    ],
-    priority: 'high'
-  });
-  
-  // Rotate through company buckets more conservatively (1-2 per day)
-  const companyBuckets = CRAWL_BUCKETS.filter(b => b.id.startsWith('engineering') || b.id.startsWith('tech') || b.id.startsWith('finance'));
-  
-  // Include only 1-2 company buckets per day for better success rate
-  for (let i = 0; i < Math.min(2, companyBuckets.length); i++) {
-    const bucketIndex = (weekOfMonth - 1 + i) % companyBuckets.length;
-    buckets.push(companyBuckets[bucketIndex]);
-  }
   
   return buckets;
 }
