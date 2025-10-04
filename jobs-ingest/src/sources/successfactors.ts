@@ -90,7 +90,7 @@ export async function scrapeSuccessFactors(company: string, subdomain?: string):
       }
 
       return job;
-    })).then(jobs => jobs.filter(job => job !== null));
+    })).then(jobs => jobs.filter((job): job is CanonicalJob => job !== null));
     
   } catch (error) {
     console.warn(`Failed to scrape SuccessFactors for ${company}:`, error instanceof Error ? error.message : String(error));

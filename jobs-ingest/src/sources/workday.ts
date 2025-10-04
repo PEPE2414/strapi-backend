@@ -100,7 +100,7 @@ export async function scrapeWorkday(company: string, subdomain?: string): Promis
       }
 
       return job;
-    })).then(jobs => jobs.filter(job => job !== null));
+    })).then(jobs => jobs.filter((job): job is CanonicalJob => job !== null));
     
   } catch (error) {
     console.warn(`Failed to scrape Workday for ${company}:`, error instanceof Error ? error.message : String(error));
