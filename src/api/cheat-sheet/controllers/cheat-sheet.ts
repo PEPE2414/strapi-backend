@@ -1,4 +1,4 @@
-export default ({ strapi }) => ({
+export default {
   async me(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -106,4 +106,4 @@ export default ({ strapi }) => ({
       return ctx.internalServerError('Failed to generate cheat sheet');
     }
   },
-});
+};

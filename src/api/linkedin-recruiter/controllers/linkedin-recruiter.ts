@@ -1,4 +1,4 @@
-export default ({ strapi }) => ({
+export default {
   async search(ctx) {
     const { user } = ctx.state;
     if (!user) {
@@ -102,4 +102,4 @@ export default ({ strapi }) => ({
       ctx.body = { data: [] };
     }
   },
-});
+};
