@@ -1,7 +1,6 @@
 export default {
+  type: 'content-api',
   routes: [
-    // Disable all core routes by not including them
-    // Only our custom routes are enabled
     {
       method: 'GET',
       path: '/cheat-sheets/me',
