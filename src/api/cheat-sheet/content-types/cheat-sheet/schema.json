@@ -1,5 +1,4 @@
 {
-  "kind": "collectionType",
   "collectionName": "cheat_sheets",
   "info": {
     "singularName": "cheat-sheet",
@@ -10,7 +9,10 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-type-builder": { "visible": true }
+  },
   "attributes": {
     "userId": {
       "type": "integer",

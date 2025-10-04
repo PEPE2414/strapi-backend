@@ -1,5 +1,4 @@
 {
-  "kind": "collectionType",
   "collectionName": "linkedin_recruiters",
   "info": {
     "singularName": "linkedin-recruiter",
@@ -10,7 +9,10 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "content-manager": { "visible": true },
+    "content-type-builder": { "visible": true }
+  },
   "attributes": {
     "name": {
       "type": "string",
