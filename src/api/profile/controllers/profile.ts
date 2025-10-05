@@ -1,5 +1,6 @@
 // src/api/profile/controllers/profile.ts
 import { errors } from '@strapi/utils';
+const { validateStudyField } = require('../../services/studyFieldValidation');
 const { UnauthorizedError, ValidationError } = errors;
 
 const sanitizeFile = (f: any) => {
@@ -120,6 +121,19 @@ export default {
       ['preferredName', 'university', 'course', 'studyField'].forEach((k) => {
         if (typeof data[k] === 'string') data[k] = data[k].trim();
       });
+
+      // Validate and normalize study field
+      if (data.studyField !== undefined) {
+        const validation = validateStudyField(data.studyField);
+        if (!validation.isValid) {
+          return ctx.badRequest('Invalid study field value');
+        }
+        data.studyField = validation.normalizedValue;
+        
+        if (validation.isLegacy) {
+          console.log(`[profile:update] Mapped legacy study field "${data.studyField}" to "${validation.normalizedValue}"`);
+        }
+      }
 
       // Validate weeklyGoal (must be a positive integer between 1 and 30)
       if (data.weeklyGoal !== undefined) {
