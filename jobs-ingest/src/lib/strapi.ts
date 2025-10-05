@@ -144,11 +144,12 @@ export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reaso
     return { valid: false, reason: 'Invalid slug' };
   }
   
-  // Check job description quality (temporarily disabled for debugging)
+  // Check job description quality (relaxed for maximum job discovery)
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
   if (cleanDescription.length < 1) {
-    return { valid: false, reason: `No description provided` };
+    // Allow jobs without descriptions for now - we can enhance them later
+    console.log(`⚠️  Job without description: "${job.title}" at ${job.company?.name}`);
   }
   
   // Log description length for debugging

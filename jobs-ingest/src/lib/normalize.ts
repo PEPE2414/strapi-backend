@@ -354,11 +354,11 @@ export function validateJobRequirements(job: any): { valid: boolean; reason?: st
     return { valid: false, reason: 'Missing or invalid apply URL' };
   }
 
-  // Check job description length (≥150 chars)
+  // Check job description length (relaxed to ≥50 chars)
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  if (cleanDescription.length < 150) {
-    return { valid: false, reason: `Job description too short (${cleanDescription.length} chars, need ≥150)` };
+  if (cleanDescription.length < 50) {
+    return { valid: false, reason: `Job description too short (${cleanDescription.length} chars, need ≥50)` };
   }
 
   // Company page link is now optional (removed requirement)

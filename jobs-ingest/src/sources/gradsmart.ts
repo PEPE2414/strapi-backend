@@ -10,6 +10,8 @@ export async function scrapeGradsmart(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   let page = 1;
   const maxPages = 3; // Reduced to prevent 404 errors
+  let consecutiveErrors = 0;
+  const maxConsecutiveErrors = 3; // Stop after 3 consecutive errors
   
   try {
     while (page <= maxPages) {
@@ -101,6 +103,13 @@ export async function scrapeGradsmart(): Promise<CanonicalJob[]> {
             console.log(`📄 Page ${page} not found for ${url} - reached end of available pages`);
           } else {
             console.warn(`Error scraping ${url}:`, error);
+            
+            // Track consecutive errors
+            consecutiveErrors++;
+            if (consecutiveErrors >= maxConsecutiveErrors) {
+              console.warn(`🛑 Too many consecutive errors (${consecutiveErrors}), stopping Gradsmart scraping`);
+              return jobs;
+            }
           }
         }
       }

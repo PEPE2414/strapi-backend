@@ -184,13 +184,13 @@ export function getBucketsForToday(): CrawlBucket[] {
     priority: 'low'
   });
   
-  // Add reliable university job boards as tertiary sources
+  // Add only the most reliable university job boards (reduced list)
   buckets.push({
-    id: 'university-job-boards',
-    name: 'University Job Boards (Tertiary)',
+    id: 'reliable-university-boards',
+    name: 'Reliable University Job Boards (Tertiary)',
     sources: [
-      // Only the most reliable job boards
-      'gradcracker', 'joblift', 'savethestudent', 'jobsacuk', 'studentcircus', 'gradsmart'
+      // Only the most reliable job boards that don't block aggressively
+      'gradcracker', 'joblift', 'savethestudent'
     ],
     priority: 'low'
   });

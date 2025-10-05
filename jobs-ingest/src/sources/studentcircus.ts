@@ -9,18 +9,16 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 export async function scrapeStudentCircus(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   let page = 1;
-  const maxPages = 20; // Student Circus has many student jobs
+  const maxPages = 3; // Reduced from 20 to avoid 403 errors
+  let consecutive403Errors = 0;
+  const maxConsecutive403Errors = 3; // Stop after 3 consecutive 403 errors
   
   try {
     while (page <= maxPages) {
-      // Try different job search URLs for comprehensive coverage
+      // Try only the most important job search URLs to avoid 403 errors
       const urls = [
-        `https://studentcircus.com/jobs?page=${page}`,
         `https://studentcircus.com/internships?page=${page}`,
-        `https://studentcircus.com/placements?page=${page}`,
-        `https://studentcircus.com/graduate-jobs?page=${page}`,
-        `https://studentcircus.com/entry-level?page=${page}`,
-        `https://studentcircus.com/part-time?page=${page}`
+        `https://studentcircus.com/graduate-jobs?page=${page}`
       ];
       
       for (const url of urls) {
@@ -102,6 +100,17 @@ export async function scrapeStudentCircus(): Promise<CanonicalJob[]> {
           
         } catch (error) {
           console.warn(`Error scraping ${url}:`, error);
+          
+          // Track consecutive 403 errors
+          if (error instanceof Error && error.message.includes('403')) {
+            consecutive403Errors++;
+            if (consecutive403Errors >= maxConsecutive403Errors) {
+              console.warn(`🛑 Too many consecutive 403 errors (${consecutive403Errors}), stopping Student Circus scraping`);
+              return jobs;
+            }
+          } else {
+            consecutive403Errors = 0; // Reset counter on non-403 errors
+          }
         }
       }
       
