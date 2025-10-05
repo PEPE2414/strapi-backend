@@ -1,1 +1,426 @@
-
+[
+    {
+      "phrase": "python (advanced)",
+      "category": "good",
+      "weight": 2.9,
+      "suggestion": "metaclasses, asyncio programming, advanced data structures",
+      "variants": ["advanced python"],
+      "field": "Software Engineering",
+      "role": "Senior Developer"
+    },
+    {
+      "phrase": "i didn't have a specific role",
+      "category": "weak",
+      "suggestion": "i handled a variety of tasks, my role was flexible and involved, i contributed across multiple functions",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "analysis paralysis",
+      "category": "bad",
+      "suggestion": "decisive action, pragmatic decision-making, efficient analysis",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "solidworks (cswa)",
+      "category": "good",
+      "weight": 2.9,
+      "suggestion": "certified solidworks associate, 3d cad modelling proficiency, part and assembly design",
+      "variants": ["cswa certified"],
+      "field": "Mechanical Engineering",
+      "role": "Design Engineer"
+    },
+    {
+      "phrase": "i was just helping the team",
+      "category": "weak",
+      "suggestion": "i was a supportive team member, i provided assistance on key tasks, my role was to facilitate team progress",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "boil the ocean",
+      "category": "bad",
+      "suggestion": "define a manageable scope, focus on achievable goals, avoid over-complication",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "robot structural analysis",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "bim integration, structural load simulation, finite element method analysis",
+      "variants": ["autodesk robot"],
+      "field": "Civil Engineering",
+      "role": "Structural Engineer"
+    },
+    {
+      "phrase": "excel (vba)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "macro automation, custom function creation, automating reports",
+      "variants": ["vba for excel"],
+      "field": "Accounting & Finance",
+      "role": "Financial Analyst"
+    },
+    {
+      "phrase": "it seemed like a good idea",
+      "category": "weak",
+      "suggestion": "the strategic rationale was, the decision was based on, the objective was to",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "herding cats",
+      "category": "bad",
+      "suggestion": "managing diverse personalities, coordinating independent team members, aligning complex projects",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "power bi (proficient)",
+      "category": "good",
+      "weight": 2.7,
+      "suggestion": "dax query writing, data modelling in power bi, creating interactive dashboards",
+      "variants": ["proficient in powerbi"],
+      "field": "Data Science",
+      "role": "Data Analyst"
+    },
+    {
+      "phrase": "matlab (intermediate)",
+      "category": "good",
+      "weight": 2.5,
+      "suggestion": "simulink modelling, numerical algorithm implementation, data analysis scripts",
+      "variants": ["intermediate matlab"],
+      "field": "Electrical Engineering",
+      "role": "Engineer"
+    },
+    {
+      "phrase": "my role was not well-defined",
+      "category": "weak",
+      "suggestion": "i demonstrated flexibility by, i took the initiative to, i adapted to evolving project needs",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "put a pin in it",
+      "category": "bad",
+      "suggestion": "let's pause this discussion, we can revisit this later, let's table this topic for now",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "powerapps",
+      "category": "good",
+      "weight": 2.7,
+      "suggestion": "low-code application development, business process automation, microsoft power platform",
+      "variants": ["microsoft powerapps"],
+      "field": "Business Management",
+      "role": "Business Analyst"
+    },
+    {
+      "phrase": "revit (autodesk certified professional)",
+      "category": "good",
+      "weight": 3.0,
+      "suggestion": "acp certification, advanced revit modeling, collaborative bim workflows",
+      "variants": ["revit acp"],
+      "field": "Architecture",
+      "role": "BIM Manager"
+    },
+    {
+      "phrase": "i tried to take charge",
+      "category": "weak",
+      "suggestion": "i took the initiative to lead, i stepped up to manage, i demonstrated leadership by",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "reinvent the wheel",
+      "category": "bad",
+      "suggestion": "leverage existing solutions, utilize established best practices, avoid redundant work",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "c++ (proficient)",
+      "category": "good",
+      "weight": 2.7,
+      "suggestion": "memory management, object-oriented principles, standard template library",
+      "variants": ["proficient in c++"],
+      "field": "Computer Science",
+      "role": "Software Engineer"
+    },
+    {
+      "phrase": "sql (advanced)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "window functions, common table expressions, query optimization",
+      "variants": ["advanced sql"],
+      "field": "Data Science",
+      "role": "Data Engineer"
+    },
+    {
+      "phrase": "the work was quite basic",
+      "category": "weak",
+      "suggestion": "i mastered the fundamental tasks of, i built a strong foundation in, i handled the core responsibilities including",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "silver bullet",
+      "category": "bad",
+      "suggestion": "a perfect solution, a simple fix, a panacea",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "google analytics (iq certified)",
+      "category": "good",
+      "weight": 2.9,
+      "suggestion": "google analytics individual qualification, web analytics reporting, conversion tracking implementation",
+      "variants": ["gaiq certified"],
+      "field": "Marketing",
+      "role": "Digital Analyst"
+    },
+    {
+      "phrase": "autocad (certified user)",
+      "category": "good",
+      "weight": 2.7,
+      "suggestion": "autodesk certified user, 2d drafting and annotation, technical drawing standards",
+      "variants": [],
+      "field": "Civil Engineering",
+      "role": "Draftsperson"
+    },
+    {
+      "phrase": "i was only there for a few months",
+      "category": "weak",
+      "suggestion": "during a short-term contract i, in my temporary role i accomplished, i quickly integrated and contributed to",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "thought shower",
+      "category": "bad",
+      "suggestion": "a brainstorming session, a collaborative ideation meeting, a creative workshop",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "java (oca)",
+      "category": "good",
+      "weight": 2.9,
+      "suggestion": "oracle certified associate, java se programmer, object-oriented programming fundamentals",
+      "variants": ["oca certified"],
+      "field": "Software Engineering",
+      "role": "Java Developer"
+    },
+    {
+      "phrase": "adobe photoshop (ace)",
+      "category": "good",
+      "weight": 3.0,
+      "suggestion": "adobe certified expert, advanced image manipulation, digital compositing techniques",
+      "variants": ["photoshop ace"],
+      "field": "Design",
+      "role": "Graphic Artist"
+    },
+    {
+      "phrase": "my grades weren't the best",
+      "category": "weak",
+      "suggestion": "my practical experience demonstrates, i have developed strong skills in, my project work showcases my ability to",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "touch base",
+      "category": "bad",
+      "suggestion": "let's connect, let's have a quick meeting, we should catch up",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "tableau (desktop specialist)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "certified data visualization, creating interactive reports, tableau dashboard design",
+      "variants": [],
+      "field": "Data Science",
+      "role": "BI Analyst"
+    },
+    {
+      "phrase": "cisco (ccna)",
+      "category": "good",
+      "weight": 2.9,
+      "suggestion": "cisco certified network associate, network configuration, routing and switching",
+      "variants": ["ccna certified"],
+      "field": "Computer Science",
+      "role": "Network Administrator"
+    },
+    {
+      "phrase": "i did what i was asked",
+      "category": "weak",
+      "suggestion": "i reliably executed all assigned tasks, i followed instructions to deliver, i fulfilled all job requirements",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "value add",
+      "category": "bad",
+      "suggestion": "a tangible contribution, a significant improvement, a valuable enhancement",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "aws solutions architect associate",
+      "category": "good",
+      "weight": 3.0,
+      "suggestion": "designing cloud architecture, aws services implementation, cloud security principles",
+      "variants": ["aws saa"],
+      "field": "Software Engineering",
+      "role": "Cloud Architect"
+    },
+    {
+      "phrase": "prince2 (foundation)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "certified in project management, structured project methodology, process-based management",
+      "variants": ["prince2 foundation certified"],
+      "field": "Business Management",
+      "role": "Project Coordinator"
+    },
+    {
+      "phrase": "i'm open to anything",
+      "category": "weak",
+      "suggestion": "i am interested in roles related to, i am adaptable to different opportunities within, i am particularly keen on positions in",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "win-win situation",
+      "category": "bad",
+      "suggestion": "a mutually beneficial outcome, a positive result for all parties, an ideal compromise",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "comptia security+",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "cybersecurity fundamentals, threat management, network security certification",
+      "variants": ["security+ certified"],
+      "field": "Computer Science",
+      "role": "IT Security Specialist"
+    },
+    {
+      "phrase": "r (intermediate)",
+      "category": "good",
+      "weight": 2.6,
+      "suggestion": "statistical programming, data manipulation with dplyr, creating visualizations with ggplot2",
+      "variants": ["intermediate r"],
+      "field": "Data Science",
+      "role": "Statistical Analyst"
+    },
+    {
+      "phrase": "i don't have that exact skill but",
+      "category": "weak",
+      "suggestion": "my experience with [related skill] is highly transferable, i am a fast learner and can quickly acquire, i have a solid foundation in the underlying principles of",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "writing on the wall",
+      "category": "bad",
+      "suggestion": "a clear indication, an obvious warning sign, an inevitable conclusion",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "siemens s7",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "plc programming, industrial automation control, tia portal",
+      "variants": [],
+      "field": "Electrical Engineering",
+      "role": "Automation Engineer"
+    },
+    {
+      "phrase": "final cut pro (certified user)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "apple certified professional, advanced video editing techniques, professional post-production workflows",
+      "variants": [],
+      "field": "Communications",
+      "role": "Video Editor"
+    },
+    {
+      "phrase": "i haven't had a proper job",
+      "category": "weak",
+      "suggestion": "i have built valuable skills through academic projects, my volunteer work demonstrates my commitment, i have gained experience via internships and part-time roles",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "low hanging fruit",
+      "category": "bad",
+      "suggestion": "the most easily achievable tasks, quick wins with high impact, an obvious initial opportunity",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "azure fundamentals (az-900)",
+      "category": "good",
+      "weight": 2.8,
+      "suggestion": "microsoft certified, cloud concepts, core azure services",
+      "variants": ["az-900 certified"],
+      "field": "Computer Science",
+      "role": "Cloud Support"
+    },
+    {
+      "phrase": "blender (advanced)",
+      "category": "good",
+      "weight": 2.7,
+      "suggestion": "procedural texturing, physics simulations, advanced rendering with cycles",
+      "variants": ["advanced blender"],
+      "field": "Design",
+      "role": "3D Generalist"
+    },
+    {
+      "phrase": "i just followed instructions",
+      "category": "weak",
+      "suggestion": "i meticulously executed all directives, i demonstrated an ability to follow complex procedures, i reliably carried out all assigned tasks",
+      "variants": [],
+      "field": null,
+      "role": null
+    },
+    {
+      "phrase": "it's not rocket science",
+      "category": "bad",
+      "suggestion": "it is a straightforward matter, this is not overly complex, the concept is simple",
+      "variants": [],
+      "field": null,
+      "role": null
+    }
+  ]

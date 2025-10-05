@@ -95,11 +95,12 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
     const isRelevant = isRelevantJobType(fullText);
     const isUK = isUKJob(fullText);
     
-    if (!isRelevant) {
-      console.log(`⏭️  Skipping non-relevant job: ${title} (${location})`);
+    // Only log every 100th skipped job to reduce noise
+    if (!isRelevant && jobs.indexOf(j) % 100 === 0) {
+      console.log(`⏭️  Skipping non-relevant job (${Math.floor(jobs.indexOf(j) / 100) * 100}+ skipped): ${title} (${location})`);
     }
-    if (!isUK) {
-      console.log(`⏭️  Skipping non-UK job: ${title} (${location})`);
+    if (!isUK && jobs.indexOf(j) % 100 === 0) {
+      console.log(`⏭️  Skipping non-UK job (${Math.floor(jobs.indexOf(j) / 100) * 100}+ skipped): ${title} (${location})`);
     }
     
     // Must be relevant job type AND UK-based

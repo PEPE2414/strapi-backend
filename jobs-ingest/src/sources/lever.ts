@@ -72,11 +72,12 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       const isRelevant = isRelevantJobType(fullText);
       const isUK = isUKJob(fullText);
       
-      if (!isRelevant) {
-        console.log(`⏭️  Skipping non-relevant posting: ${title} (${location})`);
+      // Only log every 100th skipped posting to reduce noise
+      if (!isRelevant && postings.indexOf(p) % 100 === 0) {
+        console.log(`⏭️  Skipping non-relevant posting (${Math.floor(postings.indexOf(p) / 100) * 100}+ skipped): ${title} (${location})`);
       }
-      if (!isUK) {
-        console.log(`⏭️  Skipping non-UK posting: ${title} (${location})`);
+      if (!isUK && postings.indexOf(p) % 100 === 0) {
+        console.log(`⏭️  Skipping non-UK posting (${Math.floor(postings.indexOf(p) / 100) * 100}+ skipped): ${title} (${location})`);
       }
       
       // Must be relevant job type AND UK-based

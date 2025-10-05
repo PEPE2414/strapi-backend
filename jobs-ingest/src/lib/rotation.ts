@@ -145,40 +145,68 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on KNOWN WORKING sources that don't give 403 errors
+  // Focus on job boards that cover multiple companies (daily)
   buckets.push({
-    id: 'working-sources',
-    name: 'Working Job Sources (Daily)',
+    id: 'job-boards-daily',
+    name: 'Job Boards (Daily)',
     sources: [
-      // Greenhouse ATS (high volume)
-      'greenhouse:stripe', 'greenhouse:airbnb', 'greenhouse:spotify', 'greenhouse:lyft', 'greenhouse:uber',
-      'greenhouse:dropbox', 'greenhouse:slack', 'greenhouse:zoom', 'greenhouse:shopify', 'greenhouse:squarespace',
-      'greenhouse:mailchimp', 'greenhouse:twilio', 'greenhouse:stripe', 'greenhouse:coinbase', 'greenhouse:robinhood',
-      'greenhouse:discord', 'greenhouse:figma', 'greenhouse:notion', 'greenhouse:linear', 'greenhouse:vercel',
-      'greenhouse:netlify', 'greenhouse:supabase', 'greenhouse:planetscale', 'greenhouse:railway', 'greenhouse:render',
-      'greenhouse:hashicorp', 'greenhouse:databricks', 'greenhouse:snowflake', 'greenhouse:palantir', 'greenhouse:databricks',
-      
-      // Lever ATS (high volume)
-      'lever:canva', 'lever:notion', 'lever:linear', 'lever:vercel', 'lever:netlify', 'lever:supabase',
-      'lever:planetscale', 'lever:railway', 'lever:render', 'lever:hashicorp', 'lever:databricks',
-      'lever:snowflake', 'lever:palantir', 'lever:anthropic', 'lever:openai', 'lever:anthropic',
-      'lever:stability', 'lever:midjourney', 'lever:replicate', 'lever:huggingface', 'lever:cohere',
-      'lever:scale', 'lever:labelbox', 'lever:wandb', 'lever:weights', 'lever:comet',
-      
-      // Workday ATS (enterprise)
-      'workday:google', 'workday:microsoft', 'workday:amazon', 'workday:meta', 'workday:apple',
-      'workday:netflix', 'workday:tesla', 'workday:nvidia', 'workday:intel', 'workday:amd',
-      'workday:oracle', 'workday:salesforce', 'workday:adobe', 'workday:cisco', 'workday:vmware',
-      
-      // SuccessFactors ATS (enterprise)
-      'successfactors:sap', 'successfactors:bmw', 'successfactors:mercedes', 'successfactors:volkswagen',
-      'successfactors:siemens', 'successfactors:bosh', 'successfactors:basf', 'successfactors:bayer',
-      
-      // iCIMS ATS
-      'icims:boeing', 'icims:lockheed', 'icims:raytheon', 'icims:general', 'icims:ford', 'icims:gm',
-      'icims:chrysler', 'icims:caterpillar', 'icims:john', 'icims:ge', 'icims:honeywell'
+      // High-volume job boards
+      'targetjobs', 'milkround', 'prospects', 'ratemyplacement', 'brightnetwork',
+      'studentjob', 'e4s', 'ratemyapprenticeship', 'workinstartups', 'totaljobs',
+      'reed', 'escapethecity', 'gradcracker', 'joblift', 'savethestudent',
+      'jobsacuk', 'studentcircus', 'gradsmart'
     ],
     priority: 'high'
+  });
+  
+  // Rotate through individual companies (weekly rotation)
+  
+  // Greenhouse companies (rotate weekly)
+  const greenhouseCompanies = [
+    'stripe', 'airbnb', 'spotify', 'lyft', 'uber', 'dropbox', 'slack', 'zoom',
+    'shopify', 'squarespace', 'mailchimp', 'twilio', 'coinbase', 'robinhood',
+    'discord', 'figma', 'notion', 'linear', 'vercel', 'netlify', 'supabase'
+  ];
+  const selectedGreenhouse = greenhouseCompanies[(weekOfMonth - 1) % greenhouseCompanies.length];
+  
+  // Lever companies (rotate weekly)
+  const leverCompanies = [
+    'canva', 'linear', 'vercel', 'netlify', 'supabase', 'planetscale', 'railway',
+    'render', 'hashicorp', 'databricks', 'snowflake', 'palantir', 'anthropic',
+    'openai', 'stability', 'midjourney', 'replicate', 'huggingface', 'cohere'
+  ];
+  const selectedLever = leverCompanies[(weekOfMonth - 1) % leverCompanies.length];
+  
+  // Workday companies (rotate weekly)
+  const workdayCompanies = [
+    'google', 'microsoft', 'amazon', 'meta', 'apple', 'netflix', 'tesla', 'nvidia',
+    'intel', 'amd', 'oracle', 'salesforce', 'adobe', 'cisco', 'vmware'
+  ];
+  const selectedWorkday = workdayCompanies[(weekOfMonth - 1) % workdayCompanies.length];
+  
+  buckets.push({
+    id: 'company-rotation-weekly',
+    name: 'Company Rotation (Weekly)',
+    sources: [
+      `greenhouse:${selectedGreenhouse}`,
+      `lever:${selectedLever}`,
+      `workday:${selectedWorkday}`
+    ],
+    priority: 'medium'
+  });
+  
+  // Add sitemap sources for additional coverage
+  buckets.push({
+    id: 'sitemap-sources',
+    name: 'Sitemap Sources (Daily)',
+    sources: [
+      'https://www.reed.co.uk/sitemap.xml',
+      'https://www.totaljobs.com/sitemap.xml',
+      'https://www.monster.co.uk/sitemap.xml',
+      'https://targetjobs.co.uk/sitemap.xml',
+      'https://www.milkround.com/sitemap.xml'
+    ],
+    priority: 'medium'
   });
   
   return buckets;
