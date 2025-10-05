@@ -144,12 +144,15 @@ export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reaso
     return { valid: false, reason: 'Invalid slug' };
   }
   
-  // Check job description quality (temporarily reduced for debugging)
+  // Check job description quality (temporarily disabled for debugging)
   const description = job.descriptionText || job.descriptionHtml || '';
   const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  if (cleanDescription.length < 50) {
-    return { valid: false, reason: `Description too short (${cleanDescription.length} chars, need ≥50)` };
+  if (cleanDescription.length < 1) {
+    return { valid: false, reason: `No description provided` };
   }
+  
+  // Log description length for debugging
+  console.log(`📝 Job "${job.title}" description length: ${cleanDescription.length} chars`);
   
   // Company page URL is now optional (removed requirement)
   // Apply URL aggregator filter removed to allow major job boards

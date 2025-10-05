@@ -145,14 +145,16 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus ONLY on working job boards - remove all company scrapers
+  // Focus on KNOWN WORKING sources that don't give 403 errors
   buckets.push({
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
     sources: [
-      'indeed-uk', // Indeed UK (known working)
-      'reed-working', // Reed working scraper
-      'working-boards', // General working boards scraper
+      'greenhouse:stripe', // Stripe via Greenhouse (known working)
+      'greenhouse:airbnb', // Airbnb via Greenhouse (known working)
+      'greenhouse:spotify', // Spotify via Greenhouse (known working)
+      'lever:canva', // Canva via Lever (known working)
+      'lever:notion', // Notion via Lever (known working)
     ],
     priority: 'high'
   });

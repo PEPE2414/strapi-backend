@@ -36,6 +36,14 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       allPostings.push(...postings);
       console.log(`📄 Offset ${offset}: Found ${postings.length} postings (Total: ${allPostings.length})`);
       
+      // Debug: Show sample posting data
+      if (postings.length > 0) {
+        const samplePosting = postings[0];
+        console.log(`🔍 Sample posting: ${samplePosting.text} at ${samplePosting.categories?.team || 'Unknown'}`);
+        console.log(`🔍 Location: ${samplePosting.categories?.location || 'Unknown'}`);
+        console.log(`🔍 Has description: ${!!samplePosting.description}`);
+      }
+      
       // If we got fewer postings than requested, we're on the last page
       if (postings.length < limit) {
         console.log(`📄 Last page reached (${postings.length} < ${limit})`);
@@ -61,8 +69,18 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       const team = String(p.categories?.team || '').trim();
       const fullText = `${title} ${description} ${location} ${team}`;
       
+      const isRelevant = isRelevantJobType(fullText);
+      const isUK = isUKJob(fullText);
+      
+      if (!isRelevant) {
+        console.log(`⏭️  Skipping non-relevant posting: ${title} (${location})`);
+      }
+      if (!isUK) {
+        console.log(`⏭️  Skipping non-UK posting: ${title} (${location})`);
+      }
+      
       // Must be relevant job type AND UK-based
-      return isRelevantJobType(fullText) && isUKJob(fullText);
+      return isRelevant && isUK;
     });
   
   console.log(`📊 Lever ${company}: ${postings.length} total jobs, ${relevantPostings.length} relevant jobs`);

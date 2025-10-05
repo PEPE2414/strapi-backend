@@ -19,6 +19,13 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       
       const { body } = await request(api);
       const json = await body.json() as any;
+      
+      console.log(`🔍 API Response for ${board}:`, {
+        hasJobs: !!json.jobs,
+        jobsCount: json.jobs?.length || 0,
+        hasError: !!json.error,
+        error: json.error
+      });
     
       // Check if API returned an error
       if (json.error) {
@@ -36,6 +43,14 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       
       allJobs.push(...jobs);
       console.log(`📄 Page ${page + 1}: Found ${jobs.length} jobs (Total: ${allJobs.length})`);
+      
+      // Debug: Show sample job data
+      if (jobs.length > 0) {
+        const sampleJob = jobs[0];
+        console.log(`🔍 Sample job: ${sampleJob.title} at ${sampleJob.company?.name || 'Unknown'}`);
+        console.log(`🔍 Location: ${sampleJob.location?.name || 'Unknown'}`);
+        console.log(`🔍 Has content: ${!!sampleJob.content}`);
+      }
       
       // If we got fewer jobs than requested, we're on the last page
       if (jobs.length < perPage) {
@@ -70,17 +85,27 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       });
     }
   
-    // Filter for relevant job types and UK locations only
-    const relevantJobs = jobs.filter(j => {
-      const title = String(j.title || '').trim();
-      const description = String(j.content || '').trim();
-      const location = String(j.location?.name || '').trim();
-      const fullText = `${title} ${description} ${location}`;
-      
-      // Must be relevant job type AND UK-based
-      return isRelevantJobType(fullText) && isUKJob(fullText);
-    });
-  
+  // Filter for relevant job types and UK locations only
+  const relevantJobs = jobs.filter(j => {
+    const title = String(j.title || '').trim();
+    const description = String(j.content || '').trim();
+    const location = String(j.location?.name || '').trim();
+    const fullText = `${title} ${description} ${location}`;
+    
+    const isRelevant = isRelevantJobType(fullText);
+    const isUK = isUKJob(fullText);
+    
+    if (!isRelevant) {
+      console.log(`⏭️  Skipping non-relevant job: ${title} (${location})`);
+    }
+    if (!isUK) {
+      console.log(`⏭️  Skipping non-UK job: ${title} (${location})`);
+    }
+    
+    // Must be relevant job type AND UK-based
+    return isRelevant && isUK;
+  });
+
   console.log(`📊 Greenhouse ${board}: ${jobs.length} total jobs, ${relevantJobs.length} relevant jobs`);
   
   return Promise.all(relevantJobs.slice(0, 10).map(async j => {
