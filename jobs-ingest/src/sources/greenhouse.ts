@@ -60,9 +60,9 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       
       page++;
       
-      // Safety limit to prevent infinite loops (reduced for efficiency)
-      if (page > 5) {
-        console.log(`⚠️  Reached safety limit of 5 pages for ${board}`);
+      // Safety limit to prevent infinite loops (increased for maximum job discovery)
+      if (page > 50) {
+        console.log(`⚠️  Reached safety limit of 50 pages for ${board}`);
         break;
       }
     }
@@ -108,7 +108,7 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
 
   console.log(`📊 Greenhouse ${board}: ${jobs.length} total jobs, ${relevantJobs.length} relevant jobs`);
   
-  return Promise.all(relevantJobs.slice(0, 10).map(async j => {
+  return Promise.all(relevantJobs.map(async j => {
     const applyUrl = await resolveApplyUrl(j.absolute_url);
     const companyName = j.company?.name || board;
     const title = String(j.title || '').trim();

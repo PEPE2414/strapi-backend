@@ -52,9 +52,9 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       
       offset += limit;
       
-      // Safety limit to prevent infinite loops
-      if (offset > 5000) {
-        console.log(`⚠️  Reached safety limit of 5000 postings for ${company}`);
+      // Safety limit to prevent infinite loops (increased for maximum job discovery)
+      if (offset > 50000) {
+        console.log(`⚠️  Reached safety limit of 50000 postings for ${company}`);
         break;
       }
     }

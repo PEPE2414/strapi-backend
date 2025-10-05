@@ -84,7 +84,15 @@ async function runAll() {
         let sourceJobs: any[] = [];
         
         // Route to appropriate scraper based on source type
-        if (GREENHOUSE_BOARDS.includes(source)) {
+        if (source.startsWith('greenhouse:')) {
+          const board = source.replace('greenhouse:', '');
+          console.log(`🔄 Scraping Greenhouse: ${board}`);
+          sourceJobs = await limiter.schedule(() => scrapeGreenhouse(board));
+        } else if (source.startsWith('lever:')) {
+          const company = source.replace('lever:', '');
+          console.log(`🔄 Scraping Lever: ${company}`);
+          sourceJobs = await limiter.schedule(() => scrapeLever(company));
+        } else if (GREENHOUSE_BOARDS.includes(source)) {
           console.log(`🔄 Scraping Greenhouse: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeGreenhouse(source));
         } else if (LEVER_COMPANIES.includes(source)) {

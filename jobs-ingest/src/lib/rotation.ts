@@ -150,11 +150,33 @@ export function getBucketsForToday(): CrawlBucket[] {
     id: 'working-sources',
     name: 'Working Job Sources (Daily)',
     sources: [
-      'greenhouse:stripe', // Stripe via Greenhouse (known working)
-      'greenhouse:airbnb', // Airbnb via Greenhouse (known working)
-      'greenhouse:spotify', // Spotify via Greenhouse (known working)
-      'lever:canva', // Canva via Lever (known working)
-      'lever:notion', // Notion via Lever (known working)
+      // Greenhouse ATS (high volume)
+      'greenhouse:stripe', 'greenhouse:airbnb', 'greenhouse:spotify', 'greenhouse:lyft', 'greenhouse:uber',
+      'greenhouse:dropbox', 'greenhouse:slack', 'greenhouse:zoom', 'greenhouse:shopify', 'greenhouse:squarespace',
+      'greenhouse:mailchimp', 'greenhouse:twilio', 'greenhouse:stripe', 'greenhouse:coinbase', 'greenhouse:robinhood',
+      'greenhouse:discord', 'greenhouse:figma', 'greenhouse:notion', 'greenhouse:linear', 'greenhouse:vercel',
+      'greenhouse:netlify', 'greenhouse:supabase', 'greenhouse:planetscale', 'greenhouse:railway', 'greenhouse:render',
+      'greenhouse:hashicorp', 'greenhouse:databricks', 'greenhouse:snowflake', 'greenhouse:palantir', 'greenhouse:databricks',
+      
+      // Lever ATS (high volume)
+      'lever:canva', 'lever:notion', 'lever:linear', 'lever:vercel', 'lever:netlify', 'lever:supabase',
+      'lever:planetscale', 'lever:railway', 'lever:render', 'lever:hashicorp', 'lever:databricks',
+      'lever:snowflake', 'lever:palantir', 'lever:anthropic', 'lever:openai', 'lever:anthropic',
+      'lever:stability', 'lever:midjourney', 'lever:replicate', 'lever:huggingface', 'lever:cohere',
+      'lever:scale', 'lever:labelbox', 'lever:wandb', 'lever:weights', 'lever:comet',
+      
+      // Workday ATS (enterprise)
+      'workday:google', 'workday:microsoft', 'workday:amazon', 'workday:meta', 'workday:apple',
+      'workday:netflix', 'workday:tesla', 'workday:nvidia', 'workday:intel', 'workday:amd',
+      'workday:oracle', 'workday:salesforce', 'workday:adobe', 'workday:cisco', 'workday:vmware',
+      
+      // SuccessFactors ATS (enterprise)
+      'successfactors:sap', 'successfactors:bmw', 'successfactors:mercedes', 'successfactors:volkswagen',
+      'successfactors:siemens', 'successfactors:bosh', 'successfactors:basf', 'successfactors:bayer',
+      
+      // iCIMS ATS
+      'icims:boeing', 'icims:lockheed', 'icims:raytheon', 'icims:general', 'icims:ford', 'icims:gm',
+      'icims:chrysler', 'icims:caterpillar', 'icims:john', 'icims:ge', 'icims:honeywell'
     ],
     priority: 'high'
   });
