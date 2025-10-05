@@ -1,4817 +1,1797 @@
 [
-{
-"phrase": "whip into shape",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "organize, improve, discipline",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "white elephant",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "costly burden, useless asset, expensive liability",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "white knight",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "savior investor, friendly acquirer, rescuer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whole ball wax",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "entire thing, complete set, full story",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whole enchilada",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "everything, complete package, full deal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whole kit caboodle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "all items, complete collection, entire lot",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whole shebang",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "entire operation, full affair, complete event",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wild card",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unpredictable factor, unknown element, surprise variable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "window dressing",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "superficial appearance, cosmetic change, facade",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "win hearts minds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "gain support, convince emotionally, persuade intellectually",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wind in sails",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "momentum, boost, positive drive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "window opportunity",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "limited chance, brief period, short opening",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wing it",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "improvise, ad lib, make up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "win ugly",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "succeed messily, achieve despite flaws, victory imperfect",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "work finger bone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "labor intensely, toil hard, exert maximally",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "worth its salt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "competent, effective, valuable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wrap head around",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "understand concept, grasp idea, comprehend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wrong side bed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bad mood, grumpy, irritable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "yes man",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sycophant, agreer, compliant subordinate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "you betcha",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "certainly, absolutely, sure thing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "young turk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ambitious newcomer, rebellious youth, energetic challenger",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "your mileage may vary",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "results differ, experiences vary, outcomes change",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero gravity",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "weightless environment, floating state, no resistance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero hour",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "critical moment, launch time, decisive point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zip code",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "location identifier, area code, postal district",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zone of genius",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "area expertise, strength zone, talent space",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zoo",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "chaotic situation, disordered environment, madhouse",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "a ok",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fine, good, acceptable",
-"variants": ["a-ok"],
-"field": null,
-"role": null
-},
-{
-"phrase": "above board",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "honest, transparent, legitimate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ace in hole",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "secret advantage, hidden resource, surprise asset",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "acid test",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decisive trial, ultimate proof, critical evaluation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "across board",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "comprehensive, all encompassing, universal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "add fuel fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "worsen situation, exacerbate problem, intensify issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "against grain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "contrary norm, opposite convention, unconventional",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ahead of curve",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "leading edge, advanced position, proactive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "air dirty laundry",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reveal secrets, disclose scandals, publicize problems",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all bark no bite",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "threatening but harmless, loud ineffective, bluster",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all eggs basket",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "risk everything, single investment, no diversification",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all greek",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "incomprehensible, confusing, unintelligible",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all hat no cattle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "appearance no substance, talk no action, pretentious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all sizzle no steak",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "flash no substance, hype no value, show no content",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all thumbs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "clumsy, awkward, inept",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "alpha dog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dominant leader, top authority, chief executive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "an arm leg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very expensive, costly, pricey",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "apple pie order",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "neat tidy, well organized, perfectly arranged",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "armchair quarterback",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hindsight critic, sideline advisor, after fact expert",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "around the bush",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "evasive, indirect, circuitous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "as crow flies",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "straight line, direct distance, shortest path",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "as luck have it",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fortunately, coincidentally, by chance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at bay",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "keep distance, hold off, prevent approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at drop hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "immediately, without hesitation, on command",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at loggerheads",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in disagreement, conflicting, at odds",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at sixes sevens",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in confusion, disorganized, chaotic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at wits end",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "frustrated, desperate, out ideas",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "avenue explore",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "option investigate, path pursue, possibility examine",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "axe grind",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "personal agenda, ulterior motive, bias",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back square one",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "starting over, beginning again, reset",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back to basics",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fundamental principles, core elements, essential foundations",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bad apple",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "troublemaker, corrupt individual, negative influence",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bag mixed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "varied results, inconsistent outcomes, pros cons",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "baker's dozen",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "thirteen, extra one, bonus",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ball court",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "your responsibility, your turn, your action",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ball rolling",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "start process, initiate action, begin momentum",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "banana republic",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unstable government, corrupt regime, dysfunctional state",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "band aid solution",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "temporary fix, short term patch, quick remedy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bang head wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "frustrating effort, futile attempt, wasted energy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bank on",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rely on, count on, depend on",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bark up wrong tree",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "misdirected effort, wrong assumption, incorrect pursuit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "basket case",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hopeless situation, complete mess, total failure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bat out hell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very fast, rapidly, speedily",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "batten down hatches",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare storm, secure position, brace impact",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "battle stations",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "alert ready, prepare action, mobilize",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "be all end all",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ultimate, definitive, complete",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat around bush",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "avoid direct, be evasive, skirt issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat dead horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "repeat futilely, belabor point, continue uselessly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat the band",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exceedingly, greatly, intensely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat the bushes",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "search thoroughly, hunt diligently, scour",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat the rap",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "escape punishment, avoid conviction, get off",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beat to punch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act first, preempt, anticipate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beautiful mind",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "brilliant intellect, genius thinking, exceptional brain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bee bonnet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "obsession, fixation, preoccupation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beef up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "strengthen, reinforce, bolster",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "been there done that",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "experienced, familiar, done before",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beggars can't choosers",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "limited options, take what's given, no choice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "behind the ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lagging, delayed, behind schedule",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "behind the curve",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lagging behind, out of date, trailing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bell the cat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "undertake dangerous, do risky, handle perilous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bells and whistles",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extra features, additional bells, fancy add ons",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "below the belt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unfair, unethical, low blow",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bend over backwards",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make great effort, go extra mile, accommodate fully",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "best foot forward",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make good impression, present well, show best",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "better half",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "spouse, partner, significant other",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "between devil deep sea",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult choice, bad options, dilemma",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "between rock hard place",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tough situation, no good choice, bind",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beyond pale",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unacceptable, outrageous, beyond limits",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big cheese",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "important person, boss, leader",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big enchilada",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "main thing, key element, primary focus",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big gun",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "powerful person, influential figure, heavy hitter",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big kahuna",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "top boss, main leader, head honcho",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big wig",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "important executive, high ranking official, VIP",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bigger fish fry",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "more important matters, larger concerns, greater priorities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bird hand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "certain possession, sure thing, guaranteed asset",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "birds of feather",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "similar people, like minded, kindred spirits",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bite dust",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fail, perish, collapse",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bite hand feeds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "betray benefactor, harm supporter, ungrateful action",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bite more chew",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overcommit, take too much, exceed capacity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bite the hand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ingratitude, betrayal, disloyalty",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bitter pill swallow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult accept, unpleasant truth, hard reality",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black and white",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "clear cut, straightforward, unambiguous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black as night",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very dark, completely obscure, pitch black",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "villain, bad guy, antagonist",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black market",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "illegal trade, underground economy, illicit commerce",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black sheep",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "outcast, misfit, disgrace",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blank slate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fresh start, clean sheet, new beginning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blast from past",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "old memory, past reminder, nostalgic surprise",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blaze trail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pioneer path, lead way, innovate route",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bleeding heart",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overly sympathetic, excessively compassionate, soft hearted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blessing disguise",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hidden benefit, unexpected advantage, silver lining",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blind leading blind",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uninformed guidance, ignorant leadership, clueless direction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blood sweat tears",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hard work, great effort, intense labor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blow off steam",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "release tension, vent frustration, relax",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blow own horn",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "brag, boast, self promote",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blow smoke",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deceive, flatter insincerely, mislead",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blow the whistle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "report wrongdoing, expose misconduct, alert authorities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blue in face",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "until exhausted, persistently, futilely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blue moon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rarely, infrequently, seldom",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bolt from blue",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sudden surprise, unexpected event, shock",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bone pick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "grievance, complaint, issue discuss",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bone up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "study intensively, review thoroughly, prepare",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boon doggle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wasteful project, unnecessary expense, junket",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dismiss, fire, eject",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "born silver spoon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "privileged birth, wealthy family, advantaged start",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "born yesterday",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "naive, gullible, inexperienced",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bottom dollar",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "last money, final bet, sure wager",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bounce check",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insufficient funds, returned payment, bad check",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bound glory",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "destined success, headed greatness, sure fame",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brain surgeon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "highly skilled, expert professional, specialist",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "break a leg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "good luck, best wishes, success",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "break bank",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cost fortune, expensive, bankrupting",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "break the ice",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "start conversation, ease tension, initiate interaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bridge to sell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "persuasive offer, convincing deal, attractive proposal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bright idea",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "clever thought, smart suggestion, innovative concept",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bring home bacon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "earn living, provide income, support family",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bring to knees",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "defeat utterly, cripple, subdue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bring to table",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "offer, contribute, provide",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "broken record",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "repetitive, monotonous, stuck loop",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brown nose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "flatter excessively, sycophant, bootlick",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brownie points",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "credit favor, good marks, positive recognition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "buck the trend",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "go against norm, defy pattern, contradict direction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bucket list",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "life goals, must do experiences, dream achievements",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bug ear",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "persistent thought, nagging idea, fixation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "build bridges",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "create connections, foster relationships, link parties",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bulletproof",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "invulnerable, unbreakable, foolproof",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bum steer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bad advice, misleading information, wrong direction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bundle nerves",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very anxious, highly stressed, tense",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn daylight",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "waste time, delay unnecessarily, idle away",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn midnight oil",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "work late, study hard, labor night",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burst bubble",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "disillusion, shatter illusion, reveal truth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bury the hatchet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make peace, reconcile, forgive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bust chops",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "criticize, harass, tease",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "butter up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "flatter, ingratiate, schmooze",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "buy the farm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "die, perish, pass away",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "by hook or crook",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "any means, whatever it takes, at all costs",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "by skin teeth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "narrowly, barely, just",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "by the book",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "follow rules, adhere guidelines, strictly compliant",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cakewalk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy task, simple job, effortless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "call a spade spade",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "speak plainly, be direct, tell truth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "call on carpet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reprimand, scold, discipline",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "call shots",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make decisions, control, lead",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "call the tune",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dictate terms, set rules, command",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "can of corn",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy catch, simple task, straightforward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "can't hold candle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "inferior to, not compare, lesser than",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "can't judge book cover",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "appearance deceiving, don't prejudge, look beyond surface",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "card sharp",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "skilled gambler, clever cheater, adept player",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cards on table",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full disclosure, open honest, reveal all",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "careful as hen eggs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very cautious, extremely careful, delicately handling",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carpe diem",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "seize day, live moment, take opportunity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carrot on stick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "incentive, lure, motivation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carry day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "win victory, succeed, prevail",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carry the torch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hold flame, continue cause, maintain passion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carry weight",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "have influence, bear significance, hold importance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "case closed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "matter settled, discussion ended, final decision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cast the first stone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "criticize first, judge initially, accuse primarily",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cat got tongue",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "speechless, silent, mute",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cat nap",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "short sleep, brief rest, power nap",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cat out bag",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "secret revealed, surprise spoiled, disclosure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cat's meow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "excellent, superb, wonderful",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cat's pajamas",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "outstanding, fantastic, top notch",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "caught red handed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "discovered act, found guilty, exposed crime",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "caution to wind",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ignore advice, disregard warning, proceed recklessly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "champagne taste beer budget",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "expensive desires, limited means, high expectations low resources",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "change heart",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "alter opinion, shift feeling, reverse decision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chapter verse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full details, complete information, exact reference",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "charity begins home",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "family first, local priority, self care",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "charm pants off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impress greatly, win over, captivate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "charm third bird off tree",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very persuasive, highly charming, convincingly attractive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chase rainbows",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pursue illusions, seek impossible, dream unrealistically",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cheap as chips",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very inexpensive, low cost, bargain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cheap skate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "miser, stingy person, frugal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chew fat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "chat casually, gossip, converse idly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chew scenery",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overact, ham it up, dramatize excessively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chicken scratch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "poor handwriting, illegible script, scrawl",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chip block",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "assist, support, help out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chip off old block",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "like parent, family resemblance, inherited traits",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chip on shoulder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "grudge, resentment, attitude problem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chow down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "eat heartily, consume food, dine",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "circle wagons",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "defend group, rally together, protect collectively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clam up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "become silent, stop talking, quiet down",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clean bill health",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "good condition, healthy status, positive report",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clean hands",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "innocent, uninvolved, guilt free",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clean slate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fresh start, new beginning, clear record",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clear as bell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very clear, perfectly audible, distinct",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clear as mud",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "confusing, unclear, obscure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "climb the walls",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extremely frustrated, highly agitated, restless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "close but no cigar",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "almost success, near miss, close failure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "close quarters",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cramped space, tight area, confined environment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "close shave",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "narrow escape, close call, near miss",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clothes make man",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "appearance important, dress impresses, style matters",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cloud cuckoo land",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unrealistic place, fantasy world, impractical thinking",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clutch at straws",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "desperate attempt, grasp weakly, last resort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cock and bull story",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fabricated tale, unbelievable narrative, tall story",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cock of the walk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "arrogant person, self important, strutters",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cold day in hell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "never happening, impossible time, unlikely event",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cold feet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "nervous hesitation, second thoughts, reluctance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cold shoulder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ignore, snub, reject",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cold turkey",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "abrupt stop, sudden quitting, immediate cessation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come hell high water",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no matter what, regardless obstacles, at all costs",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come out closet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reveal secret, disclose identity, admit truth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come out wash",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "resolve itself, even out, balance eventually",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come to grips",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deal with, confront, accept",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come to jesus moment",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "realization, epiphany, turning point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come unglued",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fall apart, lose control, break down",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "comparing apples oranges",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dissimilar comparison, unlike items, incompatible contrast",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cook goose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ruin chances, spoil plans, destroy opportunity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cool as cucumber",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "calm, composed, unruffled",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cool beans",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "great, awesome, fantastic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cool heels",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wait impatiently, bide time, hang around",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cost arm leg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very expensive, high price, costly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "count blessings",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "appreciate good, be grateful, value positives",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "count sheep",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "try sleep, induce slumber, combat insomnia",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crack of dawn",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "early morning, daybreak, sunrise",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crack smile",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "slight grin, small laugh, minimal amusement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crash burn",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fail spectacularly, collapse dramatically, disastrous end",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crash course",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "intensive training, quick learning, accelerated program",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cross that bridge",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deal later, address when comes, handle future",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crossing swords",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in conflict, arguing, disputing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cry over spilt milk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "regret past, worry irreversible, lament done",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cry uncle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "surrender, give up, concede defeat",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cry wolf",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "false alarm, unnecessary panic, fake distress",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crystal clear",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "completely obvious, perfectly understandable, totally transparent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cup of joe",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "coffee, brew, java",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "curiosity killed cat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "nosiness dangerous, prying harmful, inquisitiveness risky",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "curtains",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "end, finish, conclusion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut and dried",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "settled, decided, straightforward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut and run",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "flee, escape, abandon",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut chase",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "get point, be direct, skip preliminaries",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut corners",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "save effort, reduce quality, shortcut",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut from same cloth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "similar nature, alike character, comparable type",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut mustard",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "meet standards, perform adequately, qualify",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut rug",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dance energetically, boogie, groove",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut teeth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "gain initial experience, learn basics, start out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut the cheese",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fart, pass gas, break wind",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut to bone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reduce minimally, strip essentials, bare bones",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut two ways",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "double edged, two sided, ambivalent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cutting corners",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "taking shortcuts, skimping, cheating",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "damned do damned don't",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lose lose, no win, dilemma",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dark horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unexpected contender, surprise candidate, unknown competitor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dash hopes",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "disappoint, crush dreams, destroy expectations",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead as doornail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "completely dead, utterly lifeless, totally inactive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead duck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hopeless case, failed endeavor, doomed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead end",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no outlet, impasse, cul de sac",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead heat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tie, draw, even finish",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead in water",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stalled, halted, stopped",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead ringer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exact duplicate, identical match, perfect likeness",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead to world",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sound asleep, deeply unconscious, oblivious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deal with devil",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "risky agreement, dangerous pact, compromising bargain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "death warmed over",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very ill, extremely tired, looking awful",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deck the halls",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decorate, festoon, adorn",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deep pockets",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wealthy, rich, affluent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "diamond rough",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unpolished talent, raw potential, hidden gem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "die hard",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "staunch supporter, loyal fan, committed follower",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "different kettle fish",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "another matter, separate issue, distinct situation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dig heels in",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "resist stubbornly, refuse budge, stand firm",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dime dozen",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "common cheap, plentiful, ubiquitous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dirt cheap",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very inexpensive, bargain price, low cost",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "do a number",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cause damage, affect negatively, harm",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "do or die",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "critical effort, last chance, all or nothing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog days",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hot summer, sluggish period, slow time",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog tired",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exhausted, worn out, fatigued",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog's breakfast",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "mess, chaos, disarray",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog's life",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "miserable existence, hard living, tough circumstances",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog-eat-dog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ruthless competition, cutthroat environment, vicious rivalry",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dollars to doughnuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "certain bet, sure thing, high odds",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't bite hand feeds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "be grateful, avoid ingratitude, respect benefactor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't look gift horse mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accept gratefully, not question value, appreciate freely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't put eggs one basket",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "diversify, spread risk, multiple options",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't quit day job",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stick current, not talented enough, avoid change",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't take wooden nickels",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "be careful, avoid scams, stay alert",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dot the i cross the t",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "attention detail, complete thoroughly, finalize meticulously",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "double down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "increase commitment, reinforce position, amplify effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down and dirty",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "basic rough, no frills, straightforward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down and out",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "destitute, impoverished, defeated",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down for count",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "knocked out, defeated, finished",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "depressed, discouraged, pessimistic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down pat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "mastered, perfected, known well",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down the drain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wasted, lost, gone",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down the hatch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "drink up, swallow, consume",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down to brass tacks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "get essentials, focus basics, core issues",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down to wire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "last moment, final seconds, close finish",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drag feet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "delay, procrastinate, slow down",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "draw line",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "set limit, establish boundary, define threshold",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "draw the short straw",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unlucky choice, bad luck, unfortunate assignment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dress mutton lamb",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "age inappropriately, disguise maturity, pretend youth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dressed to kill",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stylishly attired, elegantly dressed, fashionably outfitted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dressed to nines",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "finely clothed, impeccably dressed, smartly attired",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drink like fish",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "consume excessively, imbibe heavily, guzzle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drive home",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "emphasize, stress, reinforce",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drive up wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "annoy greatly, frustrate intensely, irritate extremely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop a dime",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "inform on, snitch, rat out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make error, fail responsibility, mishandle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop bucket",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insignificant amount, small contribution, negligible",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "immediately, instantly, without delay",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop line",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "send note, write message, contact briefly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop of hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "instantly, immediately, without hesitation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dry powder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "keep ready, maintain reserve, stay prepared",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "duck soup",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy, simple, effortless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "duck water",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "natural fit, easy adaptation, smooth handling",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dutch treat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pay own way, split bill, individual payment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dyed in wool",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "confirmed, thorough, complete",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ear to ground",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stay informed, listen rumors, monitor developments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "early bird",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prompt person, timely arriver, first comer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "early bird worm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "advantage punctuality, benefit earliness, reward promptness",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "easy as pie",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very simple, effortless, straightforward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "easy come easy go",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fleeting gains, temporary possession, quick loss",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat crow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "admit wrong, humble self, accept humiliation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat heart out",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "be envious, feel jealous, covet",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat humble pie",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "apologize humbly, accept defeat, swallow pride",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat out hand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "completely controlled, totally submissive, easily manipulated",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "egg face",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "embarrassed, humiliated, disgraced",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elbow grease",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hard physical work, manual effort, labor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elbow room",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "space move, freedom action, room maneuver",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eleventh hour",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "last minute, final moment, critical time",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "empty suit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ineffective executive, superficial manager, incompetent leader",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "every cloud silver lining",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "positive aspect, optimistic view, hope bad",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "every dog day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "moment fame, time shine, opportunity success",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "everything but kitchen sink",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "almost all, nearly everything, comprehensive inclusion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eye candy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "attractive appearance, visually pleasing, decorative",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eye for eye",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "retaliation, revenge, tit tat",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "face music",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "confront consequences, accept reality, deal outcome",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "face value",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "nominal amount, apparent worth, surface level",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fair and square",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "honestly, legitimately, justly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fair shake",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "equal chance, fair opportunity, just treatment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall by wayside",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "drop out, abandon, discontinue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall from grace",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lose status, disgrace self, decline favor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall guy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "scapegoat, blame taker, patsy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall off turnip truck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "naive, inexperienced, gullible",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall off wagon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "relapse, resume bad habit, backslide",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall on deaf ears",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ignored, disregarded, unheeded",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall on sword",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "take blame, sacrifice self, accept responsibility",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall through the cracks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overlooked, missed, neglected",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "false colors",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deceptive appearance, misleading pretense, fake identity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fan the flames",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "intensify conflict, exacerbate situation, stir up trouble",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "far cry from",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very different, unlike, distant from",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fast and loose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "careless reckless, irresponsible, lax",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fat cat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wealthy person, rich executive, affluent individual",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fat chance",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unlikely, slim possibility, little hope",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "feather cap",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "achievement, accomplishment, honor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "feather nest",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare future, accumulate wealth, secure position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fed up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "annoyed, frustrated, tired of",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "feel oats",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "energetic, lively, frisky",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fence sitter",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "undecided person, neutral party, non committal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fever pitch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "high excitement, intense emotion, peak intensity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "few sandwiches short picnic",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "not smart, mentally deficient, crazy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fiddle while rome burns",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ignore crisis, neglect emergency, be oblivious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "field day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "great time, enjoyable event, fun activity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fifth wheel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unnecessary person, extra, superfluous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fight tooth nail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "struggle fiercely, battle intensely, resist strongly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fine kettle fish",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "messy situation, awkward predicament, troublesome matter",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fine tooth comb",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "thorough search, detailed examination, meticulous review",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "finger in pie",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "involved in, part of, interest in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fingers crossed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hope luck, wish success, optimistic anticipation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fire in belly",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "strong motivation, passionate drive, intense ambition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fish out water",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uncomfortable, out place, mismatched",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fish story",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exaggerated tale, tall story, unbelievable narrative",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fishing expedition",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exploratory search, speculative inquiry, probing investigation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fit as fiddle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very healthy, in good shape, physically fit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fit to tied",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extremely angry, furious, enraged",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flash in pan",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "short lived success, temporary phenomenon, fleeting achievement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flat as pancake",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very flat, completely level, smooth surface",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flesh and blood",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "human being, real person, mortal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flip coin",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "random choice, chance decision, toss up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flip flop",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "change position, reverse opinion, switch sides",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flog dead horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "waste effort, continue futilely, beat useless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly by night",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unreliable, shady, transient",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly handle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lose temper, become angry, rage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly ointment",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "small flaw, minor defect, tiny problem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly off handle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sudden anger, explosive temper, lose control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unseen observer, invisible witness, secret listener",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foam at mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very angry, furious, enraged",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fools gold",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "false promise, deceptive value, worthless imitation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foot bill",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pay cost, cover expense, settle account",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foot in door",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "initial entry, starting opportunity, first step",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foot in mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "embarrassing remark, gaffe, faux pas",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foot loose fancy free",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "carefree, uncommitted, free spirited",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "for crying out loud",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exasperation, frustration, annoyance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "for peanuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "low pay, cheap labor, minimal compensation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "for the birds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "worthless, useless, nonsense",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "for what worth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "my opinion, take it or leave, personal view",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "forbidden fruit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tempting prohibited, alluring banned, enticing restricted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "force to be reckoned with",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "powerful entity, significant influence, formidable presence",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "four alarm fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "major emergency, critical crisis, severe problem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fourth estate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "press, media, journalism",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fox in henhouse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dangerous insider, threat within, predator among vulnerable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "freeze over hell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "never happen, impossible, unlikely event",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "frog in throat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hoarseness, voice issue, throat irritation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "from rags riches",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "poor to wealthy, humble beginnings success, upward mobility",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "from soup nuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete process, full range, start finish",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full boat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete set, full house, total package",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full tilt boogie",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maximum speed, all out, full force",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fun and games",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "enjoyment activities, playful time, amusement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fun in sun",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "outdoor enjoyment, sunny pleasure, beach fun",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "funny bone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sense humor, ticklish spot, amusement trigger",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "funny farm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "mental institution, asylum, loony bin",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "funny money",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "counterfeit currency, fake cash, bogus bills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fuzzy wuzzy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hairy, furry, fluffy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "game of chicken",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "brinkmanship, dare contest, nerve test",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get act together",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "organize self, improve performance, focus",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get away murder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "escape punishment, avoid consequences, impunity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get bent shape",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "upset, angry, distorted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get blood from stone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impossible task, futile effort, hopeless endeavor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get cold feet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "become nervous, lose courage, hesitate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get goat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "annoy, irritate, bother",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get handle on",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "understand, grasp, control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get knickers twist",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "become upset, get agitated, be bothered",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get off high horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stop arrogant, be humble, descend superiority",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get on soapbox",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "preach, lecture, rant",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get out of hand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lose control, become chaotic, escalate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get pants in wad",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "get upset, become angry, overreact",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get rocks off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "derive pleasure, find enjoyment, get satisfaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get short end stick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unfair deal, bad luck, disadvantaged",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get wind up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "become anxious, get nervous, tense up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gift gab",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "eloquence, speaking ability, persuasive talk",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gift horse mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ungrateful scrutiny, question free, criticize gift",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gild lily",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "over decorate, unnecessary enhancement, excess adornment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gird loins",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare action, ready challenge, brace self",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase":"give benefit doubt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "assume innocence, trust initially, presume good",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give cold shoulder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ignore deliberately, snub, shun",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give him enough rope",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "allow self destruction, provide opportunity fail, let hang self",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give leg up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "provide advantage, offer help, give boost",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give lip service",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insincere support, verbal agreement only, empty promise",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give run money",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "strong competition, worthy opponent, close challenge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give the farm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sacrifice everything, give all, total concession",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give the slip",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "evade, escape, elude",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "glad rags",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "best clothes, fancy attire, formal wear",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "glass ceiling",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "invisible barrier, promotion limit, unseen obstacle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gloves off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no holds barred, unrestrained, aggressive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "glutton punishment",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "masochist, seeks suffering, endures hardship",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gnaw at",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bother persistently, worry constantly, trouble mind",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go against grain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "contrary nature, opposite convention, unconventional",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go bananas",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "go crazy, act wildly, lose control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go bat for",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "support, advocate, defend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go berserk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rage uncontrollably, go mad, lose temper violently",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go down in flames",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fail spectacularly, crash burn, disastrous end",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go down swinging",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fight till end, resist defeat, struggle persistently",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go extra mile",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "do more, exceed expectations, additional effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go figure",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "imagine that, who knew, surprising",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go fly kite",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "leave me alone, go away, buzz off",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go for broke",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "risk all, all or nothing, maximum effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go haywire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "malfunction, go wrong, become chaotic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go off deep end",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overreact, lose control, act irrationally",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go off half cocked",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act prematurely, unprepared, hasty",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go off rails",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "derail, deviate plan, lose direction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go overboard",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "exaggerate, excess, overdo",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go postal",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "become violent, rage, snap",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go the distance",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete fully, persevere end, finish strong",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go to the dogs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deteriorate, decline, ruin",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go to the mat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fight hard, struggle intensely, battle fully",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go with flow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "adapt easily, follow current, be flexible",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "goes without saying",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "obvious, self evident, needless mention",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "going bananas",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "acting crazy, behaving wildly, losing mind",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "golden boy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": " favored person, successful individual, star performer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "golden handshake",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "generous severance, retirement package, exit bonus",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "golden opportunity",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "great chance, perfect occasion, ideal moment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gone batty",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "crazy, insane, mad",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gone goose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "doomed, finished, ruined",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gone to pot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deteriorated, ruined, declined",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "good egg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "nice person, reliable individual, decent character",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "good samaritan",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "helpful stranger, kind helper, benevolent person",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "goose bumps",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "chills, shivers, piloerection",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "goose cooked",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in trouble, doomed, finished",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "goose that laid golden egg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "valuable asset, profitable source, treasure producer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grab bull horns",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tackle directly, confront boldly, seize control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grain of salt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "skepticism, doubt, caution",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grand slam",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "major success, complete victory, total win",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "graveyard shift",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "night work, late hours, overnight duty",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grease monkey",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "mechanic, auto repairer, technician",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grease palm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bribe, pay off, corrupt",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grease the wheels",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "facilitate, smooth process, expedite",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "great guns",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "successfully, rapidly, energetically",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "great minds think alike",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "similar ideas, shared thoughts, common views",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "green eyed monster",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "jealousy, envy, covetousness",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "green thumb",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "gardening skill, plant care ability, horticultural talent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "green with envy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very jealous, covetous, resentful",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grist for mill",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "useful material, beneficial input, valuable resource",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gut feeling",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "intuition, instinct, hunch",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hail mary pass",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "desperate attempt, long shot, last resort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hair of dog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hangover cure, same remedy, continuation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "half baked",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ill conceived, poorly planned, underdeveloped",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "half cock",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unprepared, hasty, incomplete",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hand to mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "subsistence living, day to day, barely surviving",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hands are tied",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "powerless, unable act, restricted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hands down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easily, undoubtedly, unquestionably",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang by thread",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "precarious, tenuous, fragile",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang in there",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "persevere, hold on, stay strong",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang loose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "relax, be casual, chill out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang one's hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "settle down, make home, base self",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang out dry",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "abandon, leave vulnerable, betray",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang ten",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "surf stylishly, ride wave, balance toes",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang tough",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stay resilient, remain firm, endure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "happy as clam",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very content, extremely pleased, delighted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "happy as lark",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cheerful, joyful, elated",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "happy camper",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "satisfied person, content individual, pleased participant",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "happy trails",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "goodbye, farewell, safe journey",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard act follow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult succeed, tough match, high standard",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard nut crack",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult person, tough problem, challenging puzzle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard pill swallow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult accept, bitter truth, unpleasant fact",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "has left building",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "departed, gone, exited",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "has me stumped",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "puzzled, baffled, confused",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "haste makes waste",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hurry causes errors, speed leads mistakes, rush results waste",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hat in ring",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "enter contest, join competition, declare candidacy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hat trick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "three achievements, triple success, hat three",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "haul over coals",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reprimand severely, scold harshly, criticize strongly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "have cake eat too",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "want incompatible, desire both ways, greedy choice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "have finger pie",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "involved in, part of, interest in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "have it coming",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deserve punishment, merit consequence, earn outcome",
-"variants": [],
-"field": null,
-"role": null
-}
+  {
+    "phrase": "typescript",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "javascript, static typing, interfaces",
+    "variants": ["ts"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "tasked with the job of",
+    "category": "weak",
+    "suggestion": "executed, managed, delivered",
+    "variants": ["given the job of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "jack of all trades",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "versatile, skilled in x y z, adaptable",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tekla structures",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "structural detailing, steelwork, precast concrete",
+    "variants": ["tekla"],
+    "field": "Civil Engineering",
+    "role": "Structural Detailer"
+  },
+  {
+    "phrase": "accordingly",
+    "category": "weak",
+    "suggestion": "therefore, as a result, consequently",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "blue-sky thinking",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "brainstormed, conceptualised, innovated",
+    "variants": ["blue sky thinking"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "natural language processing",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "nlp, sentiment analysis, text mining",
+    "variants": ["nlp"],
+    "field": "Data Science",
+    "role": "Machine Learning Engineer"
+  },
+  {
+    "phrase": "formulated",
+    "category": "good",
+    "suggestion": "developed, devised, created",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "paradigm shift",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "fundamental change, major innovation, strategic pivot",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "acca",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "cima, aca, chartered accountant",
+    "variants": ["part-qualified acca"],
+    "field": "Accounting & Finance",
+    "role": "Accountant"
+  },
+  {
+    "phrase": "provided",
+    "category": "weak",
+    "suggestion": "delivered, supplied, offered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thought shower",
+    "category": "bad",
+    "suggestion": "brainstormed, collaborated on ideas, generated concepts",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "computational fluid dynamics",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "cfd, ansys fluent, fluid mechanics",
+    "variants": ["cfd"],
+    "field": "Mechanical Engineering",
+    "role": "CFD Engineer"
+  },
+  {
+    "phrase": "administered",
+    "category": "good",
+    "suggestion": "managed, executed, coordinated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "undertook",
+    "category": "weak",
+    "suggestion": "completed, executed, conducted",
+    "variants": ["undertaken"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "circle back",
+    "category": "bad",
+    "weight": -2.7,
+    "suggestion": "follow up, revisit, discuss later",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tableau",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "power bi, qlik sense, data visualisation",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "gained an appreciation for",
+    "category": "weak",
+    "suggestion": "analysed, evaluated, mastered",
+    "variants": ["developed an appreciation of"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hustle",
+    "category": "bad",
+    "suggestion": "drove sales, secured clients, executed quickly",
+    "variants": ["hustler"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ui/ux design",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "figma, wireframing, prototyping",
+    "variants": ["ui design", "ux design"],
+    "field": "Design",
+    "role": "UX/UI Designer"
+  },
+  {
+    "phrase": "catalogued",
+    "category": "good",
+    "suggestion": "indexed, organised, classified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had the opportunity to",
+    "category": "weak",
+    "suggestion": "managed, executed, delivered",
+    "variants": ["was given the opportunity to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "drill down",
+    "category": "bad",
+    "suggestion": "analyse in detail, investigate further, examine specifics",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "primavera p6",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "project scheduling, gantt charts, critical path method",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Project Planner"
+  },
+  {
+    "phrase": "advocated",
+    "category": "good",
+    "suggestion": "supported, promoted, recommended",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "processed",
+    "category": "weak",
+    "suggestion": "managed, completed, handled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "low-hanging fruit",
+    "category": "bad",
+    "weight": -2.6,
+    "suggestion": "identified quick wins, prioritised tasks, achieved immediate results",
+    "variants": ["low hanging fruit"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cell culture",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "aseptic technique, microscopy, cell line maintenance",
+    "variants": [],
+    "field": "Biology",
+    "role": "Lab Technician"
+  },
+  {
+    "phrase": "flask",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "python, django, web framework",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "gathered",
+    "category": "weak",
+    "suggestion": "collated, compiled, collected",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "move the needle",
+    "category": "bad",
+    "suggestion": "created significant impact, drove key metrics, delivered measurable results",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "safeguarding",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "child protection, vulnerable adults, duty of care",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Nurse"
+  },
+  {
+    "phrase": "arbitrated",
+    "category": "good",
+    "suggestion": "mediated, resolved, adjudicated",
+    "variants": [],
+    "field": "Law",
+    "role": "Mediator"
+  },
+  {
+    "phrase": "was tasked to",
+    "category": "weak",
+    "suggestion": "delivered, completed, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "on the ball",
+    "category": "bad",
+    "suggestion": "efficient, responsive, proactive",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "selenium",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "automated testing, qa, webdriver",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "QA Engineer"
+  },
+  {
+    "phrase": "chaired",
+    "category": "good",
+    "suggestion": "led, presided over, moderated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was an intern",
+    "category": "weak",
+    "suggestion": "supported, contributed to, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "game changer",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "transformative, innovative, high-impact",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "public policy analysis",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "policy evaluation, legislative research, stakeholder analysis",
+    "variants": [],
+    "field": "Politics / International Relations",
+    "role": "Policy Analyst"
+  },
+  {
+    "phrase": "conceived",
+    "category": "good",
+    "suggestion": "conceptualised, designed, created",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped to write",
+    "category": "weak",
+    "suggestion": "co-authored, drafted, documented",
+    "variants": ["assisted in writing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "at the end of the day",
+    "category": "bad",
+    "suggestion": "ultimately, in summary, the key result was",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "control systems",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "pid controller, feedback control, matlab simulink",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Control Engineer"
+  },
+  {
+    "phrase": "angular",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "typescript, single-page applications, rxjs",
+    "variants": ["angular.js"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "was around for",
+    "category": "weak",
+    "suggestion": "supported, observed, monitored",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hobbies",
+    "category": "bad",
+    "suggestion": "omit section, focus on skills, tailor to role",
+    "variants": ["interests"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "market research",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "competitor analysis, consumer behaviour, survey design",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Market Researcher"
+  },
+  {
+    "phrase": "consolidated",
+    "category": "good",
+    "suggestion": "combined, integrated, unified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "took notes",
+    "category": "weak",
+    "suggestion": "documented, summarised, recorded minutes",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "learning curve",
+    "category": "bad",
+    "suggestion": "mastered quickly, trained efficiently, adapted rapidly",
+    "variants": ["steep learning curve"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cost estimation",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "quantity surveying, boq, cost planning",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Quantity Surveyor"
+  },
+  {
+    "phrase": "critiqued",
+    "category": "good",
+    "suggestion": "evaluated, reviewed, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had the role of",
+    "category": "weak",
+    "suggestion": "managed, led, performed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quick-thinking",
+    "category": "bad",
+    "suggestion": "resolved issue, troubleshot effectively, adapted to changes",
+    "variants": ["thinks on my feet"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cybersecurity",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "penetration testing, network security, risk assessment",
+    "variants": ["information security"],
+    "field": "Computer Science",
+    "role": "Cybersecurity Analyst"
+  },
+  {
+    "phrase": "vue.js",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "frontend development, javascript framework, component library",
+    "variants": ["vue"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "was present during",
+    "category": "weak",
+    "suggestion": "observed, supported, participated in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i feel",
+    "category": "bad",
+    "suggestion": "analysis shows, my experience demonstrates, i concluded",
+    "variants": ["my feeling is"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "m&a",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "mergers and acquisitions, due diligence, valuation",
+    "variants": ["mergers & acquisitions"],
+    "field": "Accounting & Finance",
+    "role": "Investment Banking Analyst"
+  },
+  {
+    "phrase": "debugged",
+    "category": "good",
+    "suggestion": "troubleshot, resolved, fixed",
+    "variants": ["debugging"],
+    "field": "Software Engineering",
+    "role": "Developer"
+  },
+  {
+    "phrase": "listened to",
+    "category": "weak",
+    "suggestion": "consulted with, gathered requirements from, incorporated feedback from",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "top-down",
+    "category": "bad",
+    "suggestion": "strategic, directed, implemented",
+    "variants": ["bottom-up"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cbt",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "cognitive behavioural therapy, psychotherapy, clinical psychology",
+    "variants": ["cognitive behavioral therapy"],
+    "field": "Psychology",
+    "role": "Therapist"
+  },
+  {
+    "phrase": "directed",
+    "category": "good",
+    "suggestion": "led, managed, supervised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did admin",
+    "category": "weak",
+    "suggestion": "coordinated, organised, managed records",
+    "variants": ["handled administration"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "win-win",
+    "category": "bad",
+    "suggestion": "mutually beneficial, successful negotiation, positive outcome for all parties",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "contract law",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "tort law, commercial law, legal drafting",
+    "variants": [],
+    "field": "Law",
+    "role": "Solicitor"
+  },
+  {
+    "phrase": "adobe premiere pro",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "final cut pro, video editing, post-production",
+    "variants": ["premiere pro"],
+    "field": "Design",
+    "role": "Video Editor"
+  },
+  {
+    "phrase": "completed",
+    "category": "good",
+    "suggestion": "finished, delivered, achieved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked under",
+    "category": "weak",
+    "suggestion": "reported to, supported, assisted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "action-oriented",
+    "category": "bad",
+    "suggestion": "executed, delivered, launched",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "supply chain management",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "logistics, procurement, inventory management",
+    "variants": ["scm"],
+    "field": "Business Management",
+    "role": "Supply Chain Analyst"
+  },
+  {
+    "phrase": "dispensed",
+    "category": "good",
+    "suggestion": "administered, distributed, provided",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Pharmacist"
+  },
+  {
+    "phrase": "helped to manage",
+    "category": "weak",
+    "suggestion": "coordinated, supported, facilitated",
+    "variants": ["assisted in managing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "great",
+    "category": "bad",
+    "suggestion": "proficient, skilled, excellent",
+    "variants": ["good"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hvac",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "building services, thermal dynamics, energy efficiency",
+    "variants": ["heating, ventilation, and air conditioning"],
+    "field": "Mechanical Engineering",
+    "role": "HVAC Engineer"
+  },
+  {
+    "phrase": "doubled",
+    "category": "good",
+    "suggestion": "increased by 100%, expanded, amplified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "saw",
+    "category": "weak",
+    "suggestion": "identified, discovered, observed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "grew",
+    "category": "bad",
+    "suggestion": "increased sales by x%, expanded market share, developed skills in",
+    "variants": ["growth"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ruby on rails",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "ruby, web development, mvc architecture",
+    "variants": ["rails"],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "history taking",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "clinical examination, patient communication, diagnosis",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Junior Doctor"
+  },
+  {
+    "phrase": "put into practice",
+    "category": "weak",
+    "suggestion": "applied, implemented, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hard charger",
+    "category": "bad",
+    "suggestion": "proactive, results-driven, high-achiever",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "due diligence",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "m&a, financial analysis, risk assessment",
+    "variants": [],
+    "field": "Law",
+    "role": "Corporate Lawyer"
+  },
+  {
+    "phrase": "drove",
+    "category": "good",
+    "suggestion": "led, propelled, initiated",
+    "variants": ["drive"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was a volunteer",
+    "category": "weak",
+    "suggestion": "supported, contributed to, organised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i am writing to apply for",
+    "category": "bad",
+    "weight": -2.4,
+    "suggestion": "start with key achievement, hook the reader, state role clearly",
+    "variants": ["i am applying for"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "scada",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "hmi, industrial control systems, plc",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Automation Engineer"
+  },
+  {
+    "phrase": "enabled",
+    "category": "good",
+    "suggestion": "facilitated, permitted, activated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped with the creation of",
+    "category": "weak",
+    "suggestion": "co-designed, contributed to, developed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "forward-thinking",
+    "category": "bad",
+    "suggestion": "strategised, planned for the future, anticipated trends",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "titration",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "quantitative analysis, volumetric analysis, analytical chemistry",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Lab Analyst"
+  },
+  {
+    "phrase": "mailchimp",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "email marketing, campaign monitor, crm",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Marketing Assistant"
+  },
+  {
+    "phrase": "worked towards",
+    "category": "weak",
+    "suggestion": "achieved, accomplished, attained",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ideation",
+    "category": "bad",
+    "suggestion": "idea generation, brainstorming, conceptualisation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "copywriting",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "content creation, proofreading, brand voice",
+    "variants": [],
+    "field": "Communications",
+    "role": "Copywriter"
+  },
+  {
+    "phrase": "established",
+    "category": "good",
+    "suggestion": "founded, created, set up",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gave advice",
+    "category": "weak",
+    "suggestion": "advised, consulted, recommended",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "as per my resume",
+    "category": "bad",
+    "weight": -2.6,
+    "suggestion": "highlight specific skill, expand on project, tailor to job description",
+    "variants": ["as you can see from my cv"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "brand management",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "brand strategy, market positioning, marketing campaigns",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Brand Manager"
+  },
+  {
+    "phrase": "evaluated",
+    "category": "good",
+    "suggestion": "assessed, analysed, appraised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "functioned as",
+    "category": "weak",
+    "suggestion": "performed as, managed, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "disruptive",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "innovative, transformative, game-changing",
+    "variants": ["disruptor"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ethical theory",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "moral philosophy, deontology, utilitarianism",
+    "variants": [],
+    "field": "Philosophy",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "executed",
+    "category": "good",
+    "suggestion": "implemented, delivered, completed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tried to help",
+    "category": "weak",
+    "suggestion": "supported, assisted, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thinking cap",
+    "category": "bad",
+    "suggestion": "analysed, problem-solved, strategised",
+    "variants": ["put my thinking cap on"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gcp",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "google cloud platform, aws, azure",
+    "variants": ["google cloud"],
+    "field": "Computer Science",
+    "role": "Cloud Engineer"
+  },
+  {
+    "phrase": "expanded",
+    "category": "good",
+    "suggestion": "grew, enlarged, scaled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did my bit",
+    "category": "weak",
+    "suggestion": "contributed, played a key role, supported",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bleeding edge",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "pioneering, innovative, advanced",
+    "variants": ["cutting edge"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "patient observations",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "vital signs, clinical monitoring, nursing assessment",
+    "variants": ["obs"],
+    "field": "Nursing",
+    "role": "Healthcare Assistant"
+  },
+  {
+    "phrase": "facilitated",
+    "category": "good",
+    "suggestion": "enabled, coordinated, promoted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "went through",
+    "category": "weak",
+    "suggestion": "reviewed, audited, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "to whom it may concern",
+    "category": "bad",
+    "weight": -2.7,
+    "suggestion": "dear hiring manager, research recruiter name, address the specific team",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "latex",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "academic writing, typesetting, bibtex",
+    "variants": [],
+    "field": "Mathematics",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "founded",
+    "category": "good",
+    "suggestion": "established, created, launched",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sorted out",
+    "category": "weak",
+    "suggestion": "resolved, organised, rectified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "result-oriented",
+    "category": "bad",
+    "suggestion": "achieved, delivered, increased",
+    "variants": ["result oriented"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "nrm2",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "rics, quantity surveying, measurement",
+    "variants": ["new rules of measurement"],
+    "field": "Civil Engineering",
+    "role": "Quantity Surveyor"
+  },
+  {
+    "phrase": "generated",
+    "category": "good",
+    "suggestion": "produced, created, yielded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did tasks",
+    "category": "weak",
+    "suggestion": "executed responsibilities, completed projects, performed duties",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "change agent",
+    "category": "bad",
+    "suggestion": "implemented change, transformed processes, drove improvements",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "c++11",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "c++14, modern c++, smart pointers",
+    "variants": ["c++14", "c++17"],
+    "field": "Computer Science",
+    "role": "Software Engineer"
+  },
+  {
+    "phrase": "guided",
+    "category": "good",
+    "suggestion": "mentored, advised, directed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "took care of",
+    "category": "weak",
+    "suggestion": "managed, oversaw, handled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "innovative",
+    "category": "bad",
+    "suggestion": "developed, created, designed",
+    "variants": ["innovator"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "user acceptance testing",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "uat, quality assurance, test cases",
+    "variants": ["uat"],
+    "field": "Software Engineering",
+    "role": "QA Analyst"
+  },
+  {
+    "phrase": "halved",
+    "category": "good",
+    "suggestion": "reduced by 50%, decreased, minimised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "looked after",
+    "category": "weak",
+    "suggestion": "managed, maintained, supervised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "open the kimono",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "be transparent, share information, discuss openly",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mass spectrometry",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "gc-ms, lc-ms, analytical chemistry",
+    "variants": ["mass spec"],
+    "field": "Chemistry",
+    "role": "Analytical Chemist"
+  },
+  {
+    "phrase": "headed",
+    "category": "good",
+    "suggestion": "led, directed, managed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked as",
+    "category": "weak",
+    "suggestion": "specialised in, managed, developed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "core competencies",
+    "category": "bad",
+    "suggestion": "skills, expertise, proficiencies",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "proofread",
+    "category": "good",
+    "suggestion": "edited, reviewed, quality assured",
+    "variants": [],
+    "field": "Communications",
+    "role": "Editor"
+  },
+  {
+    "phrase": "hired",
+    "category": "good",
+    "suggestion": "recruited, onboarded, appointed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was an assistant to",
+    "category": "weak",
+    "suggestion": "supported, assisted, provided administrative support to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deep dive",
+    "category": "bad",
+    "suggestion": "in-depth analysis, comprehensive review, detailed investigation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cannulation",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "venepuncture, intravenous therapy, clinical skills",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Nurse"
+  },
+  {
+    "phrase": "hosted",
+    "category": "good",
+    "suggestion": "organised, convened, presented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "talked about",
+    "category": "weak",
+    "suggestion": "presented on, discussed, explained",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "self-starter",
+    "category": "bad",
+    "suggestion": "initiated, led projects, worked autonomously",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "php",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "laravel, wordpress, backend development",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Web Developer"
+  },
+  {
+    "phrase": "influenced",
+    "category": "good",
+    "suggestion": "persuaded, shaped, impacted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had meetings",
+    "category": "weak",
+    "suggestion": "liaised with, collaborated with, negotiated with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "take it to the next level",
+    "category": "bad",
+    "suggestion": "improve, enhance, scale",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "autopsy",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "pathology, post-mortem examination, histology",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Pathologist"
+  },
+  {
+    "phrase": "inspected",
+    "category": "good",
+    "suggestion": "audited, examined, reviewed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did reports",
+    "category": "weak",
+    "suggestion": "authored reports, analysed data for reports, presented findings",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mission-critical",
+    "category": "bad",
+    "suggestion": "essential, vital, key priority",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hydrogeology",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "groundwater modelling, contaminant transport, water resource management",
+    "variants": [],
+    "field": "Geography",
+    "role": "Hydrogeologist"
+  },
+  {
+    "phrase": "inspired",
+    "category": "good",
+    "suggestion": "motivated, encouraged, influenced",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dealt with customers",
+    "category": "weak",
+    "suggestion": "resolved customer issues, managed client accounts, provided customer support",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "let's touch base",
+    "category": "bad",
+    "suggestion": "contact, follow up, schedule a meeting",
+    "variants": ["touch base"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "laboratory safety",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "coshh, risk assessment, good laboratory practice",
+    "variants": ["lab safety"],
+    "field": "Chemistry",
+    "role": "Lab Technician"
+  },
+  {
+    "phrase": "installed",
+    "category": "good",
+    "suggestion": "configured, deployed, set up",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked freelance",
+    "category": "weak",
+    "suggestion": "managed client projects, delivered work for multiple clients, operated as an independent consultant",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ping me",
+    "category": "bad",
+    "suggestion": "contact me, email me, reach out",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "jira",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "agile, scrum, confluence",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Project Manager"
+  },
+  {
+    "phrase": "instructed",
+    "category": "good",
+    "suggestion": "taught, trained, coached",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was in charge of",
+    "category": "weak",
+    "suggestion": "managed, led, supervised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "company man",
+    "category": "bad",
+    "suggestion": "loyal employee, dedicated team member, committed to company goals",
+    "variants": ["company woman"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "interpreted",
+    "category": "good",
+    "suggestion": "translated, explained, elucidated",
+    "variants": [],
+    "field": "Languages",
+    "role": "Interpreter"
+  },
+  {
+    "phrase": "interviewed",
+    "category": "good",
+    "suggestion": "questioned, surveyed, consulted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "took over from",
+    "category": "weak",
+    "suggestion": "assumed responsibility for, transitioned project management, continued development of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "herding cats",
+    "category": "bad",
+    "suggestion": "coordinating teams, managing complex projects, aligning stakeholders",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "invented",
+    "category": "good",
+    "suggestion": "created, designed, developed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "launched",
+    "category": "good",
+    "suggestion": "initiated, released, deployed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ran errands",
+    "category": "weak",
+    "suggestion": "provided administrative support, managed logistics, coordinated tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "workforce",
+    "category": "bad",
+    "suggestion": "team, department, personnel",
+    "variants": ["manpower"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "lectured",
+    "category": "good",
+    "suggestion": "taught, presented, educated",
+    "variants": [],
+    "field": "Education",
+    "role": "Lecturer"
+  },
+  {
+    "phrase": "litigated",
+    "category": "good",
+    "suggestion": "represented clients, argued cases, managed disputes",
+    "variants": [],
+    "field": "Law",
+    "role": "Barrister"
+  },
+  {
+    "phrase": "was second-in-command",
+    "category": "weak",
+    "suggestion": "deputised for, supported the lead, acted as deputy manager",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hit the ground running",
+    "category": "bad",
+    "suggestion": "onboarded quickly, became productive rapidly, contributed immediately",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "lobbied",
+    "category": "good",
+    "suggestion": "advocated, influenced, persuaded",
+    "variants": [],
+    "field": "Politics / International Relations",
+    "role": "Lobbyist"
+  },
+  {
+    "phrase": "mapped",
+    "category": "good",
+    "suggestion": "charted, documented, diagrammed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did data entry",
+    "category": "weak",
+    "suggestion": "managed databases, input and verified data, maintained records",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "par for the course",
+    "category": "bad",
+    "suggestion": "expected, standard procedure, typical",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mediated",
+    "category": "good",
+    "suggestion": "arbitrated, negotiated, resolved disputes",
+    "variants": [],
+    "field": "Law",
+    "role": "Mediator"
+  },
+  {
+    "phrase": "modelled",
+    "category": "good",
+    "suggestion": "simulated, projected, designed",
+    "variants": ["modeled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "answered phones",
+    "category": "weak",
+    "suggestion": "managed inquiries, provided customer service, directed calls",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reinvent the wheel",
+    "category": "bad",
+    "suggestion": "leverage existing solutions, adapt proven methods, build upon current systems",
+    "variants": ["reinventing the wheel"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "moderated",
+    "category": "good",
+    "suggestion": "chaired, facilitated, led discussion",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "monitored",
+    "category": "good",
+    "suggestion": "tracked, supervised, observed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was a go-between",
+    "category": "weak",
+    "suggestion": "liaised, mediated, coordinated communication",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "all hands on deck",
+    "category": "bad",
+    "suggestion": "collaborated intensively, focused team effort, mobilised resources",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "motivated",
+    "category": "good",
+    "suggestion": "inspired, encouraged, drove",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "navigated",
+    "category": "good",
+    "suggestion": "directed, steered, guided",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "set up",
+    "category": "weak",
+    "suggestion": "established, configured, organised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "skin in the game",
+    "category": "bad",
+    "suggestion": "vested interest, shared risk, commitment",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "networked",
+    "category": "good",
+    "suggestion": "built relationships, connected with, established contacts",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "operated",
+    "category": "good",
+    "suggestion": "ran, managed, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "filled a role",
+    "category": "weak",
+    "suggestion": "performed duties as, executed responsibilities of, worked as",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "table this",
+    "category": "bad",
+    "suggestion": "postpone discussion, defer, set aside",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "overhauled",
+    "category": "good",
+    "suggestion": "restructured, redesigned, revamped",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "oversaw",
+    "category": "good",
+    "suggestion": "supervised, managed, directed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sent emails",
+    "category": "weak",
+    "suggestion": "communicated with stakeholders, coordinated via email, managed correspondence",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "the buck stops here",
+    "category": "bad",
+    "suggestion": "took ownership, assumed final responsibility, accountable for results",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "persuaded",
+    "category": "good",
+    "suggestion": "convinced, influenced, negotiated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "planned",
+    "category": "good",
+    "suggestion": "strategised, organised, scheduled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did my duties",
+    "category": "weak",
+    "suggestion": "fulfilled responsibilities, executed tasks, achieved objectives",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "win-win situation",
+    "category": "bad",
+    "suggestion": "mutually beneficial outcome, successful negotiation, positive result for all parties",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "predicted",
+    "category": "good",
+    "suggestion": "forecasted, projected, estimated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "prioritised",
+    "category": "good",
+    "suggestion": "organised, ranked, scheduled",
+    "variants": ["prioritized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped a bit",
+    "category": "weak",
+    "suggestion": "contributed to, supported, assisted with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "curated content",
+    "category": "bad",
+    "suggestion": "selected, organised, managed content",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Content Creator"
+  },
+  {
+    "phrase": "produced",
+    "category": "good",
+    "suggestion": "created, generated, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "programmed",
+    "category": "good",
+    "suggestion": "coded, developed, engineered",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Developer"
+  },
+  {
+    "phrase": "was helping",
+    "category": "weak",
+    "suggestion": "supported, facilitated, enabled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "seamless integration",
+    "category": "bad",
+    "suggestion": "smooth transition, effective implementation, successful integration",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "promoted",
+    "category": "good",
+    "suggestion": "advanced, elevated, upgraded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "proposed",
+    "category": "good",
+    "suggestion": "recommended, suggested, submitted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was an employee at",
+    "category": "weak",
+    "suggestion": "developed skills in, achieved results at, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "synergize",
+    "category": "bad",
+    "suggestion": "collaborate, integrate, combine efforts",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "publicised",
+    "category": "good",
+    "suggestion": "marketed, promoted, announced",
+    "variants": ["publicized"],
+    "field": "Communications",
+    "role": "PR Officer"
+  }
 ]

@@ -1,0 +1,1852 @@
+[
+  {
+    "phrase": "ansible",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "configuration management, infrastructure automation, playbook automation",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "DevOps Engineer"
+  },
+  {
+    "phrase": "i did my best to",
+    "category": "weak",
+    "suggestion": "applied maximum effort to, strove to achieve, worked diligently towards",
+    "variants": ["did my best"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "move the needle forward",
+    "category": "bad",
+    "suggestion": "generate tangible progress, achieve measurable impact, drive key performance indicators",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "spectrophotometer",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "absorbance spectroscopy, quantitative analysis, beer-lambert law",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Lab Analyst"
+  },
+  {
+    "phrase": "the main aim of my project was",
+    "category": "weak",
+    "suggestion": "my project achieved its objective of, i successfully delivered a project that, the project's key outcome was",
+    "variants": ["the aim of my project was"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "my ideal job",
+    "category": "bad",
+    "suggestion": "a role where i can apply my skills in, seeking a position in [field], interested in opportunities related to",
+    "variants": ["my dream job"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "invision",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "digital product design, interactive prototyping, design collaboration",
+    "variants": [],
+    "field": "Design",
+    "role": "UX/UI Designer"
+  },
+  {
+    "phrase": "abridged",
+    "category": "good",
+    "suggestion": "summarised, condensed, shortened",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "all sizzle and no steak",
+    "category": "bad",
+    "suggestion": "lacks substance, superficial, style over substance",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sharpe ratio",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "risk-adjusted return, portfolio performance, investment analysis",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Portfolio Analyst"
+  },
+  {
+    "phrase": "i was one of the people who",
+    "category": "weak",
+    "suggestion": "i was a key contributor to, my role involved, i collaborated on",
+    "variants": ["i was one of the team that"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "analysis paralysis",
+    "category": "bad",
+    "suggestion": "over-analysing, delaying decisions, inability to commit",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "singleton pattern",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "software design patterns, creational patterns, object-oriented design",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Software Architect"
+  },
+  {
+    "phrase": "absolved",
+    "category": "good",
+    "suggestion": "cleared, exonerated, forgave",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "definately",
+    "category": "bad",
+    "suggestion": "misspelling of definitely, proofread carefully, use a spellchecker",
+    "variants": ["definatly"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mural",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "digital whiteboard, remote collaboration, visual brainstorming",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Facilitator"
+  },
+  {
+    "phrase": "i don't have direct experience but",
+    "category": "weak",
+    "suggestion": "my transferable skills include, my academic projects have prepared me for, i have relevant experience in",
+    "variants": ["i lack direct experience however"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "band-aid solution",
+    "category": "bad",
+    "suggestion": "temporary fix, short-term solution, stopgap measure",
+    "variants": ["band aid solution"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "res ipsa loquitur",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "legal doctrine, tort of negligence, burden of proof",
+    "variants": [],
+    "field": "Law",
+    "role": "Solicitor"
+  },
+  {
+    "phrase": "acceded",
+    "category": "good",
+    "suggestion": "agreed to, consented to, assumed a position",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "beauty contest",
+    "category": "bad",
+    "suggestion": "competitive tender process, vendor selection, proposal evaluation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "autodesk inventor",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "3d mechanical design, product simulation, digital prototyping",
+    "variants": ["inventor"],
+    "field": "Mechanical Engineering",
+    "role": "Mechanical Design Engineer"
+  },
+  {
+    "phrase": "i was responsible for making sure",
+    "category": "weak",
+    "suggestion": "i ensured that, i verified, i guaranteed the quality of",
+    "variants": ["it was my job to make sure"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bells and whistles",
+    "category": "bad",
+    "suggestion": "extra features, non-essential additions, advanced options",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "x-ray diffraction",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "xrd, crystallographic analysis, material characterisation",
+    "variants": ["xrd"],
+    "field": "Physics",
+    "role": "Materials Scientist"
+  },
+  {
+    "phrase": "acclaimed",
+    "category": "good",
+    "suggestion": "praised, celebrated, lauded",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "big picture thinking",
+    "category": "bad",
+    "suggestion": "strategic perspective, long-term vision, holistic view",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "enzyme kinetics",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "michaelis-menten kinetics, reaction rates, biochemical assays",
+    "variants": [],
+    "field": "Biology",
+    "role": "Biochemist"
+  },
+  {
+    "phrase": "i played a small part in",
+    "category": "weak",
+    "suggestion": "i contributed to, i provided support for, my role involved assisting with",
+    "variants": ["played a small role in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bleeding edge technology",
+    "category": "bad",
+    "suggestion": "pioneering technology, highly experimental, emerging tech",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "natural selection",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "evolutionary biology, darwinian theory, adaptation",
+    "variants": [],
+    "field": "Biology",
+    "role": "Evolutionary Biologist"
+  },
+  {
+    "phrase": "acclimatised",
+    "category": "good",
+    "suggestion": "adapted, adjusted, accustomed",
+    "variants": ["acclimatized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "seperate",
+    "category": "bad",
+    "suggestion": "misspelling of separate, check spelling, proofread document",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "heat transfer",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "conduction, convection, radiation",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Thermal Engineer"
+  },
+  {
+    "phrase": "i was tasked with a project",
+    "category": "weak",
+    "suggestion": "i managed a project to, i delivered a project that, i was assigned to develop",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "block and tackle",
+    "category": "bad",
+    "suggestion": "fundamental tasks, basic execution, core operational work",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "jurisprudence",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "legal theory, philosophy of law, legal reasoning",
+    "variants": [],
+    "field": "Law",
+    "role": "Legal Scholar"
+  },
+  {
+    "phrase": "accommodated",
+    "category": "good",
+    "suggestion": "assisted, provided for, adapted to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "boil the ocean",
+    "category": "bad",
+    "suggestion": "attempt an impossible task, overcomplicate a project, create an unmanageable scope",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "econometrics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "statistical economic analysis, regression models, time-series data",
+    "variants": [],
+    "field": "Economics",
+    "role": "Econometrician"
+  },
+  {
+    "phrase": "part of my role was",
+    "category": "weak",
+    "suggestion": "key responsibilities included, i was instrumental in, my contributions involved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "brain dump",
+    "category": "bad",
+    "suggestion": "knowledge sharing session, comprehensive information transfer, intensive debriefing",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "object-oriented programming",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "oop, inheritance, polymorphism",
+    "variants": ["oop"],
+    "field": "Computer Science",
+    "role": "Software Developer"
+  },
+  {
+    "phrase": "accompanied",
+    "category": "good",
+    "suggestion": "escorted, went with, supported",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bucket list",
+    "category": "bad",
+    "suggestion": "long-term goals, career aspirations, personal objectives",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "aseptic technique",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "sterile procedures, contamination control, clinical hygiene",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Surgical Nurse"
+  },
+  {
+    "phrase": "i did a bit of everything",
+    "category": "weak",
+    "suggestion": "i handled a wide range of tasks, i demonstrated versatility by, my role encompassed multiple functions",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "burn the midnight oil",
+    "category": "bad",
+    "suggestion": "worked late to meet deadlines, showed dedication, committed extra hours",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "chromatography",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "separation techniques, hplc, gas chromatography",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Analytical Scientist"
+  },
+  {
+    "phrase": "accomplished",
+    "category": "good",
+    "suggestion": "achieved, completed successfully, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "business as usual",
+    "category": "bad",
+    "suggestion": "standard operating procedure, normal operations, routine activities",
+    "variants": ["bau"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "architectural history",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "architectural theory, historic preservation, building conservation",
+    "variants": [],
+    "field": "Architecture",
+    "role": "Architectural Historian"
+  },
+  {
+    "phrase": "i tried to get involved in",
+    "category": "weak",
+    "suggestion": "i proactively engaged with, i took the initiative to contribute to, i participated in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "buy-in",
+    "category": "bad",
+    "suggestion": "agreement, support, consensus",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "virtual reality",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "vr, immersive experiences, oculus sdk",
+    "variants": ["vr"],
+    "field": "Computer Science",
+    "role": "VR Developer"
+  },
+  {
+    "phrase": "accredited",
+    "category": "good",
+    "suggestion": "certified, officially recognised, authorised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "can't see the forest for the trees",
+    "category": "bad",
+    "suggestion": "lost in the details, missing the overall picture, overly focused on minutiae",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "qualitative research",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "interviews, focus groups, thematic data analysis",
+    "variants": [],
+    "field": "Psychology",
+    "role": "Qualitative Researcher"
+  },
+  {
+    "phrase": "my day-to-day tasks were",
+    "category": "weak",
+    "suggestion": "my daily responsibilities included, i consistently performed, on a daily basis i managed",
+    "variants": ["day-to-day tasks included"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "change agent",
+    "category": "bad",
+    "suggestion": "facilitated organisational change, drove process improvements, implemented new initiatives",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "adobe xd",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "ux/ui design tool, wireframing, interactive mockups",
+    "variants": ["xd"],
+    "field": "Design",
+    "role": "UX Designer"
+  },
+  {
+    "phrase": "accrued",
+    "category": "good",
+    "suggestion": "accumulated, gathered, collected over time",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "circle the wagons",
+    "category": "bad",
+    "suggestion": "defend a position, prepare for criticism, unify the team against external pressure",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "account reconciliations",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "bank reconciliation, balance sheet reconciliation, financial closing",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Accountant"
+  },
+  {
+    "phrase": "i had a variety of tasks",
+    "category": "weak",
+    "suggestion": "my role encompassed diverse responsibilities such as, i handled multiple tasks including, i demonstrated versatility in",
+    "variants": ["had a variety of responsibilities"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "close the loop",
+    "category": "bad",
+    "suggestion": "follow up with stakeholders, provide a final update, confirm resolution",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fluid dynamics",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "fluid mechanics, cfd, navier-stokes equations",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Aerospace Engineer"
+  },
+  {
+    "phrase": "accumulated",
+    "category": "good",
+    "suggestion": "gathered, collected, amassed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "customer journey mapping",
+    "category": "bad",
+    "suggestion": "analysing user experience, mapping touchpoints, improving customer interactions",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "electromagnetism",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "maxwell's equations, electromagnetic fields, wave propagation",
+    "variants": [],
+    "field": "Physics",
+    "role": "Physicist"
+  },
+  {
+    "phrase": "i did the admin",
+    "category": "weak",
+    "suggestion": "i handled administrative duties, i provided administrative support by, i managed office administration",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data-driven",
+    "category": "bad",
+    "suggestion": "made decisions based on data analysis, used metrics to inform strategy, based conclusions on empirical evidence",
+    "variants": ["data driven"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "clinical governance",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "healthcare quality improvement, patient safety, risk management in healthcare",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Clinical Lead"
+  },
+  {
+    "phrase": "acquiesced",
+    "category": "good",
+    "suggestion": "agreed reluctantly, complied, consented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deep dive",
+    "category": "bad",
+    "suggestion": "conducted an in-depth analysis, performed a comprehensive review, undertook a detailed investigation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "public speaking",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "presenting to audiences, oral communication, delivering presentations",
+    "variants": [],
+    "field": "Communications",
+    "role": null
+  },
+  {
+    "phrase": "i am a fresher",
+    "category": "weak",
+    "suggestion": "i am a first-year student, currently in my first year of study, beginning my undergraduate degree in",
+    "variants": ["fresher"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "disruptive innovation",
+    "category": "bad",
+    "suggestion": "market-changing innovation, creating new market value, displacing established technology",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "constitutional law",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "public law, administrative law, human rights act",
+    "variants": [],
+    "field": "Law",
+    "role": "Barrister"
+  },
+  {
+    "phrase": "acquired",
+    "category": "good",
+    "suggestion": "obtained, gained, secured",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dog and pony show",
+    "category": "bad",
+    "suggestion": "an elaborate presentation, a sales pitch, a formal demonstration",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "game theory",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "strategic decision-making, nash equilibrium, behavioural economics",
+    "variants": [],
+    "field": "Economics",
+    "role": "Economist"
+  },
+  {
+    "phrase": "i helped customers",
+    "category": "weak",
+    "suggestion": "i resolved customer queries, i provided product assistance, i ensured customer satisfaction",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "drink the kool-aid",
+    "category": "bad",
+    "suggestion": "show strong company loyalty, adopt group consensus without question, align completely with an ideology",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data mining",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "pattern recognition, knowledge discovery, large dataset analysis",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Data Miner"
+  },
+  {
+    "phrase": "acted",
+    "category": "good",
+    "suggestion": "performed, executed, functioned as",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "drill down",
+    "category": "bad",
+    "suggestion": "investigate further, analyse in greater detail, examine specifics",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cadence",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "rhythm, meeting schedule, workflow tempo",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Agile Coach"
+  },
+  {
+    "phrase": "i sometimes",
+    "category": "weak",
+    "suggestion": "on occasion i, responsibilities sometimes included, additionally i performed",
+    "variants": ["sometimes i"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "eat your own dog food",
+    "category": "bad",
+    "suggestion": "use one's own products, internal testing, product self-use",
+    "variants": ["dogfooding"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "forensic science",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "crime scene investigation, dna analysis, evidence collection",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Forensic Scientist"
+  },
+  {
+    "phrase": "activated",
+    "category": "good",
+    "suggestion": "initiated, started, enabled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "everything but the kitchen sink",
+    "category": "bad",
+    "suggestion": "comprehensive, all-inclusive, including every possible item",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "urban planning",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "town planning, land use management, sustainable development",
+    "variants": [],
+    "field": "Geography",
+    "role": "Urban Planner"
+  },
+  {
+    "phrase": "a friend recommended me",
+    "category": "weak",
+    "suggestion": "i was referred for this position by, recommended by a current employee, learned of this opportunity through",
+    "variants": ["my friend told me to apply"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fast track",
+    "category": "bad",
+    "suggestion": "accelerated process, expedited timeline, prioritised path",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "biostatistics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "statistical analysis for biology, clinical trial data analysis, public health statistics",
+    "variants": [],
+    "field": "Mathematics",
+    "role": "Biostatistician"
+  },
+  {
+    "phrase": "adapted",
+    "category": "good",
+    "suggestion": "modified, adjusted, tailored",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fire drill",
+    "category": "bad",
+    "suggestion": "a practice run, a simulation, a test of emergency procedures",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "child development",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "developmental psychology, early childhood education, pedagogy",
+    "variants": [],
+    "field": "Education",
+    "role": "Teacher"
+  },
+  {
+    "phrase": "i have a 2:1",
+    "category": "weak",
+    "suggestion": "graduated with a 2:1 in [degree], achieved a 2:1 classification, possess a second-class honours degree",
+    "variants": ["i got a 2:1"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "firm handshake",
+    "category": "bad",
+    "suggestion": "professional demeanour, strong interpersonal skills, confident communication",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "journalism",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "investigative reporting, news writing, media ethics",
+    "variants": [],
+    "field": "Communications",
+    "role": "Journalist"
+  },
+  {
+    "phrase": "addressed",
+    "category": "good",
+    "suggestion": "tackled, dealt with, resolved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "flush out",
+    "category": "bad",
+    "suggestion": "develop an idea more fully, expand upon a concept, add more detail",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "human-computer interaction",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "hci, usability studies, user interface design",
+    "variants": ["hci"],
+    "field": "Computer Science",
+    "role": "HCI Researcher"
+  },
+  {
+    "phrase": "i am available to start immediately",
+    "category": "weak",
+    "suggestion": "my availability to start is immediate, available for an immediate start, i can begin as soon as required",
+    "variants": ["available immediately"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gild the lily",
+    "category": "bad",
+    "suggestion": "make unnecessary additions, excessively adorn, over-embellish",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "company law",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "corporate governance, mergers and acquisitions law, commercial litigation",
+    "variants": [],
+    "field": "Law",
+    "role": "Corporate Lawyer"
+  },
+  {
+    "phrase": "adhered to",
+    "category": "good",
+    "suggestion": "complied with, followed, abided by",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gold standard",
+    "category": "bad",
+    "suggestion": "the benchmark, the highest standard, the industry leader",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "investment banking",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "m&a advisory, capital markets, financial valuation",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Investment Banker"
+  },
+  {
+    "phrase": "i helped with marketing",
+    "category": "weak",
+    "suggestion": "i assisted on marketing campaigns, i contributed to social media strategy, i supported the marketing team by",
+    "variants": [],
+    "field": "Marketing",
+    "role": null
+  },
+  {
+    "phrase": "hard stop",
+    "category": "bad",
+    "suggestion": "a firm deadline, a definite end time, a non-negotiable conclusion",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "structural mechanics",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "solid mechanics, stress analysis, finite element modelling",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Structural Analyst"
+  },
+  {
+    "phrase": "adjoined",
+    "category": "good",
+    "suggestion": "connected to, was next to, bordered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "herding cats",
+    "category": "bad",
+    "suggestion": "managing a difficult-to-organise group, coordinating independent individuals, aligning a chaotic team",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "astronomy",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "observational astronomy, astrophysics, planetary science",
+    "variants": [],
+    "field": "Physics",
+    "role": "Astronomer"
+  },
+  {
+    "phrase": "i worked with a team",
+    "category": "weak",
+    "suggestion": "i was an integral part of a team that, i collaborated effectively within a team to, my teamwork skills were demonstrated when",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hit the ground running",
+    "category": "bad",
+    "suggestion": "become productive quickly, integrate rapidly into the team, start contributing from day one",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "mental health nursing",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "psychiatric care, therapeutic interventions, patient assessment",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Mental Health Nurse"
+  },
+  {
+    "phrase": "adjourned",
+    "category": "good",
+    "suggestion": "postponed, suspended, deferred",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i'm a people person",
+    "category": "bad",
+    "suggestion": "i have excellent interpersonal skills, i build strong professional relationships, i communicate effectively with diverse groups",
+    "variants": ["people person"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "curriculum development",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "instructional design, educational materials, learning objectives",
+    "variants": [],
+    "field": "Education",
+    "role": "Curriculum Specialist"
+  },
+  {
+    "phrase": "i mostly did",
+    "category": "weak",
+    "suggestion": "my primary focus was, i specialised in, my main responsibilities were",
+    "variants": ["mostly i did"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "let's touch base offline",
+    "category": "bad",
+    "suggestion": "let's have a separate conversation, we can discuss this privately, i will follow up with you directly",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "fashion design",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "garment construction, pattern cutting, textile design",
+    "variants": [],
+    "field": "Design",
+    "role": "Fashion Designer"
+  },
+  {
+    "phrase": "adjudged",
+    "category": "good",
+    "suggestion": "judged, deemed, decided",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "lipstick on a pig",
+    "category": "bad",
+    "suggestion": "a superficial improvement, a cosmetic change that doesn't fix underlying issues, a surface-level fix",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "financial statement analysis",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "ratio analysis, balance sheet analysis, cash flow statements",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Financial Analyst"
+  },
+  {
+    "phrase": "i have attached my resume",
+    "category": "weak",
+    "suggestion": "my attached cv provides further detail, please find my cv attached for your review, my application is enclosed",
+    "variants": ["attached is my resume"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "low-hanging fruit",
+    "category": "bad",
+    "suggestion": "easy-to-achieve targets, quick wins, high-impact initial tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "operating systems",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "linux, windows server, process management",
+    "variants": ["os"],
+    "field": "Computer Science",
+    "role": "Systems Administrator"
+  },
+  {
+    "phrase": "adjusted",
+    "category": "good",
+    "suggestion": "modified, altered, adapted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "move the goalposts",
+    "category": "bad",
+    "suggestion": "change the objectives, alter the criteria for success, shift the requirements",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "geotechnical investigation",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "soil testing, site investigation, foundation analysis",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Geotechnical Engineer"
+  },
+  {
+    "phrase": "my main task was",
+    "category": "weak",
+    "suggestion": "i was primarily responsible for, i successfully, i led the effort to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "outside the box",
+    "category": "bad",
+    "suggestion": "creative thinking, innovative solutions, unconventional approaches",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quantum mechanics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "schrödinger equation, quantum states, wave-particle duality",
+    "variants": [],
+    "field": "Physics",
+    "role": "Theoretical Physicist"
+  },
+  {
+    "phrase": "administered",
+    "category": "good",
+    "suggestion": "managed, oversaw, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "paradigm shift",
+    "category": "bad",
+    "suggestion": "a fundamental change in approach, a major new perspective, a significant transformation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "pharmacokinetics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "drug metabolism, absorption and distribution, clinical pharmacology",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Pharmacologist"
+  },
+  {
+    "phrase": "i did some of the tasks",
+    "category": "weak",
+    "suggestion": "i was responsible for specific tasks such as, i contributed by handling, my duties included",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "peel back the onion",
+    "category": "bad",
+    "suggestion": "investigate in layers, analyse in depth, uncover underlying causes",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "virology",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "virus research, molecular virology, immunology",
+    "variants": [],
+    "field": "Biology",
+    "role": "Virologist"
+  },
+  {
+    "phrase": "admonished",
+    "category": "good",
+    "suggestion": "reprimanded, cautioned, advised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "perfect storm",
+    "category": "bad",
+    "suggestion": "a rare combination of negative factors, a particularly bad situation, a confluence of problems",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "digital marketing",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "seo/sem, content marketing, social media strategy",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Digital Marketer"
+  },
+  {
+    "phrase": "i was just a helper",
+    "category": "weak",
+    "suggestion": "i provided crucial support by, i assisted the team in achieving, i was a supportive member of the team",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ping me",
+    "category": "bad",
+    "suggestion": "contact me, send me a message, let me know",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "environmental law",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "regulatory compliance, pollution control, sustainability law",
+    "variants": [],
+    "field": "Law",
+    "role": "Environmental Lawyer"
+  },
+  {
+    "phrase": "adopted",
+    "category": "good",
+    "suggestion": "implemented, embraced, took on",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "put it on the back burner",
+    "category": "bad",
+    "suggestion": "deprioritise, postpone, delay consideration",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "behavioural economics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "cognitive biases, decision-making psychology, nudge theory",
+    "variants": [],
+    "field": "Economics",
+    "role": "Behavioural Scientist"
+  },
+  {
+    "phrase": "i did what was needed",
+    "category": "weak",
+    "suggestion": "i fulfilled all requirements of the role, i successfully met all objectives, i reliably completed all assigned tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "put your money where your mouth is",
+    "category": "bad",
+    "suggestion": "take action to support your words, commit resources to your claim, demonstrate your conviction",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "robotics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "automation, robotic control systems, artificial intelligence",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Robotics Engineer"
+  },
+  {
+    "phrase": "adorned",
+    "category": "good",
+    "suggestion": "decorated, embellished, beautified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "pushing the envelope",
+    "category": "bad",
+    "suggestion": "innovating beyond current limits, testing boundaries, advancing the state-of-the-art",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "paediatric nursing",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "child health, family-centred care, paediatric assessment",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Paediatric Nurse"
+  },
+  {
+    "phrase": "i had a small role",
+    "category": "weak",
+    "suggestion": "i supported the project by, i contributed to the team's success by, my specific contribution was",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quick and dirty",
+    "category": "bad",
+    "suggestion": "a rapid and provisional solution, a simple and effective method, a first-pass attempt",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "food science",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "food chemistry, quality control, product development",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Food Technologist"
+  },
+  {
+    "phrase": "adulterated",
+    "category": "good",
+    "suggestion": "contaminated, corrupted, debased",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "raise a red flag",
+    "category": "bad",
+    "suggestion": "signal a potential problem, identify a risk, raise a concern",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "landscape architecture",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "site planning, urban design, environmental design",
+    "variants": [],
+    "field": "Architecture",
+    "role": "Landscape Architect"
+  },
+  {
+    "phrase": "my main strength is",
+    "category": "weak",
+    "suggestion": "i excel in, my key strength is, i have a proven aptitude for",
+    "variants": ["my main strengths are"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reinvent the wheel",
+    "category": "bad",
+    "suggestion": "duplicate existing work, create a redundant solution, ignore established methods",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "machine learning",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "supervised learning, deep learning, predictive modelling",
+    "variants": ["ml"],
+    "field": "Data Science",
+    "role": "Machine Learning Engineer"
+  },
+  {
+    "phrase": "adumbrated",
+    "category": "good",
+    "suggestion": "outlined, foreshadowed, sketched",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "rocket science",
+    "category": "bad",
+    "suggestion": "a highly complex subject, a very difficult task, advanced technical knowledge",
+    "variants": ["it's not rocket science"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tax law",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "corporate tax, vat, hmrc compliance",
+    "variants": [],
+    "field": "Law",
+    "role": "Tax Lawyer"
+  },
+  {
+    "phrase": "i gained skills in",
+    "category": "weak",
+    "suggestion": "i honed my skills in, i am now proficient in, i successfully developed my ability to",
+    "variants": ["gained skills in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sea change",
+    "category": "bad",
+    "suggestion": "a profound transformation, a major shift, a significant change",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "private equity",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "lbo analysis, due diligence, portfolio company management",
+    "variants": ["pe"],
+    "field": "Accounting & Finance",
+    "role": "Private Equity Analyst"
+  },
+  {
+    "phrase": "advocated",
+    "category": "good",
+    "suggestion": "championed, supported, promoted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ship it",
+    "category": "bad",
+    "suggestion": "launch the product, release the software, deploy to production",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": null
+  },
+  {
+    "phrase": "materials testing",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "tensile testing, stress-strain analysis, material characterization",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Materials Engineer"
+  },
+  {
+    "phrase": "i was just an intern",
+    "category": "weak",
+    "suggestion": "as an intern i contributed to, my internship involved, i gained valuable experience as an intern by",
+    "variants": ["just an intern"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "silver bullet",
+    "category": "bad",
+    "suggestion": "a simple, magical solution, an easy fix for a complex problem, a panacea",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "molecular genetics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "dna replication, gene expression, genetic engineering",
+    "variants": [],
+    "field": "Biology",
+    "role": "Geneticist"
+  },
+  {
+    "phrase": "affected",
+    "category": "good",
+    "suggestion": "influenced, impacted, changed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "smoke and mirrors",
+    "category": "bad",
+    "suggestion": "deception, illusion, something that is not as it appears",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "classical mechanics",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "newtonian physics, lagrangian mechanics, dynamics",
+    "variants": [],
+    "field": "Physics",
+    "role": "Physicist"
+  },
+  {
+    "phrase": "i was in a student society",
+    "category": "weak",
+    "suggestion": "as a member of [society] i, i held the position of [role] in, i actively participated in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "soup to nuts",
+    "category": "bad",
+    "suggestion": "from beginning to end, comprehensive, covering all aspects",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "evidence-based medicine",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "ebm, clinical research appraisal, systematic reviews",
+    "variants": ["ebm"],
+    "field": "Medicine",
+    "role": "Clinician"
+  },
+  {
+    "phrase": "affiliated",
+    "category": "good",
+    "suggestion": "associated with, connected with, partnered with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "special sauce",
+    "category": "bad",
+    "suggestion": "a unique competitive advantage, a proprietary method, a key differentiator",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "social psychology",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "group dynamics, social cognition, attitude formation",
+    "variants": [],
+    "field": "Psychology",
+    "role": "Social Psychologist"
+  },
+  {
+    "phrase": "i have a degree in",
+    "category": "weak",
+    "suggestion": "i hold a ba/bsc in, i graduated with a degree in, my academic background is in",
+    "variants": ["my degree is in"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "square the circle",
+    "category": "bad",
+    "suggestion": "attempt to do something impossible, reconcile conflicting ideas, solve an intractable problem",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "creative writing",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "narrative construction, storytelling, prose writing",
+    "variants": [],
+    "field": "Languages",
+    "role": "Writer"
+  },
+  {
+    "phrase": "affirmed",
+    "category": "good",
+    "suggestion": "confirmed, asserted, declared",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "take it with a grain of salt",
+    "category": "bad",
+    "suggestion": "be skeptical, view with reservation, do not take it literally",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data structures and algorithms",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "dsa, algorithmic complexity, software performance",
+    "variants": ["dsa"],
+    "field": "Computer Science",
+    "role": "Software Engineer"
+  },
+  {
+    "phrase": "i did some volunteering",
+    "category": "weak",
+    "suggestion": "i volunteered my time at, my voluntary work included, i contributed as a volunteer to",
+    "variants": ["i have some volunteering experience"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "the whole nine yards",
+    "category": "bad",
+    "suggestion": "everything, completely, the full extent",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "corporate finance",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "capital budgeting, valuation, financial planning",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Corporate Finance Analyst"
+  },
+  {
+    "phrase": "affixed",
+    "category": "good",
+    "suggestion": "attached, fastened, secured",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "throw a spanner in the works",
+    "category": "bad",
+    "suggestion": "disrupt a process, cause a problem, create an obstruction",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "robotics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "robotic process automation, control systems engineering, mechatronic design",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Robotics Engineer"
+  },
+  {
+    "phrase": "i like to think that",
+    "category": "weak",
+    "suggestion": "i am confident that, i have proven that, it is clear from my experience that",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tip of the spear",
+    "category": "bad",
+    "suggestion": "the leading edge, the vanguard, the most advanced part of an effort",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "immunology",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "immune system, antibody research, vaccine development",
+    "variants": [],
+    "field": "Biology",
+    "role": "Immunologist"
+  },
+  {
+    "phrase": "afforded",
+    "category": "good",
+    "suggestion": "provided, gave, offered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "touch base",
+    "category": "bad",
+    "suggestion": "make contact, have a brief meeting, check in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "optics",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "photonics, laser physics, optical engineering",
+    "variants": [],
+    "field": "Physics",
+    "role": "Optical Engineer"
+  },
+  {
+    "phrase": "i believe i have the skills",
+    "category": "weak",
+    "suggestion": "my skills in x and y make me a suitable candidate, i possess the required skills including, i am equipped with the skills to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "under the radar",
+    "category": "bad",
+    "suggestion": "unnoticed, discreetly, without attracting attention",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "clinical audit",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "quality improvement cycle, healthcare audit, clinical effectiveness",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Junior Doctor"
+  },
+  {
+    "phrase": "aggregated",
+    "category": "good",
+    "suggestion": "combined, collected, compiled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "up in the air",
+    "category": "bad",
+    "suggestion": "undecided, uncertain, not yet determined",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cognitive psychology",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "memory, attention, perception",
+    "variants": [],
+    "field": "Psychology",
+    "role": "Cognitive Scientist"
+  },
+  {
+    "phrase": "i did a dissertation",
+    "category": "weak",
+    "suggestion": "i researched and wrote a dissertation on, my dissertation analysed, i completed a final year dissertation in",
+    "variants": ["i wrote a dissertation"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "value-add",
+    "category": "bad",
+    "suggestion": "provided tangible benefits, created additional value, made a positive contribution",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ux writing",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "microcopy, user interface text, content design",
+    "variants": [],
+    "field": "Design",
+    "role": "UX Writer"
+  },
+  {
+    "phrase": "agitated",
+    "category": "good",
+    "suggestion": "stirred, mixed, disturbed",
+    "variants": [],
+    "field": "Chemistry",
+    "role": null
+  },
+  {
+    "phrase": "win-win",
+    "category": "bad",
+    "suggestion": "a mutually beneficial outcome, a positive result for all parties, a successful negotiation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "employment law",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "labour law, employee relations, contract negotiation",
+    "variants": [],
+    "field": "Law",
+    "role": "HR Manager"
+  },
+  {
+    "phrase": "i am looking for a job",
+    "category": "weak",
+    "suggestion": "i am seeking a [role] position, i am exploring opportunities in, i am actively pursuing a career in",
+    "variants": ["looking for a job"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "writing on the wall",
+    "category": "bad",
+    "suggestion": "clear signs of future events, an obvious warning, an inevitable outcome",
+    "variants": [],
+    "field": null,
+    "role": null
+  }
+]

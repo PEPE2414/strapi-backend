@@ -1,0 +1,419 @@
+[
+  {
+    "phrase": "scipy",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "scientific computing library, numerical integration, optimization algorithms",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Data Scientist"
+  },
+  {
+    "phrase": "i only have theoretical knowledge",
+    "category": "weak",
+    "suggestion": "i have a strong theoretical foundation in, my academic knowledge covers, i am eager to apply my theoretical understanding to",
+    "variants": ["only have theoretical experience"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "blue-sky thinking",
+    "category": "bad",
+    "suggestion": "unconstrained brainstorming, open-ended ideation, creative concept development",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "matplotlib",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "data plotting, python visualization, seaborn",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "i am looking for a placement",
+    "category": "weak",
+    "suggestion": "seeking a [year] placement in, pursuing an industrial placement to, available for a placement opportunity from [date]",
+    "variants": ["looking for a placement"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "herding cats",
+    "category": "bad",
+    "suggestion": "managing complex team dynamics, coordinating independent contributors, aligning disparate groups",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "keras",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "deep learning api, neural network library, tensorflow frontend",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Machine Learning Engineer"
+  },
+  {
+    "phrase": "beautified",
+    "category": "good",
+    "suggestion": "enhanced aesthetics, improved appearance, refined visually",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "par for the course",
+    "category": "bad",
+    "suggestion": "expected behaviour, a typical occurrence, standard procedure",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "opencv",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "computer vision library, image processing algorithms, real-time vision applications",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Computer Vision Engineer"
+  },
+  {
+    "phrase": "i am not yet confident in",
+    "category": "weak",
+    "suggestion": "i am actively developing my confidence in, an area i am focused on improving is, i am seeking opportunities to build my skills in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "run it up the flagpole",
+    "category": "bad",
+    "suggestion": "propose an idea for feedback, test the reception of a concept, present a preliminary idea",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "solidworks simulation",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "finite element analysis software, stress analysis simulation, thermal simulation",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "Analysis Engineer"
+  },
+  {
+    "phrase": "calcified",
+    "category": "good",
+    "suggestion": "hardened, solidified, became rigid",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reinventing the wheel",
+    "category": "bad",
+    "suggestion": "duplicating existing solutions, creating unnecessary work, failing to use established methods",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "stata",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "statistical software, econometric analysis, data management",
+    "variants": [],
+    "field": "Economics",
+    "role": "Economist"
+  },
+  {
+    "phrase": "i have a general interest in",
+    "category": "weak",
+    "suggestion": "i am specifically interested in the area of, my interest is demonstrated by, i have pursued this interest by",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "silver bullet",
+    "category": "bad",
+    "suggestion": "a perfect, simple solution, an easy fix for a complex issue, a panacea",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hspice",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "circuit simulation, semiconductor device modeling, electronic design automation",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "IC Design Engineer"
+  },
+  {
+    "phrase": "catalogued",
+    "category": "good",
+    "suggestion": "methodically arranged, systematically classified, indexed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "the whole nine yards",
+    "category": "bad",
+    "suggestion": "the full extent, completely, everything possible",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dante's inferno",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "divine comedy, italian literature, medieval allegory",
+    "variants": [],
+    "field": "Languages",
+    "role": "Literature Student"
+  },
+  {
+    "phrase": "my knowledge is mostly academic",
+    "category": "weak",
+    "suggestion": "my academic background provides a strong foundation in, i am eager to apply my theoretical knowledge, my studies have equipped me with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thought leader",
+    "category": "bad",
+    "suggestion": "industry expert, influential professional, innovative thinker",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sas",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "advanced analytics, statistical analysis software, business intelligence",
+    "variants": [],
+    "field": "Data Science",
+    "role": "Statistician"
+  },
+  {
+    "phrase": "cauterised",
+    "category": "good",
+    "suggestion": "sealed a wound, stopped bleeding, applied heat to tissue",
+    "variants": ["cauterized"],
+    "field": "Medicine",
+    "role": null
+  },
+  {
+    "phrase": "apples to oranges",
+    "category": "bad",
+    "suggestion": "an unfair comparison, comparing two different things, a false equivalency",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "prolog",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "logic programming, artificial intelligence programming, symbolic reasoning",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "AI Developer"
+  },
+  {
+    "phrase": "i did it for a uni project",
+    "category": "weak",
+    "suggestion": "i developed this as a university project, this was created for an academic assignment, my project work includes",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "get our ducks in a row",
+    "category": "bad",
+    "suggestion": "organise our tasks, prepare thoroughly, align our strategy",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "western blotting",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "protein detection, immunoblotting, sds-page",
+    "variants": [],
+    "field": "Biology",
+    "role": "Biologist"
+  },
+  {
+    "phrase": "cemented",
+    "category": "good",
+    "suggestion": "solidified, strengthened, firmly established",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i could talk until i'm blue in the face",
+    "category": "bad",
+    "suggestion": "argue endlessly, debate without resolution, discuss to no avail",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "microstation",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "2d/3d cad software, infrastructure design, bentley systems",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "CAD Technician"
+  },
+  {
+    "phrase": "my practical skills are limited",
+    "category": "weak",
+    "suggestion": "i am a quick, hands-on learner, i am seeking to build my practical skills, my theoretical knowledge is a strong base for practical application",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "pushing the envelope",
+    "category": "bad",
+    "suggestion": "innovating beyond conventional boundaries, pioneering new approaches, challenging the status quo",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "kantian ethics",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "deontology, categorical imperative, moral philosophy",
+    "variants": [],
+    "field": "Philosophy",
+    "role": "Philosopher"
+  },
+  {
+    "phrase": "channelled",
+    "category": "good",
+    "suggestion": "directed, conveyed, guided through a channel",
+    "variants": ["channeled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i just need a foot in the door",
+    "category": "bad",
+    "suggestion": "i am seeking an entry-level opportunity, i am eager to start my career, i am looking for a chance to prove my abilities",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "autopsy",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "post-mortem examination, determining cause of death, forensic pathology",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Pathologist"
+  },
+  {
+    "phrase": "i'm not picky",
+    "category": "weak",
+    "suggestion": "i am open to various opportunities, i am adaptable and flexible, i am interested in a range of roles within",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "thinking outside of the box",
+    "category": "bad",
+    "suggestion": "creative problem-solving, unconventional thinking, innovative ideation",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "qgis",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "geographic information system, open-source gis, spatial data analysis",
+    "variants": [],
+    "field": "Geography",
+    "role": "GIS Analyst"
+  },
+  {
+    "phrase": "circumnavigated",
+    "category": "good",
+    "suggestion": "travelled around, bypassed, circumvented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "i'm a people pleaser",
+    "category": "bad",
+    "suggestion": "i am dedicated to client satisfaction, i strive to build positive team relationships, i am focused on collaborative success",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "xilinx vivado",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "fpga design suite, hdl synthesis, hardware design",
+    "variants": ["vivado"],
+    "field": "Electrical Engineering",
+    "role": "FPGA Developer"
+  },
+  {
+    "phrase": "i haven't had a job before",
+    "category": "weak",
+    "suggestion": "i have developed transferable skills through, my academic projects demonstrate, my extracurricular activities have provided me with experience in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "jack of all trades",
+    "category": "bad",
+    "suggestion": "a versatile professional, a multi-skilled individual, adaptable across many functions",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gas chromatography",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "gc-ms, analytical separation science, volatile compound analysis",
+    "variants": ["gc"],
+    "field": "Chemistry",
+    "role": "Analytical Chemist"
+  },
+  {
+    "phrase": "clamoured",
+    "category": "good",
+    "suggestion": "demanded loudly, shouted, called out for",
+    "variants": [],
+    "field": null,
+    "role": null
+  }
+]
