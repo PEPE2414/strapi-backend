@@ -1,6 +1,6 @@
 // src/api/profile/controllers/profile.ts
 import { errors } from '@strapi/utils';
-const { validateStudyField } = require('../../../services/studyFieldValidation');
+import { validateStudyField } from '../../../services/studyFieldValidation';
 const { UnauthorizedError, ValidationError } = errors;
 
 const sanitizeFile = (f: any) => {

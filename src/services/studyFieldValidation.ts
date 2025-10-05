@@ -1,7 +1,7 @@
 // Study field validation service
 // Provides validation and mapping for study field values
 
-const VALID_STUDY_FIELDS = [
+export const VALID_STUDY_FIELDS = [
   'accounting-finance',
   'actuarial-science',
   'aerospace-engineering',
@@ -48,7 +48,7 @@ const VALID_STUDY_FIELDS = [
 ];
 
 // Legacy value mappings for backward compatibility
-const LEGACY_MAPPINGS = {
+export const LEGACY_MAPPINGS: Record<string, string> = {
   'Business Management': 'business-management',
   'Economics': 'economics',
   'Accounting & Finance': 'accounting-finance',
@@ -79,12 +79,18 @@ const LEGACY_MAPPINGS = {
   'Philosophy': 'social-sciences'
 };
 
+export interface StudyFieldValidationResult {
+  isValid: boolean;
+  normalizedValue: string;
+  isLegacy: boolean;
+}
+
 /**
  * Validates and normalizes a study field value
- * @param {string} studyField - The study field value to validate
- * @returns {object} - { isValid: boolean, normalizedValue: string, isLegacy: boolean }
+ * @param studyField - The study field value to validate
+ * @returns {StudyFieldValidationResult} - Validation result object
  */
-function validateStudyField(studyField) {
+export function validateStudyField(studyField: string): StudyFieldValidationResult {
   if (!studyField || typeof studyField !== 'string') {
     return { isValid: false, normalizedValue: '', isLegacy: false };
   }
@@ -113,16 +119,16 @@ function validateStudyField(studyField) {
  * Gets all valid study field slugs
  * @returns {string[]} - Array of valid study field slugs
  */
-function getValidStudyFields() {
+export function getValidStudyFields(): string[] {
   return [...VALID_STUDY_FIELDS];
 }
 
 /**
  * Maps a legacy study field value to its new slug
- * @param {string} legacyValue - The legacy study field value
+ * @param legacyValue - The legacy study field value
  * @returns {string} - The mapped slug or original value if no mapping exists
  */
-function mapLegacyStudyField(legacyValue) {
+export function mapLegacyStudyField(legacyValue: string): string {
   if (!legacyValue || typeof legacyValue !== 'string') {
     return '';
   }
@@ -130,11 +136,3 @@ function mapLegacyStudyField(legacyValue) {
   const trimmed = legacyValue.trim();
   return LEGACY_MAPPINGS[trimmed] || trimmed;
 }
-
-module.exports = {
-  validateStudyField,
-  getValidStudyFields,
-  mapLegacyStudyField,
-  VALID_STUDY_FIELDS,
-  LEGACY_MAPPINGS
-};
