@@ -19,7 +19,8 @@ export async function get(url: string, headers: Record<string,string> = {}, retr
       // Use different user agent for each attempt
       const userAgent = getRandomUserAgent();
       
-      const res = await request(url, {
+      // Implement timeout using Promise.race
+      const requestPromise = request(url, {
         method: 'GET',
         headers: { 
           'user-agent': userAgent,
@@ -38,9 +39,14 @@ export async function get(url: string, headers: Record<string,string> = {}, retr
           'upgrade-insecure-requests': '1',
           ...headers 
         },
-        maxRedirections: 5,
-        timeout: 30000 // 30 second timeout
+        maxRedirections: 5
       });
+      
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 second timeout
+      });
+      
+      const res = await Promise.race([requestPromise, timeoutPromise]);
       
       if (res.statusCode >= 400) {
         if (attempt < retries) {
