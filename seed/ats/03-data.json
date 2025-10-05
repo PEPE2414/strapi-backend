@@ -1,7980 +1,1456 @@
 [
-{
-"phrase": "accelerated",
-"category": "good",
-"suggestion": "expedited, hastened, sped up",
-"variants": ["accelerating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "amplified",
-"category": "good",
-"suggestion": "boosted, expanded, magnified",
-"variants": ["amplifying"],
-"field": null,
-"role": null
-},
-{
-"phrase": "capitalized",
-"category": "good",
-"suggestion": "leveraged, utilized, exploited",
-"variants": ["capitalizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "centralized",
-"category": "good",
-"suggestion": "consolidated, unified, concentrated",
-"variants": ["centralizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "championed",
-"category": "good",
-"suggestion": "advocated, promoted, supported",
-"variants": ["championing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "compiled",
-"category": "good",
-"suggestion": "assembled, gathered, collected",
-"variants": ["compiling"],
-"field": null,
-"role": null
-},
-{
-"phrase": "conducted",
-"category": "good",
-"suggestion": "performed, carried out, executed",
-"variants": ["conducting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "consolidated",
-"category": "good",
-"suggestion": "merged, combined, integrated",
-"variants": ["consolidating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "constructed",
-"category": "good",
-"suggestion": "built, erected, assembled",
-"variants": ["constructing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "consulted",
-"category": "good",
-"suggestion": "advised, guided, counseled",
-"variants": ["consulting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "converted",
-"category": "good",
-"suggestion": "transformed, changed, adapted",
-"variants": ["converting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "critiqued",
-"category": "good",
-"suggestion": "reviewed, assessed, evaluated",
-"variants": ["critiquing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "decreased",
-"category": "good",
-"suggestion": "lowered, reduced, minimized",
-"variants": ["decreasing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "diagnosed",
-"category": "good",
-"suggestion": "identified, determined, analyzed",
-"variants": ["diagnosing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "directed",
-"category": "good",
-"suggestion": "guided, led, supervised",
-"variants": ["directing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "discovered",
-"category": "good",
-"suggestion": "found, uncovered, revealed",
-"variants": ["discovering"],
-"field": null,
-"role": null
-},
-{
-"phrase": "drafted",
-"category": "good",
-"suggestion": "composed, wrote, prepared",
-"variants": ["drafting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "earned",
-"category": "good",
-"suggestion": "achieved, obtained, secured",
-"variants": ["earning"],
-"field": null,
-"role": null
-},
-{
-"phrase": "edited",
-"category": "good",
-"suggestion": "revised, modified, refined",
-"variants": ["editing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "engineered",
-"category": "good",
-"suggestion": "designed, developed, created",
-"variants": ["engineering"],
-"field": null,
-"role": null
-},
-{
-"phrase": "established",
-"category": "good",
-"suggestion": "founded, set up, initiated",
-"variants": ["establishing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "evaluated",
-"category": "good",
-"suggestion": "assessed, appraised, examined",
-"variants": ["evaluating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "expanded",
-"category": "good",
-"suggestion": "enlarged, grew, increased",
-"variants": ["expanding"],
-"field": null,
-"role": null
-},
-{
-"phrase": "expedited",
-"category": "good",
-"suggestion": "accelerated, hastened, sped",
-"variants": ["expediting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "fabricated",
-"category": "good",
-"suggestion": "manufactured, built, constructed",
-"variants": ["fabricating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "forged",
-"category": "good",
-"suggestion": "created, formed, built",
-"variants": ["forging"],
-"field": null,
-"role": null
-},
-{
-"phrase": "formulated",
-"category": "good",
-"suggestion": "developed, devised, created",
-"variants": ["formulating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "founded",
-"category": "good",
-"suggestion": "established, started, initiated",
-"variants": ["founding"],
-"field": null,
-"role": null
-},
-{
-"phrase": "guided",
-"category": "good",
-"suggestion": "directed, led, mentored",
-"variants": ["guiding"],
-"field": null,
-"role": null
-},
-{
-"phrase": "identified",
-"category": "good",
-"suggestion": "recognized, detected, pinpointed",
-"variants": ["identifying"],
-"field": null,
-"role": null
-},
-{
-"phrase": "initiated",
-"category": "good",
-"suggestion": "started, launched, began",
-"variants": ["initiating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "inspected",
-"category": "good",
-"suggestion": "examined, checked, reviewed",
-"variants": ["inspecting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "installed",
-"category": "good",
-"suggestion": "set up, deployed, placed",
-"variants": ["installing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "invented",
-"category": "good",
-"suggestion": "created, devised, innovated",
-"variants": ["inventing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "investigated",
-"category": "good",
-"suggestion": "examined, explored, probed",
-"variants": ["investigating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "launched",
-"category": "good",
-"suggestion": "started, introduced, initiated",
-"variants": ["launching"],
-"field": null,
-"role": null
-},
-{
-"phrase": "maximized",
-"category": "good",
-"suggestion": "optimized, increased, enhanced",
-"variants": ["maximizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "measured",
-"category": "good",
-"suggestion": "quantified, assessed, gauged",
-"variants": ["measuring"],
-"field": null,
-"role": null
-},
-{
-"phrase": "merged",
-"category": "good",
-"suggestion": "combined, integrated, consolidated",
-"variants": ["merging"],
-"field": null,
-"role": null
-},
-{
-"phrase": "minimized",
-"category": "good",
-"suggestion": "reduced, decreased, lessened",
-"variants": ["minimizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "mobilized",
-"category": "good",
-"suggestion": "activated, deployed, rallied",
-"variants": ["mobilizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "navigated",
-"category": "good",
-"suggestion": "guided, directed, steered",
-"variants": ["navigating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "operated",
-"category": "good",
-"suggestion": "ran, managed, controlled",
-"variants": ["operating"],
-"field": null,
-"role": null
-},
-{
-"phrase": "overhauled",
-"category": "good",
-"suggestion": "revamped, restructured, redesigned",
-"variants": ["overhauling"],
-"field": null,
-"role": null
-},
-{
-"phrase": "pioneered",
-"category": "good",
-"suggestion": "initiated, introduced, originated",
-"variants": ["pioneering"],
-"field": null,
-"role": null
-},
-{
-"phrase": "prepared",
-"category": "good",
-"suggestion": "readied, organized, arranged",
-"variants": ["preparing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "programmed",
-"category": "good",
-"suggestion": "coded, scripted, developed",
-"variants": ["programming"],
-"field": null,
-"role": null
-},
-{
-"phrase": "promoted",
-"category": "good",
-"suggestion": "advanced, elevated, upgraded",
-"variants": ["promoting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "qualified",
-"category": "good",
-"suggestion": "certified, validated, approved",
-"variants": ["qualifying"],
-"field": null,
-"role": null
-},
-{
-"phrase": "recommended",
-"category": "good",
-"suggestion": "suggested, advised, proposed",
-"variants": ["recommending"],
-"field": null,
-"role": null
-},
-{
-"phrase": "redesigned",
-"category": "good",
-"suggestion": "revamped, restructured, remodeled",
-"variants": ["redesigning"],
-"field": null,
-"role": null
-},
-{
-"phrase": "reorganized",
-"category": "good",
-"suggestion": "restructured, rearranged, revamped",
-"variants": ["reorganizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "repaired",
-"category": "good",
-"suggestion": "fixed, mended, restored",
-"variants": ["repairing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "replaced",
-"category": "good",
-"suggestion": "substituted, exchanged, updated",
-"variants": ["replacing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "restored",
-"category": "good",
-"suggestion": "revived, rehabilitated, renewed",
-"variants": ["restoring"],
-"field": null,
-"role": null
-},
-{
-"phrase": "reviewed",
-"category": "good",
-"suggestion": "examined, assessed, analyzed",
-"variants": ["reviewing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "revised",
-"category": "good",
-"suggestion": "updated, modified, amended",
-"variants": ["revising"],
-"field": null,
-"role": null
-},
-{
-"phrase": "revitalized",
-"category": "good",
-"suggestion": "rejuvenated, revived, energized",
-"variants": ["revitalizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "shaped",
-"category": "good",
-"suggestion": "formed, molded, influenced",
-"variants": ["shaping"],
-"field": null,
-"role": null
-},
-{
-"phrase": "solved",
-"category": "good",
-"suggestion": "resolved, fixed, addressed",
-"variants": ["solving"],
-"field": null,
-"role": null
-},
-{
-"phrase": "spearheaded",
-"category": "good",
-"suggestion": "led, initiated, directed",
-"variants": ["spearheading"],
-"field": null,
-"role": null
-},
-{
-"phrase": "specialized",
-"category": "good",
-"suggestion": "focused, concentrated, expertized",
-"variants": ["specializing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "standardized",
-"category": "good",
-"suggestion": "uniformed, normalized, regulated",
-"variants": ["standardizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "strengthened",
-"category": "good",
-"suggestion": "reinforced, bolstered, enhanced",
-"variants": ["strengthening"],
-"field": null,
-"role": null
-},
-{
-"phrase": "supervised",
-"category": "good",
-"suggestion": "oversaw, managed, directed",
-"variants": ["supervising"],
-"field": null,
-"role": null
-},
-{
-"phrase": "surpassed",
-"category": "good",
-"suggestion": "exceeded, outdid, transcended",
-"variants": ["surpassing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "surveyed",
-"category": "good",
-"suggestion": "examined, inspected, assessed",
-"variants": ["surveying"],
-"field": null,
-"role": null
-},
-{
-"phrase": "sustained",
-"category": "good",
-"suggestion": "maintained, supported, upheld",
-"variants": ["sustaining"],
-"field": null,
-"role": null
-},
-{
-"phrase": "synthesized",
-"category": "good",
-"suggestion": "combined, integrated, merged",
-"variants": ["synthesizing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "tailored",
-"category": "good",
-"suggestion": "customized, adapted, modified",
-"variants": ["tailoring"],
-"field": null,
-"role": null
-},
-{
-"phrase": "targeted",
-"category": "good",
-"suggestion": "aimed, focused, directed",
-"variants": ["targeting"],
-"field": null,
-"role": null
-},
-{
-"phrase": "taught",
-"category": "good",
-"suggestion": "instructed, educated, trained",
-"variants": ["teaching"],
-"field": null,
-"role": null
-},
-{
-"phrase": "tested",
-"category": "good",
-"suggestion": "examined, verified, validated",
-"variants": ["testing"],
-"field": null,
-"role": null
-},
-{
-"phrase": "transformed",
-"category": "good",
-"suggestion": "changed, converted, revamped",
-"variants": ["transforming"],
-"field": null,
-"role": null
-},
-{
-"phrase": "upgraded",
-"category": "good",
-"suggestion": "improved, enhanced, updated",
-"variants": ["upgrading"],
-"field": null,
-"role": null
-},
-{
-"phrase": "volunteered",
-"category": "good",
-"suggestion": "contributed, assisted, supported",
-"variants": ["volunteering"],
-"field": null,
-"role": null
-},
-{
-"phrase": "widened",
-"category": "good",
-"suggestion": "broadened, expanded, enlarged",
-"variants": ["widening"],
-"field": null,
-"role": null
-},
-{
-"phrase": "c#",
-"category": "good",
-"weight": 2.5,
-"suggestion": "dotnet, linq, asp net",
-"variants": ["csharp"],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "ruby",
-"category": "good",
-"weight": 2.5,
-"suggestion": "rails, gems, sinatra",
-"variants": [],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "php",
-"category": "good",
-"weight": 2.5,
-"suggestion": "laravel, symfony, wordpress",
-"variants": [],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "go",
-"category": "good",
-"weight": 2.5,
-"suggestion": "goroutines, channels, gin",
-"variants": ["golang"],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "rust",
-"category": "good",
-"weight": 2.5,
-"suggestion": "ownership, borrowing, crates",
-"variants": [],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "scala",
-"category": "good",
-"weight": 2.5,
-"suggestion": "functional, actors, play framework",
-"variants": [],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "haskell",
-"category": "good",
-"weight": 2.5,
-"suggestion": "pure functional, monads, ghc",
-"variants": [],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "lisp",
-"category": "good",
-"weight": 2.3,
-"suggestion": "s expressions, macros, clojure",
-"variants": [],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "perl",
-"category": "good",
-"weight": 2.3,
-"suggestion": "regex, cpan, scripting",
-"variants": [],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "bash",
-"category": "good",
-"weight": 2.0,
-"suggestion": "shell scripting, commands, pipelines",
-"variants": [],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "power shell",
-"category": "good",
-"weight": 2.0,
-"suggestion": "cmdlets, scripting, automation",
-"variants": ["powershell"],
-"field": "Software Engineering",
-"role": null
-},
-{
-"phrase": "sas",
-"category": "good",
-"weight": 2.3,
-"suggestion": "data steps, proc sql, macros",
-"variants": [],
-"field": "Data Science",
-"role": null
-},
-{
-"phrase": "stata",
-"category": "good",
-"weight": 2.2,
-"suggestion": "ado files, graphs, econometrics",
-"variants": [],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "spss",
-"category": "good",
-"weight": 2.2,
-"suggestion": "syntax, charts, statistics",
-"variants": [],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "arcgis",
-"category": "good",
-"weight": 2.5,
-"suggestion": "layers, geoprocessing, arcmap",
-"variants": [],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "qgis",
-"category": "good",
-"weight": 2.3,
-"suggestion": "plugins, vector, raster",
-"variants": [],
-"field": "Geography",
-"role": null
-},
-{
-"phrase": "adobe premiere",
-"category": "good",
-"weight": 2.0,
-"suggestion": "editing, effects, export",
-"variants": [],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "final cut pro",
-"category": "good",
-"weight": 2.0,
-"suggestion": "timelines, transitions, color grading",
-"variants": [],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "blender",
-"category": "good",
-"weight": 2.3,
-"suggestion": "modeling, animation, rendering",
-"variants": [],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "maya",
-"category": "good",
-"weight": 2.5,
-"suggestion": "rigging, dynamics, uv mapping",
-"variants": [],
-"field": "Design",
-"role": null
-},
-{
-"phrase": "rhino",
-"category": "good",
-"weight": 2.3,
-"suggestion": "nurbs, surfaces, 3d printing",
-"variants": ["rhinoceros"],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "archicad",
-"category": "good",
-"weight": 2.3,
-"suggestion": "bim, sections, schedules",
-"variants": [],
-"field": "Architecture",
-"role": null
-},
-{
-"phrase": "etabs",
-"category": "good",
-"weight": 2.5,
-"suggestion": "seismic analysis, load cases, modeling",
-"variants": [],
-"field": "Civil Engineering",
-"role": "Structural Engineer"
-},
-{
-"phrase": "sap2000",
-"category": "good",
-"weight": 2.5,
-"suggestion": "frame analysis, dynamic, nonlinear",
-"variants": [],
-"field": "Civil Engineering",
-"role": "Structural Engineer"
-},
-{
-"phrase": "abaqus",
-"category": "good",
-"weight": 2.5,
-"suggestion": "fea, contact, materials",
-"variants": [],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "comsol",
-"category": "good",
-"weight": 2.5,
-"suggestion": "multiphysics, simulation, modules",
-"variants": [],
-"field": "Mechanical Engineering",
-"role": null
-},
-{
-"phrase": "orcad",
-"category": "good",
-"weight": 2.3,
-"suggestion": "schematics, pcb, simulation",
-"variants": [],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "altium",
-"category": "good",
-"weight": 2.3,
-"suggestion": "designer, libraries, output",
-"variants": [],
-"field": "Electrical Engineering",
-"role": null
-},
-{
-"phrase": "maple",
-"category": "good",
-"weight": 2.2,
-"suggestion": "symbolic, numerics, plots",
-"variants": [],
-"field": "Mathematics",
-"role": null
-},
-{
-"phrase": "mathematica",
-"category": "good",
-"weight": 2.5,
-"suggestion": "notebooks, wolfram language, computations",
-"variants": [],
-"field": "Mathematics",
-"role": null
-},
-{
-"phrase": "originlab",
-"category": "good",
-"weight": 2.2,
-"suggestion": "graphing, analysis, fitting",
-"variants": ["origin"],
-"field": "Physics",
-"role": null
-},
-{
-"phrase": "ig or pro",
-"category": "good",
-"weight": 2.2,
-"suggestion": "data plotting, curve fitting, statistics",
-"variants": ["igor"],
-"field": "Physics",
-"role": null
-},
-{
-"phrase": "chemdraw",
-"category": "good",
-"weight": 2.0,
-"suggestion": "structures, reactions, naming",
-"variants": [],
-"field": "Chemistry",
-"role": null
-},
-{
-"phrase": "avogadro",
-"category": "good",
-"weight": 2.0,
-"suggestion": "molecules, optimization, visualization",
-"variants": [],
-"field": "Chemistry",
-"role": null
-},
-{
-"phrase": "geneious",
-"category": "good",
-"weight": 2.2,
-"suggestion": "sequence analysis, alignment, phylogeny",
-"variants": [],
-"field": "Biology",
-"role": null
-},
-{
-"phrase": "snapgene",
-"category": "good",
-"weight": 2.2,
-"suggestion": "cloning, maps, simulations",
-"variants": [],
-"field": "Biology",
-"role": null
-},
-{
-"phrase": "epic",
-"category": "good",
-"weight": 2.3,
-"suggestion": "ehr, modules, workflows",
-"variants": [],
-"field": "Medicine",
-"role": null
-},
-{
-"phrase": "cerner",
-"category": "good",
-"weight": 2.3,
-"suggestion": "patient records, orders, charting",
-"variants": [],
-"field": "Medicine",
-"role": null
-},
-{
-"phrase": "meditech",
-"category": "good",
-"weight": 2.2,
-"suggestion": "clinical documentation, orders, reporting",
-"variants": [],
-"field": "Nursing",
-"role": null
-},
-{
-"phrase": "allscripts",
-"category": "good",
-"weight": 2.2,
-"suggestion": "ehr, prescribing, billing",
-"variants": [],
-"field": "Nursing",
-"role": null
-},
-{
-"phrase": "westlaw",
-"category": "good",
-"weight": 2.5,
-"suggestion": "case law, statutes, research",
-"variants": [],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "lexisnexis",
-"category": "good",
-"weight": 2.5,
-"suggestion": "legal research, citations, analytics",
-"variants": [],
-"field": "Law",
-"role": null
-},
-{
-"phrase": "hootsuite",
-"category": "good",
-"weight": 2.0,
-"suggestion": "scheduling, monitoring, analytics",
-"variants": [],
-"field": "Marketing",
-"role": null
-},
-{
-"phrase": "buffer",
-"category": "good",
-"weight": 2.0,
-"suggestion": "posting, queue, reports",
-"variants": [],
-"field": "Marketing",
-"role": null
-},
-{
-"phrase": "canva",
-"category": "good",
-"weight": 1.8,
-"suggestion": "templates, graphics, designs",
-"variants": [],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "zoom",
-"category": "good",
-"weight": 1.8,
-"suggestion": "meetings, webinars, recordings",
-"variants": [],
-"field": "Communications",
-"role": null
-},
-{
-"phrase": "moodle",
-"category": "good",
-"weight": 2.0,
-"suggestion": "courses, quizzes, forums",
-"variants": [],
-"field": "Education",
-"role": null
-},
-{
-"phrase": "blackboard",
-"category": "good",
-"weight": 2.0,
-"suggestion": "lms, assignments, grades",
-"variants": [],
-"field": "Education",
-"role": null
-},
-{
-"phrase": "duolingo",
-"category": "good",
-"weight": 1.8,
-"suggestion": "lessons, streaks, skills",
-"variants": [],
-"field": "Languages",
-"role": null
-},
-{
-"phrase": "rosetta stone",
-"category": "good",
-"weight": 1.8,
-"suggestion": "immersion, speech recognition, vocabulary",
-"variants": [],
-"field": "Languages",
-"role": null
-},
-{
-"phrase": "nvivo",
-"category": "good",
-"weight": 2.2,
-"suggestion": "qualitative data, coding, queries",
-"variants": [],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "atlas ti",
-"category": "good",
-"weight": 2.2,
-"suggestion": "text analysis, networks, memos",
-"variants": ["atlas.ti"],
-"field": "Psychology",
-"role": null
-},
-{
-"phrase": "envi",
-"category": "good",
-"weight": 2.3,
-"suggestion": "remote sensing, image processing, spectral analysis",
-"variants": [],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "modflow",
-"category": "good",
-"weight": 2.3,
-"suggestion": "groundwater modeling, flow simulation, calibration",
-"variants": [],
-"field": "Environmental Science",
-"role": null
-},
-{
-"phrase": "cisco packet tracer",
-"category": "good",
-"weight": 2.2,
-"suggestion": "network simulation, configurations, troubleshooting",
-"variants": [],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "wireshark",
-"category": "good",
-"weight": 2.3,
-"suggestion": "packet capture, analysis, filters",
-"variants": [],
-"field": "Computer Science",
-"role": null
-},
-{
-"phrase": "bloomberg",
-"category": "good",
-"weight": 2.5,
-"suggestion": "market data, news, analytics",
-"variants": [],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "thomson reuters",
-"category": "good",
-"weight": 2.5,
-"suggestion": "financial tools, research, eikon",
-"variants": [],
-"field": "Economics",
-"role": null
-},
-{
-"phrase": "quickbooks",
-"category": "good",
-"weight": 2.0,
-"suggestion": "accounting, payroll, invoicing",
-"variants": [],
-"field": "Accounting & Finance",
-"role": null
-},
-{
-"phrase": "sage",
-"category": "good",
-"weight": 2.0,
-"suggestion": "financial management, reporting, compliance",
-"variants": [],
-"field": "Accounting & Finance",
-"role": null
-},
-{
-"phrase": "salesforce",
-"category": "good",
-"weight": 2.3,
-"suggestion": "crm, leads, automation",
-"variants": [],
-"field": "Business Management",
-"role": null
-},
-{
-"phrase": "oracle",
-"category": "good",
-"weight": 2.5,
-"suggestion": "database, pl sql, erp",
-"variants": [],
-"field": "Business Management",
-"role": null
-},
-{
-"phrase": "carried out",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "executed, performed, conducted",
-"variants": ["carrying out"],
-"field": null,
-"role": null
-},
-{
-"phrase": "dealt with",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "handled, managed, addressed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "was responsible",
-"category": "weak",
-"weight": 0.8,
-"suggestion": "led, oversaw, directed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "partook in",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "participated, engaged, contributed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "acquainted with",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "familiar with, experienced in, skilled at",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "versed in",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "knowledgeable in, proficient in, expert in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "had experience",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "gained expertise, developed skills, applied knowledge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gained knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "acquired expertise, built proficiency, learned skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "performed duties",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "executed tasks, completed responsibilities, fulfilled roles",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "took care of",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "managed, handled, oversaw",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "was involved",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "participated, contributed, engaged",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "had knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "possessed expertise, held proficiency, owned skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "did tasks",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "completed assignments, executed jobs, performed work",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "was familiar",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "became proficient, grew experienced, developed familiarity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "had exposure",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "gained hands on, obtained practice, acquired involvement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "basic knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "fundamental expertise, entry level skills, introductory proficiency",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "general knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "broad expertise, overall proficiency, comprehensive skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "some knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "limited expertise, partial proficiency, certain skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tried out",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "experimented with, tested, explored",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kind of did",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "somewhat performed, partially executed, roughly handled",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "more or less did",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "basically performed, essentially executed, practically handled",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "to a degree",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "partly, somewhat, in part",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "roughly",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "approximately, about, nearly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sorta",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "kind of, somewhat, moderately",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kinda familiar",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "somewhat acquainted, partially versed, roughly knowledgeable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pretty much",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "basically, essentially, virtually",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fair amount",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "reasonable quantity, moderate level, adequate extent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bit of",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "small amount, little, some",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "not too bad",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "decent, acceptable, satisfactory",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "alright at",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "okay at, fine with, passable in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "had some",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "possessed certain, owned limited, held partial",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "did a bit",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "performed some, executed little, handled portion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "was okay",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "was acceptable, was fine, was satisfactory",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "somewhat experienced",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "partially skilled, moderately proficient, fairly knowledgeable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "reasonably good",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "fairly competent, adequately skilled, sufficiently proficient",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "moderately familiar",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "somewhat acquainted, fairly versed, reasonably knowledgeable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "partially involved",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "somewhat engaged, fairly participated, moderately contributed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "generally aware",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "broadly familiar, overall knowledgeable, loosely acquainted",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vaguely familiar",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "slightly acquainted, dimly aware, faintly knowledgeable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "loosely involved",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "casually engaged, informally participated, slackly contributed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "casually knowledgeable",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "informally skilled, relaxed proficient, easygoing expert",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "informally experienced",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "unofficially skilled, casually proficient, non formally trained",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "non specific tasks",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "general duties, broad responsibilities, vague assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "broad experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "wide ranging skills, extensive exposure, diverse knowledge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "diverse tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "varied duties, mixed responsibilities, assorted assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mixed knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "assorted expertise, blended proficiency, combined skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "assorted skills",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "varied abilities, diverse competencies, mixed talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "various skills",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "different abilities, multiple competencies, several talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "multiple tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "several duties, numerous responsibilities, many assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "several experiences",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "numerous involvements, many exposures, various practices",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "numerous duties",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "many responsibilities, several assignments, various tasks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "many roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "numerous positions, various functions, multiple capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "different knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "varied expertise, diverse proficiency, assorted skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wide knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "broad expertise, extensive proficiency, comprehensive skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "extensive tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "broad duties, wide responsibilities, comprehensive assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "comprehensive experience",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "thorough involvement, complete exposure, full practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "thorough knowledge",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "detailed expertise, in depth proficiency, exhaustive skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in depth tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "detailed duties, thorough responsibilities, exhaustive assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "detailed roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "specific positions, particular functions, precise capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "specific knowledge",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "particular expertise, precise proficiency, targeted skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "particular experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "specific involvement, certain exposure, definite practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "certain tasks",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "specific duties, particular responsibilities, definite assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "definite skills",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "clear abilities, sure competencies, positive talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "positive knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "affirmative expertise, constructive proficiency, beneficial skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "beneficial experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "helpful involvement, advantageous exposure, useful practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "useful tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "practical duties, helpful responsibilities, beneficial assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "practical roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "hands on positions, applied functions, real world capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "real world knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "practical expertise, applied proficiency, hands on skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hands on experience",
-"category": "weak",
-"weight": 0.7,
-"suggestion": "practical involvement, direct exposure, applied practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "direct tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "immediate duties, straight responsibilities, straightforward assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "straightforward skills",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "simple abilities, basic competencies, uncomplicated talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "simple knowledge",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "basic expertise, elementary proficiency, straightforward skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elementary experience",
-"category": "weak",
-"weight": 0.5,
-"suggestion": "basic involvement, primary exposure, introductory practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "primary tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main duties, chief responsibilities, principal assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chief roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main positions, primary functions, leading capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "leading knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "foremost expertise, top proficiency, primary skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "top experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "leading involvement, foremost exposure, primary practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foremost tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "primary duties, main responsibilities, leading assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "main skills",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "primary abilities, chief competencies, principal talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "principal knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main expertise, chief proficiency, primary skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chief experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main involvement, primary exposure, leading practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "leading roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "primary positions, main functions, chief capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "primary skills",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main abilities, chief competencies, principal talents",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "main knowledge",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "primary expertise, chief proficiency, principal skills",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chief tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main duties, primary responsibilities, leading assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "principal experience",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "main involvement, chief exposure, primary practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "top tasks",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "leading duties, foremost responsibilities, primary assignments",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "foremost roles",
-"category": "weak",
-"weight": 0.6,
-"suggestion": "primary positions, main functions, chief capacities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "superstar",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "top talent, elite performer, outstanding contributor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all star",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "top performer, elite player, outstanding member",
-"variants": ["all-star"],
-"field": null,
-"role": null
-},
-{
-"phrase": "world class",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "global standard, international level, superior quality",
-"variants": ["world-class"],
-"field": null,
-"role": null
-},
-{
-"phrase": "cutting edge",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "advanced, innovative, leading edge",
-"variants": ["cutting-edge"],
-"field": null,
-"role": null
-},
-{
-"phrase": "state of the art",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "modern, advanced, latest technology",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "best in class",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "top tier, superior, leading",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "industry leading",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "sector top, market foremost, field premier",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "groundbreaking",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "innovative, pioneering, revolutionary",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "revolutionary",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "transformative, radical, innovative",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "disruptive",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "innovative, game changing, transformative",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "transformative",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "changing, revolutionary, impactful",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "synergy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "collaboration, teamwork, partnership",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "leverage",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "utilize, exploit, capitalize",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "best practice",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "optimal method, standard procedure, recommended approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "value add",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "added benefit, extra value, enhancement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "win win",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "mutually beneficial, advantageous both, positive outcome",
-"variants": ["win-win"],
-"field": null,
-"role": null
-},
-{
-"phrase": "low hanging fruit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy opportunity, quick gain, simple target",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bandwidth",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "capacity, resources, availability",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "circle back",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "follow up, revisit, return to",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deep dive",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "detailed analysis, thorough examination, in depth review",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drill down",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "investigate further, analyze deeper, examine closely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "game plan",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "strategy, approach, plan",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard stop",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "firm deadline, absolute end, strict limit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "move the needle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make impact, drive change, achieve progress",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "no brainer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "obvious choice, easy decision, simple solution",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on my plate",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "my responsibilities, my tasks, my workload",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "par for the course",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "standard, typical, expected",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "peel the onion",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "layer analysis, uncover details, dissect issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "piggyback",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "build upon, add to, extend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ping me",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "contact me, message me, reach out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put a pin in it",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "table it, postpone, set aside",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "quick win",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "easy achievement, fast success, immediate gain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "reinvent the wheel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "duplicate effort, redo work, recreate existing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "run it up the flagpole",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "test idea, propose concept, gauge reaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shift paradigm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "change perspective, alter framework, transform approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "skin in the game",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "personal investment, stake involved, committed interest",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take offline",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "discuss later, postpone conversation, defer discussion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tee up",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "prepare, set up, arrange",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "touch base",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "connect, check in, follow up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "value proposition",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "benefit offering, advantage statement, selling point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wheelhouse",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "area expertise, domain knowledge, specialty",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "high achiever",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "top performer, successful individual, accomplished person",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "top performer",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "elite achiever, leading contributor, superior worker",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "a player",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "top talent, key contributor, high caliber",
-"variants": ["a-player"],
-"field": null,
-"role": null
-},
-{
-"phrase": "blue sky thinking",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "creative brainstorming, innovative ideas, unrestricted thought",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boil the ocean",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overambitious task, impossible goal, excessive effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "buy in",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "agreement, support, commitment",
-"variants": ["buy-in"],
-"field": null,
-"role": null
-},
-{
-"phrase": "core competency",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "key strength, main skill, primary ability",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ducks in a row",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "organized, prepared, aligned",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "empower",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "enable, authorize, delegate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "granular",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "detailed, specific, fine grained",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "holistic approach",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "comprehensive method, overall strategy, integrated plan",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ideate",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "brainstorm, generate ideas, conceptualize",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "key takeaway",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "main point, primary lesson, essential insight",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "knowledge transfer",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "information sharing, skill passing, expertise handover",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "loop in",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "include, inform, involve",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "next gen",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "next generation, future tech, advanced version",
-"variants": ["next-gen"],
-"field": null,
-"role": null
-},
-{
-"phrase": "pain point",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "problem area, issue spot, challenge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "price point",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "cost level, pricing, value",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "push the envelope",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "innovate, challenge limits, advance boundaries",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ramp up",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "increase, accelerate, build up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "reach out",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "contact, connect, communicate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "robust",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "strong, durable, reliable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "scalable",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "expandable, growable, adaptable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "seamless",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "smooth, uninterrupted, fluid",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "strategic fit",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "alignment, compatibility, synergy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swot analysis",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "strengths weaknesses, opportunities threats, strategic assessment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "table stakes",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "minimum requirements, basic necessities, entry level",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "turnkey",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "ready to use, complete solution, plug and play",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "user centric",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "customer focused, client oriented, end user driven",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "viral",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "widespread, popular, shareable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "white glove",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "premium service, high touch, luxury treatment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero tolerance",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "no acceptance, strict policy, absolute prohibition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "action item",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "task, assignment, to do",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at the end of the day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ultimately, finally, in conclusion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back of the envelope",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rough calculation, quick estimate, approximate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "balls in the air",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "multiple tasks, juggling priorities, ongoing projects",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big picture",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "overall view, broad perspective, high level",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bottom line",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "net result, final outcome, key point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brain dump",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "information share, knowledge transfer, full disclosure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "connect the dots",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "link ideas, see patterns, understand relationships",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deliverable",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "output, result, product",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dot the i's",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "finalize details, complete thoroughly, finish meticulously",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drink the kool aid",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "buy into, fully believe, enthusiastically support",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elephant in the room",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "obvious issue, unspoken problem, major concern",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full plate",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "busy schedule, heavy workload, many tasks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get ducks in row",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "organize, prepare, align",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go to market",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "launch strategy, sales plan, distribution approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "herd cats",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "manage difficult, coordinate unruly, lead challenging",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hit the ground running",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "start quickly, begin effectively, launch immediately",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the weeds",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "deep details, minute specifics, granular level",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "keep powder dry",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reserve resources, stay prepared, hold back",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "land and expand",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "initial sale, grow account, upsell strategy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "level playing field",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "fair competition, equal opportunity, balanced conditions",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "long pole in the tent",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "critical path, main obstacle, key factor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "low fruit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy target, quick opportunity, simple gain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "make hay",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "seize opportunity, capitalize chance, exploit moment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mission critical",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "essential, vital, crucial",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "net net",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "overall, in summary, bottom line",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "not rocket science",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "simple, straightforward, easy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "open kimono",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full disclosure, transparent, honest sharing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "out of pocket",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "unavailable, absent, offline",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "paradigm shift",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "major change, fundamental transformation, new approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "perfect storm",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "convergence factors, ideal conditions, unique situation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pick low fruit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy wins, quick gains, simple opportunities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "plug and play",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "easy integration, ready use, simple setup",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put to bed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "finalize, complete, resolve",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rubber meets road",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "practical application, real world execution, action point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sea change",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "major transformation, significant shift, dramatic alteration",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "secret sauce",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unique formula, special ingredient, key advantage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "silver bullet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perfect solution, ultimate fix, magic cure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "slam dunk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sure success, easy win, guaranteed outcome",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "smoke and mirrors",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deception, illusion, trickery",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "soup to nuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete, end to end, full cycle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "spike the ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "celebrate success, claim victory, boast achievement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "square the circle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "solve impossible, reconcile contradictory, achieve unattainable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "strategic staircase",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "step by step plan, phased approach, incremental strategy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swim lane",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "responsibility area, role definition, task allocation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take it to the next level",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "improve, advance, elevate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw under the bus",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "betray, blame, sacrifice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tiger team",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "special task force, elite group, expert squad",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "trim the fat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reduce excess, cut costs, streamline",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "up the ante",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "raise stakes, increase pressure, heighten expectations",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "value stream",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "process flow, efficiency chain, production path",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vertical",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "industry sector, market segment, business area",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "white space",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "untapped opportunity, unexplored area, new market",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wild goose chase",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "futile pursuit, pointless search, wasted effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "window of opportunity",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "limited time, chance period, brief opening",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "work smarter not harder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "efficient methods, effective strategies, optimized efforts",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wrap head around",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "understand, comprehend, grasp",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero sum game",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "win lose situation, fixed pie, competitive outcome",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "at end of day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ultimately, finally, in summary",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back to drawing board",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "start over, rethink, redesign",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bake in",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "include, incorporate, integrate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bang for buck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "value for money, cost effective, return on investment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "behind the eight ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "disadvantaged position, tough spot, challenging situation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "belt and suspenders",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extra cautious, redundant safety, double protection",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "best of breed",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "top quality, leading class, superior type",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bleeding edge",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cutting edge, advanced tech, innovative frontier",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "block and tackle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "basic execution, fundamental work, core tasks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boots on ground",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "field presence, on site personnel, direct involvement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bring to table",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "offer, contribute, provide",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn platform",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "urgent need, crisis motivation, compelling change",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn rate",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "spending speed, consumption rate, depletion pace",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn the midnight oil",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "work late, extra effort, overtime dedication",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "business as usual",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "normal operations, standard procedure, routine activities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "close the loop",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "complete cycle, finalize process, wrap up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "core dump",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full details, complete information, thorough report",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cross the chasm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bridge gap, overcome barrier, achieve breakthrough",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "customer centric",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "client focused, user oriented, buyer driven",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deck",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "presentation, slides, pitch",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dial it up",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "increase intensity, boost effort, amplify",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog and pony show",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "elaborate presentation, flashy demo, showy display",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "double click",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "explore deeper, investigate further, examine closely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drink from firehose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overwhelm information, rapid learning, intense onboarding",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat dog food",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "use own product, internal testing, self consumption",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ecosystem",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "environment, network, system",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eighty twenty rule",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "pareto principle, 80 20, key focus",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elevate",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "raise, improve, advance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "enablement",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "empowerment, facilitation, support",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "end to end",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "complete, full cycle, comprehensive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "enterprise wide",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "company broad, organization encompassing, firm entire",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "evangelize",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "promote, advocate, champion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fast track",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "accelerate, prioritize, expedite",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "force multiplier",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "efficiency booster, impact amplifier, productivity enhancer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "future proof",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "long term viable, forward compatible, enduring",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get go",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "from start, beginning, outset",
-"variants": ["get-go"],
-"field": null,
-"role": null
-},
-{
-"phrase": "go live",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "launch, activate, deploy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go to guy",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "expert contact, reliable source, key person",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "golden parachute",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "severance package, exit bonus, termination benefit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "good to go",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "ready, prepared, set",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "groundswell",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "growing support, increasing momentum, rising wave",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard coded",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "fixed in code, embedded, static",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "heads up",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "alert, notice, warning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "helicopter view",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "high level overview, broad perspective, big picture",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "herding cats",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "managing difficult, coordinating chaotic, leading unruly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "high level",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "overview, summary, broad",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hockey stick growth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rapid expansion, exponential increase, sharp rise",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hold the fort",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maintain position, keep control, manage temporarily",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "horse trading",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "negotiation, bargaining, deal making",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "impactful",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "effective, influential, significant",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the loop",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "informed, updated, involved",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "incentivize",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "motivate, encourage, reward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "inflection point",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "turning point, critical moment, change pivot",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "inject",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "add, insert, introduce",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "key learnings",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "main lessons, primary insights, essential takeaways",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "knowledge base",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "information repository, expertise collection, resource library",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "laser focused",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "highly concentrated, precisely targeted, sharply directed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "lean in",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "engage fully, commit, participate actively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "learnings",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "lessons, insights, takeaways",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "level set",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "align expectations, establish baseline, synchronize understanding",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "low touch",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "minimal interaction, light involvement, hands off",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "make it pop",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "enhance visually, make standout, add flair",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mindshare",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "attention share, awareness level, mental presence",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mission statement",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "purpose declaration, goal outline, objective summary",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "monetize",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "generate revenue, profit from, commercialize",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "needle mover",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impact factor, progress driver, change agent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "new normal",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "standard now, current reality, adapted state",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "next steps",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "following actions, upcoming tasks, subsequent plans",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "no low hanging fruit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no easy wins, no quick gains, no simple opportunities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "offline",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "in person, not online, face to face",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the radar",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "aware of, monitoring, tracking",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the same page",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "in agreement, aligned, unified",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "one throat to choke",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "single accountable, one responsible, centralized control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "operationalize",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "implement, execute, put into practice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "optimize",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "improve, enhance, refine",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "out of the loop",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "uninformed, excluded, unaware",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "over the wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hand off, transfer responsibility, pass along",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "paradigm",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "framework, model, approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "peanut butter",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "spread evenly, distribute uniformly, allocate broadly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "peel onion",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uncover layers, delve deeper, analyze step by step",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pick brain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "seek advice, consult expertise, get insights",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "plug play",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "easy setup, immediate use, simple integration",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pricepoint",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "cost level, pricing tier, value point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "productize",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "commercialize, package, market ready",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "punch list",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "to do items, remaining tasks, final checks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "push envelope",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "challenge limits, innovate boundaries, advance frontiers",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put lipstick on pig",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "superficial improvement, cosmetic change, mask flaws",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "quick and dirty",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rough estimate, hasty solution, approximate fix",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ramp",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "increase gradually, build up, accelerate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "reorg",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "restructure, reorganize, reshuffle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "repurpose",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "reuse, adapt, recycle",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "right size",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "optimize scale, adjust appropriately, fit correctly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rip the bandaid",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act quickly, make tough decision, do immediately",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "roadmap",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "plan, strategy, path forward",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "roll up sleeves",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "get to work, hands on, dive in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rubber stamp",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "approve automatically, endorse without review, sign off",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "run the numbers",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "calculate, analyze figures, do math",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "same page",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "aligned, in agreement, unified",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "scalable solution",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "growable fix, expandable method, adaptable answer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "scope creep",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "project expansion, requirement addition, boundary extension",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sea legs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "familiarity, adaptation, comfort level",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shoot from hip",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impromptu, without preparation, spontaneously",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "silver lining",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "positive aspect, upside, benefit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sing from same hymnal",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in agreement, unified message, consistent voice",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "skinny",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "details, information, scoop",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "slicing and dicing",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "analyzing data, breaking down, segmenting",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "smell test",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "intuition check, gut feel, reasonableness test",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "soup nuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full scope, complete coverage, end to end",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stake in ground",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "firm position, definitive stance, committed decision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "strategic plan",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "long term strategy, business roadmap, goal outline",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swallow the frog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tackle difficult, do unpleasant, handle tough",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sweat the small stuff",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "focus details, mind minutiae, attend trivial",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "table the discussion",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "postpone talk, defer conversation, shelve topic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take pulse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "gauge sentiment, check status, assess mood",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tee it up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare, set stage, arrange",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "the whole nine yards",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "everything, full extent, complete package",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw in towel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "give up, surrender, quit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw spaghetti wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "test ideas, try randomly, experiment broadly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tiger by tail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dangerous situation, challenging problem, risky venture",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "time box",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "limit time, set duration, constrain period",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tip of iceberg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "small part, surface level, beginning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tone from top",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "leadership example, management direction, executive guidance",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "touchpoint",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "interaction point, contact moment, engagement spot",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "train wreck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "disaster, failure, catastrophe",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "trickle down",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "cascade effect, flow through, disseminate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "turn on dime",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pivot quickly, change rapidly, adapt fast",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "up or out",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "promote or terminate, advance or leave, grow or go",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "value added",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "additional benefit, extra enhancement, increased worth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vanilla",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "standard, basic, plain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vertical integration",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "supply chain control, upstream downstream, full ownership",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "viral marketing",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "word of mouth, shareable content, rapid spread",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "walk the talk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "practice what preach, follow through, act consistently",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "war room",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "command center, crisis hub, strategy room",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "water cooler",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "informal chat, casual conversation, office gossip",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wear multiple hats",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "multitask, various roles, diverse responsibilities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whiteboard",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "brainstorm, sketch ideas, plan visually",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "win the day",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "achieve success, gain victory, accomplish goal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "work life balance",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "personal professional equilibrium, time management, well being",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "world class talent",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "global elite, top professionals, superior experts",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wrap our heads",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "understand, comprehend, grasp",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "your take",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "your opinion, your view, your perspective",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero defects",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "perfect quality, error free, flawless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "zero sum",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "win lose, fixed resource, competitive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "all hands on deck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "full team effort, everyone involved, total mobilization",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "apples to apples",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fair comparison, like to like, equivalent evaluation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back burner",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "low priority, postponed, deferred",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "back of napkin",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rough sketch, quick calculation, informal plan",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bake off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "competition, comparison test, evaluation contest",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ballpark figure",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "approximate estimate, rough number, general idea",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "behind scenes",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "internal workings, hidden processes, backstage operations",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bell the cat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "take risk, do difficult, handle challenge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bench strength",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "team depth, reserve talent, backup resources",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "best thing since sliced bread",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "great innovation, fantastic idea, superb invention",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bet the farm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "risk everything, all in, high stakes",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big ask",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "major request, significant demand, large favor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "big fish",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "important client, major player, key account",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bite the bullet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accept difficult, face challenge, endure hardship",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "black swan",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unexpected event, rare occurrence, surprise factor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bleed red ink",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lose money, incur losses, financial drain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blitz scaling",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rapid growth, aggressive expansion, fast scaling",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blow smoke",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deceive, mislead, exaggerate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "blue ocean",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "untapped market, new opportunity, uncontested space",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boilerplate",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "standard text, template language, generic content",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "boil ocean",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impossible task, futile effort, overambitious goal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bottom of barrel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lowest quality, worst options, last resorts",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bounce ideas",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "discuss concepts, brainstorm thoughts, share suggestions",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brain trust",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "expert group, advisory team, knowledge panel",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "brass tacks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "basic facts, essentials, fundamentals",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "break silos",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "promote collaboration, remove barriers, encourage cross functional",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bring a game",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perform best, give maximum, excel",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "buck stops here",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ultimate responsibility, final authority, accountable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn bridges",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "damage relationships, sever ties, ruin connections",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn candle both ends",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overwork, exhaust resources, push limits",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "burn rubber",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "move quickly, accelerate fast, speed up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "bury hatchet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make peace, resolve conflict, reconcile",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "business critical",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "essential operations, vital functions, key processes",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "call audibles",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make changes, adapt plans, adjust strategies",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "can worms",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complex issue, problematic situation, complicated matter",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "carrot and stick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "incentives punishments, rewards penalties, motivation methods",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cash cow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "profitable product, revenue generator, money maker",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "caught flat footed",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unprepared, surprised, caught off guard",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "champ at bit",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "eager to start, impatient to begin, ready to go",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "change agent",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reformer, innovator, transformer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "change horses midstream",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "switch strategies, alter plans, modify approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "change tack",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "shift direction, alter course, adjust strategy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cherry pick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "select best, choose selectively, pick favorites",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "chicken and egg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "circular problem, interdependent issue, causality dilemma",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "churn and burn",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "high turnover, intense pace, exhaustive approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "circle the wagons",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "defend position, rally team, protect interests",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clean sheet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fresh start, blank slate, new beginning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "clear the decks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare, make ready, remove obstacles",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "climb the ladder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "advance career, gain promotion, rise ranks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "close the deal",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "finalize agreement, secure sale, complete transaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cloud nine",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extremely happy, elated, overjoyed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "coin of realm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accepted currency, standard measure, valued commodity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cold call",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "unsolicited contact, initial outreach, prospecting",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "come to jesus",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "honest discussion, critical meeting, reality check",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cook the books",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "falsify records, manipulate finances, fraudulent accounting",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "corporate ladder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "career progression, promotion path, hierarchy climb",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crack the code",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "solve mystery, figure out, decipher",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cross pollinate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "share ideas, collaborate across, integrate knowledge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cross the rubicon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "irreversible decision, point no return, commit fully",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "crystal ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "future prediction, forecast tool, prognosticator",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut bait",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "abandon effort, stop pursuing, give up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut the mustard",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "meet standards, perform adequately, succeed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "cut through red tape",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "bypass bureaucracy, simplify processes, expedite approval",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dance card full",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "busy schedule, fully booked, no availability",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dead cat bounce",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "temporary recovery, short term uptick, false rally",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "death by thousand cuts",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "gradual decline, cumulative damage, slow erosion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deer in headlights",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "frozen surprise, stunned inaction, paralyzed shock",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "deliver the goods",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "meet expectations, fulfill promises, produce results",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "diamond in rough",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hidden talent, undeveloped potential, raw gem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dime a dozen",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "common, plentiful, inexpensive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog eat dog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cutthroat competition, ruthless environment, fierce rivalry",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dog in fight",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "personal stake, vested interest, involvement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "don't count chickens",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "avoid premature celebration, not assume success, be cautious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "double edged sword",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "mixed blessing, pros cons, ambivalent outcome",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down the pike",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "coming soon, upcoming, in future",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "down the road",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in future, later on, eventually",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "draw line in sand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "set boundary, establish limit, define position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drink kool aid",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fully believe, enthusiastically accept, buy into",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make mistake, fail task, overlook responsibility",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "drop the mic",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "conclude dramatically, end emphatically, final statement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "dry run",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "rehearsal, practice, trial",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ducks row",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "organized, aligned, prepared",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "due diligence",
-"category": "bad",
-"weight": -2.0,
-"suggestion": "thorough investigation, careful review, proper research",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eat own dogfood",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "use own product, internal adoption, self testing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "elephant room",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "obvious problem, unspoken issue, major concern",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "end game",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "ultimate goal, final objective, long term aim",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "eye of tiger",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "determination, focus, competitive spirit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "face time",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "in person meeting, direct interaction, personal presence",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fair game",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "acceptable target, legitimate option, open consideration",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fall through cracks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "overlooked, missed, neglected",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fast and loose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "careless, reckless, imprecise",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "feast or famine",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extreme fluctuations, all or nothing, boom bust",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fight fire with fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "counter aggressively, match intensity, respond in kind",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fire drill",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "urgent task, crisis response, last minute effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fish or cut bait",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decide act, commit or quit, proceed or abandon",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flash in pan",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "temporary success, short lived, fleeting achievement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "flesh out",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "develop details, expand on, elaborate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "fly by seat pants",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "improvise, without plan, ad hoc",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "follow nose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "use intuition, go instinct, trust gut",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "food chain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hierarchy, pecking order, rank structure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "force of nature",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unstoppable, powerful, dynamic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full court press",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "all out effort, maximum pressure, intense push",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full monty",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete package, everything, whole thing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "full throttle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maximum speed, all out, high intensity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "game changer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "transformative innovation, revolutionary development, paradigm shifter",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "game time decision",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "last minute choice, final call, eleventh hour determination",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get granular",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "detail oriented, fine level analysis, specific examination",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "get up to speed",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "learn quickly, catch up, become familiar",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "give 110 percent",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maximum effort, extra commitment, full dedication",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "glass half full",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "optimistic view, positive outlook, hopeful perspective",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go belly up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fail, collapse, go bankrupt",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go dark",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cease communication, become silent, stop responding",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go figure",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "surprising, ironic, unexpected",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go rogue",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act independently, deviate plan, break rules",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go to bat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "advocate for, support, defend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "go viral",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "spread rapidly, gain popularity, become widespread",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "golden handcuffs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "retention incentives, binding benefits, loyalty inducements",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "good as gold",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reliable, trustworthy, solid",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grand slam",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "major success, complete victory, total achievement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gravy train",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy money, lucrative opportunity, profitable ride",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "grease the skids",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "facilitate process, smooth path, ease way",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "green field",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "new opportunity, fresh start, undeveloped area",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ground zero",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "starting point, epicenter, origin",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "gut check",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "intuition test, reality assessment, honesty moment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hail mary",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "desperate attempt, last ditch effort, long shot",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hair on fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "urgent crisis, panicked situation, emergency mode",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hammer out",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "negotiate details, finalize agreement, work through",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hand in glove",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "close collaboration, perfect fit, seamless partnership",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hands off",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "non intervention, minimal involvement, detached",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hang hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rely on, base upon, depend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hard ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "aggressive negotiation, tough tactics, uncompromising approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hat trick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "triple achievement, three successes, multiple wins",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "have skin game",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "personal stake, invested interest, committed involvement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "heads will roll",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "consequences severe, punishments coming, accountability enforced",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "heavy lifting",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hard work, main effort, tough tasks",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "herd mentality",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "group think, follow crowd, collective behavior",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "high touch",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "personal service, intensive involvement, close interaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hit a wall",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "encounter obstacle, face barrier, reach limit",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hit home run",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "achieve great success, score big, excel",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hit the books",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "study hard, research thoroughly, learn intensively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hold feet to fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "enforce accountability, demand performance, pressure delivery",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hold the line",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maintain position, defend stance, keep steady",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "home stretch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "final phase, last stage, end game",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hot button",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sensitive issue, controversial topic, trigger point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "hunker down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare tough times, focus efforts, dig in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the black",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "profitable, positive balance, making money",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the cards",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "likely, probable, expected",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the crosshairs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "targeted, focused on, under scrutiny",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the driver's seat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in control, leading, directing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the pipe",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in development, upcoming, planned",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in the red",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "losing money, negative balance, unprofitable",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "in weeds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deep details, minutiae focused, bogged down",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "inside baseball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insider knowledge, specialized info, arcane details",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "it is what it is",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accept reality, unavoidable fact, current state",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "jack of all trades",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "versatile, multi skilled, generalist",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "jockey for position",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "compete advancement, vie opportunity, maneuver advantage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "jump ship",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "leave company, switch jobs, abandon project",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "jump the gun",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act prematurely, start early, rush ahead",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "jump the shark",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decline quality, lose relevance, pass peak",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "keep cards close",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "withhold information, stay secretive, remain discreet",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "keep eye on ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stay focused, maintain concentration, watch goal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "keep nose clean",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "avoid trouble, stay out controversy, behave well",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "keep the lights on",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "maintain operations, sustain basics, cover essentials",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kick can road",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "postpone decision, delay action, defer problem",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kick the tires",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "test out, evaluate, inspect",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kill two birds",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "achieve dual goals, accomplish two objectives, multi task success",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "kitchen sink",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "everything included, all encompassing, comprehensive",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "knocked it park",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "succeeded greatly, excelled, achieved outstanding",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "land grab",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "market capture, territory acquisition, opportunity seizure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "last mile",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "final step, end delivery, closing phase",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "lay of land",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "current situation, overview, terrain assessment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "leave money table",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "miss opportunity, forgo profit, lose potential",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "left field",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unexpected, surprising, out of nowhere",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "level the field",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "create fairness, equalize opportunities, balance competition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "light a fire",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "motivate urgently, spur action, ignite passion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "like herding cats",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "difficult management, chaotic coordination, challenging leadership",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "litmus test",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decisive indicator, key measure, critical evaluation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "lock and load",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prepare action, get ready, arm up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "long game",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extended strategy, sustained effort, future focused",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "long tail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "niche markets, extended distribution, prolonged impact",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "loose cannon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unpredictable person, risky individual, uncontrolled element",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "loose lips sink ships",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "discretion important, confidentiality key, silence golden",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "lose lose",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no win situation, mutual disadvantage, bad outcome",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "low man totem pole",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "entry level, bottom rank, junior position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "lowball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "underestimate, offer low, bid minimally",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "magic bullet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perfect solution, ultimate fix, ideal remedy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "make rain",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "generate business, bring revenue, create opportunities",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "march to own drummer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "independent thinker, nonconformist, unique approach",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "market maker",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "liquidity provider, price setter, trading facilitator",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "meat and potatoes",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "basic elements, core components, essentials",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mind meld",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "shared understanding, aligned thoughts, unified vision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mind the gap",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "watch difference, bridge divide, address discrepancy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mission creep",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "scope expansion, goal shift, objective growth",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "mojo",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "momentum, energy, charisma",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "money where mouth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "back words actions, commit resources, prove sincerity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "moon shot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ambitious goal, bold project, high risk endeavor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "movers and shakers",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "influential people, key players, power brokers",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "my wheelhouse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "my expertise, my specialty, my domain",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "needle in haystack",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "rare find, difficult search, elusive item",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "new kid block",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "newcomer, recent arrival, fresh entrant",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "nip in bud",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stop early, prevent development, halt beginning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "no horse race",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "not competing, irrelevant contest, pointless comparison",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "no silver bullet",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "no perfect solution, no easy fix, no magic cure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "nose to grindstone",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hard work, diligent effort, focused labor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "not brain surgery",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "simple task, easy job, uncomplicated work",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "not my circus",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "not my problem, unrelated issue, outside responsibility",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "not my monkeys",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "not my concern, irrelevant matter, someone else's issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "off the reservation",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "out of bounds, unauthorized, rogue action",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "off the shelf",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "ready made, standard product, pre built",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the back burner",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "low priority, postponed, deferred",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the bubble",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uncertain status, borderline, in limbo",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the fly",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "improvised, ad hoc, spontaneously",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the horizon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "upcoming, forthcoming, approaching",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "on the same wavelength",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in sync, aligned thinking, similar mindset",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "one off",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "unique, single occurrence, custom",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "open the kimono",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reveal details, share openly, disclose information",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "out of pocket",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "personal expense, self funded, unreimbursed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "out of the gate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "from start, initially, at beginning",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "over the transom",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unsolicited, unexpected submission, unrequested",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pain in neck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "annoying, troublesome, irritating",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "paint corner",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "trap self, create dilemma, box in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "paper tiger",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "weak threat, ineffective power, harmless adversary",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "parachute in",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "drop suddenly, insert quickly, bring externally",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pass the buck",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "shift responsibility, avoid blame, delegate fault",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pay the piper",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "face consequences, bear cost, accept responsibility",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "peanut gallery",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uninvolved critics, sidelined commentators, audience hecklers",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pecking order",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hierarchy, rank structure, dominance order",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "perfect storm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "confluence factors, ideal bad conditions, disastrous combination",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pick brains",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "seek advice, consult knowledge, gather insights",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "piece of cake",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy task, simple job, effortless",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pig in poke",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unknown purchase, risky buy, uncertain deal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pig lipstick",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "superficial enhancement, cosmetic improvement, mask ugliness",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pinch hitter",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "substitute, replacement, stand in",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pipe dream",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unrealistic goal, fantasy idea, impractical plan",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "play ball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cooperate, participate, engage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "play by ear",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "improvise, adapt situation, decide moment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "play catch up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "recover ground, close gap, regain position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "play hardball",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "negotiate aggressively, act tough, compete fiercely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "plug the hole",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fix problem, stop leak, address issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "point of no return",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "irreversible stage, commitment threshold, final decision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pony up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "pay up, contribute, fork over",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "preach to choir",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "convince convinced, state obvious, redundant argument",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pull rabbit hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perform miracle, surprise solution, unexpected fix",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "pull the plug",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cancel project, stop support, end initiative",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "punch above weight",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perform beyond size, achieve more expected, overdeliver",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "push the button",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "initiate action, start process, launch",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put cart before horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "wrong order, premature action, reversed sequence",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put genie back bottle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reverse action, undo release, contain issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put on ice",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "postpone, shelve, delay",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "put pedal metal",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accelerate, go full speed, maximize effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "quick and dirty",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hasty rough, fast approximate, simple basic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rain check",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "postponement, later time, deferred invitation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "raise the bar",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "increase standards, elevate expectations, improve quality",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rally the troops",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "motivate team, inspire group, energize staff",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ramp down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reduce gradually, slow down, decrease pace",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "read riot act",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stern warning, severe reprimand, strong admonition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "real time",
-"category": "bad",
-"weight": -2.5,
-"suggestion": "immediate, live, instantaneous",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "red flag",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "warning sign, alert, danger signal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "red herring",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "distraction, misleading clue, false trail",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "reinvent wheel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "duplicate effort, redo existing, recreate unnecessarily",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ride coattails",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "benefit others success, piggyback achievement, leverage efforts",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "right hand doesn't know",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "poor communication, lack coordination, disconnected teams",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rip bandaid off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "act quickly, handle abruptly, do fast",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "road warrior",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "frequent traveler, mobile worker, on go professional",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rob peter pay paul",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "shift resources, borrow one pay another, temporary fix",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rock the boat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cause disruption, challenge status quo, stir trouble",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "roll the dice",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "take risk, gamble, chance it",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rubber road",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "meet practical, encounter real, face execution",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "rule of thumb",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "general guideline, approximate method, rough estimate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "run flagpole",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "test idea, propose concept, seek feedback",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sacred cow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "untouchable idea, protected practice, unquestioned tradition",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "salad days",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "youthful time, early career, inexperienced period",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "same boat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "shared situation, common circumstance, mutual position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sandbag",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "underestimate intentionally, hold back, lowball",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "scorch the earth",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "total destruction, aggressive tactics, no mercy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "scratch itch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "satisfy need, address desire, fulfill requirement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sea legs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "adaptation, familiarity, comfort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "second bite apple",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "another chance, additional opportunity, retry",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "see eye eye",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "agree, concur, share view",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sell ice eskimos",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "persuasive selling, convince unlikely, master sales",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shake the tree",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "stir action, provoke response, disrupt status",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sharp elbows",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "aggressive behavior, competitive edge, pushy tactics",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shoot the moon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "aim high, take big risk, go all out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shoot the puppy",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "make tough choice, do unpopular, take hard action",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "short fuse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "quick temper, impatient, easily angered",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shot across bow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "warning signal, initial threat, cautionary action",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shot in arm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "boost, stimulation, encouragement",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shot in dark",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "guess, speculation, long shot",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "shoulder to shoulder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "side by side, together, united",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "show me money",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "prove value, demonstrate benefit, deliver results",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "silver spoon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "privileged background, easy life, advantaged start",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sing from hymnal",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "consistent message, unified voice, aligned communication",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "skeleton crew",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "minimal staff, bare bones team, reduced workforce",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "skin cat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "multiple ways, alternative methods, different approaches",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "slam dunk",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "easy success, sure thing, guaranteed win",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "slice dice",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "analyze segments, break down, dissect data",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "small potatoes",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insignificant, trivial, minor",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "smoke mirrors",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deception, illusion, trickery",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "snake oil",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fraudulent product, worthless remedy, deceptive solution",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "snipe hunt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fool's errand, pointless task, wild goose chase",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "snow job",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deceptive flattery, misleading praise, insincere compliment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "song and dance",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "elaborate excuse, lengthy explanation, evasive story",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "soup sandwich",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete mess, total disaster, chaotic situation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "spaghetti code",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "messy programming, unstructured script, tangled logic",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "spill beans",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reveal secret, disclose information, let slip",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "spin wheels",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "waste effort, no progress, futile activity",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "square circle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "impossible task, contradictory goal, unachievable objective",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "squeaky wheel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "demanding attention, persistent complainer, vocal issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stalking horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "decoy, pretest, trial balloon",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stand ground",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "hold position, maintain stance, defend belief",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "steal thunder",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "preempt announcement, take credit, upstage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "step up plate",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "take responsibility, accept challenge, face task",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stick carrot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "offer incentive, provide reward, motivate positively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stick in craw",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "annoy greatly, irritate deeply, bother intensely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stiff upper lip",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "remain stoic, show resilience, stay composed",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stir the pot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "cause trouble, provoke discussion, incite controversy",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "stop the bleeding",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "halt losses, stem decline, arrest damage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "straight arrow",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "honest person, upright individual, reliable character",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "strike while iron hot",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "seize opportunity, act timely, capitalize moment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "string along",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "lead on, deceive, mislead",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "suck it up",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "endure, tolerate, accept",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "sugar coat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "soften message, downplay negativity, gloss over",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swan song",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "final act, last performance, farewell effort",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swim upstream",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "go against flow, challenge norm, oppose trend",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "swing for fences",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "aim big, take risk, go all out",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "table d hote",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fixed menu, set options, limited choices",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take ball run",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "assume control, lead initiative, drive project",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take bull horns",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "tackle directly, confront boldly, handle aggressively",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take it chin",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accept setback, endure criticism, absorb blow",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take it run with it",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "develop idea, expand concept, implement suggestion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "take lumps",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "accept criticism, endure setbacks, face consequences",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "talk turkey",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "discuss seriously, negotiate frankly, speak directly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tank",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "fail badly, perform poorly, flop",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tee off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "start angrily, begin confrontation, launch attack",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "test waters",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "trial run, preliminary check, initial exploration",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "thin edge wedge",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "beginning larger issue, initial step, small start",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "think big",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ambitious vision, grand scale, large thinking",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "third rail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "dangerous topic, controversial issue, untouchable subject",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "this dog hunt",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "capable performer, effective solution, viable option",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "three martini lunch",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "extended break, leisurely meal, relaxed dining",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw book at",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "charge fully, punish severely, accuse multiple",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw good money bad",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "waste investment, continue failing, sink cost",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw in towel",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "surrender, give up, concede",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw shade",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "criticize subtly, insult indirectly, disparage",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "throw under bus",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "betray, sacrifice, blame",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tide over",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "temporary help, interim support, short term aid",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tie loose ends",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "finalize details, complete unfinished, wrap up",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tight ship",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "efficient operation, disciplined management, well run",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "time is money",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "efficiency important, speed valuable, delay costly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tip iceberg",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "small part, surface indication, minor portion",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tit for tat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reciprocation, exchange, retaliation",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "to a t",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "perfectly, exactly, precisely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "toe the line",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "conform, obey rules, follow standards",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "tone deaf",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "insensitive, unaware, oblivious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "too many chiefs",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "excess leaders, lack workers, over management",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "too many cooks",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "over involvement, excessive input, crowded decision",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "top dog",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "leader, boss, head",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "top drawer",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "high quality, first class, elite",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "touch and go",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "uncertain, risky, precarious",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "train left station",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "opportunity missed, too late, past point",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "trial balloon",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "test idea, float concept, gauge reaction",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "trim fat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reduce excess, cut costs, eliminate waste",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "trojan horse",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "deceptive strategy, hidden threat, undercover attack",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "true north",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "guiding principle, core direction, ultimate goal",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "turn dime",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "change quickly, pivot fast, adapt rapidly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "turnkey solution",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "complete package, ready implement, full service",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "twist arm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "persuade forcefully, coerce, pressure",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "two cents",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "opinion, viewpoint, input",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "two shakes lamb tail",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "very quickly, in moment, shortly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "ugly baby",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "flawed idea, bad project, unsuccessful venture",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "under the bus",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "sacrifice, betray, blame",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "up creek",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in trouble, difficult situation, bad position",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "up the ante",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "increase stakes, raise bet, escalate commitment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "upper hand",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "advantage, superior position, control",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "upside down",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "inverted, reversed, turned over",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vanilla flavor",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "basic option, standard choice, plain variety",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vaporware",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "unreleased product, promised software, non existent",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "veg out",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "relax, unwind, do nothing",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vent spleen",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "express anger, rant, complain bitterly",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "vertical market",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "industry specific, sector focused, niche segment",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "voodoo economics",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "questionable policies, unrealistic theories, magical thinking",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "walk plank",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "face punishment, take risk, accept fate",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "war chest",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "reserve funds, accumulated resources, financial stockpile",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "warm body",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "any person, unqualified individual, placeholder",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wash its face",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "break even, cover costs, self sustaining",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "water under bridge",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "past event, irrelevantly history, forgotten issue",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wear hat",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "assume role, take responsibility, fulfill duty",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "weather storm",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "survive crisis, endure difficulty, overcome challenge",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wet noodle",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "ineffective, weak, limp",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wet signature",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "physical signing, ink signature, handwritten approval",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "whale",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "big client, major account, large customer",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "wheels fell off",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "collapsed, failed disastrously, went wrong",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "when pigs fly",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "never, impossible, unlikely",
-"variants": [],
-"field": null,
-"role": null
-},
-{
-"phrase": "when push comes shove",
-"category": "bad",
-"weight": -3.0,
-"suggestion": "in crisis, when necessary, under pressure",
-"variants": [],
-"field": null,
-"role": null
-}
+  {
+    "phrase": "a/b testing",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "conversion rate optimisation, multivariate testing, data analysis",
+    "variants": ["a/b test", "split testing"],
+    "field": "Marketing",
+    "role": "Data Analyst"
+  },
+  {
+    "phrase": "was in a position to",
+    "category": "weak",
+    "suggestion": "executed, delivered, managed",
+    "variants": ["in a position to"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "boil the ocean",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "scope the project, focus on priorities, define achievable goals",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "nec contract",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "jct contract, fidic, contract administration",
+    "variants": ["nec3", "nec4"],
+    "field": "Civil Engineering",
+    "role": "Quantity Surveyor"
+  },
+  {
+    "phrase": "furthered",
+    "category": "weak",
+    "suggestion": "advanced, promoted, enhanced",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "bandwidth",
+    "category": "bad",
+    "suggestion": "capacity, availability, time",
+    "variants": ["lack of bandwidth"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ci/cd",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "jenkins, gitlab ci, devops",
+    "variants": ["continuous integration", "continuous delivery", "continuous deployment"],
+    "field": "Software Engineering",
+    "role": "DevOps Engineer"
+  },
+  {
+    "phrase": "quantified",
+    "category": "good",
+    "suggestion": "measured, calculated, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "close the loop",
+    "category": "bad",
+    "suggestion": "follow up, provide feedback, complete the task",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cima",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "management accounting, financial strategy, performance management",
+    "variants": ["chartered institute of management accountants"],
+    "field": "Accounting & Finance",
+    "role": "Management Accountant"
+  },
+  {
+    "phrase": "went ahead and",
+    "category": "weak",
+    "suggestion": "initiated, performed, completed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "corporate culture",
+    "category": "bad",
+    "suggestion": "collaborative environment, high-performance team, company values",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "western blot",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "immunoblotting, protein analysis, elisa",
+    "variants": ["western blotting"],
+    "field": "Biology",
+    "role": "Research Scientist"
+  },
+  {
+    "phrase": "reconciled",
+    "category": "good",
+    "suggestion": "balanced, verified, audited",
+    "variants": [],
+    "field": "Accounting & Finance",
+    "role": "Accountant"
+  },
+  {
+    "phrase": "my role was to",
+    "category": "weak",
+    "suggestion": "i managed, i executed, i delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "drinking the kool-aid",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "committed to company vision, aligned with team goals, strong belief in the product",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "graphql",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "api, rest, apollo",
+    "variants": [],
+    "field": "Software Engineering",
+    "role": "Backend"
+  },
+  {
+    "phrase": "was responsible for helping",
+    "category": "weak",
+    "suggestion": "facilitated, supported, enabled",
+    "variants": ["responsible for assisting"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "ducks in a row",
+    "category": "bad",
+    "suggestion": "organise, prepare, plan meticulously",
+    "variants": ["get my ducks in a row"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "geospatial analysis",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "gis, remote sensing, spatial data",
+    "variants": [],
+    "field": "Geography",
+    "role": "GIS Specialist"
+  },
+  {
+    "phrase": "rectified",
+    "category": "good",
+    "suggestion": "corrected, resolved, fixed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "found",
+    "category": "weak",
+    "suggestion": "discovered, identified, determined",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "let's take this offline",
+    "category": "bad",
+    "suggestion": "discuss this separately, follow up individually, schedule a separate meeting",
+    "variants": ["take this offline"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "labview",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "data acquisition, instrument control, graphical programming",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Test Engineer"
+  },
+  {
+    "phrase": "retained",
+    "category": "good",
+    "suggestion": "maintained, secured, kept",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tried to improve",
+    "category": "weak",
+    "suggestion": "optimised, enhanced, refined",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "peel the onion",
+    "category": "bad",
+    "suggestion": "analyse in depth, investigate layer by layer, conduct a root cause analysis",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "kotlin",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "android development, java, mobile development",
+    "variants": [],
+    "field": "Computer Science",
+    "role": "Android Developer"
+  },
+  {
+    "phrase": "terraform",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "infrastructure as code, aws, cloudformation",
+    "variants": ["iac"],
+    "field": "Software Engineering",
+    "role": "DevOps Engineer"
+  },
+  {
+    "phrase": "worked on a project",
+    "category": "weak",
+    "suggestion": "delivered a project, managed a project, developed a project",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quick win",
+    "category": "bad",
+    "suggestion": "immediate improvement, high-impact result, efficient solution",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "phlebotomy",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "venepuncture, blood collection, clinical skills",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Phlebotomist"
+  },
+  {
+    "phrase": "retrieved",
+    "category": "good",
+    "suggestion": "obtained, recovered, extracted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was told to help with",
+    "category": "weak",
+    "suggestion": "supported, contributed to, facilitated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "rocket science",
+    "category": "bad",
+    "suggestion": "complex, challenging, difficult",
+    "variants": ["it's not rocket science"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "change management",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "organisational change, stakeholder communication, process improvement",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Consultant"
+  },
+  {
+    "phrase": "revamped",
+    "category": "good",
+    "suggestion": "redesigned, restructured, overhauled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "spent time on",
+    "category": "weak",
+    "suggestion": "developed, analysed, focused on",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "run it up the flagpole",
+    "category": "bad",
+    "suggestion": "propose the idea, gauge reaction, seek feedback",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "nice guidelines",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "evidence-based practice, clinical governance, healthcare standards",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Doctor"
+  },
+  {
+    "phrase": "sass",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "scss, less, css preprocessor",
+    "variants": ["scss"],
+    "field": "Software Engineering",
+    "role": "Frontend"
+  },
+  {
+    "phrase": "had to do with",
+    "category": "weak",
+    "suggestion": "involved, related to, focused on",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "robust",
+    "category": "bad",
+    "suggestion": "reliable, scalable, high-performance",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "six sigma",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "lean manufacturing, process improvement, quality management",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Operations Manager"
+  },
+  {
+    "phrase": "scheduled",
+    "category": "good",
+    "suggestion": "planned, organised, coordinated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was a subordinate",
+    "category": "weak",
+    "suggestion": "supported, reported to, assisted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "scalability",
+    "category": "bad",
+    "suggestion": "managed increased load, supported user growth, designed for expansion",
+    "variants": ["scalable"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "after effects",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "motion graphics, visual effects, animation",
+    "variants": ["adobe after effects"],
+    "field": "Design",
+    "role": "Motion Graphics Designer"
+  },
+  {
+    "phrase": "screened",
+    "category": "good",
+    "suggestion": "evaluated, assessed, filtered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gave a presentation",
+    "category": "weak",
+    "suggestion": "presented findings on, delivered a talk to, briefed stakeholders about",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "streamline",
+    "category": "bad",
+    "suggestion": "optimised workflow, improved process efficiency, automated tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "organic synthesis",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "medicinal chemistry, reaction mechanisms, synthetic routes",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Synthetic Chemist"
+  },
+  {
+    "phrase": "secured",
+    "category": "good",
+    "suggestion": "obtained, acquired, achieved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was an apprentice",
+    "category": "weak",
+    "suggestion": "trained in, learned, developed skills in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "synergistic",
+    "category": "bad",
+    "suggestion": "collaborative, integrated, mutually beneficial",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "good laboratory practice",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "glp, quality assurance, sop",
+    "variants": ["glp"],
+    "field": "Biology",
+    "role": "QA Specialist"
+  },
+  {
+    "phrase": "solidified",
+    "category": "good",
+    "suggestion": "strengthened, confirmed, established",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "needed to",
+    "category": "weak",
+    "suggestion": "executed, performed, was required to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "talent",
+    "category": "bad",
+    "suggestion": "skilled in, expertise in, proficient with",
+    "variants": ["talented"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "surveying",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "total station, gps, site layout",
+    "variants": [],
+    "field": "Civil Engineering",
+    "role": "Surveyor"
+  },
+  {
+    "phrase": "spark",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "apache spark, big data, hadoop",
+    "variants": ["apache spark"],
+    "field": "Data Science",
+    "role": "Data Engineer"
+  },
+  {
+    "phrase": "made an effort to",
+    "category": "weak",
+    "suggestion": "achieved, accomplished, completed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "touchpoint",
+    "category": "bad",
+    "suggestion": "interaction, point of contact, engagement",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "criminal law",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "litigation, advocacy, legal casework",
+    "variants": [],
+    "field": "Law",
+    "role": "Criminal Lawyer"
+  },
+  {
+    "phrase": "spearheaded",
+    "category": "good",
+    "suggestion": "led, initiated, pioneered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "performed duties as",
+    "category": "weak",
+    "suggestion": "managed, executed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "unflappable",
+    "category": "bad",
+    "suggestion": "calm under pressure, managed crises, resilient",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "data warehousing",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "etl, sql, bigquery",
+    "variants": ["data warehouse"],
+    "field": "Data Science",
+    "role": "Data Engineer"
+  },
+  {
+    "phrase": "standardised",
+    "category": "good",
+    "suggestion": "systematised, structured, formalised",
+    "variants": ["standardized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped develop",
+    "category": "weak",
+    "suggestion": "contributed to development, co-developed, supported development",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "utilize",
+    "category": "bad",
+    "suggestion": "use, apply, employ",
+    "variants": ["utilise"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "orcad",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "pcb design, schematic capture, pspice",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Hardware Engineer"
+  },
+  {
+    "phrase": "stimulated",
+    "category": "good",
+    "suggestion": "encouraged, promoted, increased",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was involved with",
+    "category": "weak",
+    "suggestion": "participated in, contributed to, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "value proposition",
+    "category": "bad",
+    "suggestion": "key benefit, competitive advantage, core offering",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "elisa",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "immunoassay, antibody, protein detection",
+    "variants": [],
+    "field": "Biology",
+    "role": "Biomedical Scientist"
+  },
+  {
+    "phrase": "strategised",
+    "category": "good",
+    "suggestion": "planned, devised, orchestrated",
+    "variants": ["strategized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "answered emails",
+    "category": "weak",
+    "suggestion": "managed correspondence, handled client communications, responded to inquiries",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wheelhouse",
+    "category": "bad",
+    "suggestion": "area of expertise, specialty, core strength",
+    "variants": ["in my wheelhouse"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "discourse analysis",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "qualitative research, critical theory, linguistics",
+    "variants": [],
+    "field": "Communications",
+    "role": "Researcher"
+  },
+  {
+    "phrase": "strengthened",
+    "category": "good",
+    "suggestion": "reinforced, enhanced, improved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was working on",
+    "category": "weak",
+    "suggestion": "developed, managed, executed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wizard",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "expert, specialist, highly skilled in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "suturing",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "wound closure, surgical skills, minor surgery",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Surgeon"
+  },
+  {
+    "phrase": "succeeded",
+    "category": "good",
+    "suggestion": "achieved, accomplished, attained",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "got experience in",
+    "category": "weak",
+    "suggestion": "developed proficiency in, gained expertise in, mastered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "email",
+    "category": "bad",
+    "suggestion": "provide in contact section, use professional address, omit label",
+    "variants": ["e-mail"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gd&t",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "geometric dimensioning and tolerancing, technical drawing, manufacturing",
+    "variants": ["geometric dimensioning and tolerancing"],
+    "field": "Mechanical Engineering",
+    "role": "Design Engineer"
+  },
+  {
+    "phrase": "summarised",
+    "category": "good",
+    "suggestion": "condensed, abstracted, reported",
+    "variants": ["summarized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "covered for",
+    "category": "weak",
+    "suggestion": "assumed duties of, managed responsibilities for, provided support during absence",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "leverage",
+    "category": "bad",
+    "suggestion": "use, apply, utilise",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "stakeholder mapping",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "stakeholder analysis, project management, communication strategy",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Project Manager"
+  },
+  {
+    "phrase": "systematised",
+    "category": "good",
+    "suggestion": "organised, standardised, structured",
+    "variants": ["systematized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was learning",
+    "category": "weak",
+    "suggestion": "mastered, became proficient in, developed skills in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "passionate about",
+    "category": "bad",
+    "suggestion": "expertise in, demonstrated success in, extensive experience with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "p&id",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "piping and instrumentation diagram, process engineering, autocad plant 3d",
+    "variants": ["piping and instrumentation diagram"],
+    "field": "Mechanical Engineering",
+    "role": "Process Engineer"
+  },
+  {
+    "phrase": "tabulated",
+    "category": "good",
+    "suggestion": "organised, charted, catalogued",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did a project",
+    "category": "weak",
+    "suggestion": "delivered, completed, managed a project",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "impactful",
+    "category": "bad",
+    "suggestion": "achieved x result, led to y outcome, drove z improvement",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "public relations",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "media relations, press releases, crisis communications",
+    "variants": ["pr"],
+    "field": "Communications",
+    "role": "PR Manager"
+  },
+  {
+    "phrase": "tailored",
+    "category": "good",
+    "suggestion": "customised, adapted, modified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was asked to",
+    "category": "weak",
+    "suggestion": "executed, completed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "very",
+    "category": "bad",
+    "suggestion": "omit word, use stronger adjective, quantify the result",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "portfolio theory",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "asset allocation, risk management, modern portfolio theory",
+    "variants": ["mpt"],
+    "field": "Economics",
+    "role": "Investment Analyst"
+  },
+  {
+    "phrase": "terminated",
+    "category": "good",
+    "suggestion": "concluded, ceased, cancelled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "filled in",
+    "category": "weak",
+    "suggestion": "completed, populated, input",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "loves a challenge",
+    "category": "bad",
+    "suggestion": "solves complex problems, thrives in demanding environments, overcomes obstacles",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hootsuite",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "social media management, buffer, sprout social",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Social Media Coordinator"
+  },
+  {
+    "phrase": "tested",
+    "category": "good",
+    "suggestion": "validated, verified, evaluated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gave my opinion",
+    "category": "weak",
+    "suggestion": "advised, recommended, consulted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "results oriented",
+    "category": "bad",
+    "suggestion": "achieved, delivered, increased",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "gas chromatography",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "gc-ms, separation science, analytical chemistry",
+    "variants": ["gc"],
+    "field": "Chemistry",
+    "role": "Analytical Chemist"
+  },
+  {
+    "phrase": "traced",
+    "category": "good",
+    "suggestion": "tracked, identified, mapped",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "knew about",
+    "category": "weak",
+    "suggestion": "expert in, proficient with, applied",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "salary history",
+    "category": "bad",
+    "weight": -2.8,
+    "suggestion": "omit salary information, focus on achievements, discuss in person",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "astrophysics",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "cosmology, observational astronomy, theoretical physics",
+    "variants": [],
+    "field": "Physics",
+    "role": "Astrophysicist"
+  },
+  {
+    "phrase": "tracked",
+    "category": "good",
+    "suggestion": "monitored, followed, measured",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did stuff for",
+    "category": "weak",
+    "suggestion": "supported, managed, delivered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "highly skilled",
+    "category": "bad",
+    "suggestion": "proficient in, expert in, mastery of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "electronic health records",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "ehr, patient data management, clinical informatics",
+    "variants": ["ehr", "emr"],
+    "field": "Medicine",
+    "role": "Clinical Administrator"
+  },
+  {
+    "phrase": "transcribed",
+    "category": "good",
+    "suggestion": "documented, recorded, typed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was a trainee for",
+    "category": "weak",
+    "suggestion": "trained in, qualified in, developed skills in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "s.w.o.t.",
+    "category": "bad",
+    "suggestion": "swot analysis, strategic planning, business analysis",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "event management",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "event planning, logistics, budgeting",
+    "variants": [],
+    "field": "Communications",
+    "role": "Event Manager"
+  },
+  {
+    "phrase": "transformed",
+    "category": "good",
+    "suggestion": "redesigned, restructured, revolutionised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dealt with money",
+    "category": "weak",
+    "suggestion": "managed budgets, processed transactions, handled accounts",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "team-player",
+    "category": "bad",
+    "suggestion": "collaborated with, coordinated between, liaised with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quantitative easing",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "monetary policy, central banking, macroeconomic analysis",
+    "variants": ["qe"],
+    "field": "Economics",
+    "role": "Economist"
+  },
+  {
+    "phrase": "tripled",
+    "category": "good",
+    "suggestion": "increased by 200%, expanded significantly, grew threefold",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had a go at",
+    "category": "weak",
+    "suggestion": "attempted, tested, trialled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "whatever it takes",
+    "category": "bad",
+    "suggestion": "committed, dedicated, resourceful",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "epistemology",
+    "category": "good",
+    "weight": 2.2,
+    "suggestion": "philosophy of knowledge, metaphysics, critical theory",
+    "variants": [],
+    "field": "Philosophy",
+    "role": "Academic"
+  },
+  {
+    "phrase": "troubleshot",
+    "category": "good",
+    "suggestion": "debugged, resolved, diagnosed",
+    "variants": ["troubleshooted"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was on a team that",
+    "category": "weak",
+    "suggestion": "collaborated to, partnered to, worked with a team to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "proficient",
+    "category": "bad",
+    "suggestion": "applied x to achieve y, expertise in, delivered z using",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tutored",
+    "category": "good",
+    "suggestion": "taught, mentored, coached",
+    "variants": [],
+    "field": "Education",
+    "role": "Tutor"
+  },
+  {
+    "phrase": "uncovered",
+    "category": "good",
+    "suggestion": "discovered, identified, revealed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped out with",
+    "category": "weak",
+    "suggestion": "supported, assisted, contributed to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "amazing",
+    "category": "bad",
+    "suggestion": "successful, effective, high-performing",
+    "variants": ["awesome"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "unified",
+    "category": "good",
+    "suggestion": "integrated, consolidated, merged",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "unravelled",
+    "category": "good",
+    "suggestion": "solved, deciphered, analysed",
+    "variants": ["unraveled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had to check",
+    "category": "weak",
+    "suggestion": "verified, validated, audited",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "curriculum vitae",
+    "category": "bad",
+    "suggestion": "omit title, use your name as header, focus on content",
+    "variants": ["cv"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "updated",
+    "category": "good",
+    "suggestion": "revised, modernised, refreshed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "upgraded",
+    "category": "good",
+    "suggestion": "enhanced, improved, modernised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "passed on information",
+    "category": "weak",
+    "suggestion": "communicated, briefed, reported",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "date of birth",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "omit personal details, avoid age discrimination, focus on qualifications",
+    "variants": ["dob"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "urged",
+    "category": "good",
+    "suggestion": "encouraged, advocated, pressed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "utilised",
+    "category": "good",
+    "suggestion": "used, applied, employed",
+    "variants": ["utilized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tried to organise",
+    "category": "weak",
+    "suggestion": "coordinated, planned, arranged",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "marital status",
+    "category": "bad",
+    "weight": -3.0,
+    "suggestion": "omit personal information, illegal to ask, focus on professional skills",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "verbalised",
+    "category": "good",
+    "suggestion": "communicated, articulated, presented",
+    "variants": ["verbalized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "verified",
+    "category": "good",
+    "suggestion": "confirmed, validated, checked",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "made sure that",
+    "category": "weak",
+    "suggestion": "ensured, verified, guaranteed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "photograph",
+    "category": "bad",
+    "weight": -2.9,
+    "suggestion": "omit headshot, avoid unconscious bias, standard in uk is no photo",
+    "variants": ["photo"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "visualised",
+    "category": "good",
+    "suggestion": "modelled, conceptualised, imagined",
+    "variants": ["visualized"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "weighed",
+    "category": "good",
+    "suggestion": "evaluated, assessed, considered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was good at",
+    "category": "weak",
+    "suggestion": "excelled in, proficient in, mastered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "hard copy available",
+    "category": "bad",
+    "suggestion": "submit digitally, follow application instructions, omit this phrase",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "widened",
+    "category": "good",
+    "suggestion": "expanded, broadened, extended",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "won",
+    "category": "good",
+    "suggestion": "achieved, secured, attained",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was ok at",
+    "category": "weak",
+    "suggestion": "competent in, skilled in, proficient in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "full clean driving licence",
+    "category": "bad",
+    "suggestion": "only include if required by job ad, save space for skills, specify licence type if needed",
+    "variants": ["clean driving license"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "withdrew",
+    "category": "good",
+    "suggestion": "retracted, removed, cancelled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "withstood",
+    "category": "good",
+    "suggestion": "resisted, endured, persevered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had to write",
+    "category": "weak",
+    "suggestion": "authored, documented, reported",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "responsibilty",
+    "category": "bad",
+    "suggestion": "misspelling of responsibility, proofread carefully, use spell check",
+    "variants": ["responsability"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked",
+    "category": "good",
+    "suggestion": "collaborated, engineered, managed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wrote",
+    "category": "good",
+    "suggestion": "authored, documented, composed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was able to help",
+    "category": "weak",
+    "suggestion": "supported, contributed to, facilitated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "acheived",
+    "category": "bad",
+    "suggestion": "misspelling of achieved, proofread for typos, check verb tenses",
+    "variants": ["acheive"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "yielded",
+    "category": "good",
+    "suggestion": "produced, resulted in, generated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "zeroed in",
+    "category": "good",
+    "suggestion": "focused on, targeted, pinpointed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did research on",
+    "category": "weak",
+    "suggestion": "researched, investigated, analysed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "liased",
+    "category": "bad",
+    "suggestion": "misspelling of liaised, check spelling of action verbs, use a dictionary",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "x-ray crystallography",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "structural biology, protein structure, diffraction",
+    "variants": [],
+    "field": "Physics",
+    "role": "Crystallographer"
+  }
 ]
