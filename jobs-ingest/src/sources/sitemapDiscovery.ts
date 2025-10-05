@@ -159,7 +159,7 @@ function isJobUrl(url: string): boolean {
   const matchesRelevantPattern = relevantJobPatterns.some(pattern => pattern.test(urlLower));
   const matchesGeneralPattern = generalJobPatterns.some(pattern => pattern.test(urlLower));
   
-  // Check if URL contains UK location indicators
+  // Check if URL contains UK location indicators (relaxed requirement)
   const ukLocationKeywords = [
     'uk', 'united-kingdom', 'britain', 'british',
     'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh',
@@ -170,8 +170,28 @@ function isJobUrl(url: string): boolean {
   
   const hasUKLocation = ukLocationKeywords.some(keyword => urlLower.includes(keyword));
   
-  // Include if has relevant keywords/patterns AND UK location indicators
-  return (hasRelevantKeyword || matchesRelevantPattern || (hasGeneralKeyword || matchesGeneralPattern)) && hasUKLocation;
+  // Exclude non-UK job boards explicitly
+  const nonUKKeywords = ['indeed.com', 'monster.com', 'glassdoor.com', 'linkedin.com'];
+  const isNonUKBoard = nonUKKeywords.some(keyword => urlLower.includes(keyword));
+  
+  if (isNonUKBoard) return false;
+  
+  // For UK job boards, be more permissive - include if it looks like a job URL
+  // Priority order: relevant keywords > general keywords > UK location
+  if (hasRelevantKeyword || matchesRelevantPattern) {
+    return true; // Always include student-relevant jobs
+  }
+  
+  if (hasGeneralKeyword || matchesGeneralPattern) {
+    return true; // Include general job URLs from UK job boards
+  }
+  
+  // If it has UK location indicators, include it even without explicit job keywords
+  if (hasUKLocation) {
+    return true;
+  }
+  
+  return false;
 }
 
 // Company-specific job page discovery

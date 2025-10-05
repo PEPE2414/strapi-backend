@@ -162,15 +162,37 @@ export function getBucketsForToday(): CrawlBucket[] {
     priority: 'high'
   });
   
-  // Add job boards as secondary sources (after working sources are confirmed)
+  // Add optimized job boards as secondary sources (after working sources are confirmed)
   buckets.push({
-    id: 'job-boards-secondary',
-    name: 'Job Boards (Secondary)',
+    id: 'optimized-job-boards',
+    name: 'Optimized Job Boards (Secondary)',
+    sources: [
+      // High-volume, reliable job board scrapers
+      'optimized-boards'
+    ],
+    priority: 'medium'
+  });
+  
+  // Add working job boards as tertiary sources
+  buckets.push({
+    id: 'working-job-boards',
+    name: 'Working Job Boards (Tertiary)',
+    sources: [
+      // Known working job board scrapers
+      'indeed-uk', 'reed-working', 'working-boards'
+    ],
+    priority: 'low'
+  });
+  
+  // Add reliable university job boards as tertiary sources
+  buckets.push({
+    id: 'university-job-boards',
+    name: 'University Job Boards (Tertiary)',
     sources: [
       // Only the most reliable job boards
       'gradcracker', 'joblift', 'savethestudent', 'jobsacuk', 'studentcircus', 'gradsmart'
     ],
-    priority: 'medium'
+    priority: 'low'
   });
   
   return buckets;

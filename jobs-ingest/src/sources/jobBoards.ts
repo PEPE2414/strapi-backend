@@ -145,9 +145,14 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   const jobs: CanonicalJob[] = [];
 
   try {
-    // Strategy 1: Try sitemap discovery first
+    // Strategy 1: Try sitemap discovery first (with better error handling)
     console.log(`📋 Trying sitemap discovery for ${board.name}...`);
-    const jobUrls = await discoverJobUrls(board.sitemapUrl, 50);
+    let jobUrls: string[] = [];
+    try {
+      jobUrls = await discoverJobUrls(board.sitemapUrl, 50);
+    } catch (error) {
+      console.warn(`Sitemap discovery failed for ${board.name}:`, error instanceof Error ? error.message : String(error));
+    }
     
     if (jobUrls.length > 0) {
       console.log(`📊 Found ${jobUrls.length} job URLs from sitemap`);
@@ -163,14 +168,15 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
           } else {
             console.log(`⏭️  No job found on page: ${url}`);
           }
-          }
         } catch (error) {
           console.warn(`Failed to scrape job page ${url}:`, error instanceof Error ? error.message : String(error));
         }
         
-        // Add delay between requests
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Add delay between requests to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
       }
+    } else {
+      console.log(`📋 No job URLs found in sitemap for ${board.name}`);
     }
 
     // Strategy 2: If sitemap didn't work, try search pages

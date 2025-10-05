@@ -21,6 +21,7 @@ import {
 import { 
   scrapeWorkingJobBoards, scrapeIndeedUK, scrapeReedWorking 
 } from './sources/workingJobBoards';
+import { scrapeOptimizedJobBoards } from './sources/optimizedJobBoards';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -192,6 +193,9 @@ async function runAll() {
         } else if (source === 'working-boards') {
           console.log(`🔄 Scraping Working Job Boards`);
           sourceJobs = await limiter.schedule(() => scrapeWorkingJobBoards());
+        } else if (source === 'optimized-boards') {
+          console.log(`🔄 Scraping Optimized Job Boards`);
+          sourceJobs = await limiter.schedule(() => scrapeOptimizedJobBoards());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);
