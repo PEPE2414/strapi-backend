@@ -145,66 +145,30 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on job boards that cover multiple companies (daily)
+  // Focus on KNOWN WORKING sources first
   buckets.push({
-    id: 'job-boards-daily',
-    name: 'Job Boards (Daily)',
+    id: 'working-sources',
+    name: 'Working Sources (Daily)',
     sources: [
-      // High-volume job boards
-      'targetjobs', 'milkround', 'prospects', 'ratemyplacement', 'brightnetwork',
-      'studentjob', 'e4s', 'ratemyapprenticeship', 'workinstartups', 'totaljobs',
-      'reed', 'escapethecity', 'gradcracker', 'joblift', 'savethestudent',
-      'jobsacuk', 'studentcircus', 'gradsmart'
+      // Known working Greenhouse sources
+      'greenhouse:stripe', 'greenhouse:airbnb', 'greenhouse:spotify', 'greenhouse:lyft',
+      'greenhouse:dropbox', 'greenhouse:slack', 'greenhouse:zoom', 'greenhouse:shopify',
+      'greenhouse:mailchimp', 'greenhouse:twilio', 'greenhouse:coinbase', 'greenhouse:discord',
+      
+      // Known working Lever sources
+      'lever:canva', 'lever:notion', 'lever:linear', 'lever:vercel', 'lever:netlify',
+      'lever:supabase', 'lever:planetscale', 'lever:railway', 'lever:render'
     ],
     priority: 'high'
   });
   
-  // Rotate through individual companies (weekly rotation)
-  
-  // Greenhouse companies (rotate weekly)
-  const greenhouseCompanies = [
-    'stripe', 'airbnb', 'spotify', 'lyft', 'uber', 'dropbox', 'slack', 'zoom',
-    'shopify', 'squarespace', 'mailchimp', 'twilio', 'coinbase', 'robinhood',
-    'discord', 'figma', 'notion', 'linear', 'vercel', 'netlify', 'supabase'
-  ];
-  const selectedGreenhouse = greenhouseCompanies[(weekOfMonth - 1) % greenhouseCompanies.length];
-  
-  // Lever companies (rotate weekly)
-  const leverCompanies = [
-    'canva', 'linear', 'vercel', 'netlify', 'supabase', 'planetscale', 'railway',
-    'render', 'hashicorp', 'databricks', 'snowflake', 'palantir', 'anthropic',
-    'openai', 'stability', 'midjourney', 'replicate', 'huggingface', 'cohere'
-  ];
-  const selectedLever = leverCompanies[(weekOfMonth - 1) % leverCompanies.length];
-  
-  // Workday companies (rotate weekly)
-  const workdayCompanies = [
-    'google', 'microsoft', 'amazon', 'meta', 'apple', 'netflix', 'tesla', 'nvidia',
-    'intel', 'amd', 'oracle', 'salesforce', 'adobe', 'cisco', 'vmware'
-  ];
-  const selectedWorkday = workdayCompanies[(weekOfMonth - 1) % workdayCompanies.length];
-  
+  // Add job boards as secondary sources (after working sources are confirmed)
   buckets.push({
-    id: 'company-rotation-weekly',
-    name: 'Company Rotation (Weekly)',
+    id: 'job-boards-secondary',
+    name: 'Job Boards (Secondary)',
     sources: [
-      `greenhouse:${selectedGreenhouse}`,
-      `lever:${selectedLever}`,
-      `workday:${selectedWorkday}`
-    ],
-    priority: 'medium'
-  });
-  
-  // Add sitemap sources for additional coverage
-  buckets.push({
-    id: 'sitemap-sources',
-    name: 'Sitemap Sources (Daily)',
-    sources: [
-      'https://www.reed.co.uk/sitemap.xml',
-      'https://www.totaljobs.com/sitemap.xml',
-      'https://www.monster.co.uk/sitemap.xml',
-      'https://targetjobs.co.uk/sitemap.xml',
-      'https://www.milkround.com/sitemap.xml'
+      // Only the most reliable job boards
+      'gradcracker', 'joblift', 'savethestudent', 'jobsacuk', 'studentcircus', 'gradsmart'
     ],
     priority: 'medium'
   });

@@ -134,9 +134,10 @@ const JOB_BOARDS = {
 };
 
 export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> {
+  console.log(`🚀 Starting job board scraper for: ${boardKey}`);
   const board = JOB_BOARDS[boardKey as keyof typeof JOB_BOARDS];
   if (!board) {
-    console.warn(`Unknown job board: ${boardKey}`);
+    console.warn(`❌ Unknown job board: ${boardKey}`);
     return [];
   }
 
@@ -154,9 +155,14 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
       // Process first 20 URLs from sitemap
       for (const url of jobUrls.slice(0, 20)) {
         try {
+          console.log(`🔍 Scraping job page: ${url}`);
           const job = await scrapeJobPage(url, board.name);
           if (job) {
             jobs.push(job);
+            console.log(`✅ Added job: ${job.title} at ${job.company?.name}`);
+          } else {
+            console.log(`⏭️  No job found on page: ${url}`);
+          }
           }
         } catch (error) {
           console.warn(`Failed to scrape job page ${url}:`, error instanceof Error ? error.message : String(error));
