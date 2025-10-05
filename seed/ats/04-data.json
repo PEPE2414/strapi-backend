@@ -1,2005 +1,1593 @@
 [
   {
-    "phrase": "kpi tracking",
+    "phrase": "erp",
     "category": "good",
-    "weight": 2.5,
-    "suggestion": "performance metrics, data analysis, dashboard reporting",
-    "variants": ["kpi", "key performance indicator"],
+    "weight": 2.7,
+    "suggestion": "enterprise resource planning, netsuite, business process integration",
+    "variants": ["enterprise resource planning"],
     "field": "Business Management",
-    "role": "Analyst"
+    "role": "Systems Analyst"
   },
   {
-    "phrase": "tried my hand at",
+    "phrase": "had a part in",
     "category": "weak",
-    "suggestion": "developed, implemented, managed",
-    "variants": [],
+    "suggestion": "advanced, contributed expertise to, provided input on",
+    "variants": ["took part"],
     "field": null,
     "role": null
   },
   {
-    "phrase": "all the bells and whistles",
+    "phrase": "drinking our own champagne",
     "category": "bad",
-    "weight": -2.6,
-    "suggestion": "comprehensive features, advanced functionality, fully-equipped",
-    "variants": [],
+    "weight": -2.8,
+    "suggestion": "internal advocacy, product self-testing, demonstrating product value",
+    "variants": ["drink our own champagne"],
     "field": null,
     "role": null
   },
   {
-    "phrase": "bim",
-    "category": "good",
-    "weight": 2.9,
-    "suggestion": "revit, navisworks, building information modeling",
-    "variants": ["building information modelling"],
-    "field": "Architecture",
-    "role": "BIM Coordinator"
-  },
-  {
-    "phrase": "allotted",
-    "category": "weak",
-    "suggestion": "assigned, delegated, managed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "analysis paralysis",
-    "category": "bad",
-    "suggestion": "decisive, action-oriented, efficient",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "rust",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "systems programming, memory safety, performance",
-    "variants": ["rustlang"],
-    "field": "Computer Science",
-    "role": "Systems Engineer"
-  },
-  {
-    "phrase": "appraised",
-    "category": "good",
-    "suggestion": "evaluated, assessed, valued",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "bang for the buck",
-    "category": "bad",
-    "suggestion": "cost-effective, high roi, value for money",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "gaap",
+    "phrase": "monte carlo simulation",
     "category": "good",
     "weight": 2.8,
-    "suggestion": "ifrs, accounting principles, financial reporting",
-    "variants": ["generally accepted accounting principles"],
+    "suggestion": "stochastic modelling, risk modelling, quantitative risk analysis",
+    "variants": ["monte carlo method"],
     "field": "Accounting & Finance",
-    "role": "Accountant"
+    "role": "Quantitative Analyst"
   },
   {
-    "phrase": "put forward",
+    "phrase": "did the groundwork",
     "category": "weak",
-    "suggestion": "proposed, recommended, suggested",
-    "variants": [],
+    "suggestion": "prepared, founded, established basis for",
+    "variants": ["laid the groundwork"],
     "field": null,
     "role": null
   },
   {
-    "phrase": "best of breed",
+    "phrase": "boil the kettle",
     "category": "bad",
-    "suggestion": "industry-leading, top-tier, high-performance",
-    "variants": [],
+    "suggestion": "made tea, office duties, administrative tasks",
+    "variants": ["made the tea"],
     "field": null,
     "role": null
   },
   {
-    "phrase": "flow cytometry",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "facs, cell sorting, immunophenotyping",
-    "variants": ["facs"],
-    "field": "Biology",
-    "role": "Immunologist"
-  },
-  {
-    "phrase": "assembled",
-    "category": "good",
-    "suggestion": "constructed, built, compiled",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was given the task of helping",
-    "category": "weak",
-    "suggestion": "supported, facilitated, enabled",
-    "variants": ["given the task of assisting"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "best practice",
-    "category": "bad",
-    "suggestion": "optimal method, industry standard, proven technique",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "docker swarm",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "kubernetes, container orchestration, docker",
-    "variants": [],
-    "field": "Software Engineering",
-    "role": "DevOps Engineer"
-  },
-  {
-    "phrase": "was a participant in",
-    "category": "weak",
-    "suggestion": "contributed to, engaged in, executed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "boiling the frog",
-    "category": "bad",
-    "weight": -2.9,
-    "suggestion": "addressing gradual issues, proactive problem-solving, monitoring incremental change",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "tort law",
-    "category": "good",
-    "weight": 2.5,
-    "suggestion": "civil litigation, negligence, personal injury",
-    "variants": [],
-    "field": "Law",
-    "role": "Paralegal"
-  },
-  {
-    "phrase": "assessed",
-    "category": "good",
-    "suggestion": "evaluated, analysed, measured",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "drew up",
-    "category": "weak",
-    "suggestion": "drafted, designed, created",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "boots on the ground",
-    "category": "bad",
-    "suggestion": "fieldwork, direct operational support, on-site presence",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "power electronics",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "inverters, converters, circuit design",
-    "variants": [],
-    "field": "Electrical Engineering",
-    "role": "Power Engineer"
-  },
-  {
-    "phrase": "assigned",
-    "category": "good",
-    "suggestion": "delegated, allocated, appointed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was an understudy to",
-    "category": "weak",
-    "suggestion": "supported, trained under, assisted",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "bring to the table",
-    "category": "bad",
-    "suggestion": "contribute, offer, provide",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "crispr",
+    "phrase": "mlops",
     "category": "good",
     "weight": 2.9,
-    "suggestion": "gene editing, cas9, molecular biology",
-    "variants": ["crispr-cas9"],
-    "field": "Biology",
-    "role": "Geneticist"
-  },
-  {
-    "phrase": "etl processes",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "data integration, data warehousing, sql",
-    "variants": ["extract transform load"],
+    "suggestion": "machine learning operations, model deployment, kubeflow",
+    "variants": ["ml ops"],
     "field": "Data Science",
-    "role": "Data Engineer"
+    "role": "ML Engineer"
   },
   {
-    "phrase": "worked shifts",
-    "category": "weak",
-    "suggestion": "managed responsibilities across shifts, provided continuous coverage, demonstrated flexibility",
+    "phrase": "amplified",
+    "category": "good",
+    "suggestion": "magnified, intensified, heightened",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "build a bridge",
+    "phrase": "lipstick on a pig",
     "category": "bad",
-    "suggestion": "establish connection, foster collaboration, improve relations",
+    "suggestion": "superficial improvements, cosmetic changes, surface-level enhancements",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "differential diagnosis",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "clinical reasoning, medical diagnosis, patient assessment",
-    "variants": [],
-    "field": "Medicine",
-    "role": "Doctor"
-  },
-  {
-    "phrase": "attained",
-    "category": "good",
-    "suggestion": "achieved, accomplished, secured",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "tasked with the responsibility of",
-    "category": "weak",
-    "suggestion": "managed, executed, delivered",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "burning the midnight oil",
-    "category": "bad",
-    "suggestion": "worked diligently, met tight deadlines, committed to project completion",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "swiftui",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "swift, ios development, apple development",
-    "variants": [],
-    "field": "Computer Science",
-    "role": "iOS Developer"
-  },
-  {
-    "phrase": "augmented",
-    "category": "good",
-    "suggestion": "enhanced, increased, expanded",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "did my part",
-    "category": "weak",
-    "suggestion": "contributed to, fulfilled my role by, played a part in",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "byod",
-    "category": "bad",
-    "suggestion": "bring your own device policy, mobile device management, it policy",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "geopolitics",
-    "category": "good",
-    "weight": 2.4,
-    "suggestion": "international relations, political geography, foreign policy",
-    "variants": [],
-    "field": "Politics / International Relations",
-    "role": "Analyst"
-  },
-  {
-    "phrase": "audited",
-    "category": "good",
-    "suggestion": "reviewed, examined, inspected",
-    "variants": [],
-    "field": "Accounting & Finance",
-    "role": "Auditor"
-  },
-  {
-    "phrase": "was put on a project",
-    "category": "weak",
-    "suggestion": "contributed to, developed, managed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "captain of the ship",
-    "category": "bad",
-    "suggestion": "leader, manager, person in charge",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "signal processing",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "dsp, fourier analysis, matlab",
-    "variants": ["digital signal processing"],
-    "field": "Electrical Engineering",
-    "role": "Signal Processing Engineer"
-  },
-  {
-    "phrase": "nist framework",
-    "category": "good",
-    "weight": 2.9,
-    "suggestion": "cybersecurity, risk management, iso 27001",
-    "variants": ["nist"],
-    "field": "Computer Science",
-    "role": "Cybersecurity Analyst"
-  },
-  {
-    "phrase": "put my skills to use",
-    "category": "weak",
-    "suggestion": "applied, utilised, implemented",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "champion",
-    "category": "bad",
-    "suggestion": "advocate, proponent, lead",
-    "variants": ["championed"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "pharmacology",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "drug action, pharmacokinetics, therapeutics",
-    "variants": [],
-    "field": "Medicine",
-    "role": "Pharmacist"
-  },
-  {
-    "phrase": "balanced",
-    "category": "good",
-    "suggestion": "reconciled, prioritised, managed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "had to assist with",
-    "category": "weak",
-    "suggestion": "supported, facilitated, provided assistance for",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "client-facing",
-    "category": "bad",
-    "suggestion": "managed client relationships, presented to clients, gathered client requirements",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "rics",
-    "category": "good",
-    "weight": 3.0,
-    "suggestion": "chartered surveyor, property valuation, building surveying",
-    "variants": ["royal institution of chartered surveyors"],
-    "field": "Civil Engineering",
-    "role": "Chartered Surveyor"
-  },
-  {
-    "phrase": "briefed",
-    "category": "good",
-    "suggestion": "informed, updated, instructed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was tasked with assisting",
-    "category": "weak",
-    "suggestion": "supported, enabled, contributed to",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "cloud-native",
-    "category": "bad",
-    "suggestion": "designed for cloud, microservices architecture, containerised applications",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "psychoanalysis",
-    "category": "good",
-    "weight": 2.3,
-    "suggestion": "freudian theory, psychodynamic therapy, clinical psychology",
-    "variants": [],
-    "field": "Psychology",
-    "role": "Psychologist"
-  },
-  {
-    "phrase": "computer vision",
+    "phrase": "staad.pro",
     "category": "good",
     "weight": 2.8,
-    "suggestion": "opencv, image processing, machine learning",
-    "variants": ["cv"],
-    "field": "Data Science",
-    "role": "Computer Vision Engineer"
-  },
-  {
-    "phrase": "built",
-    "category": "good",
-    "suggestion": "created, developed, constructed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "worked as an assistant",
-    "category": "weak",
-    "suggestion": "supported, coordinated, facilitated",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "color outside the lines",
-    "category": "bad",
-    "suggestion": "innovative, creative, unconventional approach",
-    "variants": ["colour outside the lines"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "sap",
-    "category": "good",
-    "weight": 2.8,
-    "suggestion": "erp system, oracle, business process management",
-    "variants": [],
-    "field": "Business Management",
-    "role": "Business Analyst"
-  },
-  {
-    "phrase": "calculated",
-    "category": "good",
-    "suggestion": "computed, quantified, estimated",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "chipped in",
-    "category": "weak",
-    "suggestion": "contributed, assisted, supported",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "complexity",
-    "category": "bad",
-    "suggestion": "challenging, multi-faceted, sophisticated",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "wind load analysis",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "structural engineering, eurocode 1, building design",
-    "variants": [],
+    "suggestion": "structural analysis software, finite element method, steel frame design",
+    "variants": ["staad pro"],
     "field": "Civil Engineering",
     "role": "Structural Engineer"
   },
   {
-    "phrase": "captured",
-    "category": "good",
-    "suggestion": "recorded, documented, acquired",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was brought in to",
+    "phrase": "was given a role",
     "category": "weak",
-    "suggestion": "hired to, tasked with, responsible for",
+    "suggestion": "appointed to, selected for, assumed the position of",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "cook the books",
+    "phrase": "move fast and break things",
     "category": "bad",
-    "weight": -3.0,
-    "suggestion": "financial accounting, auditing, ethical conduct",
+    "suggestion": "rapid innovation, iterative progress, agile development",
     "variants": [],
-    "field": "Accounting & Finance",
+    "field": null,
     "role": null
   },
   {
-    "phrase": "quantum field theory",
+    "phrase": "bioinformatics pipelines",
     "category": "good",
-    "weight": 2.9,
-    "suggestion": "particle physics, standard model, theoretical physics",
-    "variants": ["qft"],
-    "field": "Physics",
-    "role": "Theoretical Physicist"
+    "weight": 2.8,
+    "suggestion": "genomic data analysis, next-generation sequencing, computational biology",
+    "variants": ["ngs pipeline"],
+    "field": "Biology",
+    "role": "Bioinformatician"
   },
   {
-    "phrase": "semrush",
+    "phrase": "annexed",
+    "category": "good",
+    "suggestion": "appended, incorporated, added",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped with data",
+    "category": "weak",
+    "suggestion": "collated datasets, processed information, cleansed data",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "no-brainer",
+    "category": "bad",
+    "suggestion": "clear decision, obvious choice, straightforward solution",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "elixir",
     "category": "good",
     "weight": 2.6,
-    "suggestion": "seo, keyword analysis, competitor research",
+    "suggestion": "phoenix framework, functional programming, concurrent applications",
     "variants": [],
-    "field": "Marketing",
-    "role": "SEO Specialist"
+    "field": "Software Engineering",
+    "role": "Backend Developer"
   },
   {
-    "phrase": "acted as",
+    "phrase": "had a go",
     "category": "weak",
-    "suggestion": "performed the role of, served as, functioned as",
+    "suggestion": "trialled, tested, prototyped",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "corporate warrior",
+    "phrase": "open door policy",
     "category": "bad",
-    "suggestion": "driven professional, competitive, high-achiever",
+    "suggestion": "approachable leadership, transparent communication, fostered open dialogue",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "hubspot",
+    "phrase": "ethnographic studies",
     "category": "good",
     "weight": 2.5,
-    "suggestion": "crm, inbound marketing, salesforce",
-    "variants": [],
-    "field": "Marketing",
-    "role": "Marketing Manager"
+    "suggestion": "qualitative field research, participant observation, cultural anthropology",
+    "variants": ["ethnography"],
+    "field": "Psychology",
+    "role": "Researcher"
   },
   {
-    "phrase": "centralised",
+    "phrase": "articulated",
     "category": "good",
-    "suggestion": "consolidated, integrated, unified",
-    "variants": ["centralized"],
+    "suggestion": "enunciated, communicated clearly, expressed",
+    "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "did clerical work",
+    "phrase": "gave it a shot",
     "category": "weak",
-    "suggestion": "managed records, processed documentation, provided administrative support",
+    "suggestion": "piloted, undertook, attempted",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "cross-functional",
+    "phrase": "paralysis by analysis",
     "category": "bad",
-    "suggestion": "collaborated with multiple departments, worked with diverse teams, liaised between engineering and marketing",
+    "suggestion": "over-thinking, indecisiveness, excessive deliberation",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "patient triage",
+    "phrase": "mechatronics",
     "category": "good",
     "weight": 2.7,
-    "suggestion": "emergency medicine, patient assessment, clinical prioritisation",
-    "variants": [],
-    "field": "Nursing",
-    "role": "A&E Nurse"
-  },
-  {
-    "phrase": "clarified",
-    "category": "good",
-    "suggestion": "explained, defined, elucidated",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "mucked in",
-    "category": "weak",
-    "suggestion": "collaborated, supported the team, contributed to",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "culture fit",
-    "category": "bad",
-    "suggestion": "collaborative team member, aligned with company values, positive attitude",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "hvac design",
-    "category": "good",
-    "weight": 2.7,
-    "suggestion": "building services engineering, thermodynamics, energy modelling",
+    "suggestion": "robotics, automation, electromechanical systems",
     "variants": [],
     "field": "Mechanical Engineering",
-    "role": "HVAC Engineer"
+    "role": "Mechatronics Engineer"
   },
   {
-    "phrase": "classified",
+    "phrase": "ascertained",
     "category": "good",
-    "suggestion": "categorised, organised, sorted",
+    "suggestion": "determined, verified, confirmed",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "was an assistant",
+    "phrase": "was a helping hand",
     "category": "weak",
-    "suggestion": "supported, coordinated for, managed administration for",
+    "suggestion": "aided, provided support, facilitated",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "cutting-edge",
+    "phrase": "put a pin in it",
     "category": "bad",
-    "suggestion": "advanced, innovative, modern",
+    "suggestion": "postpone, pause discussion, revisit later",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "social policy",
+    "phrase": "generative adversarial networks",
     "category": "good",
-    "weight": 2.4,
-    "suggestion": "welfare state, public policy, social research",
-    "variants": [],
-    "field": "Politics / International Relations",
-    "role": "Policy Advisor"
+    "weight": 2.9,
+    "suggestion": "gans, deep learning, image synthesis",
+    "variants": ["gans"],
+    "field": "Data Science",
+    "role": "AI Researcher"
   },
   {
-    "phrase": "user journey mapping",
-    "category": "good",
-    "weight": 2.6,
-    "suggestion": "ux research, customer experience, service design",
-    "variants": [],
-    "field": "Design",
-    "role": "UX Designer"
-  },
-  {
-    "phrase": "coached",
-    "category": "good",
-    "suggestion": "trained, mentored, guided",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "had to deal with",
-    "category": "weak",
-    "suggestion": "managed, handled, resolved",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "deliverable",
-    "category": "bad",
-    "suggestion": "report, project outcome, tangible result",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "options and derivatives",
+    "phrase": "istio",
     "category": "good",
     "weight": 2.8,
-    "suggestion": "financial instruments, risk management, quantitative finance",
+    "suggestion": "service mesh, microservices, envoy proxy",
     "variants": [],
-    "field": "Accounting & Finance",
-    "role": "Quant Analyst"
+    "field": "Software Engineering",
+    "role": "Cloud Native Engineer"
   },
   {
-    "phrase": "collated",
-    "category": "good",
-    "suggestion": "compiled, gathered, organised",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "ran the office",
+    "phrase": "handled the phones",
     "category": "weak",
-    "suggestion": "managed office operations, coordinated administrative tasks, oversaw facility management",
+    "suggestion": "managed inbound calls, provided telephone support, directed inquiries",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "digital transformation",
+    "phrase": "put lipstick on a pig",
     "category": "bad",
-    "suggestion": "implemented new software, automated processes, improved digital services",
+    "suggestion": "made superficial changes, cosmetic alterations, minor aesthetic improvements",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "clinical trials",
-    "category": "good",
-    "weight": 2.8,
-    "suggestion": "gcp, research methodology, data collection",
-    "variants": [],
-    "field": "Medicine",
-    "role": "Clinical Research Associate"
-  },
-  {
-    "phrase": "commanded",
-    "category": "good",
-    "suggestion": "led, directed, managed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was a helper",
-    "category": "weak",
-    "suggestion": "assisted, supported, provided aid",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "disrupt",
-    "category": "bad",
-    "suggestion": "innovate, transform the market, create new solutions",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "typography",
-    "category": "good",
-    "weight": 2.4,
-    "suggestion": "graphic design, layout, font pairing",
-    "variants": [],
-    "field": "Design",
-    "role": "Graphic Designer"
-  },
-  {
-    "phrase": "communicated",
-    "category": "good",
-    "suggestion": "conveyed, reported, liaised",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "helped with sales",
-    "category": "weak",
-    "suggestion": "supported sales team, generated leads, assisted with client accounts",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "double-click",
-    "category": "bad",
-    "suggestion": "examine in more detail, analyse further, focus on",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "statistical mechanics",
+    "phrase": "epidemiology",
     "category": "good",
     "weight": 2.7,
-    "suggestion": "thermodynamics, condensed matter physics, computational physics",
+    "suggestion": "public health, statistical analysis, disease patterns",
     "variants": [],
-    "field": "Physics",
-    "role": "Physicist"
+    "field": "Medicine",
+    "role": "Epidemiologist"
   },
   {
-    "phrase": "compared",
+    "phrase": "auditioned",
     "category": "good",
-    "suggestion": "analysed, contrasted, benchmarked",
+    "suggestion": "trialed for, performed for, demonstrated ability",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "was on call",
+    "phrase": "was a resource for",
     "category": "weak",
-    "suggestion": "provided out-of-hours support, managed emergency situations, ensured 24/7 coverage",
+    "suggestion": "advised on, provided expertise in, supported with",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "drink from the firehose",
+    "phrase": "put the pedal to the metal",
     "category": "bad",
-    "suggestion": "rapid onboarding, intensive learning, quick adaptation",
+    "suggestion": "accelerated progress, worked at maximum pace, increased output",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "hermeneutics",
+    "phrase": "balanced scorecard",
     "category": "good",
-    "weight": 2.2,
-    "suggestion": "textual interpretation, critical theory, philosophy",
+    "weight": 2.5,
+    "suggestion": "strategic performance management, kpi dashboard, business metrics",
+    "variants": [],
+    "field": "Business Management",
+    "role": "Strategy Manager"
+  },
+  {
+    "phrase": "bolstered",
+    "category": "good",
+    "suggestion": "strengthened, reinforced, supported",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did odd jobs",
+    "category": "weak",
+    "suggestion": "handled various tasks, provided general support, assisted with multiple duties",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "push the envelope",
+    "category": "bad",
+    "suggestion": "innovate beyond limits, challenge boundaries, pioneer new methods",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "comparative politics",
+    "category": "good",
+    "weight": 2.4,
+    "suggestion": "political systems analysis, cross-national research, governance studies",
+    "variants": [],
+    "field": "Politics / International Relations",
+    "role": "Political Scientist"
+  },
+  {
+    "phrase": "branded",
+    "category": "good",
+    "suggestion": "marketed, positioned, created identity for",
+    "variants": [],
+    "field": "Marketing",
+    "role": "Brand Specialist"
+  },
+  {
+    "phrase": "was on the team",
+    "category": "weak",
+    "suggestion": "functioned as a team member, worked collaboratively, contributed to team goals",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "raise the bar",
+    "category": "bad",
+    "suggestion": "set higher standards, improve quality, exceed previous benchmarks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "rf engineering",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "radio frequency, microwave engineering, antenna design",
+    "variants": ["radio frequency engineering"],
+    "field": "Electrical Engineering",
+    "role": "RF Engineer"
+  },
+  {
+    "phrase": "blockchain",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "distributed ledger technology, smart contracts, ethereum",
+    "variants": ["dlt"],
+    "field": "Computer Science",
+    "role": "Blockchain Developer"
+  },
+  {
+    "phrase": "assisted with the task of",
+    "category": "weak",
+    "suggestion": "aided in, supported the execution of, facilitated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reach out",
+    "category": "bad",
+    "suggestion": "contact, communicate with, connect with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "palliative care",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "end-of-life care, symptom management, holistic patient support",
+    "variants": [],
+    "field": "Nursing",
+    "role": "Palliative Care Nurse"
+  },
+  {
+    "phrase": "broadened",
+    "category": "good",
+    "suggestion": "expanded, widened, extended",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did the legwork",
+    "category": "weak",
+    "suggestion": "conducted preliminary research, gathered information, made initial preparations",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "reinventing the square wheel",
+    "category": "bad",
+    "suggestion": "creating inefficient solutions, ignoring proven methods, overcomplicating tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "serp analysis",
+    "category": "good",
+    "weight": 2.5,
+    "suggestion": "search engine results page, seo strategy, keyword ranking",
+    "variants": [],
+    "field": "Marketing",
+    "role": "SEO Analyst"
+  },
+  {
+    "phrase": "brokered",
+    "category": "good",
+    "suggestion": "negotiated, arranged, mediated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was a subordinate to",
+    "category": "weak",
+    "suggestion": "executed tasks for, provided support to, operated under the direction of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "right-size",
+    "category": "bad",
+    "suggestion": "restructure, optimise headcount, align resources",
+    "variants": ["rightsizing"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "toxicology",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "risk assessment, chemical safety, pharmacology",
+    "variants": [],
+    "field": "Chemistry",
+    "role": "Toxicologist"
+  },
+  {
+    "phrase": "burnished",
+    "category": "good",
+    "suggestion": "polished, enhanced, perfected",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "helped get it done",
+    "category": "weak",
+    "suggestion": "contributed to completion, ensured delivery, facilitated progress",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "run the numbers",
+    "category": "bad",
+    "suggestion": "perform financial analysis, calculate costs, create a forecast",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "intellectual property law",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "ip law, patents, trademarks",
+    "variants": ["ip law"],
+    "field": "Law",
+    "role": "IP Lawyer"
+  },
+  {
+    "phrase": "calibrated",
+    "category": "good",
+    "suggestion": "adjusted, fine-tuned, standardised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did some of the work",
+    "category": "weak",
+    "suggestion": "executed specific tasks, handled portions of the project, was responsible for sections",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "sacred cow",
+    "category": "bad",
+    "suggestion": "unchallengeable assumption, long-standing tradition, protected project",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "power system analysis",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "load flow studies, fault analysis, power grid stability",
+    "variants": [],
+    "field": "Electrical Engineering",
+    "role": "Power Systems Engineer"
+  },
+  {
+    "phrase": "canvassed",
+    "category": "good",
+    "suggestion": "surveyed, polled, solicited",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was an extra pair of hands",
+    "category": "weak",
+    "suggestion": "provided additional support, increased team capacity, assisted with workload",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "secret sauce",
+    "category": "bad",
+    "suggestion": "proprietary algorithm, unique methodology, competitive advantage",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "genomics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "dna sequencing, gene expression, bioinformatics",
+    "variants": [],
+    "field": "Biology",
+    "role": "Genomic Scientist"
+  },
+  {
+    "phrase": "capitalised on",
+    "category": "good",
+    "suggestion": "leveraged, took advantage of, utilised",
+    "variants": ["capitalized on"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "provided input",
+    "category": "weak",
+    "suggestion": "advised on strategy, recommended improvements, contributed ideas to",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "silver bullet",
+    "category": "bad",
+    "suggestion": "simple solution, perfect fix, panacea",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "brand identity design",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "logo design, visual identity, style guides",
+    "variants": [],
+    "field": "Design",
+    "role": "Brand Designer"
+  },
+  {
+    "phrase": "captured",
+    "category": "good",
+    "suggestion": "documented, recorded, seized",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "shadowed",
+    "category": "weak",
+    "suggestion": "observed, learned from, trained under",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "singing from the same hymn sheet",
+    "category": "bad",
+    "suggestion": "aligned on strategy, consistent messaging, unified approach",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "irr calculation",
+    "category": "good",
+    "weight": 2.6,
+    "suggestion": "internal rate of return, npv, capital budgeting",
+    "variants": ["internal rate of return"],
+    "field": "Accounting & Finance",
+    "role": "Financial Analyst"
+  },
+  {
+    "phrase": "catalogued",
+    "category": "good",
+    "suggestion": "indexed, classified, organised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was junior",
+    "category": "weak",
+    "suggestion": "developed foundational skills, supported senior staff, executed entry-level tasks",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "skin in the game",
+    "category": "bad",
+    "suggestion": "vested interest, shared risk, personal investment",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "phenomenology",
+    "category": "good",
+    "weight": 2.3,
+    "suggestion": "qualitative research, lived experience, philosophical inquiry",
     "variants": [],
     "field": "Philosophy",
     "role": "Researcher"
   },
   {
-    "phrase": "compiled",
+    "phrase": "cautioned",
     "category": "good",
-    "suggestion": "gathered, collected, assembled",
+    "suggestion": "warned, advised against, alerted",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "did what was asked",
+    "phrase": "tried to help out",
     "category": "weak",
-    "suggestion": "fulfilled requirements, executed tasks efficiently, met objectives",
+    "suggestion": "provided aid, offered assistance, gave support",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "eco-friendly",
+    "phrase": "special sauce",
     "category": "bad",
-    "suggestion": "sustainable, reduced carbon footprint, environmentally compliant",
-    "variants": ["eco friendly"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "a/v production",
-    "category": "good",
-    "weight": 2.5,
-    "suggestion": "video editing, sound mixing, live streaming",
-    "variants": ["audiovisual production"],
-    "field": "Communications",
-    "role": "Production Assistant"
-  },
-  {
-    "phrase": "concluded",
-    "category": "good",
-    "suggestion": "finished, finalised, determined",
+    "suggestion": "unique feature, proprietary method, key differentiator",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "tried to fix",
-    "category": "weak",
-    "suggestion": "resolved, repaired, debugged",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "efforting",
-    "category": "bad",
-    "suggestion": "working on, attempting, undertaking",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "wound care",
+    "phrase": "aseptic technique",
     "category": "good",
-    "weight": 2.5,
-    "suggestion": "dressing changes, infection control, tissue viability",
+    "weight": 2.6,
+    "suggestion": "sterile procedure, infection control, microbiology",
     "variants": [],
     "field": "Nursing",
-    "role": "Nurse"
+    "role": "Theatre Nurse"
   },
   {
-    "phrase": "conducted",
+    "phrase": "certified",
     "category": "good",
-    "suggestion": "performed, executed, carried out",
+    "suggestion": "accredited, qualified, credentialed",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "was a temp",
+    "phrase": "had to do",
     "category": "weak",
-    "suggestion": "provided temporary support, adapted to new environments, quickly learned new systems",
+    "suggestion": "undertook, performed, fulfilled",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "empower",
+    "phrase": "square peg in a round hole",
     "category": "bad",
-    "suggestion": "enable, delegate responsibility, provide resources",
+    "suggestion": "mismatched skills, poor fit, incompatible role",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "econometric modelling",
+    "phrase": "motion capture",
+    "category": "good",
+    "weight": 2.7,
+    "suggestion": "mocap, 3d animation, vfx",
+    "variants": ["mocap"],
+    "field": "Design",
+    "role": "Animator"
+  },
+  {
+    "phrase": "challenged",
+    "category": "good",
+    "suggestion": "questioned, disputed, tested",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "filled the gap",
+    "category": "weak",
+    "suggestion": "provided cover, assumed temporary duties, ensured continuity",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "stakeholder",
+    "category": "bad",
+    "suggestion": "specify the group, client, internal team",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "six sigma green belt",
     "category": "good",
     "weight": 2.8,
-    "suggestion": "time-series analysis, regression, stata",
-    "variants": ["econometric modeling"],
-    "field": "Economics",
-    "role": "Economist"
+    "suggestion": "process improvement methodology, dmaic, lean principles",
+    "variants": ["green belt certified"],
+    "field": "Business Management",
+    "role": "Process Improvement Specialist"
   },
   {
-    "phrase": "conserved",
+    "phrase": "championed",
     "category": "good",
-    "suggestion": "saved, preserved, maintained",
+    "suggestion": "advocated for, promoted, drove",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "assisted in the development of",
+    "phrase": "was a trainee on",
     "category": "weak",
-    "suggestion": "co-developed, contributed to, supported the creation of",
+    "suggestion": "acquired skills in, gained proficiency in, completed training for",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "engagement",
+    "phrase": "state-of-the-art",
     "category": "bad",
-    "suggestion": "user interaction, employee participation, client communication",
+    "suggestion": "leading-edge technology, highly advanced, modern",
+    "variants": ["state of the art"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "quantum computing",
+    "category": "good",
+    "weight": 2.9,
+    "suggestion": "qubits, quantum algorithms, superposition",
+    "variants": [],
+    "field": "Physics",
+    "role": "Quantum Physicist"
+  },
+  {
+    "phrase": "channelled",
+    "category": "good",
+    "suggestion": "directed, guided, focused",
+    "variants": ["channeled"],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was given a chance to",
+    "category": "weak",
+    "suggestion": "capitalised on the opportunity to, successfully, executed",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "spectroscopy",
+    "phrase": "storytelling",
+    "category": "bad",
+    "suggestion": "communicating narratives, data presentation, persuasive communication",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "computational mechanics",
+    "category": "good",
+    "weight": 2.8,
+    "suggestion": "solid mechanics, finite element analysis, numerical simulation",
+    "variants": [],
+    "field": "Mechanical Engineering",
+    "role": "CAE Engineer"
+  },
+  {
+    "phrase": "charted",
+    "category": "good",
+    "suggestion": "mapped, graphed, outlined",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did some tasks",
+    "category": "weak",
+    "suggestion": "handled responsibilities, completed duties, performed assignments",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "swim lane",
+    "category": "bad",
+    "suggestion": "area of responsibility, distinct role, process flowchart",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "crm integration",
     "category": "good",
     "weight": 2.6,
-    "suggestion": "nmr, mass spectrometry, ftir",
+    "suggestion": "salesforce administration, api integration, customer data management",
     "variants": [],
-    "field": "Chemistry",
-    "role": "Analytical Chemist"
+    "field": "Marketing",
+    "role": "Marketing Technologist"
   },
   {
-    "phrase": "constructed",
+    "phrase": "chronicled",
     "category": "good",
-    "suggestion": "built, created, designed",
+    "suggestion": "recorded, documented, detailed",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "had my hands on",
+    "phrase": "was an underling",
     "category": "weak",
-    "suggestion": "managed, operated, utilised",
+    "suggestion": "supported senior management, executed assigned duties, operated as a team member",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "evangelist",
+    "phrase": "sync up",
     "category": "bad",
-    "suggestion": "advocate, brand ambassador, product specialist",
+    "suggestion": "meet, align, coordinate",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "go",
+    "phrase": "medical imaging analysis",
     "category": "good",
-    "weight": 2.4,
-    "suggestion": "golang, backend development, concurrency",
-    "variants": ["golang"],
-    "field": "Software Engineering",
-    "role": "Backend Developer"
+    "weight": 2.7,
+    "suggestion": "radiology, mri analysis, ct scan interpretation",
+    "variants": [],
+    "field": "Medicine",
+    "role": "Radiologist"
   },
   {
-    "phrase": "consulted",
+    "phrase": "circulated",
     "category": "good",
-    "suggestion": "advised, conferred, recommended",
+    "suggestion": "distributed, disseminated, publicised",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "had an input in",
+    "phrase": "did what i was told",
     "category": "weak",
-    "suggestion": "influenced, contributed to, shaped",
+    "suggestion": "followed directives, executed instructions, completed assigned work",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "face time",
+    "phrase": "take this offline",
     "category": "bad",
-    "suggestion": "in-person meetings, direct collaboration, stakeholder engagement",
-    "variants": ["facetime"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "autoclave operation",
-    "category": "good",
-    "weight": 2.2,
-    "suggestion": "sterilisation, laboratory equipment, safety procedures",
-    "variants": [],
-    "field": "Biology",
-    "role": "Lab Assistant"
-  },
-  {
-    "phrase": "converted",
-    "category": "good",
-    "suggestion": "transformed, changed, adapted",
+    "suggestion": "discuss separately, follow up later, address privately",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "did paperwork",
+    "phrase": "cited",
+    "category": "good",
+    "suggestion": "referenced, quoted, mentioned",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "clarified",
+    "category": "good",
+    "suggestion": "elucidated, explained, defined",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "pitched in",
     "category": "weak",
-    "suggestion": "processed documentation, managed records, handled administrative tasks",
+    "suggestion": "provided support, collaborated with team, contributed effort",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "fail fast",
+    "phrase": "tee up",
     "category": "bad",
-    "suggestion": "iterative development, rapid prototyping, learning from mistakes",
+    "suggestion": "prepare, arrange, facilitate",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "restructured",
+    "phrase": "co-authored",
     "category": "good",
-    "suggestion": "reorganised, redesigned, streamlined",
+    "suggestion": "collaborated on writing, jointly published, co-wrote",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "advised",
+    "phrase": "coalesced",
     "category": "good",
-    "suggestion": "recommended, consulted, guided",
+    "suggestion": "merged, united, combined",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "was in the loop",
+    "phrase": "had a meeting",
     "category": "weak",
-    "suggestion": "kept informed, participated in communications, collaborated with the team",
+    "suggestion": "conferred with, consulted on, strategised with",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "fire-fighting",
+    "phrase": "that's on my radar",
     "category": "bad",
-    "suggestion": "crisis management, reactive problem-solving, urgent issue resolution",
-    "variants": ["fire fighting"],
+    "suggestion": "i am aware of this, it is a priority, i am monitoring it",
+    "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "cost-benefit analysis",
+    "phrase": "collaborated",
     "category": "good",
-    "weight": 2.5,
-    "suggestion": "roi analysis, investment appraisal, economic evaluation",
-    "variants": ["cba"],
-    "field": "Economics",
-    "role": "Analyst"
-  },
-  {
-    "phrase": "counselled",
-    "category": "good",
-    "suggestion": "advised, guided, supported",
+    "suggestion": "teamed up with, worked jointly with, cooperated with",
     "variants": [],
-    "field": "Psychology",
-    "role": "Counsellor"
+    "field": null,
+    "role": null
   },
   {
-    "phrase": "was second in command",
+    "phrase": "collected",
+    "category": "good",
+    "suggestion": "amassed, gathered, assembled",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "took direction",
     "category": "weak",
-    "suggestion": "acted as deputy, supported the lead, managed in their absence",
+    "suggestion": "implemented feedback, executed guidance, followed instructions diligently",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "first-class",
+    "phrase": "the elephant in the room",
     "category": "bad",
-    "suggestion": "high-quality, excellent, top-performing",
+    "suggestion": "the unaddressed issue, the obvious problem, the major concern",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "histology",
+    "phrase": "compounded",
     "category": "good",
-    "weight": 2.5,
-    "suggestion": "microscopy, tissue analysis, pathology",
+    "suggestion": "intensified, increased, aggregated",
     "variants": [],
-    "field": "Biology",
-    "role": "Histologist"
-  },
-  {
-    "phrase": "customised",
-    "category": "good",
-    "suggestion": "tailored, adapted, personalised",
-    "variants": ["customized"],
     "field": null,
     "role": null
   },
   {
-    "phrase": "fielded calls",
+    "phrase": "computed",
+    "category": "good",
+    "suggestion": "reckoned, tallied, quantified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "looked into things",
     "category": "weak",
-    "suggestion": "managed inquiries, resolved customer issues, provided support",
+    "suggestion": "conducted analysis, investigated issues, researched solutions",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "flesh out",
+    "phrase": "throw under the bus",
     "category": "bad",
-    "suggestion": "develop further, add detail, expand upon",
+    "suggestion": "blame others, avoid accountability, betray a colleague",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "cadastral mapping",
+    "phrase": "conceptualised",
     "category": "good",
-    "weight": 2.6,
-    "suggestion": "land surveying, property boundaries, gis",
-    "variants": [],
-    "field": "Geography",
-    "role": "Surveyor"
+    "suggestion": "ideated, envisioned, framed",
+    "variants": ["conceptualized"],
+    "field": null,
+    "role": null
   },
   {
-    "phrase": "decreased",
+    "phrase": "condensed",
     "category": "good",
-    "suggestion": "reduced, lowered, minimised",
+    "suggestion": "abridged, summarised, shortened",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "was an observer",
+    "phrase": "was an intern at",
     "category": "weak",
-    "suggestion": "analysed, monitored, evaluated",
+    "suggestion": "gained experience at, supported projects at, completed an internship with",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "full-service",
+    "phrase": "tiger team",
     "category": "bad",
-    "suggestion": "comprehensive, end-to-end, all-inclusive",
+    "suggestion": "expert task force, specialised project group, problem-solving team",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "deduced",
+    "phrase": "conferred",
     "category": "good",
-    "suggestion": "concluded, inferred, determined",
+    "suggestion": "consulted, discussed, bestowed",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "defined",
+    "phrase": "configured",
     "category": "good",
-    "suggestion": "specified, described, established",
+    "suggestion": "set up, customised, arranged",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "kept an eye on",
+    "phrase": "helped with a project",
     "category": "weak",
-    "suggestion": "monitored, supervised, tracked",
+    "suggestion": "made contributions to, assisted on, provided support for",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "game plan",
+    "phrase": "time-sensitive",
     "category": "bad",
-    "suggestion": "strategy, plan, approach",
+    "suggestion": "urgent, deadline-driven, time-critical",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "delegated",
+    "phrase": "conscripted",
     "category": "good",
-    "suggestion": "assigned, entrusted, allocated",
+    "suggestion": "drafted, enlisted, recruited",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "delivered",
+    "phrase": "consecrated",
     "category": "good",
-    "suggestion": "completed, provided, executed",
+    "suggestion": "dedicated, devoted, sanctified",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "played a role in",
+    "phrase": "was able to do",
     "category": "weak",
-    "suggestion": "contributed to, influenced, participated in",
+    "suggestion": "accomplished, succeeded in, fulfilled",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "giving 110%",
+    "phrase": "top-shelf",
     "category": "bad",
-    "suggestion": "exceeded expectations, went above and beyond, highly committed",
-    "variants": ["gave 110%"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "demonstrated",
-    "category": "good",
-    "suggestion": "showed, proved, illustrated",
+    "suggestion": "premium quality, superior, first-rate",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "designed",
+    "phrase": "convened",
     "category": "good",
-    "suggestion": "created, developed, planned",
+    "suggestion": "assembled, gathered, summoned",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "worked on a committee",
+    "phrase": "conveyed",
+    "category": "good",
+    "suggestion": "communicated, transmitted, imparted",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "managed to",
     "category": "weak",
-    "suggestion": "collaborated with committee members, contributed to committee decisions, served on the committee",
+    "suggestion": "successfully, was able to, achieved",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "going forward",
+    "phrase": "touchy-feely",
     "category": "bad",
-    "suggestion": "in the future, prospectively, from now on",
+    "suggestion": "empathetic, emotionally intelligent, interpersonally skilled",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "determined",
+    "phrase": "corralled",
     "category": "good",
-    "suggestion": "ascertained, concluded, established",
+    "suggestion": "gathered, organised, collected",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "devised",
+    "phrase": "corroborated",
     "category": "good",
-    "suggestion": "created, invented, formulated",
+    "suggestion": "confirmed, substantiated, verified",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "dealt with the task of",
+    "phrase": "was part of a team",
     "category": "weak",
-    "suggestion": "completed, managed, executed",
+    "suggestion": "functioned within a team, collaborated in a group, worked in a team setting",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "ground-breaking",
+    "phrase": "tribe",
     "category": "bad",
-    "suggestion": "innovative, pioneering, revolutionary",
-    "variants": ["groundbreaking"],
+    "suggestion": "team, department, community",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "crafted",
+    "category": "good",
+    "suggestion": "fashioned, formulated, built",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "cultivated",
+    "category": "good",
+    "suggestion": "nurtured, developed, fostered",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had to try",
+    "category": "weak",
+    "suggestion": "endeavored to, aimed to, worked towards",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "turnkey solution",
+    "category": "bad",
+    "suggestion": "comprehensive package, ready-to-use system, complete solution",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "curated",
+    "category": "good",
+    "suggestion": "selected, organised, presented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "debated",
+    "category": "good",
+    "suggestion": "argued, discussed, disputed",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had dealings with",
+    "category": "weak",
+    "suggestion": "interacted with, managed relationships with, liaised with",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "unpack",
+    "category": "bad",
+    "suggestion": "analyse, deconstruct, examine in detail",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deciphered",
+    "category": "good",
+    "suggestion": "decoded, interpreted, solved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deconstructed",
+    "category": "good",
+    "suggestion": "analysed, dismantled, broke down",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "put effort into",
+    "category": "weak",
+    "suggestion": "focused on, dedicated time to, worked to improve",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "upskill",
+    "category": "bad",
+    "suggestion": "develop skills, acquire new competencies, enhance capabilities",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "dedicated",
+    "category": "good",
+    "suggestion": "devoted, committed, allocated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "defended",
+    "category": "good",
+    "suggestion": "justified, upheld, argued for",
+    "variants": [],
+
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "worked for",
+    "category": "weak",
+    "suggestion": "employed by, contracted with, delivered results for",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "vertical",
+    "category": "bad",
+    "suggestion": "industry sector, market segment, business area",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "delineated",
+    "category": "good",
+    "suggestion": "outlined, defined, specified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "demystified",
+    "category": "good",
+    "suggestion": "clarified, explained, simplified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was involved in the process of",
+    "category": "weak",
+    "suggestion": "contributed to the process, participated in, executed steps in",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "viral",
+    "category": "bad",
+    "suggestion": "widespread engagement, high shareability, rapid organic growth",
+    "variants": [],
+    "field": "Marketing",
+    "role": null
+  },
+  {
+    "phrase": "depicted",
+    "category": "good",
+    "suggestion": "represented, illustrated, described",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "derived",
+    "category": "good",
+    "suggestion": "obtained, extracted, developed from",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did stuff like",
+    "category": "weak",
+    "suggestion": "responsibilities included, tasks performed included, duties involved",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wear many hats",
+    "category": "bad",
+    "suggestion": "versatile, multi-skilled, adaptable to different roles",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "designated",
+    "category": "good",
+    "suggestion": "appointed, assigned, specified",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deselected",
+    "category": "good",
+    "suggestion": "eliminated, removed, filtered out",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "had to do a lot of",
+    "category": "weak",
+    "suggestion": "managed numerous, handled extensive, performed a high volume of",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "wet signature",
+    "category": "bad",
+    "suggestion": "physical signature, signed document, handwritten approval",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "detailed",
+    "category": "good",
+    "suggestion": "specified, explained, described",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "detected",
+    "category": "good",
+    "suggestion": "identified, discovered, found",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "was tasked with work on",
+    "category": "weak",
+    "suggestion": "developed, engineered, implemented",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "white glove service",
+    "category": "bad",
+    "suggestion": "premium customer service, exceptional support, high-touch assistance",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "deterred",
+    "category": "good",
+    "suggestion": "prevented, discouraged, stopped",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "detoxified",
+    "category": "good",
+    "suggestion": "purified, cleansed, neutralised",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "did a bit of everything",
+    "category": "weak",
+    "suggestion": "handled diverse responsibilities, demonstrated versatility, supported multiple functions",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "white space",
+    "category": "bad",
+    "suggestion": "market opportunity, untapped potential, growth area",
+    "variants": [],
     "field": null,
     "role": null
   },
   {
     "phrase": "diagnosed",
     "category": "good",
-    "suggestion": "identified, determined, analysed",
+    "suggestion": "ascertained, pinpointed, troubleshot",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "diagrammed",
+    "phrase": "diffused",
     "category": "good",
-    "suggestion": "charted, mapped, illustrated",
+    "suggestion": "dispersed, spread, de-escalated",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "provided assistance",
+    "phrase": "my job was",
     "category": "weak",
-    "suggestion": "supported, aided, facilitated",
+    "suggestion": "i accomplished, i was responsible for, i successfully",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "guesstimate",
+    "phrase": "work smarter not harder",
     "category": "bad",
-    "suggestion": "estimate, projection, approximation",
+    "suggestion": "improved efficiency, optimised workflow, increased productivity",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "differentiated",
+    "phrase": "directed",
     "category": "good",
-    "suggestion": "distinguished, separated, customised",
+    "suggestion": "steered, guided, commanded",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "discovered",
+    "phrase": "disarmed",
     "category": "good",
-    "suggestion": "found, identified, uncovered",
+    "suggestion": "neutralised, disabled, defused",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "did admin tasks",
+    "phrase": "made phone calls",
     "category": "weak",
-    "suggestion": "managed schedules, coordinated logistics, maintained records",
+    "suggestion": "conducted client outreach, managed stakeholder communications, coordinated by phone",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "heavy-lifter",
+    "phrase": "world-class",
     "category": "bad",
-    "suggestion": "managed complex tasks, key contributor, handled significant workload",
-    "variants": ["heavy lifter"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "dispatched",
-    "category": "good",
-    "suggestion": "sent, shipped, deployed",
+    "suggestion": "industry-leading, high-performing, exceptional",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "distributed",
+    "phrase": "discerned",
     "category": "good",
-    "suggestion": "disseminated, allocated, circulated",
+    "suggestion": "perceived, distinguished, identified",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "put in hours",
+    "phrase": "disclosed",
+    "category": "good",
+    "suggestion": "revealed, reported, communicated",
+    "variants": [],
+    "field": null,
+    "role": null
+  },
+  {
+    "phrase": "tried to get it working",
     "category": "weak",
-    "suggestion": "committed time to, dedicated effort to, worked diligently on",
+    "suggestion": "implemented, fixed, got operational",
     "variants": [],
     "field": null,
     "role": null
   },
   {
-    "phrase": "holistic approach",
+    "phrase": "yummy",
     "category": "bad",
-    "suggestion": "comprehensive strategy, integrated solution, considering all factors",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "documented",
-    "category": "good",
-    "suggestion": "recorded, reported, catalogued",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "drafted",
-    "category": "good",
-    "suggestion": "wrote, composed, outlined",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was a substitute for",
-    "category": "weak",
-    "suggestion": "covered for, assumed responsibilities of, provided temporary support as",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "i am confident that",
-    "category": "bad",
-    "suggestion": "my skills in x align with, my experience in y demonstrates, i have proven ability to",
-    "variants": ["i am sure that"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "edited",
-    "category": "good",
-    "suggestion": "revised, proofread, corrected",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "educated",
-    "category": "good",
-    "suggestion": "taught, trained, informed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "reported on",
-    "category": "weak",
-    "suggestion": "analysed and presented, summarised findings for, documented",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "in the weeds",
-    "category": "bad",
-    "suggestion": "focused on details, deeply involved, handling specifics",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "eliminated",
-    "category": "good",
-    "suggestion": "removed, eradicated, cancelled",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "elicited",
-    "category": "good",
-    "suggestion": "obtained, extracted, drew out",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was an aide to",
-    "category": "weak",
-    "suggestion": "supported, assisted, provided aid to",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "informed",
-    "category": "bad",
-    "suggestion": "advised, notified, briefed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "employed",
-    "category": "good",
-    "suggestion": "utilised, used, applied",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "enacted",
-    "category": "good",
-    "suggestion": "implemented, executed, passed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "had responsibilities",
-    "category": "weak",
-    "suggestion": "managed projects, executed tasks, delivered results",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "key takeaway",
-    "category": "bad",
-    "suggestion": "main conclusion, key finding, important lesson",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "encouraged",
-    "category": "good",
-    "suggestion": "motivated, promoted, supported",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "endorsed",
-    "category": "good",
-    "suggestion": "supported, approved, recommended",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "put my mind to it",
-    "category": "weak",
-    "suggestion": "focused on, committed to, achieved through dedication",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "knowledge transfer",
-    "category": "bad",
-    "suggestion": "trained team members, documented processes, created handover materials",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "enforced",
-    "category": "good",
-    "suggestion": "implemented, ensured compliance, executed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "engaged",
-    "category": "good",
-    "suggestion": "participated, involved, interacted",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "took over tasks",
-    "category": "weak",
-    "suggestion": "assumed responsibility for, managed, executed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "land and expand",
-    "category": "bad",
-    "suggestion": "secure initial business, grow client account, expand service offering",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "engineered",
-    "category": "good",
-    "suggestion": "designed, built, developed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "enhanced",
-    "category": "good",
-    "suggestion": "improved, augmented, strengthened",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "took my turn",
-    "category": "weak",
-    "suggestion": "rotated responsibilities, shared workload, collaborated on tasks",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "let's park this",
-    "category": "bad",
-    "suggestion": "postpone discussion, defer until later, revisit this topic",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "enlarged",
-    "category": "good",
-    "suggestion": "expanded, increased, augmented",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "enlisted",
-    "category": "good",
-    "suggestion": "recruited, secured, obtained",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "lent a hand",
-    "category": "weak",
-    "suggestion": "assisted, supported, contributed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "liaise",
-    "category": "bad",
-    "suggestion": "collaborated with, coordinated between, communicated with",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "ensured",
-    "category": "good",
-    "suggestion": "guaranteed, verified, confirmed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "equipped",
-    "category": "good",
-    "suggestion": "provided, supplied, prepared",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "put in place",
-    "category": "weak",
-    "suggestion": "implemented, established, installed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "lift and shift",
-    "category": "bad",
-    "suggestion": "migrate applications, rehost servers, infrastructure migration",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "exceeded",
-    "category": "good",
-    "suggestion": "surpassed, outperformed, transcended",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "exchanged",
-    "category": "good",
-    "suggestion": "swapped, traded, replaced",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was delegated",
-    "category": "weak",
-    "suggestion": "executed, managed, was assigned",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "lots of",
-    "category": "bad",
-    "suggestion": "extensive, numerous, a wide range of",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "excluded",
-    "category": "good",
-    "suggestion": "omitted, removed, barred",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "exhibited",
-    "category": "good",
-    "suggestion": "demonstrated, displayed, showed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "followed up",
-    "category": "weak",
-    "suggestion": "ensured completion, monitored progress, communicated updates",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "magic bullet",
-    "category": "bad",
-    "suggestion": "perfect solution, simple fix, effective remedy",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "expedited",
-    "category": "good",
-    "suggestion": "accelerated, hastened, rushed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "experimented",
-    "category": "good",
-    "suggestion": "tested, trialled, prototyped",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "took instructions",
-    "category": "weak",
-    "suggestion": "executed directions, followed procedures, completed assigned tasks",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "make it pop",
-    "category": "bad",
-    "suggestion": "increase visual impact, enhance design, make more vibrant",
-    "variants": [],
-    "field": "Design",
-    "role": null
-  },
-  {
-    "phrase": "explained",
-    "category": "good",
-    "suggestion": "clarified, described, detailed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "explored",
-    "category": "good",
-    "suggestion": "investigated, researched, examined",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "tried to learn",
-    "category": "weak",
-    "suggestion": "mastered, became proficient in, trained on",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "managament",
-    "category": "bad",
-    "suggestion": "misspelling of management, proofread your cv, check for common errors",
-    "variants": ["mangement"],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "exposed",
-    "category": "good",
-    "suggestion": "revealed, uncovered, identified",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "expressed",
-    "category": "good",
-    "suggestion": "communicated, articulated, stated",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "did a bit of",
-    "category": "weak",
-    "suggestion": "contributed to, gained experience in, assisted with",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "mission statement",
-    "category": "bad",
-    "suggestion": "company goals, organisational objectives, core purpose",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "extended",
-    "category": "good",
-    "suggestion": "expanded, prolonged, increased",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "extracted",
-    "category": "good",
-    "suggestion": "retrieved, derived, obtained",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "dealt with complaints",
-    "category": "weak",
-    "suggestion": "resolved customer issues, managed escalations, improved customer satisfaction",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "move the goalposts",
-    "category": "bad",
-    "suggestion": "change requirements, alter objectives, modify scope",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "fabricated",
-    "category": "good",
-    "suggestion": "manufactured, constructed, built",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "fashioned",
-    "category": "good",
-    "suggestion": "created, designed, crafted",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "took a course in",
-    "category": "weak",
-    "suggestion": "trained in, certified in, skilled in",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "mouth-watering",
-    "category": "bad",
-    "suggestion": "appealing, desirable, compelling",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "fielded",
-    "category": "good",
-    "suggestion": "handled, managed, responded to",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "figured",
-    "category": "good",
-    "suggestion": "calculated, determined, computed",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "was a deputy",
-    "category": "weak",
-    "suggestion": "supported leadership, managed team in manager's absence, acted as second-in-command",
-    "variants": [],
-    "field": null,
-    "role": null
-  },
-  {
-    "phrase": "new normal",
-    "category": "bad",
-    "suggestion": "current operating procedures, post-pandemic adjustments, evolving business landscape",
+    "suggestion": "delicious, flavourful, appealing",
     "variants": [],
     "field": null,
     "role": null
