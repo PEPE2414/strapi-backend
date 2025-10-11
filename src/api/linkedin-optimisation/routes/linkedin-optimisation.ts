@@ -7,6 +7,7 @@ import { factories } from '@strapi/strapi';
 export default factories.createCoreRouter(
   'api::linkedin-optimisation.linkedin-optimisation' as any,
   {
+    only: ['find', 'findOne', 'create'],
     config: {
       create: {
         // Require authentication for create
@@ -14,23 +15,13 @@ export default factories.createCoreRouter(
         middlewares: [],
       },
       find: {
-        // Admin only for listing
+        // Admin only for listing (controlled in controller)
         policies: [],
         middlewares: [],
       },
       findOne: {
-        // Admin only for viewing
+        // Admin only for viewing (controlled in controller)
         policies: [],
-        middlewares: [],
-      },
-      update: {
-        // Disable update
-        policies: ['admin::isAdmin'],
-        middlewares: [],
-      },
-      delete: {
-        // Disable delete
-        policies: ['admin::isAdmin'],
         middlewares: [],
       },
     },
