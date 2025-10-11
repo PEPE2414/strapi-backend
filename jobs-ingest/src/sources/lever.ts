@@ -21,7 +21,18 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       
       // Handle case where API returns error or non-array response
       if (!Array.isArray(response)) {
-        console.warn(`Lever API returned non-array response for ${company}:`, typeof response);
+        const errorType = typeof response;
+        if (response && typeof response === 'object') {
+          // Check for error object
+          const responseObj = response as any;
+          if ('error' in responseObj || 'message' in responseObj) {
+            console.warn(`Lever API error for ${company}:`, responseObj.error || responseObj.message);
+          } else {
+            console.warn(`Lever API returned object instead of array for ${company}. This company may not have a Lever job board.`);
+          }
+        } else {
+          console.warn(`Lever API returned ${errorType} for ${company}:`, response);
+        }
         break;
       }
       

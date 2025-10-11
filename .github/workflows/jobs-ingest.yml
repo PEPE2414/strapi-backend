@@ -38,6 +38,10 @@ jobs:
           USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o-mini
+          # API keys for job board APIs
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
           CRAWL_TYPE: ats-only
           MAX_RUNTIME_MINUTES: 15
 
@@ -60,6 +64,10 @@ jobs:
           USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o-mini
+          # API keys for job board APIs
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
           CRAWL_TYPE: full-crawl
           MAX_RUNTIME_MINUTES: 45
 
@@ -82,6 +90,10 @@ jobs:
           USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o-mini
+          # API keys for job board APIs
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
           CRAWL_TYPE: deep-refresh
           MAX_RUNTIME_MINUTES: 60
           ENABLE_DISCOVERY: true
@@ -105,5 +117,9 @@ jobs:
           USER_AGENT: EffortFreeBot/1.0 (+https://effort-free.co.uk)
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o-mini
+          # API keys for job board APIs
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
           MAX_RUNTIME_MINUTES: 60

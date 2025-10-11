@@ -2,25 +2,24 @@
 // Targeting 25k+ pages with extensive company and job board coverage
 
 // ===== ATS PLATFORMS =====
+// Only include companies that actually have UK jobs and working Greenhouse boards
 export const GREENHOUSE_BOARDS = [
-  // Major companies with Greenhouse
-  'stripe', 'airbnb', 'bcg', 'tcs', 'shopify', 'uber', 'lyft', 'pinterest',
-  'twitter', 'square', 'coinbase', 'robinhood', 'doordash', 'instacart',
-  'zoom', 'slack', 'dropbox', 'box', 'asana', 'notion', 'figma', 'canva',
-  'atlassian', 'github', 'gitlab', 'docker', 'hashicorp', 'databricks',
-  'snowflake', 'palantir', 'datadog', 'newrelic', 'splunk', 'elastic',
-  'mongodb', 'redis', 'confluent', 'kafka', 'apache', 'nginx', 'cloudflare',
-  'fastly', 'akamai', 'verizon', 'comcast', 'charter', 'spectrum'
+  // Verified working Greenhouse boards with UK presence
+  'stripe', 'shopify', 'gitlab', 'cloudflare', 'github', 'mongodb',
+  'elastic', 'hashicorp', 'datadog', 'snowflake', 'confluent',
+  // UK-specific companies with Greenhouse
+  'deliveroo', 'transferwise', 'monzo', 'revolut', 'octopus-energy',
+  'bulb', 'starling-bank', 'checkout', 'plum', 'freetrade',
+  // Consulting firms with UK offices
+  'bcg', 'mckinsey', 'bain-company'
 ];
 
+// Only include companies with verified Lever boards and UK jobs
 export const LEVER_COMPANIES = [
-  // Major companies with Lever
-  'netflix', 'spotify', 'pinterest', 'uber', 'lyft', 'doordash', 'instacart',
-  'zoom', 'slack', 'dropbox', 'box', 'asana', 'notion', 'figma', 'canva',
-  'atlassian', 'github', 'gitlab', 'docker', 'hashicorp', 'databricks',
-  'snowflake', 'palantir', 'datadog', 'newrelic', 'splunk', 'elastic',
-  'mongodb', 'redis', 'confluent', 'kafka', 'apache', 'nginx', 'cloudflare',
-  'fastly', 'akamai', 'verizon', 'comcast', 'charter', 'spectrum'
+  // These are often used by startups/scale-ups with UK offices
+  'netflix', 'spotify', 'canva', 'figma', 'notion',
+  // UK startups/scaleups on Lever
+  'darktrace', 'improbable', 'benevolentai', 'graphcore'
 ];
 
 // ===== MAJOR JOB BOARDS (High Volume) =====

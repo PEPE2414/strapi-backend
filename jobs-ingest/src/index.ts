@@ -22,6 +22,7 @@ import {
   scrapeWorkingJobBoards, scrapeIndeedUK, scrapeReedWorking 
 } from './sources/workingJobBoards';
 import { scrapeOptimizedJobBoards } from './sources/optimizedJobBoards';
+import { scrapeAllAPIJobBoards } from './sources/apiJobBoards';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -57,7 +58,7 @@ async function runAll() {
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
-  console.log(`🎯 Target: 100+ useful jobs per run`);
+  console.log(`🎯 Target: 1000+ useful jobs per run (new API-based strategy)`);
   
   // Get today's crawl buckets
   const todaysBuckets = getBucketsForToday();
@@ -204,6 +205,9 @@ async function runAll() {
         } else if (source === 'optimized-boards') {
           console.log(`🔄 Scraping Optimized Job Boards`);
           sourceJobs = await limiter.schedule(() => scrapeOptimizedJobBoards());
+        } else if (source === 'api-job-boards') {
+          console.log(`🔄 Scraping API Job Boards (Highest Priority)`);
+          sourceJobs = await limiter.schedule(() => scrapeAllAPIJobBoards());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);
@@ -374,11 +378,15 @@ async function runAll() {
   console.log(`${'='.repeat(80)}`);
   
   // Check if we met the target
-  if (totalIngested >= 100) {
-    console.log(`\n✅ SUCCESS: Target of 100+ jobs met! (${totalIngested} jobs ingested)`);
+  if (totalIngested >= 1000) {
+    console.log(`\n✅ SUCCESS: Target of 1000+ jobs met! (${totalIngested} jobs ingested)`);
+  } else if (totalIngested >= 500) {
+    console.log(`\n⚠️  PARTIAL SUCCESS: ${totalIngested} jobs ingested (target: 1000+)`);
+    console.log(`   Consider setting API keys for more job boards (see documentation).`);
   } else {
-    console.log(`\n⚠️  WARNING: Target of 100+ jobs not met. Only ${totalIngested} jobs ingested.`);
-    console.log(`   Consider enabling more high-yield sources or adjusting filters.`);
+    console.log(`\n⚠️  WARNING: Target of 1000+ jobs not met. Only ${totalIngested} jobs ingested.`);
+    console.log(`   Make sure to set API keys: ADZUNA_APP_ID, ADZUNA_APP_KEY, REED_API_KEY`);
+    console.log(`   See: https://developer.adzuna.com/ and https://www.reed.co.uk/developers`);
   }
 }
 

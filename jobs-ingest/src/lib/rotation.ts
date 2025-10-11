@@ -137,7 +137,7 @@ export function getCurrentWeekOfMonth(): number {
   return Math.ceil((pastDaysOfMonth + firstDay.getDay() + 1) / 7);
 }
 
-// Get buckets to crawl today
+// Get buckets to crawl today - FOCUSED ON HIGH VOLUME JOB BOARDS
 export function getBucketsForToday(): CrawlBucket[] {
   const dayOfMonth = getCurrentDayOfMonth();
   const weekOfMonth = getCurrentWeekOfMonth();
@@ -145,53 +145,77 @@ export function getBucketsForToday(): CrawlBucket[] {
   
   const buckets: CrawlBucket[] = [];
   
-  // Focus on KNOWN WORKING sources first
+  // PRIORITY 1: API-based job boards (most reliable, highest volume, no blocking)
   buckets.push({
-    id: 'working-sources',
-    name: 'Working Sources (Daily)',
+    id: 'api-job-boards',
+    name: 'API Job Boards (Highest Priority)',
     sources: [
-      // Known working Greenhouse sources
-      'greenhouse:stripe', 'greenhouse:airbnb', 'greenhouse:spotify', 'greenhouse:lyft',
-      'greenhouse:dropbox', 'greenhouse:slack', 'greenhouse:zoom', 'greenhouse:shopify',
-      'greenhouse:mailchimp', 'greenhouse:twilio', 'greenhouse:coinbase', 'greenhouse:discord',
-      
-      // Known working Lever sources
-      'lever:canva', 'lever:notion', 'lever:linear', 'lever:vercel', 'lever:netlify',
-      'lever:supabase', 'lever:planetscale', 'lever:railway', 'lever:render'
+      // API-based scrapers - these should yield 500-1000+ jobs
+      'api-job-boards'
     ],
     priority: 'high'
   });
   
-  // Add optimized job boards as secondary sources (after working sources are confirmed)
+  // PRIORITY 2: Graduate-focused job boards (web scraping, but usually work)
   buckets.push({
-    id: 'optimized-job-boards',
-    name: 'Optimized Job Boards (Secondary)',
+    id: 'graduate-job-boards',
+    name: 'Graduate Job Boards (High Priority)',
     sources: [
-      // High-volume, reliable job board scrapers
-      'optimized-boards'
+      'gradcracker', 
+      'targetjobs',
+      'prospects',
+      'milkround',
+      'brightnetwork',
+      'ratemyplacement'
+    ],
+    priority: 'high'
+  });
+  
+  // PRIORITY 3: Working ATS platforms (only verified companies with UK jobs)
+  buckets.push({
+    id: 'ats-platforms',
+    name: 'ATS Platforms - Verified (Medium Priority)',
+    sources: [
+      // Only companies that we know have UK jobs
+      'greenhouse:stripe', 'greenhouse:shopify', 'greenhouse:gitlab', 'greenhouse:cloudflare',
+      'greenhouse:deliveroo', 'greenhouse:monzo', 'greenhouse:revolut', 'greenhouse:octopus-energy',
+      'lever:spotify', 'lever:canva', 'lever:figma', 'lever:notion'
     ],
     priority: 'medium'
   });
   
-  // Add working job boards as tertiary sources
-  buckets.push({
-    id: 'working-job-boards',
-    name: 'Working Job Boards (Tertiary)',
-    sources: [
-      // Known working job board scrapers
-      'indeed-uk', 'reed-working', 'working-boards'
-    ],
-    priority: 'low'
-  });
+  // PRIORITY 4: Rotate through company career pages (one sector per day)
+  const sectorRotation = weekOfMonth % 5;
+  let companySources: string[] = [];
+  let sectorName = '';
   
-  // Add only the most reliable university job boards (reduced list)
+  switch (sectorRotation) {
+    case 0: // Engineering
+      companySources = ['arup', 'atkins', 'wsp', 'aecom', 'mott-macdonald', 'jacobs', 'balfour-beatty'];
+      sectorName = 'Engineering';
+      break;
+    case 1: // Tech
+      companySources = ['arm', 'nvidia-uk', 'intel-uk', 'adobe-uk', 'salesforce-uk', 'oracle-uk'];
+      sectorName = 'Technology';
+      break;
+    case 2: // Finance
+      companySources = ['goldman-sachs-london', 'jpmorgan-london', 'barclays', 'hsbc', 'schroders'];
+      sectorName = 'Finance';
+      break;
+    case 3: // Consulting
+      companySources = ['deloitte-uk', 'pwc-uk', 'kpmg-uk', 'ey-uk', 'accenture-uk'];
+      sectorName = 'Consulting';
+      break;
+    case 4: // Manufacturing
+      companySources = ['rolls-royce', 'bae-systems', 'dyson', 'jaguar-land-rover', 'airbus-uk'];
+      sectorName = 'Manufacturing';
+      break;
+  }
+  
   buckets.push({
-    id: 'reliable-university-boards',
-    name: 'Reliable University Job Boards (Tertiary)',
-    sources: [
-      // Only the most reliable job boards that don't block aggressively
-      'gradcracker', 'joblift', 'savethestudent'
-    ],
+    id: `company-rotation-${sectorName.toLowerCase()}`,
+    name: `${sectorName} Companies (Low Priority)`,
+    sources: companySources,
     priority: 'low'
   });
   
@@ -287,12 +311,12 @@ function getBucketsForDay(dayOfWeek: number): CrawlBucket[] {
   return buckets;
 }
 
-// Smart early exit logic - increased threshold to ensure we get 100+ jobs
+// Smart early exit logic - target 1000+ jobs
 export function shouldExitEarly(
   totalJobsFound: number,
   startTime: Date,
-  maxRuntimeMinutes: number = 45,        // Increased from 30 to allow more time
-  minJobsThreshold: number = 150         // Increased from 100 to ensure we exceed target
+  maxRuntimeMinutes: number = 60,        // Increased to allow API scrapers to complete
+  minJobsThreshold: number = 1200        // Target 1200 to ensure we exceed 1000 after deduplication
 ): boolean {
   const runtimeMinutes = (Date.now() - startTime.getTime()) / (1000 * 60);
   
