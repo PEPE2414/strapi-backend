@@ -27,6 +27,7 @@ import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
+import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
@@ -309,6 +310,13 @@ async function runAll() {
 
   if (llmProcessed > 0) {
     console.log(`✅ LLM processed ${llmProcessed} job descriptions`);
+  }
+
+  // Enhance jobs with missing or poor descriptions by scraping apply URLs
+  console.log('\n🔍 Enhancing jobs with missing descriptions...');
+  const enhancedCount = await enhanceJobDescriptions(results, 50); // Limit to 50 enhancements per run
+  if (enhancedCount > 0) {
+    console.log(`✅ Enhanced ${enhancedCount} job descriptions from apply URLs`);
   }
 
   // Enhanced upsert with better error handling
