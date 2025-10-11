@@ -11,21 +11,15 @@ const MAX_SCRAPE_TIME = 10000; // 10 seconds max per job
 
 /**
  * Check if a job needs description enhancement
+ * Only enhances jobs with NO description at all
  */
 export function needsDescriptionEnhancement(job: any): boolean {
-  // No description at all
+  // Only enhance if there's absolutely no description
   if (!job.descriptionText && !job.descriptionHtml) {
     return true;
   }
   
-  // Description is too short (likely incomplete)
-  const textLength = job.descriptionText?.length || 0;
-  const htmlLength = job.descriptionHtml?.length || 0;
-  
-  if (textLength < MIN_DESCRIPTION_LENGTH && htmlLength < MIN_DESCRIPTION_LENGTH * 2) {
-    return true;
-  }
-  
+  // If there's any description at all, don't enhance
   return false;
 }
 
@@ -71,19 +65,38 @@ async function scrapeJobDescription(applyUrl: string): Promise<string | null> {
         '.job-content'
       ];
       
+      // Try each selector and collect candidates
+      const candidates: Array<{ selector: string; html: string; text: string; length: number }> = [];
+      
       for (const selector of selectors) {
         const element = $(selector);
         if (element.length > 0) {
           const text = element.text().trim();
+          const html = element.html() || '';
           if (text.length > MIN_DESCRIPTION_LENGTH) {
-            return element.html() || text;
+            candidates.push({
+              selector,
+              html,
+              text,
+              length: text.length
+            });
           }
         }
       }
       
-      // Fallback: get body text
+      // If we found candidates, pick the best one (longest, most likely to be description)
+      if (candidates.length > 0) {
+        // Sort by length (longer is usually better for descriptions)
+        candidates.sort((a, b) => b.length - a.length);
+        const best = candidates[0];
+        console.log(`  📋 Found description using selector: ${best.selector} (${best.length} chars)`);
+        return best.html;
+      }
+      
+      // Fallback: get body text (will need heavy LLM cleaning)
       const bodyText = $('body').text().trim();
       if (bodyText.length > MIN_DESCRIPTION_LENGTH) {
+        console.log(`  ⚠️  Using full body text as fallback (${bodyText.length} chars) - may include navigation`);
         return bodyText;
       }
       
@@ -110,14 +123,27 @@ async function scrapeJobDescription(applyUrl: string): Promise<string | null> {
  */
 async function cleanDescription(rawDescription: string): Promise<string | null> {
   try {
-    // Truncate if too long (LLM token limits)
-    const truncated = rawDescription.substring(0, 8000);
+    // Truncate if too long, but try to keep the middle section where job description usually is
+    let textToClean = rawDescription;
+    if (rawDescription.length > 10000) {
+      // For very long content, take middle section (skip navigation at start and footer at end)
+      const skipStart = Math.floor(rawDescription.length * 0.1); // Skip first 10%
+      const skipEnd = Math.floor(rawDescription.length * 0.1);   // Skip last 10%
+      textToClean = rawDescription.substring(skipStart, rawDescription.length - skipEnd);
+      console.log(`  ✂️  Truncated long content: ${rawDescription.length} → ${textToClean.length} chars (kept middle section)`);
+    }
     
     const cleaned = await llmAssist({
-      instruction: 'Extract and clean the job description. Remove navigation, headers, footers, and boilerplate. Keep only the essential job information: role description, responsibilities, requirements, and benefits. Format as clean plain text. Limit to ~800 words.',
-      text: truncated,
+      instruction: 'Extract ONLY the job description from this HTML content. Remove navigation menus, headers, footers, cookie notices, and any non-job-description content. Keep the core job information: role description, key responsibilities, requirements, and benefits. If you cannot find a clear job description, return "NO_DESCRIPTION_FOUND". Format as clean plain text without HTML tags.',
+      text: textToClean.substring(0, 8000), // Final safety limit
       maxOut: 600
     });
+    
+    // Check if LLM couldn't find a description
+    if (cleaned && cleaned.includes('NO_DESCRIPTION_FOUND')) {
+      console.log(`  ⚠️  LLM could not find a clear job description in the content`);
+      return null;
+    }
     
     return cleaned || null;
     

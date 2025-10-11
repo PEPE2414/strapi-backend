@@ -312,11 +312,18 @@ async function runAll() {
     console.log(`✅ LLM processed ${llmProcessed} job descriptions`);
   }
 
-  // Enhance jobs with missing or poor descriptions by scraping apply URLs
-  console.log('\n🔍 Enhancing jobs with missing descriptions...');
-  const enhancedCount = await enhanceJobDescriptions(results, 50); // Limit to 50 enhancements per run
-  if (enhancedCount > 0) {
-    console.log(`✅ Enhanced ${enhancedCount} job descriptions from apply URLs`);
+  // Enhance jobs with NO descriptions by scraping apply URLs
+  console.log('\n🔍 Checking for jobs without descriptions...');
+  const jobsWithoutDesc = results.filter(j => !j.descriptionText && !j.descriptionHtml).length;
+  console.log(`📊 Found ${jobsWithoutDesc} jobs without descriptions`);
+  
+  if (jobsWithoutDesc > 0) {
+    const enhancedCount = await enhanceJobDescriptions(results, 100); // Enhanced all jobs without descriptions (up to 100)
+    if (enhancedCount > 0) {
+      console.log(`✅ Enhanced ${enhancedCount} job descriptions from apply URLs`);
+    }
+  } else {
+    console.log(`✅ All jobs have descriptions, no enhancement needed`);
   }
 
   // Enhanced upsert with better error handling
