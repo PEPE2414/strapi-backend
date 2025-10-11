@@ -26,9 +26,10 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
     'internship',
     'entry level',
     'placement year',
+    'year in industry',
+    'industrial placement',
     'trainee',
     'junior',
-    'apprentice',
     'graduate scheme'
   ];
 
@@ -139,7 +140,9 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
     'graduate',
     'internship', 
     'entry level',
-    'placement',
+    'placement year',
+    'year in industry',
+    'industrial placement',
     'trainee',
     'junior'
   ];

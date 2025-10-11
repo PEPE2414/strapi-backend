@@ -69,7 +69,7 @@ jobs:
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
           CRAWL_TYPE: full-crawl
-          MAX_RUNTIME_MINUTES: 45
+          MAX_RUNTIME_MINUTES: 60
 
   deep-refresh:
     runs-on: ubuntu-latest
