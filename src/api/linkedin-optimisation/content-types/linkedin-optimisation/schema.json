@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "linkedin_optimisations",
+  "info": {
+    "singularName": "linkedin-optimisation",
+    "pluralName": "linkedin-optimisations",
+    "displayName": "LinkedIn Optimisation",
+    "description": "Logs anonymised LinkedIn profile analysis runs"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "userEmail": {
+      "type": "string",
+      "required": true
+    },
+    "overallScore": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "subscores": {
+      "type": "json",
+      "required": false
+    },
+    "hadImage": {
+      "type": "boolean",
+      "default": false
+    },
+    "hadText": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
+
