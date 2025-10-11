@@ -5,7 +5,7 @@
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreRouter(
-  'api::linkedin-optimisation.linkedin-optimisation',
+  'api::linkedin-optimisation.linkedin-optimisation' as any,
   {
     config: {
       create: {

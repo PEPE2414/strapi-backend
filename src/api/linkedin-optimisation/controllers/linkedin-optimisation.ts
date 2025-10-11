@@ -5,7 +5,7 @@
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(
-  'api::linkedin-optimisation.linkedin-optimisation',
+  'api::linkedin-optimisation.linkedin-optimisation' as any,
   ({ strapi }) => ({
     // Override create to ensure only authenticated users can log
     async create(ctx) {
