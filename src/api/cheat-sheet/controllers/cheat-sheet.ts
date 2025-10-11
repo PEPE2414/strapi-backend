@@ -79,6 +79,64 @@ export default {
         }
       }
 
+      // Fetch user's CV text
+      let cvText = '';
+      try {
+        const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+          populate: ['cv']
+        } as any);
+        
+        if (fullUser?.cv?.id) {
+          const cvFile = await strapi.entityService.findOne('plugin::upload.file', fullUser.cv.id);
+          // Extract text from CV file
+          // Note: You may need a PDF parsing library like pdf-parse or mammoth for DOCX
+          // For now, we'll try to get the text content if available
+          if (cvFile?.url) {
+            try {
+              const cvResponse = await fetch(`${strapi.config.get('server.url')}${cvFile.url}`);
+              const cvBuffer = await cvResponse.arrayBuffer();
+              
+              // If you have pdf-parse or similar installed, use it here
+              // For now, we'll just note that text extraction is needed
+              cvText = '[CV text extraction requires pdf-parse library]';
+            } catch (cvError) {
+              strapi.log.warn('Failed to fetch CV file:', cvError);
+            }
+          }
+        }
+      } catch (cvError) {
+        strapi.log.warn('Failed to fetch user CV:', cvError);
+      }
+
+      // Fetch user's cover letter points
+      let coverLetterPoints: string[] = [];
+      try {
+        const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id);
+        if (Array.isArray(fullUser?.coverLetterPoints)) {
+          coverLetterPoints = fullUser.coverLetterPoints;
+        }
+      } catch (pointsError) {
+        strapi.log.warn('Failed to fetch cover letter points:', pointsError);
+      }
+
+      // Fetch user's previous cover letters
+      let previousCoverLetters: string[] = [];
+      try {
+        const coverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
+          filters: { user: user.id, status: 'ready' },
+          sort: { createdAt: 'desc' },
+          limit: 5
+        } as any);
+        
+        if (Array.isArray(coverLetters)) {
+          previousCoverLetters = coverLetters
+            .map((cl: any) => cl.contentText)
+            .filter((text: any) => text && typeof text === 'string');
+        }
+      } catch (clError) {
+        strapi.log.warn('Failed to fetch previous cover letters:', clError);
+      }
+
       // Call n8n webhook
       const n8nUrl = process.env.N8N_CHEATSHEET_URL;
       const sharedSecret = process.env.N8N_SHARED_SECRET;
@@ -94,6 +152,9 @@ export default {
         company,
         jdText: jdText || '',
         userId: user.id,
+        cvText,
+        coverLetterPoints,
+        previousCoverLetters,
       };
 
       const n8nResponse = await fetch(n8nUrl, {

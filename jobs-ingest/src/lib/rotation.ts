@@ -287,25 +287,30 @@ function getBucketsForDay(dayOfWeek: number): CrawlBucket[] {
   return buckets;
 }
 
-// Smart early exit logic
+// Smart early exit logic - increased threshold to ensure we get 100+ jobs
 export function shouldExitEarly(
   totalJobsFound: number,
   startTime: Date,
-  maxRuntimeMinutes: number = 30,
-  minJobsThreshold: number = 100
+  maxRuntimeMinutes: number = 45,        // Increased from 30 to allow more time
+  minJobsThreshold: number = 150         // Increased from 100 to ensure we exceed target
 ): boolean {
   const runtimeMinutes = (Date.now() - startTime.getTime()) / (1000 * 60);
   
   // Exit if we've been running too long
   if (runtimeMinutes > maxRuntimeMinutes) {
-    console.log(`⏰ Runtime limit reached (${maxRuntimeMinutes} minutes), exiting early`);
+    console.log(`⏰ Runtime limit reached (${maxRuntimeMinutes} minutes), exiting early with ${totalJobsFound} jobs`);
     return true;
   }
   
   // Exit if we have enough jobs and it's been a reasonable time
-  if (totalJobsFound >= minJobsThreshold && runtimeMinutes > 10) {
-    console.log(`✅ Found ${totalJobsFound} jobs in ${runtimeMinutes.toFixed(1)} minutes, exiting early`);
+  if (totalJobsFound >= minJobsThreshold && runtimeMinutes > 15) {
+    console.log(`✅ Found ${totalJobsFound} jobs in ${runtimeMinutes.toFixed(1)} minutes, target exceeded, exiting early`);
     return true;
+  }
+  
+  // Log progress every 5 minutes if we haven't hit threshold yet
+  if (Math.floor(runtimeMinutes) % 5 === 0 && totalJobsFound < minJobsThreshold) {
+    console.log(`⏳ Progress: ${totalJobsFound}/${minJobsThreshold} jobs after ${runtimeMinutes.toFixed(1)} minutes`);
   }
   
   return false;

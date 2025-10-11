@@ -54,8 +54,10 @@ async function runAll() {
   const startTime = new Date();
   const batches = [];
   let totalJobsFound = 0;
+  const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
+  console.log(`🎯 Target: 100+ useful jobs per run`);
   
   // Get today's crawl buckets
   const todaysBuckets = getBucketsForToday();
@@ -81,8 +83,14 @@ async function runAll() {
     }
 
     for (const source of bucket.sources) {
+      // Initialize source stats
+      if (!sourceStats[source]) {
+        sourceStats[source] = { total: 0, valid: 0, invalid: 0 };
+      }
+      
       try {
         let sourceJobs: any[] = [];
+        console.log(`  🔄 Scraping source: ${source}...`);
         
         // Route to appropriate scraper based on source type
         if (source.startsWith('greenhouse:')) {
@@ -215,38 +223,47 @@ async function runAll() {
           continue;
         }
 
-        // Validate and filter jobs (relaxed for testing)
+        // Update source stats
+        sourceStats[source].total = sourceJobs.length;
+
+        // Validate and filter jobs with detailed logging
         const validJobs = sourceJobs.filter(job => {
-          // Check if job is fresh (relaxed to 90 days for testing)
+          // Check if job is fresh (relaxed to 90 days)
           if (!isJobFresh(job, 90)) {
-            console.log(`⏭️  Skipping stale job: ${job.title}`);
+            sourceStats[source].invalid++;
             return false;
           }
 
-          // Basic validation only (relaxed for testing)
+          // Basic validation only
           if (!job.title || !job.company?.name || !job.applyUrl) {
-            console.log(`⏭️  Skipping job missing basic fields: ${job.title || 'Unknown'}`);
+            sourceStats[source].invalid++;
             return false;
           }
 
-          // Check UK location (keep this strict)
+          // Check UK location
           const fullText = `${job.title} ${job.descriptionText || job.descriptionHtml || ''} ${job.location || ''}`;
           if (!isUKJob(fullText)) {
-            console.log(`⏭️  Skipping non-UK job: ${job.title}`);
+            sourceStats[source].invalid++;
             return false;
           }
 
-          // Check job type (keep this strict)
+          // Check job type
           if (!isRelevantJobType(fullText)) {
-            console.log(`⏭️  Skipping irrelevant job type: ${job.title}`);
+            sourceStats[source].invalid++;
             return false;
           }
 
+          sourceStats[source].valid++;
           return true;
         });
 
         totalJobsFound += validJobs.length;
-        console.log(`✅ ${source}: ${sourceJobs.length} total, ${validJobs.length} valid jobs`);
+        
+        if (sourceJobs.length > 0) {
+          console.log(`  ✅ ${source}: ${sourceJobs.length} scraped → ${validJobs.length} valid (${Math.round(validJobs.length / sourceJobs.length * 100)}% pass rate)`);
+        } else {
+          console.log(`  ⚠️  ${source}: 0 jobs found`);
+        }
 
         // Add to batches for processing
         if (validJobs.length > 0) {
@@ -254,7 +271,7 @@ async function runAll() {
         }
 
       } catch (error) {
-        console.warn(`❌ Failed to scrape ${source}:`, error instanceof Error ? error.message : String(error));
+        console.error(`  ❌ Failed to scrape ${source}:`, error instanceof Error ? error.message : String(error));
       }
     }
   }
@@ -317,6 +334,52 @@ async function runAll() {
   console.log(`📊 Total jobs skipped: ${totalSkipped}`);
   console.log(`⏱️  Duration: ${duration}s`);
   console.log(`🚀 Rate: ${Math.round(totalIngested / duration)} jobs/second`);
+  
+  // Print source performance report
+  console.log(`\n📈 Source Performance Report:`);
+  console.log(`${'='.repeat(80)}`);
+  
+  // Sort sources by valid jobs count (descending)
+  const sortedSources = Object.entries(sourceStats)
+    .filter(([_, stats]) => stats.total > 0)
+    .sort((a, b) => b[1].valid - a[1].valid);
+  
+  if (sortedSources.length > 0) {
+    console.log(`${'Source'.padEnd(40)} ${'Total'.padEnd(8)} ${'Valid'.padEnd(8)} ${'Pass Rate'}`);
+    console.log(`${'-'.repeat(80)}`);
+    
+    for (const [source, stats] of sortedSources) {
+      const passRate = stats.total > 0 ? Math.round((stats.valid / stats.total) * 100) : 0;
+      const sourceName = source.length > 38 ? source.substring(0, 35) + '...' : source;
+      console.log(`${sourceName.padEnd(40)} ${String(stats.total).padEnd(8)} ${String(stats.valid).padEnd(8)} ${passRate}%`);
+    }
+    
+    console.log(`${'-'.repeat(80)}`);
+    console.log(`Top 3 sources:`);
+    sortedSources.slice(0, 3).forEach(([source, stats], idx) => {
+      console.log(`  ${idx + 1}. ${source}: ${stats.valid} valid jobs`);
+    });
+    
+    // Identify sources with 0 results
+    const zeroResultSources = Object.entries(sourceStats)
+      .filter(([_, stats]) => stats.total === 0)
+      .map(([source, _]) => source);
+    
+    if (zeroResultSources.length > 0) {
+      console.log(`\n⚠️  Sources with 0 results (${zeroResultSources.length}):`);
+      zeroResultSources.forEach(source => console.log(`  - ${source}`));
+    }
+  }
+  
+  console.log(`${'='.repeat(80)}`);
+  
+  // Check if we met the target
+  if (totalIngested >= 100) {
+    console.log(`\n✅ SUCCESS: Target of 100+ jobs met! (${totalIngested} jobs ingested)`);
+  } else {
+    console.log(`\n⚠️  WARNING: Target of 100+ jobs not met. Only ${totalIngested} jobs ingested.`);
+    console.log(`   Consider enabling more high-yield sources or adjusting filters.`);
+  }
 }
 
 runAll().catch(e => {

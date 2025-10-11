@@ -1,18 +1,18 @@
 // Configuration for scaling to 25k+ pages
 export const SCALE_CONFIG = {
   // Batch processing
-  URL_BATCH_SIZE: 10,        // URLs per batch for generic scraping
-  INGEST_BATCH_SIZE: 100,    // Jobs per batch for Strapi ingestion
-  LLM_BATCH_SIZE: 50,        // Jobs per batch for LLM processing
+  URL_BATCH_SIZE: 15,        // URLs per batch for generic scraping (increased from 10)
+  INGEST_BATCH_SIZE: 150,    // Jobs per batch for Strapi ingestion (increased from 100)
+  LLM_BATCH_SIZE: 75,        // Jobs per batch for LLM processing (increased from 50)
   
-  // Rate limiting
-  MAX_CONCURRENT: 6,         // Max concurrent requests
-  MIN_TIME_BETWEEN: 1000,    // 1 second between requests
-  RESERVOIR_SIZE: 1000,      // Request reservoir size
+  // Rate limiting - more aggressive for faster scraping
+  MAX_CONCURRENT: 10,        // Max concurrent requests (increased from 6)
+  MIN_TIME_BETWEEN: 800,     // 0.8 seconds between requests (reduced from 1000ms)
+  RESERVOIR_SIZE: 1500,      // Request reservoir size (increased from 1000)
   RESERVOIR_REFILL: 60,      // Refill every 60 seconds
   
   // Memory management
-  MAX_JOBS_IN_MEMORY: 5000,  // Max jobs to keep in memory at once
+  MAX_JOBS_IN_MEMORY: 7500,  // Max jobs to keep in memory at once (increased from 5000)
   CLEANUP_INTERVAL: 1000,    // Cleanup every 1000 jobs
   
   // Error handling
@@ -21,8 +21,8 @@ export const SCALE_CONFIG = {
   SKIP_FAILED_AFTER: 3,      // Skip URL after 3 failures
   
   // Progress tracking
-  PROGRESS_INTERVAL: 100,    // Log progress every 100 jobs
-  STATS_INTERVAL: 1000,      // Log stats every 1000 jobs
+  PROGRESS_INTERVAL: 50,     // Log progress every 50 jobs (more frequent logging)
+  STATS_INTERVAL: 500,       // Log stats every 500 jobs (more frequent)
 };
 
 // Source-specific configurations

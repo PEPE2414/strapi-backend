@@ -9,7 +9,7 @@ const { createCoreRouter } = require('@strapi/strapi').factories;
 
 module.exports = createCoreRouter('api::mock-interview.mock-interview');
 
-// Custom route for starting mock interviews
+// Custom routes for mock interviews
 module.exports.routes = [
   {
     method: 'POST',
@@ -17,6 +17,26 @@ module.exports.routes = [
     handler: 'mock-interview.start',
     config: {
       auth: false,
+      policies: [],
+      middlewares: []
+    }
+  },
+  {
+    method: 'POST',
+    path: '/mock-interview/chat',
+    handler: 'mock-interview.chat',
+    config: {
+      auth: false, // Manual JWT verification in controller
+      policies: [],
+      middlewares: []
+    }
+  },
+  {
+    method: 'GET',
+    path: '/mock-interview/:sessionId/history',
+    handler: 'mock-interview.getHistory',
+    config: {
+      auth: false, // Manual JWT verification in controller
       policies: [],
       middlewares: []
     }
