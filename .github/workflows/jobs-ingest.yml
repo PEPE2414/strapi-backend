@@ -1,3 +1,5 @@
+# yamllint disable rule:line-length
+# GitHub Actions linter warnings about secrets are expected - secrets are configured in repository settings
 name: Enhanced Jobs Ingest
 on:
   # Smart scheduling: ATS platforms every 12 hours, full crawl every 2 days

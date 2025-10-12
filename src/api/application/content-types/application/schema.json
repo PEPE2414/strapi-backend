@@ -34,6 +34,7 @@
     "nextAction": { "type": "string" },
     "nextActionDate": { "type": "datetime" },
     "verified": { "type": "boolean", "default": false },
+    "description": { "type": "richtext" },
     "notes": { "type": "richtext" },
     "tags": { "type": "json" },
     "owner": {
