@@ -693,7 +693,7 @@ export default {
       // 3) Get current user with existing previousCoverLetterFiles
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { previousCoverLetterFiles: true },
-      });
+      }) as any;
 
       console.log(`[profile:addPreviousCoverLetter] Current previousCoverLetterFiles:`, me?.previousCoverLetterFiles);
 
@@ -732,7 +732,7 @@ export default {
         // Verify it was saved
         const verify = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
           populate: { previousCoverLetterFiles: true },
-        });
+        }) as any;
         console.log(`[profile:addPreviousCoverLetter] Verification - files after update:`, verify?.previousCoverLetterFiles);
       } else {
         console.log(`[profile:addPreviousCoverLetter] File ${fileId} already exists for user ${userId}`);
@@ -779,7 +779,7 @@ export default {
       // 2) Get current user with existing previousCoverLetterFiles
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { previousCoverLetterFiles: true },
-      });
+      }) as any;
 
       // 3) Remove the fileId
       const existingFiles = Array.isArray(me?.previousCoverLetterFiles)
@@ -842,7 +842,7 @@ export default {
       // Get user with populated previousCoverLetterFiles
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { previousCoverLetterFiles: true },
-      });
+      }) as any;
 
       const files = Array.isArray(me?.previousCoverLetterFiles)
         ? me.previousCoverLetterFiles.map(sanitizeFile).filter(Boolean)
@@ -886,11 +886,11 @@ export default {
       try {
         const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
           populate: { previousCoverLetterFiles: true } as any,
-        });
+        }) as any;
         results.entityService = {
-          files: (userWithFiles as any)?.previousCoverLetterFiles,
-          count: Array.isArray((userWithFiles as any)?.previousCoverLetterFiles) 
-            ? (userWithFiles as any).previousCoverLetterFiles.length 
+          files: userWithFiles?.previousCoverLetterFiles,
+          count: Array.isArray(userWithFiles?.previousCoverLetterFiles) 
+            ? userWithFiles.previousCoverLetterFiles.length 
             : 0,
         };
       } catch (e: any) {
@@ -902,7 +902,7 @@ export default {
         const dbUser = await strapi.db.query('plugin::users-permissions.user').findOne({
           where: { id: userId },
           populate: { previousCoverLetterFiles: true },
-        });
+        }) as any;
         results.dbQuery = {
           files: dbUser?.previousCoverLetterFiles,
           count: Array.isArray(dbUser?.previousCoverLetterFiles) 

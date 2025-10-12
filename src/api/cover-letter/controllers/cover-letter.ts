@@ -88,14 +88,14 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     // Fetch user's uploaded previous cover letter files and extract text
     const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
       populate: { previousCoverLetterFiles: true } as any,
-    });
+    }) as any;
 
     strapi.log.info(`[cover-letter] Raw userWithFiles data:`, JSON.stringify(userWithFiles?.previousCoverLetterFiles || null, null, 2));
 
     const previousCoverLetterTexts: string[] = [];
 
     // Extract text from each uploaded cover letter file
-    const files = (userWithFiles as any)?.previousCoverLetterFiles;
+    const files = userWithFiles?.previousCoverLetterFiles;
     strapi.log.info(`[cover-letter] User ${user.id} has ${Array.isArray(files) ? files.length : 0} uploaded cover letter files`);
     strapi.log.info(`[cover-letter] Files type: ${typeof files}, isArray: ${Array.isArray(files)}, value:`, files);
     
