@@ -94,8 +94,11 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
     // Extract text from each uploaded cover letter file
     const files = (userWithFiles as any)?.previousCoverLetterFiles;
+    strapi.log.info(`[cover-letter] User ${user.id} has ${Array.isArray(files) ? files.length : 0} uploaded cover letter files`);
+    
     if (Array.isArray(files) && files.length > 0) {
       for (const file of files) {
+        strapi.log.info(`[cover-letter] Processing file ${file.id}: ${file.name}, mime=${file.mime}, ext=${file.ext}`);
         try {
           const mime = String(file.mime || '').toLowerCase();
           const ext = String(file.ext || '').toLowerCase();
@@ -152,27 +155,44 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
           // Extract text based on file type
           let extractedText = '';
+          strapi.log.info(`[cover-letter] File ${file.id} - attempting extraction for type: ${ext} / ${mime}`);
+          
           if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
+            strapi.log.info(`[cover-letter] Using PDF parser for file ${file.id}`);
             const pdfMod = await import('pdf-parse');
             const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
             const out = await pdfParse(buf);
             extractedText = (out?.text || '').trim();
-          } else if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            strapi.log.info(`[cover-letter] PDF extraction result: ${extractedText.length} chars`);
+          } else if (
+            ext === '.docx' || 
+            ext === '.doc' ||
+            mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            mime === 'application/msword'
+          ) {
+            strapi.log.info(`[cover-letter] Using Mammoth for Word file ${file.id}`);
             const mmMod = await import('mammoth');
             const mammoth: any = (mmMod as any).default || (mmMod as any);
             const out = await mammoth.extractRawText({ buffer: buf });
             extractedText = (out?.value || '').trim();
+            strapi.log.info(`[cover-letter] Word extraction result: ${extractedText.length} chars`);
+          } else {
+            strapi.log.warn(`[cover-letter] Unsupported file type for extraction: ${ext} / ${mime}`);
           }
 
           if (extractedText.length > 0) {
             previousCoverLetterTexts.push(extractedText);
-            strapi.log.info(`[cover-letter] Extracted ${extractedText.length} chars from uploaded file ${file.id}`);
+            strapi.log.info(`[cover-letter] ✓ Successfully extracted ${extractedText.length} chars from file ${file.id} (${file.name})`);
+          } else {
+            strapi.log.warn(`[cover-letter] ✗ No text extracted from file ${file.id} (${file.name})`);
           }
         } catch (e: any) {
-          strapi.log.warn(`[cover-letter] Failed to extract text from file ${file.id}: ${e.message}`);
+          strapi.log.error(`[cover-letter] Failed to extract text from file ${file.id}: ${e.message}`, e);
         }
       }
     }
+    
+    strapi.log.info(`[cover-letter] Final previousCoverLetterTexts count: ${previousCoverLetterTexts.length}, total chars: ${previousCoverLetterTexts.reduce((sum, t) => sum + t.length, 0)}`);
 
     // Fire webhook to n8n
     try {
@@ -195,6 +215,12 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
       const url = process.env.COVERLETTER_WEBHOOK_URL;
       const secret = process.env.CL_WEBHOOK_SECRET; // keep in sync with your n8n Webhook header check
+      
+      strapi.log.info(`[cover-letter] Sending webhook payload with ${payload.previousCoverLetters.length} previous cover letters`);
+      if (payload.previousCoverLetters.length > 0) {
+        strapi.log.info(`[cover-letter] Previous cover letters preview: ${payload.previousCoverLetters.map((cl, i) => `[${i}] ${cl.substring(0, 100)}...`).join(' | ')}`);
+      }
+      
       if (url) {
         await fetch(url, {
           method: 'POST',
@@ -204,6 +230,9 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
           },
           body: JSON.stringify(payload),
         });
+        strapi.log.info(`[cover-letter] Webhook sent successfully to ${url}`);
+      } else {
+        strapi.log.warn('[cover-letter] COVERLETTER_WEBHOOK_URL not configured, skipping webhook');
       }
     } catch (e) {
       strapi.log.warn('[cover-letters] webhook post failed', e as any);

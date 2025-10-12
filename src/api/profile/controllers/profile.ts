@@ -708,7 +708,9 @@ export default {
           data: { previousCoverLetterFiles: updatedFileIds },
         });
         
-        console.log(`[profile:addPreviousCoverLetter] Added file ${fileId} to user ${userId}`);
+        console.log(`[profile:addPreviousCoverLetter] ✓ Added file ${fileId} (${f.name}) to user ${userId}. Total files: ${updatedFileIds.length}`);
+      } else {
+        console.log(`[profile:addPreviousCoverLetter] File ${fileId} already exists for user ${userId}`);
       }
 
       ctx.body = { success: true, fileId };
