@@ -2,6 +2,72 @@
 
 This document explains all the n8n webhook environment variables that need to be configured for the EffortFree application.
 
+## Cover Letter Webhook
+
+### Environment Variable
+```env
+# Cover Letter Generation Webhook
+# Used by: /api/cover-letters/generate endpoint
+# Payload: { coverLetterId, userId, title, company, companyUrl, description, source, savedJobId, cvText, points }
+# Expected Response: n8n should call back to /api/cover-letters/:id/complete with the generated content
+COVERLETTER_WEBHOOK_URL=https://your-n8n-instance.app.n8n.cloud/webhook/cover-letter
+CL_WEBHOOK_SECRET=your-webhook-secret
+
+# Secret for n8n to call back to Strapi (for /complete and /fail endpoints)
+COVERLETTER_PROCESSING_SECRET=your-processing-secret
+```
+
+### Request Payload from Strapi to n8n
+```json
+{
+  "coverLetterId": 123,
+  "userId": 456,
+  "title": "Graduate Structural Engineer",
+  "company": "Arup",
+  "companyUrl": "https://arup.com/careers/job-123",
+  "description": "Full job description text...",
+  "source": "saved-job",
+  "savedJobId": "789",
+  "cvUrl": null,
+  "cvText": "User's CV text content...",
+  "points": [
+    "Led a team of 5 in developing...",
+    "Improved efficiency by 30%..."
+  ]
+}
+```
+
+### Expected Callback from n8n to Strapi
+
+**Success Response:**
+- **Endpoint:** `POST /api/cover-letters/:id/complete`
+- **Headers:** `x-cl-secret: {{COVERLETTER_PROCESSING_SECRET}}`
+- **Body:**
+```json
+{
+  "contentHtml": "<p>Dear Hiring Manager,</p>...",
+  "contentText": "Dear Hiring Manager,\n\n...",
+  "score": 85,
+  "cvAudit": {
+    "strengths": ["Strong technical background"],
+    "improvements": ["Add more metrics"]
+  },
+  "cvAuditScore": 78
+}
+```
+
+**Error Response:**
+- **Endpoint:** `POST /api/cover-letters/:id/fail`
+- **Headers:** `x-cl-secret: {{COVERLETTER_PROCESSING_SECRET}}`
+- **Body:**
+```json
+{
+  "error": "Error message describing what went wrong"
+}
+```
+
+---
+
 ## Required Environment Variables
 
 Add these to your `.env` file in the Strapi backend:

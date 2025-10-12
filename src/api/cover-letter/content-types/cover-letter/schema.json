@@ -11,6 +11,7 @@
   "attributes": {
     "title": { "type": "string", "required": true },
     "company": { "type": "string", "required": true },
+    "companyUrl": { "type": "string" },
     "description": { "type": "text", "required": true },
     "source": {
       "type": "enumeration",

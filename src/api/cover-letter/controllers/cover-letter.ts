@@ -3,7 +3,7 @@ import { factories } from '@strapi/strapi';
 export default factories.createCoreController('api::cover-letter.cover-letter' as any, ({ strapi }) => ({
   /**
    * POST /api/cover-letters/generate
-   * Body: { title, company, description, source?, savedJobId? }
+   * Body: { title, company, companyUrl?, description, source?, savedJobId? }
    * Debits 1 coverLetterCredit (unless entitled), creates usage-log, creates CL (pending),
    * then posts webhook to n8n with x-cl-secret (keep header name consistent with n8n).
    */
@@ -25,7 +25,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       return ctx.unauthorized('Invalid token');
     }
 
-    const { title, company, description, source, savedJobId } = ctx.request.body || {};
+    const { title, company, companyUrl, description, source, savedJobId } = ctx.request.body || {};
     if (!title || !company || !description) {
       return ctx.badRequest('title, company, description required');
     }
@@ -48,6 +48,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       data: {
         title,
         company,
+        companyUrl: companyUrl || null,
         description,
         source: source || 'manual',
         savedJobId: cleanSavedJobId,
@@ -86,6 +87,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         userId: user.id,
         title,
         company,
+        companyUrl: companyUrl || null,
         description,
         source: source || 'manual',
         savedJobId: cleanSavedJobId,
