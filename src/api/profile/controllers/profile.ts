@@ -695,20 +695,45 @@ export default {
         populate: { previousCoverLetterFiles: true },
       });
 
+      console.log(`[profile:addPreviousCoverLetter] Current previousCoverLetterFiles:`, me?.previousCoverLetterFiles);
+
       // 4) Get existing file IDs
       const existingFiles = Array.isArray(me?.previousCoverLetterFiles)
         ? me.previousCoverLetterFiles.map((file: any) => file.id)
         : [];
 
+      console.log(`[profile:addPreviousCoverLetter] Existing file IDs:`, existingFiles);
+
       // 5) Add new fileId if not already present
       if (!existingFiles.includes(fileId)) {
         const updatedFileIds = [...existingFiles, fileId];
         
-        await strapi.entityService.update('plugin::users-permissions.user', userId, {
-          data: { previousCoverLetterFiles: updatedFileIds },
-        });
+        console.log(`[profile:addPreviousCoverLetter] Updating with file IDs:`, updatedFileIds);
+        
+        // Try entityService first
+        try {
+          const updated = await strapi.entityService.update('plugin::users-permissions.user', userId, {
+            data: { previousCoverLetterFiles: updatedFileIds },
+          });
+          console.log(`[profile:addPreviousCoverLetter] ✓ EntityService update succeeded`);
+        } catch (entityErr: any) {
+          console.log(`[profile:addPreviousCoverLetter] EntityService failed, trying db.query:`, entityErr?.message);
+          
+          // Fallback to raw DB query
+          await strapi.db.query('plugin::users-permissions.user').update({
+            where: { id: userId },
+            data: { previousCoverLetterFiles: updatedFileIds },
+          });
+          console.log(`[profile:addPreviousCoverLetter] ✓ DB query update succeeded`);
+        }
         
         console.log(`[profile:addPreviousCoverLetter] ✓ Added file ${fileId} (${f.name}) to user ${userId}. Total files: ${updatedFileIds.length}`);
+        
+        // Verify it was saved
+        const verify = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+          populate: { previousCoverLetterFiles: true },
+        });
+        console.log(`[profile:addPreviousCoverLetter] Verification - files after update:`, verify?.previousCoverLetterFiles);
       } else {
         console.log(`[profile:addPreviousCoverLetter] File ${fileId} already exists for user ${userId}`);
       }
@@ -827,6 +852,119 @@ export default {
     } catch (e: any) {
       console.error('[profile:getPreviousCoverLetters] unexpected error:', e?.message || e);
       ctx.throw(500, 'Failed to get previous cover letters');
+    }
+  },
+
+  // ====== DEBUG: Test cover letter text extraction ======
+  async debugCoverLetterExtraction(ctx) {
+    try {
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const userId = user.id;
+
+      // Fetch with multiple approaches
+      const results: any = {};
+
+      // Approach 1: EntityService with populate
+      try {
+        const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+          populate: { previousCoverLetterFiles: true } as any,
+        });
+        results.entityService = {
+          files: (userWithFiles as any)?.previousCoverLetterFiles,
+          count: Array.isArray((userWithFiles as any)?.previousCoverLetterFiles) 
+            ? (userWithFiles as any).previousCoverLetterFiles.length 
+            : 0,
+        };
+      } catch (e: any) {
+        results.entityService = { error: e.message };
+      }
+
+      // Approach 2: DB query
+      try {
+        const dbUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+          where: { id: userId },
+          populate: { previousCoverLetterFiles: true },
+        });
+        results.dbQuery = {
+          files: dbUser?.previousCoverLetterFiles,
+          count: Array.isArray(dbUser?.previousCoverLetterFiles) 
+            ? dbUser.previousCoverLetterFiles.length 
+            : 0,
+        };
+      } catch (e: any) {
+        results.dbQuery = { error: e.message };
+      }
+
+      // Try extracting text from files if any found
+      const files = (results.entityService?.files || results.dbQuery?.files);
+      if (Array.isArray(files) && files.length > 0) {
+        results.extractionTests = [];
+        
+        for (const file of files.slice(0, 2)) { // Test first 2 files only
+          const testResult: any = {
+            fileId: file.id,
+            fileName: file.name,
+            mime: file.mime,
+            ext: file.ext,
+            url: file.url,
+          };
+
+          try {
+            // Try to read and extract
+            let buf: Buffer | null = null;
+            
+            // Try HTTP fetch (simpler for testing)
+            const url = String(file.url || '');
+            if (url.startsWith('http')) {
+              const res = await fetch(url);
+              const ab = await res.arrayBuffer();
+              buf = Buffer.from(ab);
+              testResult.bufferSize = buf.length;
+            }
+
+            if (buf) {
+              const mime = String(file.mime || '').toLowerCase();
+              const ext = String(file.ext || '').toLowerCase();
+
+              if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                const mmMod = await import('mammoth');
+                const mammoth: any = (mmMod as any).default || (mmMod as any);
+                const out = await mammoth.extractRawText({ buffer: buf });
+                testResult.extractedText = (out?.value || '').trim();
+                testResult.extractedLength = testResult.extractedText.length;
+                testResult.preview = testResult.extractedText.substring(0, 200);
+              }
+            }
+          } catch (e: any) {
+            testResult.error = e.message;
+          }
+
+          results.extractionTests.push(testResult);
+        }
+      }
+
+      ctx.body = results;
+    } catch (e: any) {
+      console.error('[profile:debugCoverLetterExtraction] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Debug failed');
     }
   },
 };

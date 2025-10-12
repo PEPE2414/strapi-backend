@@ -90,11 +90,14 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       populate: { previousCoverLetterFiles: true } as any,
     });
 
+    strapi.log.info(`[cover-letter] Raw userWithFiles data:`, JSON.stringify(userWithFiles?.previousCoverLetterFiles || null, null, 2));
+
     const previousCoverLetterTexts: string[] = [];
 
     // Extract text from each uploaded cover letter file
     const files = (userWithFiles as any)?.previousCoverLetterFiles;
     strapi.log.info(`[cover-letter] User ${user.id} has ${Array.isArray(files) ? files.length : 0} uploaded cover letter files`);
+    strapi.log.info(`[cover-letter] Files type: ${typeof files}, isArray: ${Array.isArray(files)}, value:`, files);
     
     if (Array.isArray(files) && files.length > 0) {
       for (const file of files) {

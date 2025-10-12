@@ -100,5 +100,15 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/profile/debug-cover-letter-extraction',
+      handler: 'profile.debugCoverLetterExtraction',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
