@@ -8,7 +8,7 @@ This document explains all the n8n webhook environment variables that need to be
 ```env
 # Cover Letter Generation Webhook
 # Used by: /api/cover-letters/generate endpoint
-# Payload: { coverLetterId, userId, title, company, companyUrl, description, source, savedJobId, cvText, points }
+# Payload: { coverLetterId, userId, title, company, companyUrl, description, source, savedJobId, cvText, points, previousCoverLetters }
 # Expected Response: n8n should call back to /api/cover-letters/:id/complete with the generated content
 COVERLETTER_WEBHOOK_URL=https://your-n8n-instance.app.n8n.cloud/webhook/cover-letter
 CL_WEBHOOK_SECRET=your-webhook-secret
@@ -33,9 +33,15 @@ COVERLETTER_PROCESSING_SECRET=your-processing-secret
   "points": [
     "Led a team of 5 in developing...",
     "Improved efficiency by 30%..."
+  ],
+  "previousCoverLetters": [
+    "Dear Hiring Manager,\n\nI am writing to express...",
+    "Dear [Name],\n\nI am excited to apply..."
   ]
 }
 ```
+
+**Note:** `previousCoverLetters` contains up to 5 of the user's most recent successfully generated cover letters (status='ready'). This helps maintain consistency in writing style and tone across cover letters.
 
 ### Expected Callback from n8n to Strapi
 

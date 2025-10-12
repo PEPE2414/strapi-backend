@@ -5,7 +5,12 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
    * POST /api/cover-letters/generate
    * Body: { title, company, companyUrl?, description, source?, savedJobId? }
    * Debits 1 coverLetterCredit (unless entitled), creates usage-log, creates CL (pending),
-   * then posts webhook to n8n with x-cl-secret (keep header name consistent with n8n).
+   * then posts webhook to n8n with:
+   *   - Job details (title, company, companyUrl, description)
+   *   - User's CV text (cvText)
+   *   - User's cover letter points (points)
+   *   - Up to 5 most recent successful cover letters (previousCoverLetters)
+   * n8n should call back to /api/cover-letters/:id/complete when done.
    */
   async generate(ctx) {
     // Manual JWT verification since auth: false bypasses built-in auth
@@ -80,6 +85,22 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       });
     }
 
+    // Fetch user's previous cover letters (up to 5 most recent, ready only)
+    const previousCoverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
+      filters: {
+        user: { id: user.id },
+        status: 'ready',
+        contentText: { $notNull: true },
+      },
+      sort: { createdAt: 'desc' },
+      limit: 5,
+      fields: ['contentText'],
+    });
+
+    const previousCoverLetterTexts = previousCoverLetters
+      .map((cl: any) => cl.contentText)
+      .filter((text: string) => text && text.trim().length > 0);
+
     // Fire webhook to n8n
     try {
       const payload = {
@@ -96,6 +117,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         points: Array.isArray((freshUser as any)?.coverLetterPoints)
           ? (freshUser as any).coverLetterPoints
           : [],
+        previousCoverLetters: previousCoverLetterTexts,
       };
 
       const url = process.env.COVERLETTER_WEBHOOK_URL;
