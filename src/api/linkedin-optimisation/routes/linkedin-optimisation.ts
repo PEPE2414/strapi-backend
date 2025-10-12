@@ -2,29 +2,46 @@
  * linkedin-optimisation router
  */
 
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter(
-  'api::linkedin-optimisation.linkedin-optimisation' as any,
-  {
-    only: ['find', 'findOne', 'create'],
-    config: {
-      create: {
-        // Require authentication for create
-        policies: [],
-        middlewares: [],
-      },
-      find: {
-        // Admin only for listing (controlled in controller)
-        policies: [],
-        middlewares: [],
-      },
-      findOne: {
-        // Admin only for viewing (controlled in controller)
+export default {
+  routes: [
+    // Custom generate endpoint
+    {
+      method: 'POST',
+      path: '/linkedin-optimisations/generate',
+      handler: 'linkedin-optimisation.generate',
+      config: {
         policies: [],
         middlewares: [],
       },
     },
-  }
-);
+    // Core routes
+    {
+      method: 'GET',
+      path: '/linkedin-optimisations',
+      handler: 'linkedin-optimisation.find',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/linkedin-optimisations/:id',
+      handler: 'linkedin-optimisation.findOne',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/linkedin-optimisations',
+      handler: 'linkedin-optimisation.create',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+  ],
+};
 

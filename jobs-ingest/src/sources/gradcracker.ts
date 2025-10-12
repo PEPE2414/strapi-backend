@@ -1,4 +1,5 @@
 import { get } from '../lib/fetcher';
+import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import * as cheerio from 'cheerio';
 import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
@@ -11,12 +12,14 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
   let page = 1;
   const maxPages = 20; // Limit to prevent infinite loops
   
+  console.log(`🛡️  ${getBypassStatus()}`);
+  
   try {
     while (page <= maxPages) {
       const url = `https://www.gradcracker.com/search/engineering-jobs?page=${page}`;
       console.log(`🔄 Scraping Gradcracker page ${page}...`);
       
-      const { html } = await get(url);
+      const { html } = await fetchWithCloudflareBypass(url);
       const $ = cheerio.load(html);
       
       // Find job listings on the page

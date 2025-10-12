@@ -25,6 +25,12 @@ OUTREACH_WEBHOOK_SECRET=your-optional-secret-key
 # Expected Response: { profiles: [{ name, title, company, location, linkedinUrl }] }
 N8N_LINKEDIN_RECRUITER_WEBHOOK_URL=https://your-n8n-instance.app.n8n.cloud/webhook/linkedin-recruiters
 
+# LinkedIn Optimiser Webhook
+# Used by: /api/linkedin-optimisations/generate endpoint
+# Payload: { userId, userEmail, profileData, context }
+# Expected Response: { overallScore, subscores, headlineVariants, about, improvements }
+N8N_LINKEDIN_WEBHOOK_URL=https://your-n8n-instance.app.n8n.cloud/webhook/linkedin-optimizer
+
 # Interview Questions Generation Webhook
 # Used by: /api/interview-sets/generate endpoint
 # Payload: { userId, jobTitle, company, jdText, jobId }
@@ -123,7 +129,84 @@ N8N_WEBHOOK_SECRET=your-shared-secret-key-here
 
 **Note:** n8n should save these profiles to Strapi after finding them.
 
-### 3. Interview Questions Generation Webhook
+### 3. LinkedIn Optimiser Webhook
+
+**Endpoint:** `POST /api/linkedin-optimisations/generate`  
+**Environment Variable:** `N8N_LINKEDIN_WEBHOOK_URL`
+
+**Request Payload:**
+```json
+{
+  "userId": 123,
+  "userEmail": "user@example.com",
+  "profileData": {
+    "user": {
+      "id": 123,
+      "email": "user@example.com"
+    },
+    "image": {
+      "base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+    },
+    "text": {
+      "headline": "Software Engineer | React & Node.js",
+      "about": "Passionate developer with 3 years experience...",
+      "recentBullets": [
+        "Built scalable microservices architecture",
+        "Led team of 5 developers"
+      ],
+      "skills": ["JavaScript", "React", "Node.js", "AWS"],
+      "optionalText": "Additional profile context..."
+    },
+    "consent": {
+      "createPost": true
+    }
+  },
+  "context": {
+    "targetRole": "Senior Software Engineer",
+    "location": "London",
+    "seniority": "Graduate"
+  }
+}
+```
+
+**Expected Response:**
+```json
+{
+  "overallScore": 78,
+  "subscores": {
+    "headline": 85,
+    "about": 72,
+    "experience": 80,
+    "skills": 75
+  },
+  "headlineVariants": [
+    "Software Engineer | React, Node.js & AWS | Building Scalable Solutions",
+    "Full-Stack Engineer | React & Node.js Specialist | Cloud Architecture"
+  ],
+  "about": {
+    "lite": "Concise 2-3 sentence summary...",
+    "full": "Comprehensive 4-5 paragraph about section..."
+  },
+  "improvements": [
+    {
+      "section": "headline",
+      "issue": "Missing key technical skills",
+      "suggestion": "Add AWS and TypeScript to headline",
+      "priority": "high"
+    },
+    {
+      "section": "about",
+      "issue": "Lacks specific achievements",
+      "suggestion": "Include quantifiable metrics",
+      "priority": "medium"
+    }
+  ]
+}
+```
+
+**Note:** This endpoint requires authentication. The image field is optional - users can upload a screenshot of their LinkedIn profile or paste text fields manually.
+
+### 4. Interview Questions Generation Webhook
 
 **Endpoint:** `POST /api/interview-sets/generate`  
 **Environment Variable:** `N8N_INTERVIEW_URL`
@@ -157,7 +240,7 @@ N8N_WEBHOOK_SECRET=your-shared-secret-key-here
 }
 ```
 
-### 4. Interview Cheat Sheet Generation Webhook
+### 5. Interview Cheat Sheet Generation Webhook
 
 **Endpoint:** `POST /api/cheat-sheets/generate`  
 **Environment Variable:** `N8N_CHEATSHEET_URL`
@@ -221,7 +304,7 @@ N8N_WEBHOOK_SECRET=your-shared-secret-key-here
 }
 ```
 
-### 5. Mock Interview Chat Webhook
+### 6. Mock Interview Chat Webhook
 
 **Endpoint:** `POST /api/mock-interview/chat`  
 **Environment Variable:** `N8N_MOCK_INTERVIEW_WEBHOOK`
@@ -313,6 +396,7 @@ Once you've set the environment variables, test from the application by using th
 | `OUTREACH_WEBHOOK_URL` | Yes | Outreach Emails | Primary email finding webhook |
 | `OUTREACH_WEBHOOK_URL_ALT` | No | Outreach Emails | Fallback email webhook |
 | `N8N_LINKEDIN_RECRUITER_WEBHOOK_URL` | Yes | LinkedIn Search | Find LinkedIn recruiters |
+| `N8N_LINKEDIN_WEBHOOK_URL` | Yes | LinkedIn Optimiser | Analyze and improve LinkedIn profiles |
 | `N8N_INTERVIEW_URL` | Yes | Interview Questions | Generate interview questions |
 | `N8N_CHEATSHEET_URL` | Yes | Cheat Sheets | Generate interview cheat sheets |
 | `N8N_MOCK_INTERVIEW_WEBHOOK` | Yes | Mock Interview | Chat with AI interviewer |

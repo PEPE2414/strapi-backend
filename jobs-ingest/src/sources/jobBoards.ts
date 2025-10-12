@@ -1,4 +1,5 @@
 import { get } from '../lib/fetcher';
+import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -135,6 +136,8 @@ const JOB_BOARDS = {
 
 export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> {
   console.log(`🚀 Starting job board scraper for: ${boardKey}`);
+  console.log(`🛡️  ${getBypassStatus()}`);
+  
   const board = JOB_BOARDS[boardKey as keyof typeof JOB_BOARDS];
   if (!board) {
     console.warn(`❌ Unknown job board: ${boardKey}`);
@@ -185,11 +188,11 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
       
       for (const searchUrl of board.searchUrls.slice(0, 2)) { // Limit to 2 search URLs
         try {
-          const searchJobs = await scrapeSearchPage(searchUrl, board.name);
+          const searchJobs = await scrapeSearchPage(searchUrl, board.name, true); // Use cloudflare bypass
           jobs.push(...searchJobs);
           
-          // Add delay between search pages
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Add longer delay between search pages (be more respectful)
+          await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
         } catch (error) {
           console.warn(`Failed to scrape search page ${searchUrl}:`, error instanceof Error ? error.message : String(error));
         }
@@ -292,9 +295,11 @@ async function scrapeJobPage(url: string, boardName: string): Promise<CanonicalJ
   }
 }
 
-async function scrapeSearchPage(url: string, boardName: string): Promise<CanonicalJob[]> {
+async function scrapeSearchPage(url: string, boardName: string, useCloudflareBypass: boolean = false): Promise<CanonicalJob[]> {
   try {
-    const { html } = await get(url);
+    const { html } = useCloudflareBypass 
+      ? await fetchWithCloudflareBypass(url)
+      : await get(url);
     const $ = cheerio.load(html);
     const jobs: CanonicalJob[] = [];
 
