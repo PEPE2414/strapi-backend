@@ -41,7 +41,7 @@ COVERLETTER_PROCESSING_SECRET=your-processing-secret
 }
 ```
 
-**Note:** `previousCoverLetters` contains up to 5 of the user's most recent successfully generated cover letters (status='ready'). This helps maintain consistency in writing style and tone across cover letters.
+**Note:** `previousCoverLetters` contains the text extracted from cover letter files that the user has uploaded via the "Upload Previous Cover Letters" feature in the Cover Letters page. This helps the AI understand the user's writing style and maintain consistency in tone across new cover letters.
 
 ### Expected Callback from n8n to Strapi
 

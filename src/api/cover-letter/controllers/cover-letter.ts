@@ -85,21 +85,94 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       });
     }
 
-    // Fetch user's previous cover letters (up to 5 most recent, ready only)
-    const previousCoverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
-      filters: {
-        user: { id: user.id },
-        status: 'ready',
-        contentText: { $notNull: true },
-      },
-      sort: { createdAt: 'desc' },
-      limit: 5,
-      fields: ['contentText'],
+    // Fetch user's uploaded previous cover letter files and extract text
+    const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+      populate: { previousCoverLetterFiles: true } as any,
     });
 
-    const previousCoverLetterTexts = previousCoverLetters
-      .map((cl: any) => cl.contentText)
-      .filter((text: string) => text && text.trim().length > 0);
+    const previousCoverLetterTexts: string[] = [];
+
+    // Extract text from each uploaded cover letter file
+    const files = (userWithFiles as any)?.previousCoverLetterFiles;
+    if (Array.isArray(files) && files.length > 0) {
+      for (const file of files) {
+        try {
+          const mime = String(file.mime || '').toLowerCase();
+          const ext = String(file.ext || '').toLowerCase();
+
+          // Read file from S3 or HTTP
+          let buf: Buffer | null = null;
+          try {
+            const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
+            const region = process.env.S3_REGION;
+            const bucket = process.env.S3_BUCKET;
+            
+            if (region && bucket) {
+              const keyFromProvider = (file as any)?.provider_metadata?.key as string | undefined;
+              let key = keyFromProvider;
+              
+              if (!key) {
+                const url = String(file.url || '');
+                if (url) {
+                  const path = url.startsWith('http://') || url.startsWith('https://')
+                    ? new URL(url).pathname
+                    : url;
+                  key = path.replace(/^\/+/, '');
+                }
+              }
+
+              if (key) {
+                const s3 = new S3Client({
+                  region,
+                  credentials: {
+                    accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+                    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+                  },
+                });
+                const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+                // @ts-ignore Node 18+ helper
+                const bytes = await out.Body?.transformToByteArray();
+                if (bytes) buf = Buffer.from(bytes);
+              }
+            }
+          } catch (e: any) {
+            strapi.log.warn(`[cover-letter] S3 GetObject failed for file ${file.id}, falling back to HTTP`);
+          }
+
+          if (!buf) {
+            const url = String(file.url || '');
+            if (url.startsWith('http')) {
+              const res = await fetch(url);
+              const ab = await res.arrayBuffer();
+              buf = Buffer.from(ab);
+            }
+          }
+
+          if (!buf) continue;
+
+          // Extract text based on file type
+          let extractedText = '';
+          if (ext === '.pdf' || mime === 'application/pdf' || mime === 'application/x-pdf') {
+            const pdfMod = await import('pdf-parse');
+            const pdfParse: any = (pdfMod as any).default || (pdfMod as any);
+            const out = await pdfParse(buf);
+            extractedText = (out?.text || '').trim();
+          } else if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            const mmMod = await import('mammoth');
+            const mammoth: any = (mmMod as any).default || (mmMod as any);
+            const out = await mammoth.extractRawText({ buffer: buf });
+            extractedText = (out?.value || '').trim();
+          }
+
+          if (extractedText.length > 0) {
+            previousCoverLetterTexts.push(extractedText);
+            strapi.log.info(`[cover-letter] Extracted ${extractedText.length} chars from uploaded file ${file.id}`);
+          }
+        } catch (e: any) {
+          strapi.log.warn(`[cover-letter] Failed to extract text from file ${file.id}: ${e.message}`);
+        }
+      }
+    }
 
     // Fire webhook to n8n
     try {

@@ -653,4 +653,178 @@ export default {
       ctx.throw(500, 'Text validation failed');
     }
   },
+
+  // ====== NEW: Add previous cover letter file ======
+  async addPreviousCoverLetter(ctx) {
+    try {
+      console.log('[profile:addPreviousCoverLetter] Starting request');
+      
+      // Manual JWT verification
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const userId = user.id;
+
+      // 1) Get fileId from request
+      const body = ctx.request.body || {};
+      const fileId = Number(body?.fileId);
+      if (!fileId) return ctx.badRequest('fileId is required');
+
+      // 2) Verify the file exists
+      const f = await strapi.entityService.findOne('plugin::upload.file', fileId);
+      if (!f) return ctx.badRequest('fileId not found');
+
+      // 3) Get current user with existing previousCoverLetterFiles
+      const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        populate: { previousCoverLetterFiles: true },
+      });
+
+      // 4) Get existing file IDs
+      const existingFiles = Array.isArray(me?.previousCoverLetterFiles)
+        ? me.previousCoverLetterFiles.map((file: any) => file.id)
+        : [];
+
+      // 5) Add new fileId if not already present
+      if (!existingFiles.includes(fileId)) {
+        const updatedFileIds = [...existingFiles, fileId];
+        
+        await strapi.entityService.update('plugin::users-permissions.user', userId, {
+          data: { previousCoverLetterFiles: updatedFileIds },
+        });
+        
+        console.log(`[profile:addPreviousCoverLetter] Added file ${fileId} to user ${userId}`);
+      }
+
+      ctx.body = { success: true, fileId };
+    } catch (e: any) {
+      console.error('[profile:addPreviousCoverLetter] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Failed to add previous cover letter');
+    }
+  },
+
+  // ====== NEW: Remove previous cover letter file ======
+  async removePreviousCoverLetter(ctx) {
+    try {
+      console.log('[profile:removePreviousCoverLetter] Starting request');
+      
+      // Manual JWT verification
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const userId = user.id;
+
+      // 1) Get fileId from request
+      const fileId = Number(ctx.params.fileId);
+      if (!fileId) return ctx.badRequest('fileId is required');
+
+      // 2) Get current user with existing previousCoverLetterFiles
+      const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        populate: { previousCoverLetterFiles: true },
+      });
+
+      // 3) Remove the fileId
+      const existingFiles = Array.isArray(me?.previousCoverLetterFiles)
+        ? me.previousCoverLetterFiles.map((file: any) => file.id)
+        : [];
+
+      const updatedFileIds = existingFiles.filter(id => id !== fileId);
+      
+      await strapi.entityService.update('plugin::users-permissions.user', userId, {
+        data: { previousCoverLetterFiles: updatedFileIds },
+      });
+      
+      console.log(`[profile:removePreviousCoverLetter] Removed file ${fileId} from user ${userId}`);
+
+      // Optionally delete the file from storage
+      try {
+        const uploadService = strapi.plugin('upload').service('upload');
+        const file = await strapi.entityService.findOne('plugin::upload.file', fileId);
+        if (file) {
+          await uploadService.remove(file);
+        }
+      } catch (e: any) {
+        console.log('[profile:removePreviousCoverLetter] Could not delete file from storage:', e?.message);
+      }
+
+      ctx.body = { success: true, fileId };
+    } catch (e: any) {
+      console.error('[profile:removePreviousCoverLetter] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Failed to remove previous cover letter');
+    }
+  },
+
+  // ====== NEW: Get all previous cover letter files ======
+  async getPreviousCoverLetters(ctx) {
+    try {
+      console.log('[profile:getPreviousCoverLetters] Starting request');
+      
+      // Manual JWT verification
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        return ctx.unauthorized('Invalid token');
+      }
+      
+      if (!user || !user.id) {
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const userId = user.id;
+
+      // Get user with populated previousCoverLetterFiles
+      const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        populate: { previousCoverLetterFiles: true },
+      });
+
+      const files = Array.isArray(me?.previousCoverLetterFiles)
+        ? me.previousCoverLetterFiles.map(sanitizeFile).filter(Boolean)
+        : [];
+
+      ctx.body = { files };
+    } catch (e: any) {
+      console.error('[profile:getPreviousCoverLetters] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Failed to get previous cover letters');
+    }
+  },
 };

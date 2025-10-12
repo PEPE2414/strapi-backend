@@ -52,6 +52,11 @@
       "mappedBy": "user"
     },
     "coverLetterPoints": { "type": "json", "default": [] },
+    "previousCoverLetterFiles": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["files"]
+    },
 
     "cvFile": { "type": "media", "multiple": false, "allowedTypes": ["files"] },
     "cvText": { "type": "text" },

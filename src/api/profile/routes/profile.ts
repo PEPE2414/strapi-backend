@@ -70,5 +70,35 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'POST',
+      path: '/profile/previous-cover-letters',
+      handler: 'profile.addPreviousCoverLetter',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/profile/previous-cover-letters',
+      handler: 'profile.getPreviousCoverLetters',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'DELETE',
+      path: '/profile/previous-cover-letters/:fileId',
+      handler: 'profile.removePreviousCoverLetter',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
