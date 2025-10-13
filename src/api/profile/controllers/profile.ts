@@ -77,30 +77,11 @@ export default {
       console.log('[profile:update] Starting updateProfile request');
       console.log('[profile:update] ctx.state:', ctx.state);
       console.log('[profile:update] ctx.state.user:', ctx.state.user);
-      console.log('[profile:update] Authorization header:', ctx.request.header.authorization);
       
-      // Manual JWT verification since auth: false bypasses built-in auth
-      const authHeader = ctx.request.header.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        console.log('[profile:update] No valid Authorization header');
-        return ctx.unauthorized('Authentication required');
-      }
-      
-      const token = authHeader.slice(7);
-      let user = null;
-      
-      try {
-        // Use Strapi's JWT service to verify the token
-        const jwtService = strapi.plugin('users-permissions').service('jwt');
-        user = await jwtService.verify(token);
-        console.log('[profile:update] JWT verified, user ID:', user.id);
-      } catch (jwtError) {
-        console.log('[profile:update] JWT verification failed:', jwtError.message);
-        return ctx.unauthorized('Invalid token');
-      }
-      
+      // Use Strapi's built-in authentication
+      const user = ctx.state.user;
       if (!user || !user.id) {
-        console.log('[profile:update] No user found in JWT');
+        console.log('[profile:update] No authenticated user');
         return ctx.unauthorized('Authentication required');
       }
       
@@ -142,6 +123,13 @@ export default {
           return ctx.badRequest('weeklyGoal must be an integer between 1 and 30');
         }
         data.weeklyGoal = goal;
+      }
+
+      // Validate skippedPastApps (must be a boolean)
+      if (data.skippedPastApps !== undefined) {
+        console.log('[profile:update] skippedPastApps received:', data.skippedPastApps, 'type:', typeof data.skippedPastApps);
+        data.skippedPastApps = Boolean(data.skippedPastApps);
+        console.log('[profile:update] skippedPastApps processed:', data.skippedPastApps);
       }
 
       // Validate notificationPrefs (must be an object)

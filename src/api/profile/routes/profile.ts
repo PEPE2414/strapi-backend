@@ -25,7 +25,6 @@ export default {
       path: '/profile/me',
       handler: 'profile.updateProfile',
       config: {
-        auth: false,
         policies: [],
         middlewares: [],
       },
@@ -35,7 +34,6 @@ export default {
       path: '/user/profile',
       handler: 'profile.updateProfile',
       config: {
-        auth: false,
         policies: [],
         middlewares: [],
       },
