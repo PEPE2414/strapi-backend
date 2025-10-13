@@ -77,16 +77,18 @@ export default {
       console.log('[profile:update] Starting updateProfile request');
       console.log('[profile:update] ctx.state:', ctx.state);
       console.log('[profile:update] ctx.state.user:', ctx.state.user);
+      console.log('[profile:update] Authorization header:', ctx.request.header.authorization);
       
-      // Use Strapi's built-in authentication
+      // Even with auth: false, Strapi populates ctx.state.user if JWT is valid
+      // We just need to verify it exists
       const user = ctx.state.user;
       if (!user || !user.id) {
-        console.log('[profile:update] No authenticated user');
+        console.log('[profile:update] No authenticated user in ctx.state');
         return ctx.unauthorized('Authentication required');
       }
       
       const userId = user.id;
-      console.log('[profile:update] User ID:', userId);
+      console.log('[profile:update] Authenticated user ID:', userId);
 
       // 2) Whitelist allowed fields
       const body = (ctx.request.body && ctx.request.body.data) || {};

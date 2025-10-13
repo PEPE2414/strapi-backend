@@ -25,6 +25,7 @@ export default {
       path: '/profile/me',
       handler: 'profile.updateProfile',
       config: {
+        auth: false, // Bypass permission checks, verify auth in controller
         policies: [],
         middlewares: [],
       },
@@ -34,6 +35,7 @@ export default {
       path: '/user/profile',
       handler: 'profile.updateProfile',
       config: {
+        auth: false, // Bypass permission checks, verify auth in controller
         policies: [],
         middlewares: [],
       },
