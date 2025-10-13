@@ -75,15 +75,29 @@ export default {
   async updateProfile(ctx) {
     try {
       console.log('[profile:update] Starting updateProfile request');
-      console.log('[profile:update] ctx.state:', ctx.state);
-      console.log('[profile:update] ctx.state.user:', ctx.state.user);
       console.log('[profile:update] Authorization header:', ctx.request.header.authorization);
       
-      // Even with auth: false, Strapi populates ctx.state.user if JWT is valid
-      // We just need to verify it exists
-      const user = ctx.state.user;
+      // Manual JWT verification (auth: false bypasses built-in auth to avoid permission issues)
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[profile:update] No valid Authorization header');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[profile:update] JWT verified, user ID:', user.id);
+      } catch (jwtError: any) {
+        console.log('[profile:update] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid or expired token');
+      }
+      
       if (!user || !user.id) {
-        console.log('[profile:update] No authenticated user in ctx.state');
+        console.log('[profile:update] No user found in JWT');
         return ctx.unauthorized('Authentication required');
       }
       
