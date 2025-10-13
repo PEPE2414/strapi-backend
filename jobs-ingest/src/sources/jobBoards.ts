@@ -16,51 +16,46 @@ const JOB_BOARDS = {
     name: 'TARGETjobs',
     baseUrl: 'https://targetjobs.co.uk',
     searchUrls: [
-      'https://targetjobs.co.uk/graduate-jobs',
-      'https://targetjobs.co.uk/internships',
-      'https://targetjobs.co.uk/placement-year'
+      'https://targetjobs.co.uk/careers-advice/job-search/graduate-jobs',
+      'https://targetjobs.co.uk/careers-advice/job-search/internships'
     ],
-    sitemapUrl: 'https://targetjobs.co.uk/sitemap.xml'
+    sitemapUrl: '' // No public sitemap
   },
   'milkround': {
     name: 'Milkround',
     baseUrl: 'https://www.milkround.com',
     searchUrls: [
-      'https://www.milkround.com/jobs',
-      'https://www.milkround.com/graduate-jobs',
-      'https://www.milkround.com/internships'
+      'https://www.milkround.com/jobs/search',
+      'https://www.milkround.com/jobs/graduate'
     ],
-    sitemapUrl: 'https://www.milkround.com/sitemap.xml'
+    sitemapUrl: '' // No public sitemap
   },
   'prospects': {
     name: 'Prospects',
     baseUrl: 'https://www.prospects.ac.uk',
     searchUrls: [
-      'https://www.prospects.ac.uk/jobs-and-work-experience/graduate-jobs',
-      'https://www.prospects.ac.uk/jobs-and-work-experience/internships',
-      'https://www.prospects.ac.uk/jobs-and-work-experience/work-experience'
+      'https://www.prospects.ac.uk/graduate-jobs',
+      'https://www.prospects.ac.uk/jobs'
     ],
-    sitemapUrl: 'https://www.prospects.ac.uk/sitemap.xml'
+    sitemapUrl: '' // No public sitemap
   },
   'ratemyplacement': {
     name: 'RateMyPlacement',
     baseUrl: 'https://www.ratemyplacement.co.uk',
     searchUrls: [
-      'https://www.ratemyplacement.co.uk/placements',
-      'https://www.ratemyplacement.co.uk/graduate-jobs',
-      'https://www.ratemyplacement.co.uk/internships'
+      'https://www.ratemyplacement.co.uk/jobs/placements',
+      'https://www.ratemyplacement.co.uk/jobs/graduate'
     ],
-    sitemapUrl: 'https://www.ratemyplacement.co.uk/sitemap.xml'
+    sitemapUrl: '' // No public sitemap
   },
   'brightnetwork': {
     name: 'BrightNetwork',
     baseUrl: 'https://www.brightnetwork.co.uk',
     searchUrls: [
-      'https://www.brightnetwork.co.uk/graduate-jobs',
-      'https://www.brightnetwork.co.uk/internships',
-      'https://www.brightnetwork.co.uk/insight-weeks'
+      'https://www.brightnetwork.co.uk/jobs',
+      'https://www.brightnetwork.co.uk/graduate-jobs'
     ],
-    sitemapUrl: 'https://www.brightnetwork.co.uk/sitemap.xml'
+    sitemapUrl: '' // No public sitemap - requires login
   },
   'studentjob': {
     name: 'StudentJob UK',
