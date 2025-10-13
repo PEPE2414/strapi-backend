@@ -148,54 +148,21 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   const jobs: CanonicalJob[] = [];
 
   try {
-    // Strategy 1: Try sitemap discovery first (with better error handling)
-    console.log(`📋 Trying sitemap discovery for ${board.name}...`);
-    let jobUrls: string[] = [];
-    try {
-      jobUrls = await discoverJobUrls(board.sitemapUrl, 50);
-    } catch (error) {
-      console.warn(`Sitemap discovery failed for ${board.name}:`, error instanceof Error ? error.message : String(error));
-    }
+    // Skip sitemap discovery for graduate boards - they don't have public sitemaps
+    // Go straight to search pages which are more reliable
+    console.log(`🔍 Scraping search pages for ${board.name} (skipping sitemap)...`);
     
-    if (jobUrls.length > 0) {
-      console.log(`📊 Found ${jobUrls.length} job URLs from sitemap`);
-      
-      // Process first 20 URLs from sitemap
-      for (const url of jobUrls.slice(0, 20)) {
-        try {
-          console.log(`🔍 Scraping job page: ${url}`);
-          const job = await scrapeJobPage(url, board.name);
-          if (job) {
-            jobs.push(job);
-            console.log(`✅ Added job: ${job.title} at ${job.company?.name}`);
-          } else {
-            console.log(`⏭️  No job found on page: ${url}`);
-          }
-        } catch (error) {
-          console.warn(`Failed to scrape job page ${url}:`, error instanceof Error ? error.message : String(error));
-        }
+    for (const searchUrl of board.searchUrls.slice(0, 2)) { // Limit to 2 search URLs
+      try {
+        console.log(`🔄 Fetching: ${searchUrl}`);
+        const searchJobs = await scrapeSearchPage(searchUrl, board.name, true); // Use cloudflare bypass
+        jobs.push(...searchJobs);
+        console.log(`✅ Found ${searchJobs.length} jobs from ${searchUrl}`);
         
-        // Add delay between requests to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
-      }
-    } else {
-      console.log(`📋 No job URLs found in sitemap for ${board.name}`);
-    }
-
-    // Strategy 2: If sitemap didn't work, try search pages
-    if (jobs.length === 0) {
-      console.log(`📋 Sitemap didn't work, trying search pages for ${board.name}...`);
-      
-      for (const searchUrl of board.searchUrls.slice(0, 2)) { // Limit to 2 search URLs
-        try {
-          const searchJobs = await scrapeSearchPage(searchUrl, board.name, true); // Use cloudflare bypass
-          jobs.push(...searchJobs);
-          
-          // Add longer delay between search pages (be more respectful)
-          await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
-        } catch (error) {
-          console.warn(`Failed to scrape search page ${searchUrl}:`, error instanceof Error ? error.message : String(error));
-        }
+        // Add longer delay between search pages (be more respectful)
+        await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
+      } catch (error) {
+        console.warn(`Failed to scrape search page ${searchUrl}:`, error instanceof Error ? error.message : String(error));
       }
     }
 

@@ -16,7 +16,8 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
   
   try {
     while (page <= maxPages) {
-      const url = `https://www.gradcracker.com/search/engineering-jobs?page=${page}`;
+      // Updated URL structure - Gradcracker uses /search/graduate-jobs
+      const url = `https://www.gradcracker.com/search/graduate-jobs?page=${page}`;
       console.log(`🔄 Scraping Gradcracker page ${page}...`);
       
       const { html } = await fetchWithCloudflareBypass(url);
