@@ -112,7 +112,7 @@ export default {
       console.log('[profile:update] Request body:', ctx.request.body);
       console.log('[profile:update] Extracted data:', body);
       
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps', 'preferences'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
       console.log('[profile:update] Filtered data:', data);
@@ -200,6 +200,20 @@ export default {
           data.deadlineCheckboxes = JSON.parse(JSON.stringify(data.deadlineCheckboxes));
         } catch (e: any) {
           return ctx.badRequest('deadlineCheckboxes must be a valid JSON object');
+        }
+      }
+
+      // Validate preferences (must be an object with priorities, hardFilters, etc.)
+      if (data.preferences !== undefined) {
+        console.log('[profile:update] preferences received:', data.preferences);
+        if (typeof data.preferences !== 'object' || data.preferences === null) {
+          return ctx.badRequest('preferences must be an object');
+        }
+        try {
+          data.preferences = JSON.parse(JSON.stringify(data.preferences));
+          console.log('[profile:update] preferences processed:', data.preferences);
+        } catch (e: any) {
+          return ctx.badRequest('preferences must be a valid JSON object');
         }
       }
 
