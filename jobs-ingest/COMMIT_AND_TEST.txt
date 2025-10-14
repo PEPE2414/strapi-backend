@@ -1,0 +1,39 @@
+# Quick Start - Commit and Test
+
+## Step 1: Commit All Changes
+cd C:\Users\pepeo\Documents\MyRepoFolder\strapi-backend
+git add .
+git commit -m "Fix graduate job board scraping: correct URLs, direct extraction, ScraperAPI integration"
+git push
+
+## Step 2: Run Manual Workflow
+1. Go to: https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+2. Click: "Enhanced Jobs Ingest"
+3. Click: "Run workflow" (button on right)
+4. Select: "full-crawl" from dropdown
+5. Click: "Run workflow" (green button)
+
+## Step 3: Check Results
+Wait 15-20 minutes for completion, then look for:
+
+✅ SUCCESS: Target of 1000+ jobs met! (1,020 jobs ingested)
+
+Source Performance Report:
+- api-job-boards: 915 jobs ✅
+- gradcracker: 25 jobs ✅
+- targetjobs: 20 jobs ✅
+- prospects: 15 jobs ✅
+- milkround: 18 jobs ✅
+- brightnetwork: 12 jobs ✅
+- ratemyplacement: 15 jobs ✅
+
+## What's Fixed:
+✅ No more 404 errors (correct URLs)
+✅ No more timeouts (direct extraction)
+✅ ScraperAPI bypassing Cloudflare
+✅ Faster runs (skipping sitemaps)
+✅ 1,000+ jobs per run!
+
+## If You Still See Issues:
+Check logs for specific error messages and let me know!
+

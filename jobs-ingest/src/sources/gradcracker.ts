@@ -23,46 +23,82 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
       const { html } = await fetchWithCloudflareBypass(url);
       const $ = cheerio.load(html);
       
-      // Find job listings on the page
-      const jobElements = $('.job-listing, .job-item, .job-card, .search-result');
+      console.log(`📊 Parsing page ${page}...`);
+      
+      // Try multiple selectors for job cards
+      const jobSelectors = [
+        '.job-card',
+        '.job-listing',
+        '.job-item',
+        '.search-result',
+        '[class*="JobCard"]',
+        '[class*="job-card"]',
+        'article.job',
+        '.vacancy'
+      ];
+      
+      let jobElements = $();
+      for (const selector of jobSelectors) {
+        jobElements = $(selector);
+        if (jobElements.length > 0) {
+          console.log(`📦 Found ${jobElements.length} jobs using: ${selector}`);
+          break;
+        }
+      }
       
       if (jobElements.length === 0) {
-        console.log(`📄 No more jobs found on page ${page}, stopping`);
+        console.log(`📄 No job cards found on page ${page}, stopping`);
         break;
       }
       
-      console.log(`📄 Found ${jobElements.length} job listings on page ${page}`);
-      
+      // Extract jobs from each card
       for (let i = 0; i < jobElements.length; i++) {
         try {
-          const jobEl = jobElements.eq(i);
-          const title = jobEl.find('h2, h3, .job-title, .title').first().text().trim();
-          const company = jobEl.find('.company, .employer, .job-company').first().text().trim();
-          const location = jobEl.find('.location, .job-location').first().text().trim();
-          const description = jobEl.find('.description, .job-description, .summary').first().text().trim();
-          const applyLink = jobEl.find('a[href*="apply"], a[href*="job"], .apply-btn').first().attr('href');
+          const $card = jobElements.eq(i);
           
-          if (!title || !company) continue;
+          // Extract title
+          const title = (
+            $card.find('h1, h2, h3').first().text().trim() ||
+            $card.find('[class*="title"], [class*="Title"]').first().text().trim() ||
+            $card.find('a').first().text().trim()
+          );
           
-          const fullText = `${title} ${description} ${location}`;
+          // Extract company
+          const company = (
+            $card.find('[class*="company"], [class*="employer"]').first().text().trim() ||
+            $card.find('[class*="organisation"]').first().text().trim()
+          );
+          
+          // Extract location
+          const location = $card.find('[class*="location"], [class*="place"]').first().text().trim();
+          
+          // Get description snippet
+          const description = $card.find('[class*="description"], [class*="summary"]').first().text().trim();
+          
+          // Get apply link
+          const applyLink = $card.find('a').first().attr('href');
+          
+          if (!title || title.length < 5) continue;
+          
+          const fullText = `${title} ${description} ${location} ${company}`;
           
           // Apply filtering
           if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
             continue;
           }
           
-          const applyUrl = applyLink ? await resolveApplyUrl(new URL(applyLink, url).toString()) : url;
-          const hash = sha256([title, company, applyUrl].join('|'));
-          const slug = makeUniqueSlug(title, company, hash, location);
+          const applyUrl = applyLink ? new URL(applyLink, url).toString() : url;
+          const hash = sha256([title, company || 'Gradcracker', applyUrl].join('|'));
+          const slug = makeUniqueSlug(title, company || 'Gradcracker', hash, location);
           
           const job: CanonicalJob = {
             source: 'gradcracker',
             sourceUrl: url,
             title,
-            company: { name: company },
+            company: { name: company || 'Gradcracker' },
             companyLogo: undefined,
             location,
-            descriptionHtml: description,
+            descriptionHtml: description || $card.text().substring(0, 500),
             descriptionText: undefined,
             applyUrl,
             applyDeadline: undefined,
@@ -74,15 +110,16 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
             experience: undefined,
             companyPageUrl: undefined,
             relatedDegree: undefined,
-            degreeLevel: undefined,
+            degreeLevel: ['UG'],
             postedAt: new Date().toISOString(),
             slug,
             hash
           };
           
           jobs.push(job);
+          console.log(`  ✅ #${i+1}: "${title}" at ${company || 'Unknown'}`);
         } catch (error) {
-          console.warn(`Error processing job ${i} on page ${page}:`, error);
+          console.warn(`  ⚠️  Error processing job ${i}:`, error);
         }
       }
       

@@ -8,124 +8,104 @@ import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
 import { sha256 } from '../lib/hash';
 import { classifyJobType, parseSalary, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
-import { discoverJobUrls } from './sitemapDiscovery';
 
-// Job board configurations
+// Job board configurations with updated working URLs
 const JOB_BOARDS = {
   'targetjobs': {
     name: 'TARGETjobs',
     baseUrl: 'https://targetjobs.co.uk',
     searchUrls: [
-      'https://targetjobs.co.uk/careers-advice/job-search/graduate-jobs',
-      'https://targetjobs.co.uk/careers-advice/job-search/internships'
-    ],
-    sitemapUrl: '' // No public sitemap
+      'https://targetjobs.co.uk/uk/en/search/offers',
+      'https://targetjobs.co.uk/uk/en/graduate-jobs'
+    ]
   },
   'milkround': {
     name: 'Milkround',
     baseUrl: 'https://www.milkround.com',
     searchUrls: [
-      'https://www.milkround.com/jobs/search',
-      'https://www.milkround.com/jobs/graduate'
-    ],
-    sitemapUrl: '' // No public sitemap
+      'https://www.milkround.com/graduate-jobs',
+      'https://www.milkround.com/internships'
+    ]
   },
   'prospects': {
     name: 'Prospects',
     baseUrl: 'https://www.prospects.ac.uk',
     searchUrls: [
-      'https://www.prospects.ac.uk/graduate-jobs',
-      'https://www.prospects.ac.uk/jobs'
-    ],
-    sitemapUrl: '' // No public sitemap
+      'https://www.prospects.ac.uk/job-search',
+      'https://www.prospects.ac.uk/graduate-jobs-and-work-experience'
+    ]
   },
   'ratemyplacement': {
     name: 'RateMyPlacement',
     baseUrl: 'https://www.ratemyplacement.co.uk',
     searchUrls: [
-      'https://www.ratemyplacement.co.uk/jobs/placements',
-      'https://www.ratemyplacement.co.uk/jobs/graduate'
-    ],
-    sitemapUrl: '' // No public sitemap
+      'https://www.ratemyplacement.co.uk/search-jobs',
+      'https://www.ratemyplacement.co.uk/placement-jobs'
+    ]
   },
   'brightnetwork': {
     name: 'BrightNetwork',
     baseUrl: 'https://www.brightnetwork.co.uk',
     searchUrls: [
-      'https://www.brightnetwork.co.uk/jobs',
-      'https://www.brightnetwork.co.uk/graduate-jobs'
-    ],
-    sitemapUrl: '' // No public sitemap - requires login
+      'https://www.brightnetwork.co.uk/graduate-jobs-search',
+      'https://www.brightnetwork.co.uk/internships-search'
+    ]
   },
   'studentjob': {
     name: 'StudentJob UK',
     baseUrl: 'https://www.studentjob.co.uk',
     searchUrls: [
       'https://www.studentjob.co.uk/graduate-jobs',
-      'https://www.studentjob.co.uk/internships',
-      'https://www.studentjob.co.uk/part-time-jobs'
-    ],
-    sitemapUrl: 'https://www.studentjob.co.uk/sitemap.xml'
+      'https://www.studentjob.co.uk/internships'
+    ]
   },
   'e4s': {
     name: 'Employment 4 Students',
     baseUrl: 'https://www.e4s.co.uk',
     searchUrls: [
       'https://www.e4s.co.uk/graduate-jobs',
-      'https://www.e4s.co.uk/internships',
-      'https://www.e4s.co.uk/part-time-jobs'
-    ],
-    sitemapUrl: 'https://www.e4s.co.uk/sitemap.xml'
+      'https://www.e4s.co.uk/internships'
+    ]
   },
   'ratemyapprenticeship': {
     name: 'RateMyApprenticeship',
     baseUrl: 'https://www.ratemyapprenticeship.co.uk',
     searchUrls: [
       'https://www.ratemyapprenticeship.co.uk/apprenticeships',
-      'https://www.ratemyapprenticeship.co.uk/graduate-jobs',
-      'https://www.ratemyapprenticeship.co.uk/school-leaver-jobs'
-    ],
-    sitemapUrl: 'https://www.ratemyapprenticeship.co.uk/sitemap.xml'
+      'https://www.ratemyapprenticeship.co.uk/school-leaver-programmes'
+    ]
   },
   'workinstartups': {
     name: 'WorkInStartups',
     baseUrl: 'https://workinstartups.com',
     searchUrls: [
       'https://workinstartups.com/job-board',
-      'https://workinstartups.com/graduate-jobs',
-      'https://workinstartups.com/internships'
-    ],
-    sitemapUrl: 'https://workinstartups.com/sitemap.xml'
+      'https://workinstartups.com/jobs'
+    ]
   },
   'totaljobs': {
     name: 'Totaljobs',
     baseUrl: 'https://www.totaljobs.com',
     searchUrls: [
-      'https://www.totaljobs.com/graduate-jobs',
-      'https://www.totaljobs.com/internships',
-      'https://www.totaljobs.com/entry-level-jobs'
-    ],
-    sitemapUrl: 'https://www.totaljobs.com/sitemap.xml'
+      'https://www.totaljobs.com/jobs/graduate',
+      'https://www.totaljobs.com/jobs/internship'
+    ]
   },
   'reed': {
     name: 'Reed',
     baseUrl: 'https://www.reed.co.uk',
     searchUrls: [
       'https://www.reed.co.uk/jobs/graduate-jobs',
-      'https://www.reed.co.uk/jobs/internships',
-      'https://www.reed.co.uk/jobs/entry-level-jobs'
-    ],
-    sitemapUrl: 'https://www.reed.co.uk/sitemap.xml'
+      'https://www.reed.co.uk/jobs/internships'
+    ]
   },
   'escapethecity': {
     name: 'Escape the City',
     baseUrl: 'https://www.escapethecity.org',
     searchUrls: [
       'https://www.escapethecity.org/jobs',
-      'https://www.escapethecity.org/graduate-jobs',
-      'https://www.escapethecity.org/startup-jobs'
-    ],
-    sitemapUrl: 'https://www.escapethecity.org/sitemap.xml'
+      'https://www.escapethecity.org/graduate-jobs'
+    ]
   }
 };
 
@@ -143,25 +123,24 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   const jobs: CanonicalJob[] = [];
 
   try {
-    // Skip sitemap discovery for graduate boards - they don't have public sitemaps
-    // Go straight to search pages which are more reliable
-    console.log(`🔍 Scraping search pages for ${board.name} (skipping sitemap)...`);
+    // Scrape search pages directly (no sitemap, no individual page scraping)
+    console.log(`🔍 Extracting jobs directly from search pages...`);
     
-    for (const searchUrl of board.searchUrls.slice(0, 2)) { // Limit to 2 search URLs
+    for (const searchUrl of board.searchUrls.slice(0, 2)) {
       try {
         console.log(`🔄 Fetching: ${searchUrl}`);
-        const searchJobs = await scrapeSearchPage(searchUrl, board.name, true); // Use cloudflare bypass
+        const searchJobs = await scrapeSearchPageDirect(searchUrl, board.name, boardKey);
         jobs.push(...searchJobs);
-        console.log(`✅ Found ${searchJobs.length} jobs from ${searchUrl}`);
+        console.log(`✅ Extracted ${searchJobs.length} jobs from ${searchUrl}`);
         
-        // Add longer delay between search pages (be more respectful)
+        // Add delay between search pages
         await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
       } catch (error) {
-        console.warn(`Failed to scrape search page ${searchUrl}:`, error instanceof Error ? error.message : String(error));
+        console.warn(`Failed to scrape ${searchUrl}:`, error instanceof Error ? error.message : String(error));
       }
     }
 
-    console.log(`✅ ${board.name}: Found ${jobs.length} jobs`);
+    console.log(`✅ ${board.name}: Found ${jobs.length} total jobs`);
     return jobs;
 
   } catch (error) {
@@ -170,133 +149,129 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   }
 }
 
-async function scrapeJobPage(url: string, boardName: string): Promise<CanonicalJob | null> {
+/**
+ * Extract jobs DIRECTLY from search page HTML (no individual page scraping)
+ */
+async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: string): Promise<CanonicalJob[]> {
   try {
-    const { html } = await get(url);
-    const jsonld = extractJobPostingJSONLD(html);
-    const $ = cheerio.load(html);
-
-    // Prefer JSON-LD fields
-    const title = (jsonld?.title || $('h1').first().text() || '').trim();
-    const companyName = jsonld?.hiringOrganization?.name ||
-      $('meta[property="og:site_name"]').attr('content') ||
-      $('meta[name="author"]').attr('content') ||
-      $('.company-name, .employer-name').first().text().trim() ||
-      new URL(url).hostname.replace(/^www\./, '');
-
-    const location = jsonld?.jobLocation?.address?.addressLocality ||
-      jsonld?.jobLocation?.address?.addressRegion ||
-      $('.location, .job-location, [class*="location"]').first().text().trim() || undefined;
-
-    const descHtml = jsonld?.description || 
-      $('.job-description, .description, [class*="description"], article, main').first().html() || '';
-
-    const applyUrlRaw = jsonld?.hiringOrganization?.sameAs ||
-      jsonld?.applicationContact?.url ||
-      $('a[href*="apply"], a:contains("Apply"), .apply-button').first().attr('href') ||
-      url;
-
-    const applyUrl = await resolveApplyUrl(new URL(applyUrlRaw, url).toString());
-
-    // Check if this job is relevant for university students AND UK-based
-    const fullText = title + ' ' + String(descHtml) + ' ' + (location || '');
-    
-    if (!title || title.trim().length < 3) {
-      return null;
-    }
-    
-    if (!isRelevantJobType(fullText)) {
-      return null;
-    }
-    
-    if (!isUKJob(fullText)) {
-      return null;
-    }
-
-    const jobType = classifyJobType(title + ' ' + $('body').text());
-    const company = { name: companyName };
-    const companyLogo = pickLogo(html, jsonld);
-    const hash = sha256([title, companyName, applyUrl].join('|'));
-    const slug = makeUniqueSlug(title, companyName, hash, location);
-
-    const job: CanonicalJob = {
-      source: `jobboard:${boardName.toLowerCase().replace(/\s+/g, '')}`,
-      sourceUrl: url,
-      title,
-      company,
-      companyLogo,
-      location,
-      descriptionHtml: descHtml,
-      descriptionText: undefined,
-      applyUrl,
-      applyDeadline: toISO(jsonld?.validThrough),
-      jobType,
-      salary: parseSalary(String(jsonld?.baseSalary?.value?.value || jsonld?.baseSalary?.value || '')),
-      startDate: undefined,
-      endDate: undefined,
-      duration: undefined,
-      experience: undefined,
-      companyPageUrl: jsonld?.hiringOrganization?.sameAs || undefined,
-      relatedDegree: undefined,
-      degreeLevel: (() => {
-        const t = (title + ' ' + String(descHtml)).toLowerCase();
-        if (t.includes('phd') || t.includes('postdoc') || t.includes('doctoral')) return undefined;
-        if (t.includes('master') || t.includes('msc') || t.includes('mba')) return ['PG-taught'];
-        return ['UG'];
-      })(),
-      remotePolicy: undefined,
-      postedAt: toISO(jsonld?.datePosted),
-      slug,
-      hash
-    };
-
-    return job;
-  } catch (error) {
-    console.warn(`Failed to scrape job page ${url}:`, error instanceof Error ? error.message : String(error));
-    return null;
-  }
-}
-
-async function scrapeSearchPage(url: string, boardName: string, useCloudflareBypass: boolean = false): Promise<CanonicalJob[]> {
-  try {
-    const { html } = useCloudflareBypass 
-      ? await fetchWithCloudflareBypass(url)
-      : await get(url);
+    const { html } = await fetchWithCloudflareBypass(url);
     const $ = cheerio.load(html);
     const jobs: CanonicalJob[] = [];
 
-    // Look for job links on the search page
-    const jobLinks = new Set<string>();
+    console.log(`📊 Fetched ${html.length} chars, parsing...`);
+
+    // Try multiple job card selectors
+    const jobSelectors = [
+      '.job-card',
+      '.job-listing',
+      '.job-item',
+      '.job-result',
+      '[class*="JobCard"]',
+      '[class*="job-card"]',
+      'article[class*="job"]',
+      '[data-testid*="job"]',
+      '.vacancy',
+      '.opportunity',
+      '.position'
+    ];
+
+    let $jobCards = $();
+    let usedSelector = '';
     
-    // Common selectors for job links
-    $('a[href*="/job"], a[href*="/jobs"], a[href*="/vacancy"], a[href*="/position"]').each((_, el) => {
-      const href = $(el).attr('href');
-      if (href) {
-        const fullUrl = new URL(href, url).toString();
-        jobLinks.add(fullUrl);
+    for (const selector of jobSelectors) {
+      const found = $(selector);
+      if (found.length > 0) {
+        $jobCards = found;
+        usedSelector = selector;
+        console.log(`📦 Found ${found.length} elements with: ${selector}`);
+        break;
       }
-    });
-
-    console.log(`📊 Found ${jobLinks.size} job links on search page`);
-
-    // Process first 10 job links
-    for (const jobUrl of Array.from(jobLinks).slice(0, 10)) {
-      try {
-        const job = await scrapeJobPage(jobUrl, boardName);
-        if (job) {
-          jobs.push(job);
-        }
-      } catch (error) {
-        console.warn(`Failed to scrape job ${jobUrl}:`, error instanceof Error ? error.message : String(error));
-      }
-      
-      // Add delay between job pages
-      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
+    if ($jobCards.length === 0) {
+      console.warn(`⚠️  No job cards found on ${url} - might be JS-rendered or wrong URL`);
+      return jobs;
+    }
+
+    // Extract job data from each card (limit to 30)
+    for (let i = 0; i < Math.min($jobCards.length, 30); i++) {
+      try {
+        const $card = $jobCards.eq(i);
+        
+        // Extract title with fallbacks
+        const title = (
+          $card.find('h1, h2, h3').first().text().trim() ||
+          $card.find('[class*="title"], [class*="Title"]').first().text().trim() ||
+          $card.find('a').first().text().trim()
+        );
+        
+        // Extract company
+        const company = (
+          $card.find('[class*="company"], [class*="Company"], [class*="employer"], [class*="Employer"]').first().text().trim() ||
+          $card.find('[class*="organisation"], [class*="Organization"]').first().text().trim()
+        );
+        
+        // Extract location
+        const location = (
+          $card.find('[class*="location"], [class*="Location"]').first().text().trim() ||
+          $card.find('[class*="place"]').first().text().trim()
+        );
+        
+        // Get link
+        const link = $card.find('a[href]').first().attr('href');
+        
+        if (!title || title.length < 5) {
+          continue;
+        }
+        
+        // Build apply URL
+        const applyUrl = link ? new URL(link, url).toString() : url;
+        
+        // Filter for relevance and UK
+        const fullText = `${title} ${company} ${location}`;
+        if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+          continue;
+        }
+        
+        const hash = sha256([title, company || boardName, applyUrl].join('|'));
+        const slug = makeUniqueSlug(title, company || boardName, hash, location);
+        
+        const job: CanonicalJob = {
+          source: boardKey,
+          sourceUrl: url,
+          title,
+          company: { name: company || boardName },
+          location,
+          descriptionHtml: $card.find('[class*="description"], [class*="summary"]').first().text().substring(0, 500),
+          descriptionText: undefined,
+          applyUrl,
+          applyDeadline: undefined,
+          jobType: classifyJobType(title),
+          salary: undefined,
+          startDate: undefined,
+          endDate: undefined,
+          duration: undefined,
+          experience: undefined,
+          companyPageUrl: undefined,
+          relatedDegree: undefined,
+          degreeLevel: ['UG'],
+          postedAt: new Date().toISOString(),
+          slug,
+          hash
+        };
+        
+        jobs.push(job);
+        console.log(`  ✅ #${i+1}: "${title}" at ${company || 'Unknown'} (${location || 'N/A'})`);
+      } catch (error) {
+        console.warn(`  ⚠️  Error extracting job #${i}:`, error);
+      }
+    }
+
+    console.log(`📊 Successfully extracted ${jobs.length} jobs from search page`);
     return jobs;
+
   } catch (error) {
-    console.warn(`Failed to scrape search page ${url}:`, error instanceof Error ? error.message : String(error));
+    console.warn(`Failed to fetch search page ${url}:`, error instanceof Error ? error.message : String(error));
     return [];
   }
 }
