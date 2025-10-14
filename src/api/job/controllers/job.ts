@@ -157,8 +157,31 @@ function normalise(p: any) {
 }
 
 function score(j:any, W:any, prefs:any) {
+  // Get user's preferred job types as lowercase array
+  const preferredJobTypes = prefs.hardFilters?.targetJobTypes 
+    ? (Array.isArray(prefs.hardFilters.targetJobTypes) 
+        ? prefs.hardFilters.targetJobTypes.map((t: string) => t.toLowerCase())
+        : [String(prefs.hardFilters.targetJobTypes).toLowerCase()])
+    : prefs.targetJobType 
+      ? [String(prefs.targetJobType).toLowerCase()]
+      : [];
+  
+  // Calculate job type match (case-insensitive)
+  const jobTypeLower = String(j.jobType || '').toLowerCase();
+  let jobTypeScore = 0.5; // default
+  
+  if (preferredJobTypes.length > 0) {
+    if (preferredJobTypes.includes(jobTypeLower)) {
+      jobTypeScore = 1.0; // Perfect match
+    } else if (jobTypeLower === 'other') {
+      jobTypeScore = 0; // Don't recommend "other" jobs
+    } else {
+      jobTypeScore = 0.3; // Partial match
+    }
+  }
+  
   const S = {
-    jobType: j.jobType === prefs.targetJobType ? 1 : j.jobType==='other'?0:0.5,
+    jobType: jobTypeScore,
     salary: j.salary?.min ? Math.min(1, (j.salary.min / 45000)) : 0.3,
     location: prefs.locationHome ? (j.location?.toLowerCase().includes(prefs.locationHome.city?.toLowerCase()) ? 1 : 0.5) : 0.5,
     degreeMatch: overlap(j.relatedDegree, prefs.mustIncludeDegrees),
