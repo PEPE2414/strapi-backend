@@ -15,7 +15,7 @@ export default {
       path: '/jobs/recommendations',
       handler: 'job.recommendations',
       config: {
-        auth: true, // Changed from false - this endpoint requires authentication
+        auth: {}, // Enabled - this endpoint requires authentication
         policies: [],
         middlewares: []
       }
