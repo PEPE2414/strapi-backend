@@ -85,14 +85,27 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized();
 
+    console.log('[recommendations] User preferences:', user.preferences);
+    
     const prefs = user.preferences || {};
     const hard = prefs.hardFilters || {};
     const priorities = prefs.priorities || {};
 
+    console.log('[recommendations] Hard filters:', hard);
+    console.log('[recommendations] Priorities:', priorities);
+
     // DB prefilter: only fresh jobs with optional hard filters
     const filters: any = { };
     if (hard.countries?.length) filters.location = { $containsi: hard.countries[0] }; // simple example
-    if (prefs.onlyActive !== false) filters.$or = [{ deadline: { $null: true } }, { deadline: { $gte: new Date() } }];
+    // Remove the deadline filter as it's causing issues - filter by applyDeadline instead
+    if (prefs.onlyActive !== false) {
+      filters.$or = [
+        { applyDeadline: { $null: true } }, 
+        { applyDeadline: { $gte: new Date().toISOString() } }
+      ];
+    }
+
+    console.log('[recommendations] Filters:', JSON.stringify(filters));
 
     const candidates = await strapi.entityService.findMany('api::job.job', {
       filters,
@@ -100,11 +113,15 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       limit: 400
     });
 
+    console.log('[recommendations] Found candidates:', candidates.length);
+
     const W = normalise(priorities);
     const scored = candidates.map((j:any) => ({ job: j, score: score(j, W, prefs) }))
       .sort((a,b)=>b.score - a.score)
       .slice(0, 60)
       .map(x=>({ ...x.job, _score: Math.round(x.score) }));
+
+    console.log('[recommendations] Returning scored jobs:', scored.length);
 
     ctx.body = { items: scored };
   },
