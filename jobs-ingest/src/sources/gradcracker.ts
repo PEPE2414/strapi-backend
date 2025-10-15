@@ -163,7 +163,7 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
       await new Promise(resolve => setTimeout(resolve, 3000));
     }
     
-    console.log(`📊 Gradcracker: Found ${jobs.length} total jobs across ${page - 1} pages`);
+    console.log(`📊 Gradcracker: Found ${jobs.length} total jobs`);
     return jobs;
     
   } catch (error) {
