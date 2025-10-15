@@ -146,7 +146,18 @@ export async function scrapeIndeedUK(): Promise<CanonicalJob[]> {
     'internship', 
     'entry+level',
     'placement',
-    'trainee'
+    'placement+year',
+    'year+in+industry',
+    'industrial+placement',
+    'graduate+scheme',
+    'graduate+programme',
+    'graduate+program',
+    'graduate+trainee',
+    'graduate+development',
+    'summer+internship',
+    'winter+internship',
+    'internship+programme',
+    'internship+program'
   ];
   
   for (const query of searchQueries) {

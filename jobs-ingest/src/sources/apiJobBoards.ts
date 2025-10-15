@@ -22,15 +22,36 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
 
   // Search terms that cover graduate/entry-level jobs
   const searchTerms = [
+    // Graduate job variants
     'graduate',
-    'internship',
+    'graduate scheme',
+    'graduate programme',
+    'graduate program',
+    'graduate trainee',
+    'graduate development',
+    'graduate opportunity',
+    'new graduate',
+    'recent graduate',
     'entry level',
+    'junior',
+    
+    // Internship variants
+    'internship',
+    'summer internship',
+    'winter internship',
+    'intern',
+    'internship programme',
+    'internship program',
+    
+    // Placement variants
     'placement year',
     'year in industry',
     'industrial placement',
-    'trainee',
-    'junior',
-    'graduate scheme'
+    'work placement',
+    'student placement',
+    'sandwich placement',
+    'co-op',
+    'coop'
   ];
 
   try {
@@ -137,14 +158,36 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
   }
 
   const keywords = [
+    // Graduate job variants
     'graduate',
-    'internship', 
+    'graduate scheme',
+    'graduate programme',
+    'graduate program',
+    'graduate trainee',
+    'graduate development',
+    'graduate opportunity',
+    'new graduate',
+    'recent graduate',
     'entry level',
+    'junior',
+    
+    // Internship variants
+    'internship',
+    'summer internship',
+    'winter internship',
+    'intern',
+    'internship programme',
+    'internship program',
+    
+    // Placement variants
     'placement year',
     'year in industry',
     'industrial placement',
-    'trainee',
-    'junior'
+    'work placement',
+    'student placement',
+    'sandwich placement',
+    'co-op',
+    'coop'
   ];
 
   try {

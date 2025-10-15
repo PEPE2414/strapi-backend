@@ -104,9 +104,22 @@ async function processSitemap(sitemapUrl: string, domain: string, maxUrls: numbe
 function isJobUrl(url: string): boolean {
   // Focus on university student-relevant job keywords
   const relevantJobKeywords = [
-    'intern', 'internship', 'graduate', 'placement', 'trainee',
-    'vacation', 'work-experience', 'year-in-industry', 'sandwich',
-    'early-careers', 'new-grad', 'entry-level', 'junior'
+    // Graduate job variants
+    'graduate', 'graduate-scheme', 'graduate-programme', 'graduate-program',
+    'graduate-trainee', 'graduate-development', 'graduate-opportunity',
+    'new-graduate', 'recent-graduate', 'entry-level', 'junior',
+    
+    // Internship variants
+    'intern', 'internship', 'summer-internship', 'winter-internship',
+    'internship-programme', 'internship-program',
+    
+    // Placement variants
+    'placement', 'placement-year', 'year-in-industry', 'industrial-placement',
+    'work-placement', 'student-placement', 'sandwich-placement',
+    'vacation', 'work-experience', 'sandwich', 'co-op', 'coop',
+    
+    // General terms
+    'early-careers', 'new-grad'
   ];
   
   const generalJobKeywords = [
@@ -126,8 +139,13 @@ function isJobUrl(url: string): boolean {
     /\/intern\//,
     /\/internship\//,
     /\/graduate\//,
+    /\/graduate-scheme\//,
+    /\/graduate-programme\//,
+    /\/graduate-program\//,
     /\/placement\//,
-    /\/trainee\//,
+    /\/placement-year\//,
+    /\/year-in-industry\//,
+    /\/industrial-placement\//,
     /\/vacation\//,
     /\/work-experience\//,
     /\/year-in-industry\//,

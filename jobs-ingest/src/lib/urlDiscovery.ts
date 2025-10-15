@@ -113,8 +113,22 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
     
     // Check for job-related keywords in content
     const jobKeywords = [
-      'graduate', 'internship', 'placement', 'trainee', 'entry level',
-      'junior', 'scheme', 'programme', 'vacancy', 'position', 'role',
+      // Graduate job variants
+      'graduate', 'graduate scheme', 'graduate programme', 'graduate program',
+      'graduate trainee', 'graduate development', 'graduate opportunity',
+      'new graduate', 'recent graduate', 'entry level', 'junior',
+      
+      // Internship variants
+      'internship', 'summer internship', 'winter internship', 'intern',
+      'internship programme', 'internship program',
+      
+      // Placement variants
+      'placement year', 'year in industry', 'industrial placement',
+      'work placement', 'student placement', 'sandwich placement',
+      'co-op', 'coop',
+      
+      // General job terms
+      'scheme', 'programme', 'vacancy', 'position', 'role',
       'career', 'employment', 'opportunity', 'work experience'
     ];
     
@@ -183,14 +197,24 @@ async function discoverFromHomepage(baseUrl: string): Promise<string | null> {
     
     // Look for common job search links (more comprehensive)
     const linkTexts = [
-      'graduate jobs', 'graduate schemes', 'graduate programmes',
+      // Graduate job variants
+      'graduate jobs', 'graduate schemes', 'graduate programmes', 'graduate programs',
+      'graduate opportunities', 'graduate development', 'new graduate', 'recent graduate',
+      'entry level', 'junior',
+      
+      // Internship variants
+      'internships', 'internship opportunities', 'summer internship', 'winter internship',
+      'intern', 'internship programmes', 'internship programs',
+      
+      // Placement variants
+      'placements', 'placement year', 'year in industry', 'industrial placement',
+      'work placement', 'student placement', 'sandwich placement', 'co-op', 'coop',
+      
+      // General job terms
       'jobs', 'job search', 'search jobs', 'find jobs', 'browse jobs',
       'career', 'careers', 'career opportunities',
       'vacancies', 'positions', 'roles',
       'opportunities', 'work opportunities',
-      'internships', 'internship opportunities',
-      'placements', 'placement year', 'year in industry',
-      'trainee', 'trainee programmes', 'entry level',
       'work experience', 'student jobs'
     ];
     
