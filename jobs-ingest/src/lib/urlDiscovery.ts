@@ -26,42 +26,64 @@ const URL_PATTERNS = {
     'https://www.gradcracker.com/jobs/graduate',
     'https://www.gradcracker.com/graduate-jobs',
     'https://www.gradcracker.com/jobs',
-    'https://www.gradcracker.com/search'
+    'https://www.gradcracker.com/search',
+    'https://www.gradcracker.com/internships',
+    'https://www.gradcracker.com/placements',
+    'https://www.gradcracker.com/graduate-schemes'
   ],
   targetjobs: [
     'https://targetjobs.co.uk/uk/en/search/offers',
     'https://targetjobs.co.uk/graduate-jobs',
     'https://targetjobs.co.uk/careers-advice/job-search',
     'https://targetjobs.co.uk/search',
-    'https://targetjobs.co.uk/jobs'
+    'https://targetjobs.co.uk/jobs',
+    'https://targetjobs.co.uk/internships',
+    'https://targetjobs.co.uk/placements',
+    'https://targetjobs.co.uk/graduate-schemes',
+    'https://targetjobs.co.uk/uk/en/search/internships',
+    'https://targetjobs.co.uk/uk/en/search/placements'
   ],
   prospects: [
     'https://www.prospects.ac.uk/job-search',
     'https://www.prospects.ac.uk/graduate-jobs',
     'https://www.prospects.ac.uk/jobs-and-work-experience/job-search',
     'https://www.prospects.ac.uk/graduate-jobs-and-work-experience',
-    'https://www.prospects.ac.uk/jobs'
+    'https://www.prospects.ac.uk/jobs',
+    'https://www.prospects.ac.uk/internships',
+    'https://www.prospects.ac.uk/placements',
+    'https://www.prospects.ac.uk/work-experience',
+    'https://www.prospects.ac.uk/graduate-schemes'
   ],
   milkround: [
     'https://www.milkround.com/jobs',
     'https://www.milkround.com/graduate-jobs',
     'https://www.milkround.com/jobs/search',
     'https://www.milkround.com/search',
-    'https://www.milkround.com/internships'
+    'https://www.milkround.com/internships',
+    'https://www.milkround.com/placements',
+    'https://www.milkround.com/graduate-schemes',
+    'https://www.milkround.com/work-experience'
   ],
   brightnetwork: [
     'https://www.brightnetwork.co.uk/jobs',
     'https://www.brightnetwork.co.uk/graduate-jobs',
     'https://www.brightnetwork.co.uk/graduate-jobs-search',
     'https://www.brightnetwork.co.uk/search',
-    'https://www.brightnetwork.co.uk/career-path/graduate-jobs'
+    'https://www.brightnetwork.co.uk/career-path/graduate-jobs',
+    'https://www.brightnetwork.co.uk/internships',
+    'https://www.brightnetwork.co.uk/placements',
+    'https://www.brightnetwork.co.uk/graduate-schemes',
+    'https://www.brightnetwork.co.uk/work-experience'
   ],
   ratemyplacement: [
     'https://www.ratemyplacement.co.uk/placements',
     'https://www.ratemyplacement.co.uk/jobs',
     'https://www.ratemyplacement.co.uk/search-jobs',
     'https://www.ratemyplacement.co.uk/placement-jobs',
-    'https://www.ratemyplacement.co.uk/jobs/search'
+    'https://www.ratemyplacement.co.uk/jobs/search',
+    'https://www.ratemyplacement.co.uk/internships',
+    'https://www.ratemyplacement.co.uk/graduate-jobs',
+    'https://www.ratemyplacement.co.uk/work-experience'
   ]
 };
 
@@ -79,25 +101,41 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
     // Check if page has job-related content
     const $ = cheerio.load(html);
     
-    // Look for job-related elements
-    const hasJobCards = $(
-      '.job-card, .job-listing, .job-item, .job-result, ' +
-      '[class*="JobCard"], [class*="job"], article'
-    ).length > 0;
+    // Look for job-related elements (more comprehensive selectors)
+    const jobSelectors = [
+      '.job-card', '.job-listing', '.job-item', '.job-result', '.job-post',
+      '[class*="JobCard"]', '[class*="job"]', '[class*="Job"]', '[class*="listing"]',
+      'article', '.result', '.search-result', '.vacancy', '.position',
+      '.opportunity', '.role', '.career', '.employment'
+    ];
     
-    const hasJobKeywords = (
-      html.toLowerCase().includes('graduate') ||
-      html.toLowerCase().includes('internship') ||
-      html.toLowerCase().includes('placement') ||
-      html.toLowerCase().includes('trainee')
+    const hasJobCards = jobSelectors.some(selector => $(selector).length > 0);
+    
+    // Check for job-related keywords in content
+    const jobKeywords = [
+      'graduate', 'internship', 'placement', 'trainee', 'entry level',
+      'junior', 'scheme', 'programme', 'vacancy', 'position', 'role',
+      'career', 'employment', 'opportunity', 'work experience'
+    ];
+    
+    const hasJobKeywords = jobKeywords.some(keyword => 
+      html.toLowerCase().includes(keyword)
     );
     
-    const hasJobText = $(
-      'h1, h2, title'
-    ).text().toLowerCase().includes('job');
+    // Check page title and headings for job-related text
+    const pageText = $('h1, h2, h3, title, .title, .heading').text().toLowerCase();
+    const hasJobText = (
+      pageText.includes('job') ||
+      pageText.includes('career') ||
+      pageText.includes('graduate') ||
+      pageText.includes('internship') ||
+      pageText.includes('placement')
+    );
     
-    // If we found job-related content, URL is valid
-    const isValid = hasJobCards && hasJobKeywords && hasJobText;
+    // More lenient validation - any 2 of 3 criteria is enough
+    const criteria = [hasJobCards, hasJobKeywords, hasJobText];
+    const validCriteria = criteria.filter(Boolean).length;
+    const isValid = validCriteria >= 2;
     
     if (isValid) {
       console.log(`    ✅ Valid job search page (${$(
@@ -143,18 +181,17 @@ async function discoverFromHomepage(baseUrl: string): Promise<string | null> {
     const { html } = await fetchWithCloudflareBypass(baseUrl);
     const $ = cheerio.load(html);
     
-    // Look for common job search links
+    // Look for common job search links (more comprehensive)
     const linkTexts = [
-      'graduate jobs',
-      'jobs',
-      'search jobs',
-      'find jobs',
-      'career',
-      'careers',
-      'vacancies',
-      'opportunities',
-      'internships',
-      'placements'
+      'graduate jobs', 'graduate schemes', 'graduate programmes',
+      'jobs', 'job search', 'search jobs', 'find jobs', 'browse jobs',
+      'career', 'careers', 'career opportunities',
+      'vacancies', 'positions', 'roles',
+      'opportunities', 'work opportunities',
+      'internships', 'internship opportunities',
+      'placements', 'placement year', 'year in industry',
+      'trainee', 'trainee programmes', 'entry level',
+      'work experience', 'student jobs'
     ];
     
     for (const linkText of linkTexts) {

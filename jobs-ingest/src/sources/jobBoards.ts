@@ -21,7 +21,12 @@ const JOB_BOARDS = {
       'https://targetjobs.co.uk/graduate-jobs',
       'https://targetjobs.co.uk/careers-advice/job-search',
       'https://targetjobs.co.uk/search',
-      'https://targetjobs.co.uk/jobs'
+      'https://targetjobs.co.uk/jobs',
+      'https://targetjobs.co.uk/internships',
+      'https://targetjobs.co.uk/placements',
+      'https://targetjobs.co.uk/graduate-schemes',
+      'https://targetjobs.co.uk/uk/en/search/internships',
+      'https://targetjobs.co.uk/uk/en/search/placements'
     ]
   },
   'milkround': {
@@ -32,7 +37,10 @@ const JOB_BOARDS = {
       'https://www.milkround.com/graduate-jobs',
       'https://www.milkround.com/jobs/search',
       'https://www.milkround.com/search',
-      'https://www.milkround.com/internships'
+      'https://www.milkround.com/internships',
+      'https://www.milkround.com/placements',
+      'https://www.milkround.com/graduate-schemes',
+      'https://www.milkround.com/work-experience'
     ]
   },
   'prospects': {
@@ -43,7 +51,11 @@ const JOB_BOARDS = {
       'https://www.prospects.ac.uk/graduate-jobs',
       'https://www.prospects.ac.uk/jobs-and-work-experience/job-search',
       'https://www.prospects.ac.uk/graduate-jobs-and-work-experience',
-      'https://www.prospects.ac.uk/jobs'
+      'https://www.prospects.ac.uk/jobs',
+      'https://www.prospects.ac.uk/internships',
+      'https://www.prospects.ac.uk/placements',
+      'https://www.prospects.ac.uk/work-experience',
+      'https://www.prospects.ac.uk/graduate-schemes'
     ]
   },
   'ratemyplacement': {
@@ -54,7 +66,10 @@ const JOB_BOARDS = {
       'https://www.ratemyplacement.co.uk/jobs',
       'https://www.ratemyplacement.co.uk/search-jobs',
       'https://www.ratemyplacement.co.uk/placement-jobs',
-      'https://www.ratemyplacement.co.uk/jobs/search'
+      'https://www.ratemyplacement.co.uk/jobs/search',
+      'https://www.ratemyplacement.co.uk/internships',
+      'https://www.ratemyplacement.co.uk/graduate-jobs',
+      'https://www.ratemyplacement.co.uk/work-experience'
     ]
   },
   'brightnetwork': {
@@ -65,7 +80,11 @@ const JOB_BOARDS = {
       'https://www.brightnetwork.co.uk/graduate-jobs',
       'https://www.brightnetwork.co.uk/graduate-jobs-search',
       'https://www.brightnetwork.co.uk/search',
-      'https://www.brightnetwork.co.uk/career-path/graduate-jobs'
+      'https://www.brightnetwork.co.uk/career-path/graduate-jobs',
+      'https://www.brightnetwork.co.uk/internships',
+      'https://www.brightnetwork.co.uk/placements',
+      'https://www.brightnetwork.co.uk/graduate-schemes',
+      'https://www.brightnetwork.co.uk/work-experience'
     ]
   },
   'studentjob': {
