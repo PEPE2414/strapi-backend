@@ -149,7 +149,7 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       descriptionHtml: description,
       descriptionText: undefined,
       applyUrl,
-        applyDeadline: undefined,
+      applyDeadline: j.updated_at ? toISO(new Date(j.updated_at).getTime() + 30 * 24 * 60 * 60 * 1000) : undefined, // 30 days from last update
       jobType: classifyJobType(title + ' ' + (j.metadata?.map((m:any)=>m.value).join(' ')||'')),
       salary: undefined,
       startDate: undefined,

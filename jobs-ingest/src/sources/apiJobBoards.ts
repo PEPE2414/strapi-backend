@@ -98,7 +98,7 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
               descriptionHtml: description,
               descriptionText: undefined,
               applyUrl,
-              applyDeadline: undefined,
+              applyDeadline: job.expires ? toISO(job.expires) : undefined,
               jobType: classifyJobType(title),
               salary: job.salary_min && job.salary_max 
                 ? { min: job.salary_min, max: job.salary_max, currency: 'GBP', period: 'year' }
@@ -242,7 +242,7 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
               descriptionHtml: description,
               descriptionText: undefined,
               applyUrl,
-              applyDeadline: undefined,
+              applyDeadline: job.expirationDate ? toISO(job.expirationDate) : undefined,
               jobType: classifyJobType(title),
               salary: job.minimumSalary && job.maximumSalary
                 ? { min: job.minimumSalary, max: job.maximumSalary, currency: 'GBP', period: 'year' }
@@ -337,7 +337,7 @@ export async function scrapeTheMuseAPI(): Promise<CanonicalJob[]> {
             descriptionHtml: description,
             descriptionText: undefined,
             applyUrl,
-            applyDeadline: undefined,
+            applyDeadline: job.expirationDate ? toISO(job.expirationDate) : undefined,
             jobType: classifyJobType(title),
             salary: undefined,
             startDate: undefined,

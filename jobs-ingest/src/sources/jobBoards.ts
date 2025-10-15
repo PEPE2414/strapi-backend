@@ -1,6 +1,7 @@
 import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { getWorkingUrls } from '../lib/urlDiscovery';
+import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -301,7 +302,7 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
           descriptionHtml: $card.find('[class*="description"], [class*="summary"]').first().text().substring(0, 500),
           descriptionText: undefined,
           applyUrl,
-          applyDeadline: undefined,
+          applyDeadline: extractDeadlineFromJobCard($card),
           jobType: classifyJobType(title),
           salary: undefined,
           startDate: undefined,

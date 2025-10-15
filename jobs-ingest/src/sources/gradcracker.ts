@@ -1,6 +1,7 @@
 import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { getWorkingUrls } from '../lib/urlDiscovery';
+import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import * as cheerio from 'cheerio';
 import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
@@ -131,7 +132,7 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
               descriptionHtml: description || $card.text().substring(0, 500),
               descriptionText: undefined,
               applyUrl,
-              applyDeadline: undefined,
+              applyDeadline: extractDeadlineFromJobCard($card),
               jobType: classifyJobType(fullText),
               salary: parseSalary(description),
               startDate: undefined,

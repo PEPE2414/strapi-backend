@@ -113,7 +113,8 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       applyUrl,
       jobType: classifyJobType(title + ' ' + (p.categories?.team || '')),
       postedAt: p.createdAt ? new Date(p.createdAt).toISOString() : undefined,
-        applyDeadline: undefined, salary: undefined, startDate: undefined, endDate: undefined, duration: undefined,
+      applyDeadline: p.createdAt ? toISO(new Date(p.createdAt).getTime() + 30 * 24 * 60 * 60 * 1000) : undefined, // 30 days from creation
+      salary: undefined, startDate: undefined, endDate: undefined, duration: undefined,
       experience: undefined, companyPageUrl: undefined, relatedDegree: undefined, degreeLevel: undefined,
       descriptionText: undefined, slug, hash
     };
