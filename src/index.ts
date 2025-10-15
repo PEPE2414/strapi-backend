@@ -1,5 +1,6 @@
 // src/index.ts
 import type { Core } from '@strapi/strapi';
+import { scheduledTasksService } from './services/scheduledTasks';
 
 export default {
   register({ strapi }: { strapi: Core.Strapi }) {
@@ -59,6 +60,14 @@ export default {
       }
     } catch (error) {
       strapi.log.warn('Failed to set up custom route permissions:', error);
+    }
+
+    // Start scheduled tasks (job cleanup)
+    try {
+      scheduledTasksService.start();
+      strapi.log.info('✅ Scheduled tasks started successfully');
+    } catch (error) {
+      strapi.log.error('❌ Failed to start scheduled tasks:', error);
     }
   },
 };

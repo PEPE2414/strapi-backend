@@ -15,7 +15,9 @@
     "upgrade:dry": "npx @strapi/upgrade latest --dry",
     "jobs:ingest": "tsx jobs-ingest/src/index.ts",
     "jobs:test": "tsx jobs-ingest/src/test.ts",
-    "jobs:build": "tsc -p jobs-ingest/tsconfig.json"
+    "jobs:build": "tsc -p jobs-ingest/tsconfig.json",
+    "jobs:cleanup": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.cleanup()).then(console.log).catch(console.error)\"",
+    "jobs:cleanup-stats": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.getStats()).then(console.log).catch(console.error)\""
   },
   "dependencies": {
     "@strapi/admin": "5.21.0",
