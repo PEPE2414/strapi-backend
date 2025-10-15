@@ -169,7 +169,7 @@ function parseDateString(dateStr: string): Date | undefined {
 /**
  * Extract deadline from job card HTML
  */
-export function extractDeadlineFromJobCard($card: cheerio.Cheerio<cheerio.Element>): string | undefined {
+export function extractDeadlineFromJobCard($card: cheerio.Cheerio<any>): string | undefined {
   if (!$card || $card.length === 0) return undefined;
   
   // Look for deadline in job card

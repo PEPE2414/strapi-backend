@@ -87,6 +87,39 @@
       "relation": "oneToMany",
       "target": "api::usage-log.usage-log",
       "mappedBy": "user"
+    },
+    "reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review.review",
+      "mappedBy": "user"
+    },
+
+    "profilePicture": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "avatarChoice": {
+      "type": "string"
+    },
+    "reviewSubmitted": {
+      "type": "boolean",
+      "default": false
+    },
+    "reviewPromptDismissedAt": {
+      "type": "datetime"
+    },
+    "featureUsageCount": {
+      "type": "json",
+      "default": {
+        "coverLetters": 0,
+        "recruiterLookups": 0,
+        "mockInterviews": 0,
+        "interviewQuestions": 0,
+        "cheatSheets": 0,
+        "warmUps": 0
+      }
     }
   }
 }
