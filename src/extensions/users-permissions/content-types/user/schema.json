@@ -120,6 +120,51 @@
         "cheatSheets": 0,
         "warmUps": 0
       }
+    },
+
+    "referralCode": {
+      "type": "string",
+      "unique": true,
+      "minLength": 4,
+      "maxLength": 8
+    },
+    "referredBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "referrals"
+    },
+    "referrals": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "referredBy"
+    },
+    "promoCode": {
+      "type": "string",
+      "unique": true,
+      "minLength": 10,
+      "maxLength": 20
+    },
+    "promoCodeId": {
+      "type": "string",
+      "private": true
+    },
+    "qualifiedReferrals": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "referralRewards": {
+      "type": "json",
+      "default": []
+    },
+    "guaranteeActive": {
+      "type": "boolean",
+      "default": false
+    },
+    "fastTrackUntil": {
+      "type": "datetime"
     }
   }
 }
