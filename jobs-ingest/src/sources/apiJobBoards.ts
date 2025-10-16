@@ -1,6 +1,7 @@
 import { request } from 'undici';
 import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
+import { extractRealApplyUrl } from '../lib/applyUrlExtractor';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
@@ -85,7 +86,14 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
               continue;
             }
             
-            const applyUrl = job.redirect_url || `https://www.adzuna.co.uk/details/${job.id}`;
+            // Check job type - reject if not one of our three allowed types
+            const jobType = classifyJobType(fullText);
+            if (jobType === 'other') {
+              continue;
+            }
+            
+            const originalApplyUrl = job.redirect_url || `https://www.adzuna.co.uk/details/${job.id}`;
+            const applyUrl = await extractRealApplyUrl(originalApplyUrl);
             const hash = sha256([title, companyName, applyUrl].join('|'));
             const slug = makeUniqueSlug(title, companyName, hash, location);
             
@@ -229,7 +237,14 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
               continue;
             }
             
-            const applyUrl = job.jobUrl || `https://www.reed.co.uk/jobs/${job.jobId}`;
+            // Check job type - reject if not one of our three allowed types
+            const jobType = classifyJobType(fullText);
+            if (jobType === 'other') {
+              continue;
+            }
+            
+            const originalApplyUrl = job.jobUrl || `https://www.reed.co.uk/jobs/${job.jobId}`;
+            const applyUrl = await extractRealApplyUrl(originalApplyUrl);
             const hash = sha256([title, companyName, applyUrl].join('|'));
             const slug = makeUniqueSlug(title, companyName, hash, location);
             
@@ -324,7 +339,14 @@ export async function scrapeTheMuseAPI(): Promise<CanonicalJob[]> {
             continue;
           }
           
-          const applyUrl = job.refs?.landing_page || `https://www.themuse.com/jobs/${job.id}`;
+          // Check job type - reject if not one of our three allowed types
+          const jobType = classifyJobType(fullText);
+          if (jobType === 'other') {
+            continue;
+          }
+          
+          const originalApplyUrl = job.refs?.landing_page || `https://www.themuse.com/jobs/${job.id}`;
+          const applyUrl = await extractRealApplyUrl(originalApplyUrl);
           const hash = sha256([title, companyName, applyUrl].join('|'));
           const slug = makeUniqueSlug(title, companyName, hash, location);
           

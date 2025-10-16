@@ -1,11 +1,12 @@
 import { SalaryNorm } from '../types';
 
-// Enhanced classification for UK university students with strict PhD exclusion
+// Enhanced classification for UK university students - ONLY allows internship, placement, graduate
 export function classifyJobType(text: string): 'internship'|'placement'|'graduate'|'other' {
   const t = text.toLowerCase();
 
-  // First check for PhD/Research exclusions - these are hard rejects
-  const phdExclusions = [
+  // First check for exclusions - these are hard rejects (not suitable for students)
+  const exclusions = [
+    // PhD/Research exclusions
     'phd', 'ph.d', 'ph.d.', 'doctorate', 'doctoral', 'postdoc', 'post-doc', 'post doc',
     'research fellow', 'research assistant', 'research associate', 'research scientist',
     'research engineer', 'research analyst', 'research consultant', 'research manager',
@@ -13,6 +14,8 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
     'research director', 'research coordinator', 'research specialist', 'research technician',
     'postdoctoral', 'post-doctoral', 'post doctoral', 'academic research', 'university research',
     'research institute', 'research center', 'research centre', 'research lab', 'research laboratory',
+    
+    // MBA/Senior level exclusions
     'mba only', 'mba required', 'mba preferred', 'mba essential', 'mba mandatory',
     'executive mba', 'emba', 'senior mba', 'mba graduate', 'mba level',
     'senior level', 'principal level', 'lead level', 'head of', 'director level',
@@ -20,11 +23,37 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
     '5+ years', '10+ years', '15+ years', '20+ years', '25+ years',
     'experienced professional', 'senior professional', 'principal professional',
     'expert level', 'specialist level', 'consultant level', 'architect level',
-    'mid-level', 'mid level', 'intermediate level', 'advanced level'
+    'mid-level', 'mid level', 'intermediate level', 'advanced level',
+    
+    // Non-student job types
+    'apprenticeship', 'apprentice', 'trainee', 'traineeship', 'school leaver',
+    'gcse', 'a-level', 'a level', 'btec', 'nvq', 'level 2', 'level 3',
+    'part-time', 'part time', 'casual', 'temporary', 'temp', 'contractor',
+    'freelance', 'self-employed', 'volunteer', 'voluntary', 'unpaid',
+    'retail', 'hospitality', 'customer service', 'sales assistant', 'shop assistant',
+    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner', 'security',
+    'delivery driver', 'taxi driver', 'uber', 'deliveroo', 'just eat',
+    'care worker', 'support worker', 'nursing', 'healthcare assistant',
+    'teaching assistant', 'lunch supervisor', 'playground supervisor',
+    'admin', 'administrative', 'receptionist', 'secretary', 'data entry',
+    'warehouse', 'forklift', 'picking', 'packing', 'stock', 'inventory',
+    'call center', 'call centre', 'telemarketing', 'cold calling',
+    'door to door', 'canvassing', 'leafleting', 'promotional work',
+    'event staff', 'catering', 'bar work', 'nightclub', 'pub',
+    'gym instructor', 'personal trainer', 'fitness', 'sports coach',
+    'beauty therapist', 'hairdresser', 'nail technician', 'massage',
+    'estate agent', 'lettings', 'property', 'mortgage advisor',
+    'insurance', 'financial advisor', 'mortgage broker', 'loan officer',
+    'recruitment consultant', 'headhunter', 'talent acquisition',
+    'marketing manager', 'marketing director', 'brand manager',
+    'account manager', 'business development', 'sales manager',
+    'operations manager', 'project manager', 'team leader',
+    'supervisor', 'foreman', 'manager', 'director', 'ceo', 'cto',
+    'cfo', 'coo', 'founder', 'owner', 'proprietor', 'entrepreneur'
   ];
 
-  // If any PhD/exclusion keywords found, return 'other' (will be filtered out)
-  if (phdExclusions.some(keyword => t.includes(keyword))) {
+  // If any exclusion keywords found, return 'other' (will be filtered out)
+  if (exclusions.some(keyword => t.includes(keyword))) {
     return 'other';
   }
 
@@ -46,52 +75,12 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
   return 'other';
 }
 
-// Check if a job is relevant for university students
+// Check if a job is relevant for university students - STRICT filtering
 export function isRelevantJobType(text: string): boolean {
-  const t = text.toLowerCase();
+  const jobType = classifyJobType(text);
   
-  // Positive keywords (include these)
-  const positiveKeywords = [
-    // Internships
-    'intern', 'internship', 'summer', 'vacation', 'work experience',
-    // Placements
-    'placement', 'year in industry', 'sandwich', 'industrial placement', 'work placement',
-    // Graduate roles
-    'graduate', 'early careers', 'new grad', 'entry level', 'junior', 'trainee',
-    // Specific graduate roles
-    'graduate engineer', 'graduate consultant', 'graduate analyst', 'graduate developer',
-    'graduate designer', 'graduate marketing', 'graduate sales', 'graduate finance',
-    'graduate hr', 'graduate operations', 'graduate project', 'graduate research',
-    'graduate scientist', 'graduate technician', 'graduate technologist',
-    'graduate architect', 'graduate surveyor', 'graduate planner',
-    // Engineering specializations
-    'graduate civil', 'graduate structural', 'graduate mechanical', 'graduate electrical',
-    'graduate aerospace', 'graduate automotive', 'graduate environmental',
-    'graduate sustainability', 'graduate energy', 'graduate renewable', 'graduate nuclear'
-  ];
-  
-  // Negative keywords (exclude these)
-  const negativeKeywords = [
-    'senior', 'principal', 'lead', 'head of', 'director', 'manager', 'vp', 'vice president',
-    'executive', 'ceo', 'cto', 'cfo', 'coo', 'founder', 'co-founder',
-    '5+ years', '10+ years', '15+ years', '20+ years',
-    'experienced', 'expert', 'specialist', 'consultant', 'architect',
-    'mid-level', 'mid level', 'intermediate', 'advanced',
-    // PhD/Research exclusions
-    'phd', 'ph.d', 'ph.d.', 'doctorate', 'doctoral', 'postdoc', 'post-doc', 'post doc',
-    'research assistant', 'research fellow', 'research associate', 'research scientist',
-    'postdoctoral', 'post-doctoral', 'post doctoral', 'research position',
-    'mba only', 'mba required', 'mba preferred', 'mba essential'
-  ];
-  
-  // Check for positive keywords
-  const hasPositive = positiveKeywords.some(keyword => t.includes(keyword));
-  
-  // Check for negative keywords
-  const hasNegative = negativeKeywords.some(keyword => t.includes(keyword));
-  
-  // Include if has positive keywords AND no negative keywords
-  return hasPositive && !hasNegative;
+  // Only allow our three specific job types
+  return jobType === 'internship' || jobType === 'placement' || jobType === 'graduate';
 }
 
 // Enhanced UK location detection with comprehensive filtering
