@@ -42,11 +42,17 @@ async function handleCheckoutSessionCompleted(session: any) {
   try {
     // Get the subscription and invoice details
     const subscription = await stripe.subscriptions.retrieve(session.subscription);
-    const invoice = await stripe.invoices.retrieve(subscription.latest_invoice);
+    const invoiceId = typeof subscription.latest_invoice === 'string' 
+      ? subscription.latest_invoice 
+      : subscription.latest_invoice.id;
+    const invoice = await stripe.invoices.retrieve(invoiceId);
 
     // Extract discount information
-    const discount = invoice.discount;
-    const promotionCodeId = discount?.promotion_code;
+    const discounts = invoice.discounts || [];
+    const discount = discounts.length > 0 ? discounts[0] : null;
+    const promotionCodeId = typeof discount === 'object' && discount !== null && 'promotion_code' in discount 
+      ? (discount as any).promotion_code 
+      : null;
 
     // Get package slug from the price
     const priceId = subscription.items.data[0]?.price?.id;

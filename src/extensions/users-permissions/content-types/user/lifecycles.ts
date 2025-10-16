@@ -1,5 +1,5 @@
 // src/extensions/users-permissions/content-types/user/lifecycles.ts
-import { createUserPromotionCode } from '../../../utils/stripe';
+import { createUserPromotionCode } from '../../../../utils/stripe';
 
 // Generate a short referral code (base36)
 function generateReferralCode(): string {
