@@ -217,19 +217,36 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
 
     console.log(`📊 Fetched ${html.length} chars, parsing...`);
 
-    // Try multiple job card selectors
+    // Try multiple job card selectors (more comprehensive)
     const jobSelectors = [
-      '.job-card',
-      '.job-listing',
-      '.job-item',
-      '.job-result',
-      '[class*="JobCard"]',
-      '[class*="job-card"]',
-      'article[class*="job"]',
-      '[data-testid*="job"]',
-      '.vacancy',
-      '.opportunity',
-      '.position'
+      // Common job card patterns
+      '.job-card', '.job-listing', '.job-item', '.job-result', '.job-post',
+      '[class*="JobCard"]', '[class*="job-card"]', '[class*="job-listing"]',
+      '[class*="job-item"]', '[class*="job-result"]', '[class*="job-post"]',
+      
+      // Article and result patterns
+      'article[class*="job"]', 'article[class*="listing"]', 'article[class*="result"]',
+      '.search-result', '.result', '.vacancy', '.position', '.opportunity',
+      '.role', '.career', '.employment', '.listing',
+      
+      // Data attribute patterns
+      '[data-testid*="job"]', '[data-testid*="listing"]', '[data-testid*="result"]',
+      '[data-cy*="job"]', '[data-cy*="listing"]', '[data-cy*="result"]',
+      
+      // Generic patterns
+      'article', '.item', '.entry', '.post', '.content',
+      '[class*="listing"]', '[class*="result"]', '[class*="vacancy"]',
+      '[class*="position"]', '[class*="opportunity"]', '[class*="role"]',
+      '[class*="career"]', '[class*="employment"]', '[class*="item"]',
+      '[class*="entry"]', '[class*="post"]', '[class*="content"]',
+      
+      // Table row patterns (some sites use tables)
+      'tr[class*="job"]', 'tr[class*="listing"]', 'tr[class*="result"]',
+      'td[class*="job"]', 'td[class*="listing"]', 'td[class*="result"]',
+      
+      // List item patterns
+      'li[class*="job"]', 'li[class*="listing"]', 'li[class*="result"]',
+      'li[class*="vacancy"]', 'li[class*="position"]', 'li[class*="opportunity"]'
     ];
 
     let $jobCards = $();
@@ -246,7 +263,52 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
     }
 
     if ($jobCards.length === 0) {
-      console.warn(`⚠️  No job cards found on ${url} - might be JS-rendered or wrong URL`);
+      console.warn(`⚠️  No job cards found on ${url} - trying fallback extraction...`);
+      
+      // Fallback: try to extract any text that looks like job titles
+      const allText = $.text();
+      const lines = allText.split('\n').map(line => line.trim()).filter(line => line.length > 10);
+      
+      // Look for lines that might be job titles (contain job-related keywords)
+      const jobKeywords = ['graduate', 'internship', 'placement', 'scheme', 'programme', 'program', 'trainee', 'entry level', 'junior'];
+      const potentialJobs = lines.filter(line => 
+        jobKeywords.some(keyword => line.toLowerCase().includes(keyword)) &&
+        line.length > 20 && line.length < 200
+      );
+      
+      console.log(`📋 Fallback: Found ${potentialJobs.length} potential job titles`);
+      
+      // Create basic job entries from potential titles
+      for (let i = 0; i < Math.min(potentialJobs.length, 20); i++) {
+        const title = potentialJobs[i];
+        if (title && title.length > 5) {
+          const job: CanonicalJob = {
+            source: boardKey,
+            sourceUrl: url,
+            title,
+            company: { name: 'Unknown' },
+            location: 'UK',
+            descriptionHtml: '',
+            descriptionText: '',
+            applyUrl: url,
+            applyDeadline: undefined,
+            jobType: classifyJobType(title),
+            salary: undefined,
+            hash: sha256([title, 'Unknown', url].join('|')),
+            slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url].join('|')), 'UK')
+          };
+          
+          // Only add if it's a relevant job type
+          if (isRelevantJobType(title) && isUKJob(title)) {
+            jobs.push(job);
+          }
+        }
+      }
+      
+      if (jobs.length === 0) {
+        console.warn(`⚠️  Fallback extraction also failed - page might be JS-rendered or wrong URL`);
+      }
+      
       return jobs;
     }
 
@@ -255,27 +317,40 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
       try {
         const $card = $jobCards.eq(i);
         
-        // Extract title with fallbacks
+        // Extract title with comprehensive fallbacks
         const title = (
-          $card.find('h1, h2, h3').first().text().trim() ||
-          $card.find('[class*="title"], [class*="Title"]').first().text().trim() ||
-          $card.find('a').first().text().trim()
+          $card.find('h1, h2, h3, h4').first().text().trim() ||
+          $card.find('[class*="title"], [class*="Title"], [class*="job-title"], [class*="jobTitle"]').first().text().trim() ||
+          $card.find('[class*="heading"], [class*="Heading"]').first().text().trim() ||
+          $card.find('a').first().text().trim() ||
+          $card.find('strong, b').first().text().trim() ||
+          $card.text().split('\n')[0].trim()
         );
         
-        // Extract company
+        // Extract company with comprehensive fallbacks
         const company = (
           $card.find('[class*="company"], [class*="Company"], [class*="employer"], [class*="Employer"]').first().text().trim() ||
-          $card.find('[class*="organisation"], [class*="Organization"]').first().text().trim()
+          $card.find('[class*="organisation"], [class*="Organization"], [class*="org"]').first().text().trim() ||
+          $card.find('[class*="firm"], [class*="Firm"]').first().text().trim() ||
+          $card.find('[class*="business"], [class*="Business"]').first().text().trim() ||
+          $card.find('span[class*="company"], span[class*="employer"]').first().text().trim()
         );
         
-        // Extract location
+        // Extract location with comprehensive fallbacks
         const location = (
-          $card.find('[class*="location"], [class*="Location"]').first().text().trim() ||
-          $card.find('[class*="place"]').first().text().trim()
+          $card.find('[class*="location"], [class*="Location"], [class*="place"], [class*="Place"]').first().text().trim() ||
+          $card.find('[class*="address"], [class*="Address"]').first().text().trim() ||
+          $card.find('[class*="city"], [class*="City"]').first().text().trim() ||
+          $card.find('[class*="area"], [class*="Area"]').first().text().trim() ||
+          $card.find('span[class*="location"], span[class*="place"]').first().text().trim()
         );
         
-        // Get link
-        const link = $card.find('a[href]').first().attr('href');
+        // Get link with comprehensive fallbacks
+        const link = (
+          $card.find('a[href]').first().attr('href') ||
+          $card.find('[href]').first().attr('href') ||
+          $card.attr('href')
+        );
         
         if (!title || title.length < 5) {
           continue;

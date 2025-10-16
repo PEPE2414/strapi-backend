@@ -29,7 +29,11 @@ const URL_PATTERNS = {
     'https://www.gradcracker.com/search',
     'https://www.gradcracker.com/internships',
     'https://www.gradcracker.com/placements',
-    'https://www.gradcracker.com/graduate-schemes'
+    'https://www.gradcracker.com/graduate-schemes',
+    'https://www.gradcracker.com/',
+    'https://www.gradcracker.com/careers',
+    'https://www.gradcracker.com/opportunities',
+    'https://www.gradcracker.com/vacancies'
   ],
   targetjobs: [
     'https://targetjobs.co.uk/uk/en/search/offers',
@@ -41,7 +45,13 @@ const URL_PATTERNS = {
     'https://targetjobs.co.uk/placements',
     'https://targetjobs.co.uk/graduate-schemes',
     'https://targetjobs.co.uk/uk/en/search/internships',
-    'https://targetjobs.co.uk/uk/en/search/placements'
+    'https://targetjobs.co.uk/uk/en/search/placements',
+    'https://targetjobs.co.uk/',
+    'https://targetjobs.co.uk/careers',
+    'https://targetjobs.co.uk/opportunities',
+    'https://targetjobs.co.uk/vacancies',
+    'https://targetjobs.co.uk/uk/en/search',
+    'https://targetjobs.co.uk/uk/en/jobs'
   ],
   prospects: [
     'https://www.prospects.ac.uk/job-search',
@@ -52,7 +62,13 @@ const URL_PATTERNS = {
     'https://www.prospects.ac.uk/internships',
     'https://www.prospects.ac.uk/placements',
     'https://www.prospects.ac.uk/work-experience',
-    'https://www.prospects.ac.uk/graduate-schemes'
+    'https://www.prospects.ac.uk/graduate-schemes',
+    'https://www.prospects.ac.uk/',
+    'https://www.prospects.ac.uk/careers',
+    'https://www.prospects.ac.uk/opportunities',
+    'https://www.prospects.ac.uk/vacancies',
+    'https://www.prospects.ac.uk/jobs-and-work-experience',
+    'https://www.prospects.ac.uk/graduate-jobs-and-work-experience'
   ],
   milkround: [
     'https://www.milkround.com/jobs',
@@ -62,7 +78,13 @@ const URL_PATTERNS = {
     'https://www.milkround.com/internships',
     'https://www.milkround.com/placements',
     'https://www.milkround.com/graduate-schemes',
-    'https://www.milkround.com/work-experience'
+    'https://www.milkround.com/work-experience',
+    'https://www.milkround.com/',
+    'https://www.milkround.com/careers',
+    'https://www.milkround.com/opportunities',
+    'https://www.milkround.com/vacancies',
+    'https://www.milkround.com/graduate',
+    'https://www.milkround.com/student'
   ],
   brightnetwork: [
     'https://www.brightnetwork.co.uk/jobs',
@@ -73,7 +95,13 @@ const URL_PATTERNS = {
     'https://www.brightnetwork.co.uk/internships',
     'https://www.brightnetwork.co.uk/placements',
     'https://www.brightnetwork.co.uk/graduate-schemes',
-    'https://www.brightnetwork.co.uk/work-experience'
+    'https://www.brightnetwork.co.uk/work-experience',
+    'https://www.brightnetwork.co.uk/',
+    'https://www.brightnetwork.co.uk/careers',
+    'https://www.brightnetwork.co.uk/opportunities',
+    'https://www.brightnetwork.co.uk/vacancies',
+    'https://www.brightnetwork.co.uk/graduate',
+    'https://www.brightnetwork.co.uk/student'
   ],
   ratemyplacement: [
     'https://www.ratemyplacement.co.uk/placements',
@@ -83,7 +111,13 @@ const URL_PATTERNS = {
     'https://www.ratemyplacement.co.uk/jobs/search',
     'https://www.ratemyplacement.co.uk/internships',
     'https://www.ratemyplacement.co.uk/graduate-jobs',
-    'https://www.ratemyplacement.co.uk/work-experience'
+    'https://www.ratemyplacement.co.uk/work-experience',
+    'https://www.ratemyplacement.co.uk/',
+    'https://www.ratemyplacement.co.uk/careers',
+    'https://www.ratemyplacement.co.uk/opportunities',
+    'https://www.ratemyplacement.co.uk/vacancies',
+    'https://www.ratemyplacement.co.uk/graduate',
+    'https://www.ratemyplacement.co.uk/student'
   ]
 };
 
@@ -146,12 +180,16 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
       pageText.includes('placement')
     );
     
-    // More lenient validation - any 2 of 3 criteria is enough
+    // More lenient validation - any 1 of 3 criteria is enough for graduate job boards
     const criteria = [hasJobCards, hasJobKeywords, hasJobText];
     const validCriteria = criteria.filter(Boolean).length;
-    const isValid = validCriteria >= 2;
+    const isValid = validCriteria >= 1;
     
-    if (isValid) {
+    // Additional check: if page loads successfully and has some content, consider it valid
+    const hasContent = html.length > 1000 && !html.includes('404') && !html.includes('Not Found');
+    const finalValid = isValid || hasContent;
+    
+    if (finalValid) {
       console.log(`    ✅ Valid job search page (${$(
         '.job-card, .job-listing, .job-item, .job-result, [class*="job"]'
       ).length} job elements found)`);
@@ -159,7 +197,7 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
       console.log(`    ❌ Not a job search page (no job elements or keywords)`);
     }
     
-    return isValid;
+    return finalValid;
     
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
@@ -257,29 +295,55 @@ export async function discoverWorkingUrls(
   
   const workingUrls: string[] = [];
   
-  // Try all known URL patterns
-  for (const pattern of knownPatterns) {
-    const isValid = await testUrl(pattern);
-    if (isValid) {
-      workingUrls.push(pattern);
-      console.log(`✅ Found working URL: ${pattern}`);
-      
-      // Stop after finding 2 working URLs
-      if (workingUrls.length >= 2) {
-        break;
+  // Try all known URL patterns with more aggressive testing
+  for (let i = 0; i < knownPatterns.length; i++) {
+    const pattern = knownPatterns[i];
+    console.log(`🧪 Testing pattern ${i + 1}/${knownPatterns.length}: ${pattern}`);
+    
+    try {
+      const isValid = await testUrl(pattern);
+      if (isValid) {
+        workingUrls.push(pattern);
+        console.log(`✅ Found working URL: ${pattern}`);
+        
+        // Stop after finding 3 working URLs (increased from 2)
+        if (workingUrls.length >= 3) {
+          break;
+        }
       }
+    } catch (error) {
+      console.log(`⚠️  Error testing ${pattern}:`, error instanceof Error ? error.message : String(error));
     }
     
-    // Small delay between tests
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Shorter delay between tests for faster discovery
+    await new Promise(resolve => setTimeout(resolve, 1000));
   }
   
   // If no patterns worked, try discovering from homepage
   if (workingUrls.length === 0 && baseUrl) {
     console.log(`⚠️  No URL patterns worked, trying homepage discovery...`);
-    const discoveredUrl = await discoverFromHomepage(baseUrl);
-    if (discoveredUrl) {
-      workingUrls.push(discoveredUrl);
+    try {
+      const discoveredUrl = await discoverFromHomepage(baseUrl);
+      if (discoveredUrl) {
+        workingUrls.push(discoveredUrl);
+        console.log(`✅ Homepage discovery found: ${discoveredUrl}`);
+      }
+    } catch (error) {
+      console.log(`⚠️  Homepage discovery failed:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+  
+  // If still no URLs found, try the base URL as a last resort
+  if (workingUrls.length === 0 && baseUrl) {
+    console.log(`⚠️  Trying base URL as last resort: ${baseUrl}`);
+    try {
+      const isValid = await testUrl(baseUrl);
+      if (isValid) {
+        workingUrls.push(baseUrl);
+        console.log(`✅ Base URL works: ${baseUrl}`);
+      }
+    } catch (error) {
+      console.log(`⚠️  Base URL failed:`, error instanceof Error ? error.message : String(error));
     }
   }
   
@@ -306,7 +370,7 @@ export async function getWorkingUrls(
   boardKey: string,
   knownPatterns: string[],
   baseUrl?: string,
-  maxCacheAge: number = 24 * 60 * 60 * 1000 // 24 hours
+  maxCacheAge: number = 2 * 60 * 60 * 1000 // 2 hours (reduced from 24 hours)
 ): Promise<string[]> {
   
   // Check cache first
