@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "application_notes",
+  "info": {
+    "singularName": "application-note",
+    "pluralName": "application-notes",
+    "displayName": "Application Note",
+    "description": "User's application notes with questions and answers"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "unique": true
+    },
+    "questions": {
+      "type": "json",
+      "required": true
+    },
+    "updatedAt": {
+      "type": "datetime"
+    }
+  }
+}
