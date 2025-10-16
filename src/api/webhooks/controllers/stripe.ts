@@ -6,8 +6,13 @@ export default {
     const sig = ctx.request.headers['stripe-signature'];
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!sig || !endpointSecret) {
-      return ctx.badRequest('Missing signature or webhook secret');
+    if (!sig) {
+      return ctx.badRequest('Missing Stripe signature');
+    }
+
+    if (!endpointSecret) {
+      console.error('STRIPE_WEBHOOK_SECRET environment variable is not set');
+      return ctx.internalServerError('Webhook configuration error');
     }
 
     let event;

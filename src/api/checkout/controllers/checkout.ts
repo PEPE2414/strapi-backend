@@ -10,6 +10,18 @@ const PACKAGE_PRICE_MAP = {
   'basic': process.env.STRIPE_BASIC_PRICE_ID
 };
 
+// Validate required environment variables
+const requiredEnvVars = [
+  'STRIPE_FAST_TRACK_PRICE_ID',
+  'STRIPE_INTERVIEW_PACK_PRICE_ID'
+];
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`Missing required environment variable: ${envVar}`);
+  }
+}
+
 export default {
   async createSession(ctx) {
     try {
