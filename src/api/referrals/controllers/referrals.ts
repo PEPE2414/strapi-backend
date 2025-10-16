@@ -1,12 +1,23 @@
 // src/api/referrals/controllers/referrals.ts
+import { errors } from '@strapi/utils';
+const { UnauthorizedError } = errors;
+
 export default {
   async me(ctx) {
     try {
+      console.log('[referrals:me] Starting referrals/me request');
+      console.log('[referrals:me] ctx.state:', ctx.state);
+      console.log('[referrals:me] ctx.state.user:', ctx.state.user);
+      console.log('[referrals:me] Authorization header:', ctx.request.header.authorization);
+      
       const { user } = ctx.state;
       
       if (!user) {
-        return ctx.unauthorized('Authentication required');
+        console.log('[referrals:me] No user found, returning unauthorized');
+        throw new UnauthorizedError('Authentication required');
       }
+      
+      console.log('[referrals:me] User found:', user.id);
 
       // Check if user has referral data, if not generate it
       const userData = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
@@ -70,8 +81,26 @@ export default {
         console.log(`Generated referral system for user ${user.id}: ${referralCode} / ${actualPromoCode}`);
       }
 
-      // Now get the referral summary
-      const referralSummary = await strapi.service('api::referrals.referrals').getReferralSummary(user.id);
+      // Now get the referral summary directly
+      const userWithReferralData = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+        fields: ['promoCode', 'referralCode', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
+      });
+
+      if (!userWithReferralData) {
+        throw new Error('User not found');
+      }
+
+      const referralLink = `https://effort-free.co.uk/pricing?ref=${userWithReferralData.referralCode}&promo=${userWithReferralData.promoCode}`;
+      const nextMilestone = Math.max(0, 7 - (userWithReferralData.qualifiedReferrals || 0));
+
+      const referralSummary = {
+        promoCode: userWithReferralData.promoCode,
+        referralLink,
+        qualifiedReferrals: userWithReferralData.qualifiedReferrals || 0,
+        nextMilestone,
+        fastTrackUntil: userWithReferralData.fastTrackUntil,
+        guaranteeActive: userWithReferralData.guaranteeActive || false
+      };
       
       ctx.body = {
         data: referralSummary

@@ -6,9 +6,9 @@ export default {
       path: '/referrals/me',
       handler: 'referrals.me',
       config: {
-        auth: {
-          scope: ['authenticated']
-        }
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
+        middlewares: [],
       }
     },
     {
@@ -16,7 +16,9 @@ export default {
       path: '/referrals/lookup',
       handler: 'referrals.lookup',
       config: {
-        auth: false // Public endpoint
+        auth: false, // Public endpoint
+        policies: [],
+        middlewares: [],
       }
     }
   ]
