@@ -109,7 +109,7 @@ export default {
       console.log('[profile:update] Request body:', ctx.request.body);
       console.log('[profile:update] Extracted data:', body);
       
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps', 'preferences'];
+      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps', 'preferences', 'profilePicture', 'avatarChoice'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
       console.log('[profile:update] Filtered data:', data);
@@ -218,6 +218,22 @@ export default {
           console.log('[profile:update] preferences processed:', data.preferences);
         } catch (e: any) {
           return ctx.badRequest('preferences must be a valid JSON object');
+        }
+      }
+
+      // Validate profilePicture (must be a valid file ID or null)
+      if (data.profilePicture !== undefined) {
+        console.log('[profile:update] profilePicture received:', data.profilePicture);
+        if (data.profilePicture !== null && (!Number.isInteger(data.profilePicture) || data.profilePicture <= 0)) {
+          return ctx.badRequest('profilePicture must be a valid file ID or null');
+        }
+      }
+
+      // Validate avatarChoice (must be a string or null)
+      if (data.avatarChoice !== undefined) {
+        console.log('[profile:update] avatarChoice received:', data.avatarChoice);
+        if (data.avatarChoice !== null && typeof data.avatarChoice !== 'string') {
+          return ctx.badRequest('avatarChoice must be a string or null');
         }
       }
 
