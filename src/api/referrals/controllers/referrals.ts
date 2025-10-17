@@ -3,6 +3,15 @@ import { errors } from '@strapi/utils';
 const { UnauthorizedError } = errors;
 
 export default {
+  async test(ctx) {
+    ctx.body = {
+      data: {
+        message: 'Referrals API is working',
+        timestamp: new Date().toISOString()
+      }
+    };
+  },
+
   async me(ctx) {
     try {
       console.log('[referrals:me] Starting referrals/me request');

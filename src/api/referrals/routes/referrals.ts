@@ -3,6 +3,16 @@ export default {
   routes: [
     {
       method: 'GET',
+      path: '/referrals/test',
+      handler: 'referrals.test',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      }
+    },
+    {
+      method: 'GET',
       path: '/referrals/me',
       handler: 'referrals.me',
       config: {
