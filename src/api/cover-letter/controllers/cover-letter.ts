@@ -25,11 +25,26 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     
     const userId = user.id;
 
-    const data = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
-      filters: { user: userId } as any,
+    strapi.log.info(`[cover-letter] /me endpoint called for user ${userId}`);
+
+    // Debug: Check all cover letters to see their user fields
+    const allCoverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
       sort: { createdAt: 'desc' } as any,
-      populate: {} as any,
+      populate: { user: true } as any,
     } as any);
+    
+    strapi.log.info(`[cover-letter] Total cover letters in DB: ${allCoverLetters.length}`);
+    allCoverLetters.forEach((cl: any, index: number) => {
+      strapi.log.info(`[cover-letter] Cover letter ${index + 1}: id=${cl.id}, user=${cl.user?.id || 'NO_USER'}, title=${cl.title}`);
+    });
+
+    const data = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
+      filters: { user: { id: userId } } as any,
+      sort: { createdAt: 'desc' } as any,
+      populate: { user: true } as any,
+    } as any);
+
+    strapi.log.info(`[cover-letter] Found ${data.length} cover letters for user ${userId}`);
 
     ctx.body = { data };
   },
