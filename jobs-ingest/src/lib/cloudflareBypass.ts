@@ -70,7 +70,7 @@ async function fetchWithScraperAPI(
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       // ScraperAPI URL format
-      const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(url)}&render=false`;
+      const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(url)}&render=true&wait=3000&country_code=gb&premium=true`;
       
       const res = await request(scraperUrl, {
         method: 'GET',

@@ -218,36 +218,65 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
 
     console.log(`📊 Fetched ${html.length} chars, parsing...`);
 
-    // Try multiple job card selectors (more comprehensive)
+    // Try multiple job card selectors (ultra comprehensive)
     const jobSelectors = [
       // Common job card patterns
-      '.job-card', '.job-listing', '.job-item', '.job-result', '.job-post',
+      '.job-card', '.job-listing', '.job-item', '.job-result', '.job-post', '.job',
       '[class*="JobCard"]', '[class*="job-card"]', '[class*="job-listing"]',
       '[class*="job-item"]', '[class*="job-result"]', '[class*="job-post"]',
+      '[class*="job"]', '[class*="Job"]',
       
       // Article and result patterns
       'article[class*="job"]', 'article[class*="listing"]', 'article[class*="result"]',
+      'article[class*="post"]', 'article[class*="item"]', 'article[class*="card"]',
       '.search-result', '.result', '.vacancy', '.position', '.opportunity',
-      '.role', '.career', '.employment', '.listing',
+      '.role', '.career', '.employment', '.listing', '.post', '.item', '.card',
       
-      // Data attribute patterns
+      // Data attribute patterns (comprehensive)
       '[data-testid*="job"]', '[data-testid*="listing"]', '[data-testid*="result"]',
+      '[data-testid*="post"]', '[data-testid*="item"]', '[data-testid*="card"]',
       '[data-cy*="job"]', '[data-cy*="listing"]', '[data-cy*="result"]',
+      '[data-cy*="post"]', '[data-cy*="item"]', '[data-cy*="card"]',
+      '[data-test*="job"]', '[data-test*="listing"]', '[data-test*="result"]',
       
       // Generic patterns
-      'article', '.item', '.entry', '.post', '.content',
+      'article', '.item', '.entry', '.post', '.content', '.card', '.box',
       '[class*="listing"]', '[class*="result"]', '[class*="vacancy"]',
       '[class*="position"]', '[class*="opportunity"]', '[class*="role"]',
       '[class*="career"]', '[class*="employment"]', '[class*="item"]',
       '[class*="entry"]', '[class*="post"]', '[class*="content"]',
+      '[class*="card"]', '[class*="box"]', '[class*="tile"]',
       
       // Table row patterns (some sites use tables)
       'tr[class*="job"]', 'tr[class*="listing"]', 'tr[class*="result"]',
+      'tr[class*="post"]', 'tr[class*="item"]', 'tr[class*="card"]',
       'td[class*="job"]', 'td[class*="listing"]', 'td[class*="result"]',
+      'td[class*="post"]', 'td[class*="item"]', 'td[class*="card"]',
       
       // List item patterns
       'li[class*="job"]', 'li[class*="listing"]', 'li[class*="result"]',
-      'li[class*="vacancy"]', 'li[class*="position"]', 'li[class*="opportunity"]'
+      'li[class*="vacancy"]', 'li[class*="position"]', 'li[class*="opportunity"]',
+      'li[class*="post"]', 'li[class*="item"]', 'li[class*="card"]',
+      
+      // Div patterns (very common)
+      'div[class*="job"]', 'div[class*="listing"]', 'div[class*="result"]',
+      'div[class*="post"]', 'div[class*="item"]', 'div[class*="card"]',
+      'div[class*="vacancy"]', 'div[class*="position"]', 'div[class*="opportunity"]',
+      
+      // Section patterns
+      'section[class*="job"]', 'section[class*="listing"]', 'section[class*="result"]',
+      'section[class*="post"]', 'section[class*="item"]', 'section[class*="card"]',
+      
+      // Link patterns (jobs as links)
+      'a[class*="job"]', 'a[class*="listing"]', 'a[class*="result"]',
+      'a[class*="post"]', 'a[class*="item"]', 'a[class*="card"]',
+      'a[href*="job"]', 'a[href*="career"]', 'a[href*="vacancy"]',
+      
+      // Specific to graduate job boards
+      '.graduate-job', '.graduate-listing', '.graduate-result',
+      '.internship', '.placement', '.scheme', '.programme',
+      '[class*="graduate"]', '[class*="internship"]', '[class*="placement"]',
+      '[class*="scheme"]', '[class*="programme"]'
     ];
 
     let $jobCards = $();
@@ -271,17 +300,48 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
       const lines = allText.split('\n').map(line => line.trim()).filter(line => line.length > 10);
       
       // Look for lines that might be job titles (contain job-related keywords)
-      const jobKeywords = ['graduate', 'internship', 'placement', 'scheme', 'programme', 'program', 'trainee', 'entry level', 'junior'];
+      const jobKeywords = [
+        'graduate', 'internship', 'placement', 'scheme', 'programme', 'program', 
+        'trainee', 'entry level', 'junior', 'vacancy', 'position', 'role',
+        'career', 'employment', 'opportunity', 'job', 'work', 'experience',
+        'summer', 'winter', 'year in industry', 'industrial placement',
+        'work placement', 'student placement', 'sandwich', 'co-op'
+      ];
       const potentialJobs = lines.filter(line => 
         jobKeywords.some(keyword => line.toLowerCase().includes(keyword)) &&
-        line.length > 20 && line.length < 200
+        line.length > 15 && line.length < 300 &&
+        !line.includes('cookie') && !line.includes('privacy') && 
+        !line.includes('terms') && !line.includes('contact') &&
+        !line.includes('about') && !line.includes('help')
       );
       
       console.log(`📋 Fallback: Found ${potentialJobs.length} potential job titles`);
       
+      // Additional fallback: try to extract from links and headings
+      const links = $('a[href]').map((i, el) => $(el).text().trim()).get();
+      const headings = $('h1, h2, h3, h4, h5, h6').map((i, el) => $(el).text().trim()).get();
+      
+      const linkJobs = links.filter(link => 
+        jobKeywords.some(keyword => link.toLowerCase().includes(keyword)) &&
+        link.length > 15 && link.length < 200
+      );
+      
+      const headingJobs = headings.filter(heading => 
+        jobKeywords.some(keyword => heading.toLowerCase().includes(keyword)) &&
+        heading.length > 15 && heading.length < 200
+      );
+      
+      console.log(`📋 Additional fallback: Found ${linkJobs.length} link jobs, ${headingJobs.length} heading jobs`);
+      
+      // Combine all potential jobs
+      const allPotentialJobs = [...potentialJobs, ...linkJobs, ...headingJobs];
+      const uniqueJobs = [...new Set(allPotentialJobs)]; // Remove duplicates
+      
+      console.log(`📋 Total unique potential jobs: ${uniqueJobs.length}`);
+      
       // Create basic job entries from potential titles
-      for (let i = 0; i < Math.min(potentialJobs.length, 20); i++) {
-        const title = potentialJobs[i];
+      for (let i = 0; i < Math.min(uniqueJobs.length, 30); i++) {
+        const title = uniqueJobs[i];
         if (title && title.length > 5) {
           const job: CanonicalJob = {
             source: boardKey,
@@ -307,7 +367,56 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
       }
       
       if (jobs.length === 0) {
-        console.warn(`⚠️  Fallback extraction also failed - page might be JS-rendered or wrong URL`);
+        console.warn(`⚠️  Fallback extraction also failed - trying ultra-aggressive extraction...`);
+        
+        // Ultra-aggressive fallback: extract any text that looks like a job
+        const allText = $.text();
+        const words = allText.split(/\s+/);
+        const jobPhrases: string[] = [];
+        
+        // Look for job-related phrases
+        for (let i = 0; i < words.length - 2; i++) {
+          const phrase = words.slice(i, i + 3).join(' ').toLowerCase();
+          if (jobKeywords.some(keyword => phrase.includes(keyword))) {
+            const fullPhrase = words.slice(i, i + 5).join(' ').trim();
+            if (fullPhrase.length > 20 && fullPhrase.length < 200) {
+              jobPhrases.push(fullPhrase);
+            }
+          }
+        }
+        
+        const uniquePhrases = [...new Set(jobPhrases)];
+        console.log(`📋 Ultra-aggressive: Found ${uniquePhrases.length} job phrases`);
+        
+        // Create jobs from phrases
+        for (let i = 0; i < Math.min(uniquePhrases.length, 20); i++) {
+          const title = uniquePhrases[i];
+          if (title && title.length > 10) {
+            const job: CanonicalJob = {
+              source: boardKey,
+              sourceUrl: url,
+              title,
+              company: { name: 'Unknown' },
+              location: 'UK',
+              descriptionHtml: '',
+              descriptionText: '',
+              applyUrl: url,
+              applyDeadline: undefined,
+              jobType: classifyJobType(title),
+              salary: undefined,
+              hash: sha256([title, 'Unknown', url].join('|')),
+              slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url].join('|')), 'UK')
+            };
+            
+            if (isRelevantJobType(title) && isUKJob(title)) {
+              jobs.push(job);
+            }
+          }
+        }
+        
+        if (jobs.length === 0) {
+          console.warn(`⚠️  All extraction methods failed - page might be JS-rendered or wrong URL`);
+        }
       }
       
       return jobs;
