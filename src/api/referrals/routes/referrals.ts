@@ -16,7 +16,7 @@ export default {
       path: '/referrals/me',
       handler: 'referrals.me',
       config: {
-        auth: true,
+        auth: {},
         policies: [],
         middlewares: [],
       }
