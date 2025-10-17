@@ -1,6 +1,7 @@
 import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { getWorkingUrls } from '../lib/urlDiscovery';
+import { getWorkingUrlsMultiMethod } from '../lib/perplexityUrlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
@@ -169,7 +170,7 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   try {
     // AUTO-DISCOVER working URLs (tries multiple patterns, caches results)
     console.log(`🔍 Auto-discovering working URLs...`);
-    const workingUrls = await getWorkingUrls(
+    const workingUrls = await getWorkingUrlsMultiMethod(
       boardKey,
       board.urlPatterns,
       board.baseUrl
@@ -192,7 +193,7 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
         
         // Add delay between URLs
         await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
-      } catch (error) {
+        } catch (error) {
         console.warn(`Failed to scrape ${searchUrl}:`, error instanceof Error ? error.message : String(error));
       }
     }
@@ -367,32 +368,32 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
         
         const hash = sha256([title, company || boardName, applyUrl].join('|'));
         const slug = makeUniqueSlug(title, company || boardName, hash, location);
-        
-        const job: CanonicalJob = {
+
+    const job: CanonicalJob = {
           source: boardKey,
-          sourceUrl: url,
-          title,
+      sourceUrl: url,
+      title,
           company: { name: company || boardName },
-          location,
+      location,
           descriptionHtml: $card.find('[class*="description"], [class*="summary"]').first().text().substring(0, 500),
-          descriptionText: undefined,
-          applyUrl,
+      descriptionText: undefined,
+      applyUrl,
           applyDeadline: extractDeadlineFromJobCard($card),
           jobType: classifyJobType(title),
           salary: undefined,
-          startDate: undefined,
-          endDate: undefined,
-          duration: undefined,
-          experience: undefined,
+      startDate: undefined,
+      endDate: undefined,
+      duration: undefined,
+      experience: undefined,
           companyPageUrl: undefined,
-          relatedDegree: undefined,
+      relatedDegree: undefined,
           degreeLevel: ['UG'],
           postedAt: new Date().toISOString(),
-          slug,
-          hash
-        };
-        
-        jobs.push(job);
+      slug,
+      hash
+    };
+
+          jobs.push(job);
         console.log(`  ✅ #${i+1}: "${title}" at ${company || 'Unknown'} (${location || 'N/A'})`);
       } catch (error) {
         console.warn(`  ⚠️  Error extracting job #${i}:`, error);

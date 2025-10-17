@@ -46,6 +46,8 @@ jobs:
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
           # ScraperAPI for Cloudflare bypass
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          # Perplexity API for URL discovery
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           CRAWL_TYPE: ats-only
           MAX_RUNTIME_MINUTES: 15
 
@@ -74,6 +76,8 @@ jobs:
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
           # ScraperAPI for Cloudflare bypass
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          # Perplexity API for URL discovery
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           CRAWL_TYPE: full-crawl
           MAX_RUNTIME_MINUTES: 60
 
@@ -102,6 +106,8 @@ jobs:
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
           # ScraperAPI for Cloudflare bypass
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          # Perplexity API for URL discovery
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           CRAWL_TYPE: deep-refresh
           MAX_RUNTIME_MINUTES: 60
           ENABLE_DISCOVERY: true
@@ -131,5 +137,7 @@ jobs:
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
           # ScraperAPI for Cloudflare bypass
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          # Perplexity API for URL discovery
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
           MAX_RUNTIME_MINUTES: 60
