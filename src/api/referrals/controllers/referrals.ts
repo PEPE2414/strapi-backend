@@ -13,9 +13,28 @@ export default {
   async me(ctx) {
     try {
       console.log('[referrals:me] Starting referrals/me request');
-      console.log('[referrals:me] ctx.state.user:', ctx.state.user);
+      console.log('[referrals:me] ctx.state:', ctx.state);
+      console.log('[referrals:me] Authorization header:', ctx.request.header.authorization);
       
-      const { user } = ctx.state;
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[referrals:me] No valid Authorization header');
+        return ctx.unauthorized('Authentication required');
+      }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+        console.log('[referrals:me] JWT verified, user ID:', user.id);
+      } catch (jwtError) {
+        console.log('[referrals:me] JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
       
       console.log('[referrals:me] User found:', user.id, user.username);
 

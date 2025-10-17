@@ -16,7 +16,7 @@ export default {
       path: '/referrals/me',
       handler: 'referrals.me',
       config: {
-        auth: {},
+        auth: false, // Bypass permission checks, verify auth in controller
         policies: [],
         middlewares: [],
       }
