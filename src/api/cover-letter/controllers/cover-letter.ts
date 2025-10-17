@@ -25,28 +25,21 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     
     const userId = user.id;
 
-    strapi.log.info(`[cover-letter] /me endpoint called for user ${userId}`);
-
-    // Debug: Check all cover letters to see their user fields
+    // Get all cover letters and filter by user ID
+    // This approach handles cases where some cover letters might not have user assignments
     const allCoverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
       sort: { createdAt: 'desc' } as any,
       populate: { user: true } as any,
     } as any);
-    
-    strapi.log.info(`[cover-letter] Total cover letters in DB: ${allCoverLetters.length}`);
-    allCoverLetters.forEach((cl: any, index: number) => {
-      strapi.log.info(`[cover-letter] Cover letter ${index + 1}: id=${cl.id}, user=${cl.user?.id || 'NO_USER'}, title=${cl.title}`);
-    });
 
-    const data = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
-      filters: { user: { id: userId } } as any,
-      sort: { createdAt: 'desc' } as any,
-      populate: { user: true } as any,
-    } as any);
+    // Filter to only show cover letters for the authenticated user
+    const userCoverLetters = allCoverLetters.filter((cl: any) => 
+      cl.user && cl.user.id === userId
+    );
 
-    strapi.log.info(`[cover-letter] Found ${data.length} cover letters for user ${userId}`);
+    strapi.log.info(`[cover-letter] User ${userId} has ${userCoverLetters.length} cover letters (filtered from ${allCoverLetters.length} total)`);
 
-    ctx.body = { data };
+    ctx.body = { data: userCoverLetters };
   },
 
   /**
@@ -96,7 +89,12 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     const allow = entitled || credits > 0;
     if (!allow) return ctx.throw(402, 'No cover letter credits');
 
-    // Create CL (pending)
+    // Create CL (pending) - ensure user is always set
+    if (!user.id) {
+      strapi.log.error('[cover-letter] No user ID available for cover letter creation');
+      return ctx.badRequest('User authentication required');
+    }
+
     const cl = await strapi.entityService.create('api::cover-letter.cover-letter' as any, {
       data: {
         title,
@@ -109,6 +107,8 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         user: user.id,
       },
     });
+
+    strapi.log.info(`[cover-letter] Created cover letter ${cl.id} for user ${user.id}`);
 
     // Idempotent usage-log
     const existingLog = await strapi.db.query('api::usage-log.usage-log').findOne({
@@ -332,5 +332,45 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     });
     strapi.log.warn(`[cover-letters] ${id} failed: ${error || 'unknown'}`);
     ctx.body = { ok: true };
+  },
+
+  /**
+   * POST /api/cover-letters/cleanup-orphaned
+   * Admin endpoint to clean up cover letters without user assignments
+   * Guarded by x-cl-secret == COVERLETTER_PROCESSING_SECRET
+   */
+  async cleanupOrphaned(ctx) {
+    const secret = ctx.request.headers['x-cl-secret'];
+    if (secret !== process.env.COVERLETTER_PROCESSING_SECRET) return ctx.unauthorized();
+
+    try {
+      // Get all cover letters
+      const allCoverLetters = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
+        populate: { user: true } as any,
+      } as any);
+
+      // Find orphaned cover letters
+      const orphanedCoverLetters = allCoverLetters.filter((cl: any) => !cl.user || !cl.user.id);
+
+      strapi.log.info(`[cover-letter] Found ${orphanedCoverLetters.length} orphaned cover letters`);
+
+      // Delete orphaned cover letters
+      let deletedCount = 0;
+      for (const cl of orphanedCoverLetters) {
+        await strapi.entityService.delete('api::cover-letter.cover-letter' as any, cl.id);
+        deletedCount++;
+        strapi.log.info(`[cover-letter] Deleted orphaned cover letter ${cl.id}: ${cl.title} @ ${cl.company}`);
+      }
+
+      ctx.body = { 
+        ok: true, 
+        deletedCount, 
+        totalCoverLetters: allCoverLetters.length,
+        remainingCoverLetters: allCoverLetters.length - deletedCount
+      };
+    } catch (error) {
+      strapi.log.error('[cover-letter] Error cleaning up orphaned cover letters:', error);
+      ctx.internalServerError('Failed to clean up orphaned cover letters');
+    }
   },
 }));

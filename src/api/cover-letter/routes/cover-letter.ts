@@ -63,6 +63,16 @@ export default {
         policies: [],
         middlewares: []
       }
+    },
+    { 
+      method: 'POST', 
+      path: '/cover-letters/cleanup-orphaned', 
+      handler: 'cover-letter.cleanupOrphaned',
+      config: { 
+        auth: false,
+        policies: [],
+        middlewares: []
+      }
     }
   ]
 };

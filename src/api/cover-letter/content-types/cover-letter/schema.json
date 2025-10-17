@@ -35,7 +35,8 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "coverLetters"
+      "inversedBy": "coverLetters",
+      "required": true
     },
     "contentHtml": { "type": "text" },
     "contentText": { "type": "text" },
