@@ -1,6 +1,4 @@
 // src/api/referrals/controllers/referrals.ts
-import { errors } from '@strapi/utils';
-const { UnauthorizedError } = errors;
 
 export default {
   async test(ctx) {
@@ -15,18 +13,11 @@ export default {
   async me(ctx) {
     try {
       console.log('[referrals:me] Starting referrals/me request');
-      console.log('[referrals:me] ctx.state:', ctx.state);
       console.log('[referrals:me] ctx.state.user:', ctx.state.user);
-      console.log('[referrals:me] Authorization header:', ctx.request.header.authorization);
       
       const { user } = ctx.state;
       
-      if (!user) {
-        console.log('[referrals:me] No user found, returning unauthorized');
-        throw new UnauthorizedError('Authentication required');
-      }
-      
-      console.log('[referrals:me] User found:', user.id);
+      console.log('[referrals:me] User found:', user.id, user.username);
 
       // Simple fallback - return basic referral data without complex logic
       const referralSummary = {
