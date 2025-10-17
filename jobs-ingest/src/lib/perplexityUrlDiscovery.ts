@@ -58,7 +58,7 @@ export async function discoverUrlsWithPerplexity(boardName: string): Promise<str
     const domain = boardDomains[boardName as keyof typeof boardDomains];
     if (!domain) return [];
     
-    const filteredUrls = urls.filter(url => 
+    const filteredUrls = urls.filter((url: string) => 
       domain.some(d => url.includes(d))
     );
     
