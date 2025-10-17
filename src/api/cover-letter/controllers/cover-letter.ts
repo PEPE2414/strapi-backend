@@ -2,6 +2,39 @@ import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController('api::cover-letter.cover-letter' as any, ({ strapi }) => ({
   /**
+   * GET /api/cover-letters/me
+   * Returns cover letters for the authenticated user only
+   */
+  async me(ctx) {
+    // Manual JWT verification since auth: false bypasses built-in auth
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      // Use Strapi's JWT service to verify the token
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    const userId = user.id;
+
+    const data = await strapi.entityService.findMany('api::cover-letter.cover-letter' as any, {
+      filters: { user: userId } as any,
+      sort: { createdAt: 'desc' } as any,
+      populate: {} as any,
+    } as any);
+
+    ctx.body = { data };
+  },
+
+  /**
    * POST /api/cover-letters/generate
    * Body: { title, company, companyUrl?, description, source?, savedJobId? }
    * Debits 1 coverLetterCredit (unless entitled), creates usage-log, creates CL (pending),

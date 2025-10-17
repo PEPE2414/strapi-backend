@@ -1,5 +1,16 @@
 export default {
   routes: [
+    // User-specific reads
+    { 
+      method: 'GET', 
+      path: '/cover-letters/me', 
+      handler: 'cover-letter.me',
+      config: { 
+        auth: false,
+        policies: [],
+        middlewares: []
+      }
+    },
     // Core reads
     { 
       method: 'GET', 
