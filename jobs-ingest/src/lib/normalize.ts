@@ -25,6 +25,14 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
     'expert level', 'specialist level', 'consultant level', 'architect level',
     'mid-level', 'mid level', 'intermediate level', 'advanced level',
     
+    // Senior job title exclusions (any job with "senior" in title)
+    'senior', 'senior engineer', 'senior developer', 'senior analyst', 'senior consultant',
+    'senior manager', 'senior director', 'senior executive', 'senior specialist',
+    'senior coordinator', 'senior administrator', 'senior technician', 'senior designer',
+    'senior architect', 'senior scientist', 'senior researcher', 'senior advisor',
+    'senior associate', 'senior partner', 'senior officer', 'senior representative',
+    'senior supervisor', 'senior coordinator', 'senior administrator', 'senior technician',
+    
     // Non-student job types
     'apprenticeship', 'apprentice', 'trainee', 'traineeship', 'school leaver',
     'gcse', 'a-level', 'a level', 'btec', 'nvq', 'level 2', 'level 3',
@@ -54,6 +62,16 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
 
   // If any exclusion keywords found, return 'other' (will be filtered out)
   if (exclusions.some(keyword => t.includes(keyword))) {
+    return 'other';
+  }
+  
+  // Additional check: reject jobs that start with "Senior" (most common pattern)
+  if (t.startsWith('senior ')) {
+    return 'other';
+  }
+  
+  // Additional check: reject jobs with "Senior" anywhere in title (comprehensive)
+  if (/\bsenior\b/.test(t)) {
     return 'other';
   }
 
