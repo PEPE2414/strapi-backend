@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audio_analyses",
+  "info": {
+    "singularName": "audio-analysis",
+    "pluralName": "audio-analyses",
+    "displayName": "Audio Analysis",
+    "description": "Audio analysis results from interview practice sessions"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "audioAnalyses"
+    },
+    "sessionId": {
+      "type": "string",
+      "required": true
+    },
+    "question": {
+      "type": "text",
+      "required": true
+    },
+    "questionIndex": {
+      "type": "integer",
+      "default": 0
+    },
+    "prepTimeUsed": {
+      "type": "integer",
+      "default": 0
+    },
+    "answerTimeUsed": {
+      "type": "integer",
+      "default": 0
+    },
+    "feedback": {
+      "type": "text"
+    },
+    "score": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    },
+    "strengths": {
+      "type": "json"
+    },
+    "improvements": {
+      "type": "json"
+    },
+    "transcript": {
+      "type": "text"
+    },
+    "analysis": {
+      "type": "json"
+    },
+    "audioData": {
+      "type": "text"
+    }
+  }
+}
