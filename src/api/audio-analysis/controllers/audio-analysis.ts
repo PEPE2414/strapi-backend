@@ -3,7 +3,7 @@
 
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::audio-analysis.audio-analysis', ({ strapi }) => ({
+export default factories.createCoreController('api::audio-analysis.audio-analysis' as any, ({ strapi }) => ({
   async processAudio(ctx) {
     try {
       // Manual JWT verification
@@ -88,7 +88,7 @@ export default factories.createCoreController('api::audio-analysis.audio-analysi
 
         // Save the analysis result (optional - for future reference)
         try {
-          await strapi.entityService.create('api::audio-analysis.audio-analysis', {
+          await strapi.entityService.create('api::audio-analysis.audio-analysis' as any, {
             data: {
               user: user.id,
               sessionId: payload.sessionId,
@@ -96,12 +96,12 @@ export default factories.createCoreController('api::audio-analysis.audio-analysi
               questionIndex,
               prepTimeUsed,
               answerTimeUsed,
-              feedback: result.feedback || '',
-              score: result.score || 0,
-              strengths: result.strengths || [],
-              improvements: result.improvements || [],
-              transcript: result.transcript || '',
-              analysis: result.analysis || {},
+              feedback: (result as any).feedback || '',
+              score: (result as any).score || 0,
+              strengths: (result as any).strengths || [],
+              improvements: (result as any).improvements || [],
+              transcript: (result as any).transcript || '',
+              analysis: (result as any).analysis || {},
               audioData: audioData.substring(0, 100) + '...', // Store truncated version for reference
               createdAt: new Date()
             }
@@ -112,12 +112,12 @@ export default factories.createCoreController('api::audio-analysis.audio-analysi
         }
 
         return ctx.send({
-          feedback: result.feedback || 'Thank you for your response. Keep practicing!',
-          score: result.score || 0,
-          strengths: result.strengths || [],
-          improvements: result.improvements || [],
-          transcript: result.transcript || '',
-          analysis: result.analysis || {},
+          feedback: (result as any).feedback || 'Thank you for your response. Keep practicing!',
+          score: (result as any).score || 0,
+          strengths: (result as any).strengths || [],
+          improvements: (result as any).improvements || [],
+          transcript: (result as any).transcript || '',
+          analysis: (result as any).analysis || {},
           timestamp: new Date().toISOString()
         });
 
@@ -169,7 +169,7 @@ export default factories.createCoreController('api::audio-analysis.audio-analysi
       }
 
       // Fetch analysis history
-      const analyses = await strapi.entityService.findMany('api::audio-analysis.audio-analysis', {
+      const analyses = await strapi.entityService.findMany('api::audio-analysis.audio-analysis' as any, {
         filters,
         sort: { createdAt: 'desc' },
         limit: 50,

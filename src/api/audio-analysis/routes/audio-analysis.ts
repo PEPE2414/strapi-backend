@@ -3,7 +3,7 @@
 
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreRouter('api::audio-analysis.audio-analysis');
+export default factories.createCoreRouter('api::audio-analysis.audio-analysis' as any);
 
 // Custom routes for audio analysis
 export const customRoutes = [
