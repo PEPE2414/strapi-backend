@@ -1,7 +1,6 @@
 import { request } from 'undici';
 import { CanonicalJob } from '../types';
 import { resolveApplyUrl } from '../lib/applyUrl';
-import { extractRealApplyUrl } from '../lib/applyUrlExtractor';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
@@ -23,42 +22,25 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
 
   // Search terms that cover graduate/entry-level jobs
   const searchTerms = [
-    // Graduate job variants
+    // Graduate job variants (reduced to avoid rate limits)
     'graduate',
     'graduate scheme',
-    'graduate programme',
-    'graduate program',
-    'graduate trainee',
-    'graduate development',
-    'graduate opportunity',
-    'new graduate',
-    'recent graduate',
     'entry level',
-    'junior',
     
     // Internship variants
     'internship',
     'summer internship',
-    'winter internship',
-    'intern',
-    'internship programme',
-    'internship program',
     
     // Placement variants
     'placement year',
     'year in industry',
-    'industrial placement',
-    'work placement',
-    'student placement',
-    'sandwich placement',
-    'co-op',
-    'coop'
+    'industrial placement'
   ];
 
   try {
     for (const term of searchTerms) {
       // Adzuna supports pagination, fetch multiple pages
-      for (let page = 1; page <= 5; page++) {
+      for (let page = 1; page <= 3; page++) {
         const url = `https://api.adzuna.com/v1/api/jobs/gb/search/${page}?app_id=${APP_ID}&app_key=${APP_KEY}&results_per_page=50&what=${encodeURIComponent(term)}&max_days_old=7&sort_by=date`;
         
         console.log(`🔄 Fetching Adzuna page ${page} for "${term}"...`);
@@ -93,7 +75,8 @@ export async function scrapeAdzunaAPI(): Promise<CanonicalJob[]> {
             }
             
             const originalApplyUrl = job.redirect_url || `https://www.adzuna.co.uk/details/${job.id}`;
-            const applyUrl = await extractRealApplyUrl(originalApplyUrl);
+            // Skip real apply URL extraction to avoid delays and 403 errors
+            const applyUrl = originalApplyUrl;
             const hash = sha256([title, companyName, applyUrl].join('|'));
             const slug = makeUniqueSlug(title, companyName, hash, location);
             
@@ -166,36 +149,19 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
   }
 
   const keywords = [
-    // Graduate job variants
+    // Graduate job variants (reduced to avoid rate limits)
     'graduate',
     'graduate scheme',
-    'graduate programme',
-    'graduate program',
-    'graduate trainee',
-    'graduate development',
-    'graduate opportunity',
-    'new graduate',
-    'recent graduate',
     'entry level',
-    'junior',
     
     // Internship variants
     'internship',
     'summer internship',
-    'winter internship',
-    'intern',
-    'internship programme',
-    'internship program',
     
     // Placement variants
     'placement year',
     'year in industry',
-    'industrial placement',
-    'work placement',
-    'student placement',
-    'sandwich placement',
-    'co-op',
-    'coop'
+    'industrial placement'
   ];
 
   try {
@@ -244,7 +210,8 @@ export async function scrapeReedAPI(): Promise<CanonicalJob[]> {
             }
             
             const originalApplyUrl = job.jobUrl || `https://www.reed.co.uk/jobs/${job.jobId}`;
-            const applyUrl = await extractRealApplyUrl(originalApplyUrl);
+            // Skip real apply URL extraction to avoid delays and 403 errors
+            const applyUrl = originalApplyUrl;
             const hash = sha256([title, companyName, applyUrl].join('|'));
             const slug = makeUniqueSlug(title, companyName, hash, location);
             
@@ -311,7 +278,7 @@ export async function scrapeTheMuseAPI(): Promise<CanonicalJob[]> {
 
   try {
     // The Muse API supports pagination
-    for (let page = 0; page < 10; page++) {
+    for (let page = 0; page < 5; page++) {
       const url = `https://www.themuse.com/api/public/jobs?category=Engineering+&+IT,Business+&+Strategy&level=Entry+Level,Internship&location=United+Kingdom&page=${page}`;
       
       console.log(`🔄 Fetching The Muse API page ${page}...`);
@@ -346,7 +313,8 @@ export async function scrapeTheMuseAPI(): Promise<CanonicalJob[]> {
           }
           
           const originalApplyUrl = job.refs?.landing_page || `https://www.themuse.com/jobs/${job.id}`;
-          const applyUrl = await extractRealApplyUrl(originalApplyUrl);
+          // Skip real apply URL extraction to avoid delays and 403 errors
+          const applyUrl = originalApplyUrl;
           const hash = sha256([title, companyName, applyUrl].join('|'));
           const slug = makeUniqueSlug(title, companyName, hash, location);
           
@@ -414,7 +382,7 @@ export async function scrapeJobsAcUkAPI(): Promise<CanonicalJob[]> {
     ];
     
     for (const category of categories) {
-      for (let page = 1; page <= 10; page++) {
+      for (let page = 1; page <= 5; page++) {
         const url = `https://www.jobs.ac.uk/search/?category=${category}&location=UK&page=${page}&resultsPP=100`;
         
         console.log(`🔄 Fetching jobs.ac.uk category "${category}" page ${page}...`);
