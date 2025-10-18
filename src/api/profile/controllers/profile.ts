@@ -483,6 +483,30 @@ export default {
           { fields: ['id', 'cvText'] }
         );
         strapi.log.info(`[profile:cv] saved cvText length: ${check?.cvText ? String(check.cvText).length : 0}`);
+
+        // 4d) Trigger CV analysis asynchronously (non-blocking)
+        setImmediate(async () => {
+          try {
+            const { analyzeCV, saveUserCVAnalysis } = await import('../../../services/cvAnalysisService');
+            const analysis = await analyzeCV(cvText);
+            if (analysis) {
+              const saved = await saveUserCVAnalysis(userId, analysis);
+              if (saved) {
+                strapi.log.info(`[profile:cv] CV analysis completed and saved for user ${userId}`, {
+                  skillsCount: analysis.skills.length,
+                  experienceLevel: analysis.experienceLevel,
+                  industriesCount: analysis.industries.length
+                });
+              } else {
+                strapi.log.warn(`[profile:cv] CV analysis completed but failed to save for user ${userId}`);
+              }
+            } else {
+              strapi.log.info(`[profile:cv] CV analysis skipped for user ${userId}`);
+            }
+          } catch (analysisError: any) {
+            strapi.log.warn(`[profile:cv] CV analysis failed for user ${userId}:`, analysisError.message);
+          }
+        });
       } catch (ex) {
         strapi.log.warn('[profile:cv] CV text extraction failed: ' + (ex as any)?.message);
       }

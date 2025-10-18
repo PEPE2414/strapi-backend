@@ -86,13 +86,16 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     if (!user) return ctx.unauthorized();
 
     console.log('[recommendations] User preferences:', user.preferences);
+    console.log('[recommendations] User CV analysis:', user.cvAnalysis);
     
     const prefs = user.preferences || {};
     const hard = prefs.hardFilters || {};
     const priorities = prefs.priorities || {};
+    const cvAnalysis = user.cvAnalysis || null;
 
     console.log('[recommendations] Hard filters:', hard);
     console.log('[recommendations] Priorities:', priorities);
+    console.log('[recommendations] CV analysis available:', !!cvAnalysis);
 
     // DB prefilter: only fresh jobs with optional hard filters
     const filters: any = { };
@@ -116,7 +119,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     console.log('[recommendations] Found candidates:', candidates.length);
 
     const W = normalise(priorities);
-    const scored = candidates.map((j:any) => ({ job: j, score: score(j, W, prefs) }))
+    const scored = candidates.map((j:any) => ({ job: j, score: score(j, W, prefs, cvAnalysis) }))
       .sort((a,b)=>b.score - a.score)
       .slice(0, 60)
       .map(x=>({ ...x.job, _score: Math.round(x.score) }));
@@ -147,7 +150,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 }));
 
 function normalise(p: any) {
-  const keys = ['jobType','salary','location','degreeMatch','skillsMatch','startDate','recency','remoteType'];
+  const keys = ['jobType','salary','location','degreeMatch','skillsMatch','experienceMatch','startDate','recency','remoteType'];
   const base: Record<string, number> = {};
   let sum = 0;
   for (const k of keys) { const v = Math.max(0, Math.min(3, Number(p?.[k] ?? 1))); base[k]=v; sum+=v; }
@@ -156,7 +159,7 @@ function normalise(p: any) {
   return out;
 }
 
-function score(j:any, W:any, prefs:any) {
+function score(j:any, W:any, prefs:any, cvAnalysis?: any) {
   // Get user's preferred job types as lowercase array
   const preferredJobTypes = prefs.hardFilters?.targetJobTypes 
     ? (Array.isArray(prefs.hardFilters.targetJobTypes) 
@@ -179,13 +182,21 @@ function score(j:any, W:any, prefs:any) {
       jobTypeScore = 0.3; // Partial match
     }
   }
+
+  // Enhanced skills matching with CV analysis
+  const skillsToMatch = cvAnalysis?.skills?.length > 0 ? cvAnalysis.skills : prefs.skillsWanted;
+  const skillsMatchScore = overlapWithConfidence(j.skills, skillsToMatch, cvAnalysis?.confidence);
+  
+  // Experience level filtering using CV analysis
+  const experienceMatchScore = cvAnalysis ? getExperienceMatchScore(j, cvAnalysis.experienceLevel) : 0.5;
   
   const S = {
     jobType: jobTypeScore,
     salary: j.salary?.min ? Math.min(1, (j.salary.min / 45000)) : 0.3,
     location: prefs.locationHome ? (j.location?.toLowerCase().includes(prefs.locationHome.city?.toLowerCase()) ? 1 : 0.5) : 0.5,
     degreeMatch: overlap(j.relatedDegree, prefs.mustIncludeDegrees),
-    skillsMatch: overlap(j.skills, prefs.skillsWanted),
+    skillsMatch: skillsMatchScore,
+    experienceMatch: experienceMatchScore,
     startDate: j.startDate ? timeSoon(j.startDate) : 0.5,
     recency: j.postedAt ? timeDecay(j.postedAt) : 0.5,
     remoteType: j.remoteType && prefs.remoteType ? (j.remoteType===prefs.remoteType?1:0.3) : 0.5
@@ -199,5 +210,66 @@ function overlap(a?: string[], b?: string[]) {
   const inter = a.filter(x=>setB.has(x.toLowerCase())).length;
   return inter ? Math.min(1, inter / Math.max(1,a.length)) : 0.2;
 }
+
+function overlapWithConfidence(a?: string[], b?: string[], confidence?: number) {
+  const baseScore = overlap(a, b);
+  if (!confidence || confidence <= 0) return baseScore;
+  
+  // Boost score based on CV analysis confidence (up to 1.2x multiplier)
+  const confidenceBoost = 1 + (confidence * 0.2);
+  return Math.min(1, baseScore * confidenceBoost);
+}
+
+function getExperienceMatchScore(job: any, userExperienceLevel: string): number {
+  // Map job experience requirements to experience levels
+  const jobExperience = String(job.experience || '').toLowerCase();
+  const jobTitle = String(job.title || '').toLowerCase();
+  
+  // Determine expected experience level for the job
+  let expectedLevel = 'unknown';
+  
+  if (jobExperience.includes('senior') || jobExperience.includes('lead') || jobExperience.includes('5+') || jobExperience.includes('7+')) {
+    expectedLevel = 'senior';
+  } else if (jobExperience.includes('mid') || jobExperience.includes('3+') || jobExperience.includes('4+')) {
+    expectedLevel = 'mid';
+  } else if (jobExperience.includes('junior') || jobExperience.includes('entry') || jobExperience.includes('1+') || jobExperience.includes('2+')) {
+    expectedLevel = 'junior';
+  } else if (jobExperience.includes('intern') || jobExperience.includes('student') || jobExperience.includes('graduate')) {
+    expectedLevel = 'intern';
+  } else if (jobTitle.includes('senior') || jobTitle.includes('lead') || jobTitle.includes('principal')) {
+    expectedLevel = 'senior';
+  } else if (jobTitle.includes('junior') || jobTitle.includes('entry') || jobTitle.includes('graduate')) {
+    expectedLevel = 'junior';
+  } else if (jobTitle.includes('intern')) {
+    expectedLevel = 'intern';
+  }
+  
+  // Score based on experience match
+  if (expectedLevel === 'unknown' || userExperienceLevel === 'unknown') {
+    return 0.5; // Neutral score if we can't determine
+  }
+  
+  // Experience level hierarchy for matching
+  const levels = ['intern', 'junior', 'mid', 'senior'];
+  const userLevelIndex = levels.indexOf(userExperienceLevel);
+  const expectedLevelIndex = levels.indexOf(expectedLevel);
+  
+  if (userLevelIndex === -1 || expectedLevelIndex === -1) return 0.5;
+  
+  const levelDiff = Math.abs(userLevelIndex - expectedLevelIndex);
+  
+  // Perfect match
+  if (levelDiff === 0) return 1.0;
+  
+  // One level difference (e.g., junior applying for mid-level)
+  if (levelDiff === 1) return 0.7;
+  
+  // Two levels difference
+  if (levelDiff === 2) return 0.4;
+  
+  // Three levels difference (e.g., intern applying for senior)
+  return 0.1;
+}
+
 function timeDecay(iso: string) { const days = (Date.now()-new Date(iso).getTime())/(1000*3600*24); return Math.exp(-days/21); }
 function timeSoon(iso: string) { const days = (new Date(iso).getTime()-Date.now())/(1000*3600*24); return days<0?0.3: Math.exp(-Math.max(0,days)/60); }

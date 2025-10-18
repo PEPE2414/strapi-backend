@@ -60,6 +60,7 @@
 
     "cvFile": { "type": "media", "multiple": false, "allowedTypes": ["files"] },
     "cvText": { "type": "text" },
+    "cvAnalysis": { "type": "json", "default": null },
 
     "outreachEmails": {
       "type": "relation",
