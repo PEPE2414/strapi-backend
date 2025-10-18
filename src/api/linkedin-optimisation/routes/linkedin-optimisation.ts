@@ -10,7 +10,7 @@ export default {
       path: '/linkedin-optimisations/generate',
       handler: 'linkedin-optimisation.generate',
       config: {
-        policies: [],
+        policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
       },
     },
@@ -20,7 +20,7 @@ export default {
       path: '/linkedin-optimisations',
       handler: 'linkedin-optimisation.find',
       config: {
-        policies: [],
+        policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
       },
     },
@@ -29,7 +29,7 @@ export default {
       path: '/linkedin-optimisations/:id',
       handler: 'linkedin-optimisation.findOne',
       config: {
-        policies: [],
+        policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
       },
     },
@@ -38,7 +38,7 @@ export default {
       path: '/linkedin-optimisations',
       handler: 'linkedin-optimisation.create',
       config: {
-        policies: [],
+        policies: ['plugin::users-permissions.isAuthenticated'],
         middlewares: [],
       },
     },
