@@ -1,5 +1,4 @@
 // CV Analysis Service using OpenAI
-import { strapi } from '@strapi/strapi';
 
 // Types for CV analysis results
 export interface CVAnalysisResult {
@@ -20,14 +19,14 @@ const CV_ANALYSIS_TIMEOUT = parseInt(process.env.CV_ANALYSIS_TIMEOUT || '30000')
 // Main analysis function
 export async function analyzeCV(cvText: string): Promise<CVAnalysisResult | null> {
   if (!CV_ANALYSIS_ENABLED || !OPENAI_API_KEY || !cvText?.trim()) {
-    strapi.log.debug('[cvAnalysis] Skipping analysis - disabled, no key, or no text');
+    console.debug('[cvAnalysis] Skipping analysis - disabled, no key, or no text');
     return null;
   }
 
   const startTime = Date.now();
   
   try {
-    strapi.log.info(`[cvAnalysis] Starting analysis for CV (${cvText.length} chars)`);
+    console.info(`[cvAnalysis] Starting analysis for CV (${cvText.length} chars)`);
     
     // Create structured prompt for consistent extraction
     const prompt = createAnalysisPrompt(cvText);
@@ -44,7 +43,7 @@ export async function analyzeCV(cvText: string): Promise<CVAnalysisResult | null
     const result = parseAnalysisResponse(response);
     
     const duration = Date.now() - startTime;
-    strapi.log.info(`[cvAnalysis] Analysis completed in ${duration}ms`, {
+    console.info(`[cvAnalysis] Analysis completed in ${duration}ms`, {
       skillsCount: result.skills.length,
       experienceLevel: result.experienceLevel,
       industriesCount: result.industries.length,
@@ -55,7 +54,7 @@ export async function analyzeCV(cvText: string): Promise<CVAnalysisResult | null
     
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    strapi.log.warn(`[cvAnalysis] Analysis failed after ${duration}ms:`, error.message);
+    console.warn(`[cvAnalysis] Analysis failed after ${duration}ms:`, error.message);
     return null;
   }
 }
@@ -108,8 +107,8 @@ async function callOpenAI(prompt: string): Promise<string> {
     throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
   }
 
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content?.trim() || '';
+  const data: any = await response.json();
+  return data?.choices?.[0]?.message?.content?.trim() || '';
 }
 
 // Parse and validate OpenAI response
@@ -147,7 +146,7 @@ function parseAnalysisResponse(response: string): CVAnalysisResult {
     return result;
     
   } catch (error: any) {
-    strapi.log.warn('[cvAnalysis] Failed to parse OpenAI response:', error.message);
+    console.warn('[cvAnalysis] Failed to parse OpenAI response:', error.message);
     throw new Error(`Invalid response format: ${error.message}`);
   }
 }
@@ -155,13 +154,15 @@ function parseAnalysisResponse(response: string): CVAnalysisResult {
 // Helper function to get analysis for a user
 export async function getUserCVAnalysis(userId: number): Promise<CVAnalysisResult | null> {
   try {
+    // This will be called from within Strapi context where strapi is available
+    const { default: strapi } = await import('@strapi/strapi');
     const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
       fields: ['id', 'cvAnalysis']
     });
     
     return user?.cvAnalysis || null;
   } catch (error: any) {
-    strapi.log.warn('[cvAnalysis] Failed to get user CV analysis:', error.message);
+    console.warn('[cvAnalysis] Failed to get user CV analysis:', error.message);
     return null;
   }
 }
@@ -169,12 +170,14 @@ export async function getUserCVAnalysis(userId: number): Promise<CVAnalysisResul
 // Helper function to save analysis for a user
 export async function saveUserCVAnalysis(userId: number, analysis: CVAnalysisResult): Promise<boolean> {
   try {
+    // This will be called from within Strapi context where strapi is available
+    const { default: strapi } = await import('@strapi/strapi');
     await strapi.entityService.update('plugin::users-permissions.user', userId, {
       data: { cvAnalysis: analysis }
     });
     return true;
   } catch (error: any) {
-    strapi.log.warn('[cvAnalysis] Failed to save user CV analysis:', error.message);
+    console.warn('[cvAnalysis] Failed to save user CV analysis:', error.message);
     return false;
   }
 }

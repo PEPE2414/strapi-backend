@@ -487,18 +487,21 @@ export default {
         // 4d) Trigger CV analysis asynchronously (non-blocking)
         setImmediate(async () => {
           try {
-            const { analyzeCV, saveUserCVAnalysis } = await import('../../../services/cvAnalysisService');
+            const { analyzeCV } = await import('../../../services/cvAnalysisService');
             const analysis = await analyzeCV(cvText);
             if (analysis) {
-              const saved = await saveUserCVAnalysis(userId, analysis);
-              if (saved) {
+              // Save analysis directly using strapi from controller context
+              try {
+                await strapi.entityService.update('plugin::users-permissions.user', userId, {
+                  data: { cvAnalysis: analysis }
+                });
                 strapi.log.info(`[profile:cv] CV analysis completed and saved for user ${userId}`, {
                   skillsCount: analysis.skills.length,
                   experienceLevel: analysis.experienceLevel,
                   industriesCount: analysis.industries.length
                 });
-              } else {
-                strapi.log.warn(`[profile:cv] CV analysis completed but failed to save for user ${userId}`);
+              } catch (saveError: any) {
+                strapi.log.warn(`[profile:cv] CV analysis completed but failed to save for user ${userId}:`, saveError.message);
               }
             } else {
               strapi.log.info(`[profile:cv] CV analysis skipped for user ${userId}`);
