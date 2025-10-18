@@ -151,33 +151,5 @@ function parseAnalysisResponse(response: string): CVAnalysisResult {
   }
 }
 
-// Helper function to get analysis for a user
-export async function getUserCVAnalysis(userId: number): Promise<CVAnalysisResult | null> {
-  try {
-    // This will be called from within Strapi context where strapi is available
-    const { default: strapi } = await import('@strapi/strapi');
-    const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-      fields: ['id', 'cvAnalysis']
-    });
-    
-    return user?.cvAnalysis || null;
-  } catch (error: any) {
-    console.warn('[cvAnalysis] Failed to get user CV analysis:', error.message);
-    return null;
-  }
-}
-
-// Helper function to save analysis for a user
-export async function saveUserCVAnalysis(userId: number, analysis: CVAnalysisResult): Promise<boolean> {
-  try {
-    // This will be called from within Strapi context where strapi is available
-    const { default: strapi } = await import('@strapi/strapi');
-    await strapi.entityService.update('plugin::users-permissions.user', userId, {
-      data: { cvAnalysis: analysis }
-    });
-    return true;
-  } catch (error: any) {
-    console.warn('[cvAnalysis] Failed to save user CV analysis:', error.message);
-    return false;
-  }
-}
+// Note: Database operations are handled directly in the controllers
+// where Strapi instance is available. This service only handles CV analysis logic.
