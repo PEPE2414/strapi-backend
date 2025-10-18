@@ -10,7 +10,8 @@ export default {
       path: '/linkedin-optimisations/generate',
       handler: 'linkedin-optimisation.generate',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
         middlewares: [],
       },
     },
@@ -20,7 +21,8 @@ export default {
       path: '/linkedin-optimisations',
       handler: 'linkedin-optimisation.find',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
         middlewares: [],
       },
     },
@@ -29,7 +31,8 @@ export default {
       path: '/linkedin-optimisations/:id',
       handler: 'linkedin-optimisation.findOne',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
         middlewares: [],
       },
     },
@@ -38,7 +41,8 @@ export default {
       path: '/linkedin-optimisations',
       handler: 'linkedin-optimisation.create',
       config: {
-        policies: ['plugin::users-permissions.isAuthenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
         middlewares: [],
       },
     },
