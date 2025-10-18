@@ -56,6 +56,9 @@ export default factories.createCoreController(
           context: context || {},
         };
 
+        strapi.log.info(`[linkedin-optimisation] Calling webhook: ${webhookUrl}`);
+        strapi.log.info(`[linkedin-optimisation] Payload:`, JSON.stringify(payload, null, 2));
+
         // Call n8n webhook
         const response = await fetch(webhookUrl, {
           method: 'POST',
@@ -68,7 +71,10 @@ export default factories.createCoreController(
 
         if (!response.ok) {
           const errorText = await response.text().catch(() => '');
-          strapi.log.error(`[linkedin-optimisation] Webhook failed: ${response.status} ${errorText}`);
+          strapi.log.error(`[linkedin-optimisation] Webhook failed: ${response.status} ${response.statusText}`);
+          strapi.log.error(`[linkedin-optimisation] Webhook URL: ${webhookUrl}`);
+          strapi.log.error(`[linkedin-optimisation] Response body: ${errorText}`);
+          strapi.log.error(`[linkedin-optimisation] Request payload:`, JSON.stringify(payload, null, 2));
           return ctx.internalServerError('LinkedIn optimization service failed');
         }
 
