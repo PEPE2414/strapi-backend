@@ -114,7 +114,7 @@ export default factories.createCoreController(
       return super.create(ctx);
     },
 
-    // Override find to restrict to admins only
+    // Override find to restrict to authenticated users only
     async find(ctx) {
       // Manual JWT verification since auth: false bypasses built-in auth
       const authHeader = ctx.request.header.authorization;
@@ -137,18 +137,12 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // Get full user data to check role
-      const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
-        populate: ['role']
-      });
-
-      if (!fullUser || fullUser.role?.type !== 'admin') {
-        return ctx.unauthorized('Only admins can view logs');
-      }
+      // For now, allow any authenticated user to view logs
+      // TODO: Add admin role checking if needed
       return super.find(ctx);
     },
 
-    // Override findOne to restrict to admins only
+    // Override findOne to restrict to authenticated users only
     async findOne(ctx) {
       // Manual JWT verification since auth: false bypasses built-in auth
       const authHeader = ctx.request.header.authorization;
@@ -171,14 +165,8 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // Get full user data to check role
-      const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
-        populate: ['role']
-      });
-
-      if (!fullUser || fullUser.role?.type !== 'admin') {
-        return ctx.unauthorized('Only admins can view logs');
-      }
+      // For now, allow any authenticated user to view logs
+      // TODO: Add admin role checking if needed
       return super.findOne(ctx);
     },
   })
