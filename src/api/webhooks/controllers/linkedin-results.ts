@@ -39,6 +39,7 @@ export default {
           userId,
           userEmail,
           overallScore: result.overallScore,
+          currentScore: result.currentScore || null,
           subscores: result.subscores || null,
           headlineVariants: result.headlineVariants || null,
           about: result.about || null,

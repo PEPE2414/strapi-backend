@@ -60,6 +60,7 @@ Your n8n webhook should return this response format:
 ```json
 {
   "overallScore": 85,
+  "currentScore": 72,
   "subscores": {
     "headline": 8,
     "about": 9,
@@ -125,6 +126,7 @@ x-cl-secret: your-cl-webhook-secret
   "userEmail": "user@example.com",
   "result": {
     "overallScore": 85,
+    "currentScore": 72,
     "subscores": { ... },
     "headlineVariants": { ... },
     "about": { ... },
@@ -203,6 +205,7 @@ curl -X POST https://your-strapi-backend.com/api/webhooks/linkedin-results \
     "userEmail": "test@example.com",
     "result": {
       "overallScore": 85,
+      "currentScore": 72,
       "subscores": {"headline": 8, "about": 9},
       "headlineVariants": {
         "conservative": "Test Headline",
