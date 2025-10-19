@@ -26,8 +26,15 @@ export default {
     }
 
     try {
-      // Create the LinkedIn result record
-      const linkedinResult = await strapi.entityService.create('api::linkedin-result.linkedin-result', {
+      // Check if the content type exists
+      const contentType = strapi.contentType('api::linkedin-result.linkedin-result');
+      if (!contentType) {
+        strapi.log.error('[linkedin-results-webhook] Content type not found: api::linkedin-result.linkedin-result');
+        return ctx.internalServerError('Content type not found');
+      }
+
+      // Create the LinkedIn result record using the database service directly
+      const linkedinResult = await strapi.db.query('api::linkedin-result.linkedin-result').create({
         data: {
           userId,
           userEmail,
@@ -56,6 +63,8 @@ export default {
       };
     } catch (err) {
       strapi.log.error('[linkedin-results-webhook] Error creating result:', err);
+      strapi.log.error('[linkedin-results-webhook] Error details:', err.message);
+      strapi.log.error('[linkedin-results-webhook] Stack trace:', err.stack);
       return ctx.internalServerError('Failed to store LinkedIn result');
     }
   },
