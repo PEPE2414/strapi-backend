@@ -68,11 +68,10 @@ async function fetchDirectWithHeaders(url: string): Promise<{ url: string; heade
   const response = await request(url, {
     method: 'GET',
     headers,
-    timeout: 30000
   });
   
   if (response.statusCode !== 200) {
-    throw new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`);
+    throw new Error(`HTTP ${response.statusCode}: ${response.statusCode < 400 ? 'OK' : 'Error'}`);
   }
   
   const html = await response.body.text();
@@ -125,11 +124,10 @@ async function fetchWithRotatedHeaders(url: string, attempt: number): Promise<{ 
   const response = await request(url, {
     method: 'GET',
     headers,
-    timeout: 30000
   });
   
   if (response.statusCode !== 200) {
-    throw new Error(`HTTP ${response.statusCode}: ${response.statusMessage}`);
+    throw new Error(`HTTP ${response.statusCode}: ${response.statusCode < 400 ? 'OK' : 'Error'}`);
   }
   
   const html = await response.body.text();

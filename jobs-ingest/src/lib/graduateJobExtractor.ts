@@ -53,7 +53,7 @@ export function extractGraduateJobs($: cheerio.CheerioAPI, boardName: string, bo
     '[class*="content"]', '[class*="main"]', '[class*="primary"]'
   ];
   
-  let jobCards: cheerio.Cheerio<cheerio.Element> | null = null;
+  let jobCards: cheerio.Cheerio<any> | null = null;
   let usedSelector = '';
   
   // Try each selector until we find job cards
@@ -94,7 +94,7 @@ export function extractGraduateJobs($: cheerio.CheerioAPI, boardName: string, bo
 /**
  * Extract job data from a single card element
  */
-function extractJobFromCard($card: cheerio.Cheerio<cheerio.Element>, boardName: string, boardKey: string, index: number): CanonicalJob | null {
+function extractJobFromCard($card: cheerio.Cheerio<any>, boardName: string, boardKey: string, index: number): CanonicalJob | null {
   // Try multiple title selectors
   const titleSelectors = [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -207,7 +207,7 @@ function extractJobFromCard($card: cheerio.Cheerio<cheerio.Element>, boardName: 
   // Create job object
   const job: CanonicalJob = {
     title: title,
-    company: company || 'Unknown Company',
+    company: { name: company || 'Unknown Company' },
     location: location || 'UK',
     applyUrl: applyUrl || `https://${boardKey}.com/job-${index}`,
     descriptionText: description || '',
@@ -217,9 +217,8 @@ function extractJobFromCard($card: cheerio.Cheerio<cheerio.Element>, boardName: 
     jobType: 'graduate', // Default to graduate for these boards
     salary: undefined,
     applyDeadline: deadline,
-    slug: makeUniqueSlug(title, company),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    slug: makeUniqueSlug(title, company, `job-${index}-${Date.now()}`),
+    hash: `job-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
   };
   
   return job;
@@ -248,7 +247,7 @@ function extractJobsFallback($: cheerio.CheerioAPI, boardName: string, boardKey:
     if (jobKeywords.some(keyword => line.includes(keyword)) && line.length < 200) {
       const job: CanonicalJob = {
         title: line,
-        company: 'Unknown Company',
+        company: { name: 'Unknown Company' },
         location: 'UK',
         applyUrl: `https://${boardKey}.com/job-${jobCount}`,
         descriptionText: line,
@@ -258,9 +257,8 @@ function extractJobsFallback($: cheerio.CheerioAPI, boardName: string, boardKey:
         jobType: 'graduate',
         salary: undefined,
         applyDeadline: undefined,
-        slug: makeUniqueSlug(line, 'Unknown Company'),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        slug: makeUniqueSlug(line, 'Unknown Company', `fallback-${jobCount}-${Date.now()}`),
+        hash: `fallback-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
       
       jobs.push(job);
