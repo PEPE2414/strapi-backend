@@ -70,14 +70,14 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     const source = (body.source as string) ?? 'manual';
 
     // Debug logging
-    strapi.log.info(`[outreach-email] Received webhook data:`, {
+    strapi.log.info(`[outreach-email] Received webhook data:`, JSON.stringify({
       company,
       title,
       location,
       jobType,
       source,
       rawBody: body
-    });
+    }, null, 2));
 
     if (!company || !title) return ctx.badRequest('company and title are required');
 

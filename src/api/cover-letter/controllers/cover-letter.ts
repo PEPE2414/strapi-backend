@@ -74,7 +74,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     const { title, company, companyUrl, description, location, jobType, source, savedJobId } = ctx.request.body || {};
     
     // Debug logging
-    strapi.log.info(`[cover-letter] Received webhook data:`, {
+    strapi.log.info(`[cover-letter] Received webhook data:`, JSON.stringify({
       title,
       company,
       location,
@@ -82,7 +82,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       source,
       savedJobId,
       rawBody: ctx.request.body
-    });
+    }, null, 2));
     
     if (!title || !company || !description) {
       return ctx.badRequest('title, company, description required');
