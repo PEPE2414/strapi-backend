@@ -1,8 +1,10 @@
 import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
+import { smartFetch } from '../lib/smartFetcher';
 import { getWorkingUrls } from '../lib/urlDiscovery';
 import { getWorkingUrlsMultiMethod } from '../lib/perplexityUrlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
+import { extractGraduateJobs } from '../lib/graduateJobExtractor';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -212,11 +214,20 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
  */
 async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: string): Promise<CanonicalJob[]> {
   try {
-    const { html } = await fetchWithCloudflareBypass(url);
+    const { html } = await smartFetch(url);
     const $ = cheerio.load(html);
     const jobs: CanonicalJob[] = [];
 
     console.log(`📊 Fetched ${html.length} chars, parsing...`);
+
+    // Use specialized graduate job extractor first
+    const extractedJobs = extractGraduateJobs($, boardName, boardKey);
+    if (extractedJobs.length > 0) {
+      console.log(`✅ Graduate extractor found ${extractedJobs.length} jobs`);
+      return extractedJobs;
+    }
+    
+    console.log(`⚠️  Graduate extractor found 0 jobs, trying fallback methods...`);
 
     // Try multiple job card selectors (ultra comprehensive)
     const jobSelectors = [

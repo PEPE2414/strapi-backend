@@ -1,6 +1,7 @@
 import { request } from 'undici';
 import * as cheerio from 'cheerio';
 import { fetchWithCloudflareBypass } from './cloudflareBypass';
+import { smartFetch } from './smartFetcher';
 
 /**
  * Adaptive URL discovery system
@@ -128,9 +129,7 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
   try {
     console.log(`  🧪 Testing: ${url}`);
     
-    const { html } = useScraperAPI 
-      ? await fetchWithCloudflareBypass(url)
-      : await fetchDirect(url);
+    const { html } = await smartFetch(url);
     
     // Check if page has job-related content
     const $ = cheerio.load(html);
