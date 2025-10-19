@@ -6,7 +6,7 @@
 export default {
   async handleLinkedInResults(ctx) {
     // Verify webhook secret if configured
-    const expectedSecret = process.env.N8N_SHARED_SECRET;
+    const expectedSecret = process.env.CL_WEBHOOK_SECRET;
     if (expectedSecret) {
       const providedSecret = ctx.request.headers['x-cl-secret'];
       if (!providedSecret || providedSecret !== expectedSecret) {

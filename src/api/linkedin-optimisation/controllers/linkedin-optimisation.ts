@@ -64,7 +64,7 @@ export default factories.createCoreController(
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...(process.env.N8N_SHARED_SECRET ? { 'x-cl-secret': process.env.N8N_SHARED_SECRET } : {}),
+            ...(process.env.CL_WEBHOOK_SECRET ? { 'x-cl-secret': process.env.CL_WEBHOOK_SECRET } : {}),
           },
           body: JSON.stringify(payload),
         });

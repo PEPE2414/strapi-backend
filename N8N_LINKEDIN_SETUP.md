@@ -9,7 +9,7 @@ Add these to your Strapi backend `.env` file:
 ```env
 # N8N Webhook URLs
 N8N_LINKEDIN_WEBHOOK_URL=https://your-n8n-instance.com/webhook/linkedin-optimisation
-N8N_SHARED_SECRET=your-secret-key-here
+CL_WEBHOOK_SECRET=your-secret-key-here
 ```
 
 ## Current Flow
@@ -115,7 +115,7 @@ After processing, n8n should upload the complete result to Strapi using this web
 **Headers**:
 ```
 Content-Type: application/json
-x-cl-secret: your-secret-key-here
+x-cl-secret: your-cl-webhook-secret
 ```
 
 **Payload**:
@@ -197,7 +197,7 @@ You can test the webhook endpoints using curl:
 # Test result upload
 curl -X POST https://your-strapi-backend.com/api/webhooks/linkedin-results \
   -H "Content-Type: application/json" \
-  -H "x-cl-secret: your-secret-key" \
+  -H "x-cl-secret: your-cl-webhook-secret" \
   -d '{
     "userId": "test-user-id",
     "userEmail": "test@example.com",
