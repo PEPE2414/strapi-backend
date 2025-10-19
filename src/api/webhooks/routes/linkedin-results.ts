@@ -9,9 +9,7 @@ export default {
       path: '/webhooks/linkedin-results',
       handler: 'linkedin-results.handleLinkedInResults',
       config: {
-        auth: false, // Webhooks don't use JWT auth
-        policies: [],
-        middlewares: [],
+        auth: false // Webhooks don't use JWT auth
       }
     }
   ]
