@@ -71,7 +71,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       return ctx.unauthorized('Invalid token');
     }
 
-    const { title, company, companyUrl, description, source, savedJobId } = ctx.request.body || {};
+    const { title, company, companyUrl, description, location, jobType, source, savedJobId } = ctx.request.body || {};
     if (!title || !company || !description) {
       return ctx.badRequest('title, company, description required');
     }
@@ -101,6 +101,8 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         company,
         companyUrl: companyUrl || null,
         description,
+        location: location || null,
+        jobType: jobType || null,
         source: source || 'manual',
         savedJobId: cleanSavedJobId,
         status: 'pending',
@@ -254,6 +256,8 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         company,
         companyUrl: companyUrl || null,
         description,
+        location: location || null,
+        jobType: jobType || null,
         source: source || 'manual',
         savedJobId: cleanSavedJobId,
         cvUrl: null,

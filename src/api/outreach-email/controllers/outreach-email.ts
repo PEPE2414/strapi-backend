@@ -65,6 +65,8 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     const title = String(body.title ?? '').trim();
     const description = typeof body.description === 'string' ? body.description : '';
     const jobUrl = typeof body.jobUrl === 'string' ? body.jobUrl : '';
+    const location = typeof body.location === 'string' ? body.location : '';
+    const jobType = typeof body.jobType === 'string' ? body.jobType : '';
     const source = (body.source as string) ?? 'manual';
 
     if (!company || !title) return ctx.badRequest('company and title are required');
@@ -97,7 +99,7 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           'Content-Type': 'application/json',
           ...(secret ? { 'x-outreach-secret': secret } : {}),
         },
-        body: JSON.stringify({ company, title, description, jobUrl, userId }),
+        body: JSON.stringify({ company, title, description, jobUrl, location, jobType, userId }),
       });
 
     try {
@@ -179,6 +181,8 @@ Thanks so much,
         title,
         description,
         jobUrl,
+        location,
+        jobType,
         source,
         recruiterEmail: recruiter?.email ?? null,
         recruiterConfidence: recruiter?.confidence ?? null,

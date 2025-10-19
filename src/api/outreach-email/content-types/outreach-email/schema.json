@@ -19,6 +19,8 @@
     "title": { "type": "string", "required": true, "minLength": 1 },
     "jobUrl": { "type": "string" },
     "description": { "type": "text" },
+    "location": { "type": "string" },
+    "jobType": { "type": "string" },
     "source": {
       "type": "enumeration",
       "enum": ["saved-job", "manual", "other"],

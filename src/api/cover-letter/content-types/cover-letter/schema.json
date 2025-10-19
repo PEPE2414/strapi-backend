@@ -13,6 +13,8 @@
     "company": { "type": "string", "required": true },
     "companyUrl": { "type": "string" },
     "description": { "type": "text", "required": true },
+    "location": { "type": "string" },
+    "jobType": { "type": "string" },
     "source": {
       "type": "enumeration",
       "enum": ["saved-job", "manual"],
