@@ -180,6 +180,97 @@ x-cl-secret: your-cl-webhook-secret
 
 ## Error Handling
 
+### Error Webhook Setup
+
+When an n8n node encounters an error, you can send error notifications to Strapi using this webhook:
+
+**Endpoint**: `POST /api/webhooks/error-handler`
+
+**Headers**:
+```
+Content-Type: application/json
+x-cl-secret: your-cl-webhook-secret
+```
+
+**Payload**:
+```json
+{
+  "workflowId": "workflow-123",
+  "workflowName": "LinkedIn Optimisation",
+  "nodeId": "node-456",
+  "nodeName": "OpenAI Analysis",
+  "errorMessage": "API rate limit exceeded",
+  "errorDetails": {
+    "statusCode": 429,
+    "response": "Rate limit exceeded",
+    "retryAfter": 60
+  },
+  "timestamp": "2024-01-15T10:30:00Z",
+  "userId": "user-123",
+  "userEmail": "user@example.com",
+  "context": {
+    "profileData": {
+      "hasImage": true,
+      "textLength": 1500
+    },
+    "retryCount": 3
+  }
+}
+```
+
+**Required Fields**:
+- `workflowId`: Unique identifier for the workflow
+- `errorMessage`: Human-readable error description
+
+**Optional Fields**:
+- `workflowName`: Human-readable workflow name
+- `nodeId`: Specific node that failed
+- `nodeName`: Human-readable node name
+- `errorDetails`: Additional error information (JSON object)
+- `timestamp`: When the error occurred (ISO 8601 format)
+- `userId`: User ID if available
+- `userEmail`: User email if available
+- `context`: Additional context about the error (JSON object)
+
+**Expected Response**:
+```json
+{
+  "success": true,
+  "errorId": "error-log-id",
+  "message": "Error logged successfully"
+}
+```
+
+### N8N HTTP Request Node Configuration
+
+For your error handling HTTP Request node in n8n:
+
+1. **Method**: POST
+2. **URL**: `https://your-strapi-backend.com/api/webhooks/error-handler`
+3. **Headers**:
+   - `Content-Type`: `application/json`
+   - `x-cl-secret`: `{{ $env.CL_WEBHOOK_SECRET }}`
+4. **Body** (JSON):
+   ```json
+   {
+     "workflowId": "{{ $workflow.id }}",
+     "workflowName": "{{ $workflow.name }}",
+     "nodeId": "{{ $node.id }}",
+     "nodeName": "{{ $node.name }}",
+     "errorMessage": "{{ $json.error.message }}",
+     "errorDetails": {
+       "statusCode": "{{ $json.error.statusCode }}",
+       "response": "{{ $json.error.response }}"
+     },
+     "timestamp": "{{ $now.toISO() }}",
+     "context": {
+       "retryCount": "{{ $json.retryCount || 0 }}"
+     }
+   }
+   ```
+
+### Processing Error Response
+
 If processing fails, return:
 
 ```json

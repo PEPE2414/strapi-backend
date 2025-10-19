@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "error_logs",
+  "info": {
+    "singularName": "error-log",
+    "pluralName": "error-logs",
+    "displayName": "Error Log",
+    "description": "Logs errors from n8n workflows and other sources"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "workflowId": {
+      "type": "string",
+      "required": true
+    },
+    "workflowName": {
+      "type": "string"
+    },
+    "nodeId": {
+      "type": "string"
+    },
+    "nodeName": {
+      "type": "string"
+    },
+    "errorMessage": {
+      "type": "text",
+      "required": true
+    },
+    "errorDetails": {
+      "type": "json"
+    },
+    "timestamp": {
+      "type": "datetime",
+      "required": true
+    },
+    "userId": {
+      "type": "string"
+    },
+    "userEmail": {
+      "type": "email"
+    },
+    "context": {
+      "type": "json"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "resolved", "ignored"],
+      "default": "active"
+    }
+  }
+}
