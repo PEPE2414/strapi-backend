@@ -5,6 +5,7 @@ import { getWorkingUrls } from '../lib/urlDiscovery';
 import { getWorkingUrlsMultiMethod } from '../lib/perplexityUrlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
+import { debugExtractJobs } from '../lib/debugExtractor';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -220,14 +221,23 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
 
     console.log(`📊 Fetched ${html.length} chars, parsing...`);
 
-    // Use specialized graduate job extractor first
-    const extractedJobs = extractGraduateJobs($, boardName, boardKey);
+    // Use debug extractor for maximum job discovery
+    const extractedJobs = debugExtractJobs($, boardName, boardKey, url);
     if (extractedJobs.length > 0) {
-      console.log(`✅ Graduate extractor found ${extractedJobs.length} jobs`);
+      console.log(`✅ Debug extractor found ${extractedJobs.length} jobs`);
       return extractedJobs;
     }
     
-    console.log(`⚠️  Graduate extractor found 0 jobs, trying fallback methods...`);
+    console.log(`⚠️  Debug extractor found 0 jobs, trying specialized graduate extractor...`);
+    
+    // Fallback to specialized graduate extractor
+    const graduateJobs = extractGraduateJobs($, boardName, boardKey);
+    if (graduateJobs.length > 0) {
+      console.log(`✅ Graduate extractor found ${graduateJobs.length} jobs`);
+      return graduateJobs;
+    }
+    
+    console.log(`⚠️  All extractors found 0 jobs, trying fallback methods...`);
 
     // Try multiple job card selectors (ultra comprehensive)
     const jobSelectors = [

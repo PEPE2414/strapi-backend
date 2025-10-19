@@ -4,6 +4,7 @@ import { smartFetch } from '../lib/smartFetcher';
 import { getWorkingUrls } from '../lib/urlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
+import { debugExtractJobs } from '../lib/debugExtractor';
 import * as cheerio from 'cheerio';
 import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
@@ -55,8 +56,8 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
         
         console.log(`📊 Parsing page...`);
         
-        // Use specialized graduate job extractor
-        const pageJobs = extractGraduateJobs($, 'Gradcracker', 'gradcracker');
+        // Use debug extractor for maximum job discovery
+        const pageJobs = debugExtractJobs($, 'Gradcracker', 'gradcracker', url);
         if (pageJobs.length === 0) {
           console.log(`📄 No jobs found on this page`);
           continue;
