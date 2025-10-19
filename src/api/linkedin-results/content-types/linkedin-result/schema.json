@@ -7,10 +7,7 @@
     "displayName": "LinkedIn Result",
     "description": "Stores LinkedIn optimization results for users"
   },
-  "options": {
-    "draftAndPublish": false
-  },
-  "pluginOptions": {},
+  "options": { "draftAndPublish": false },
   "attributes": {
     "userId": {
       "type": "string",

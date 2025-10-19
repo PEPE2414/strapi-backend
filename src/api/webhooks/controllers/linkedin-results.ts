@@ -26,19 +26,16 @@ export default {
     }
 
     try {
-      // Check if the content type exists
-      const contentType = strapi.contentType('api::linkedin-result.linkedin-result');
-      if (!contentType) {
-        strapi.log.error('[linkedin-results-webhook] Content type not found: api::linkedin-result.linkedin-result');
-        strapi.log.error('[linkedin-results-webhook] Available content types:', Object.keys(strapi.contentTypes));
-        return ctx.internalServerError('Content type not found - please restart Strapi to register the new schema');
-      }
-
-      // Try using entityService first, fallback to db.query
-      let linkedinResult;
-      try {
-        linkedinResult = await strapi.entityService.create('api::linkedin-result.linkedin-result', {
-          data: {
+      // Use the existing linkedin-optimisations table
+      const linkedinResult = await strapi.db.query('api::linkedin-optimisation.linkedin-optimisation').create({
+        data: {
+          userEmail,
+          overallScore: result.overallScore,
+          currentScore: result.currentScore || null,
+          subscores: result.subscores || null,
+          hadImage: result.hadImage || false,
+          hadText: result.hadText || false,
+          fullResult: {
             userId,
             userEmail,
             overallScore: result.overallScore,
@@ -51,36 +48,11 @@ export default {
             skills: result.skills || null,
             postDrafts: result.postDrafts || null,
             meta: result.meta || null,
-            hadImage: result.hadImage || false,
-            hadText: result.hadText || false,
             context: result.context || null,
             fullResult: result,
           },
-        });
-      } catch (entityError) {
-        strapi.log.warn('[linkedin-results-webhook] EntityService failed, trying db.query:', entityError.message);
-        // Fallback to direct database query
-        linkedinResult = await strapi.db.query('api::linkedin-result.linkedin-result').create({
-          data: {
-            userId,
-            userEmail,
-            overallScore: result.overallScore,
-            currentScore: result.currentScore || null,
-            subscores: result.subscores || null,
-            headlineVariants: result.headlineVariants || null,
-            about: result.about || null,
-            quickWins: result.quickWins || null,
-            experienceBullets: result.experienceBullets || null,
-            skills: result.skills || null,
-            postDrafts: result.postDrafts || null,
-            meta: result.meta || null,
-            hadImage: result.hadImage || false,
-            hadText: result.hadText || false,
-            context: result.context || null,
-            fullResult: result,
-          },
-        });
-      }
+        },
+      });
 
       strapi.log.info(`[linkedin-results-webhook] Created result for user ${userId}: ${linkedinResult.id}`);
 

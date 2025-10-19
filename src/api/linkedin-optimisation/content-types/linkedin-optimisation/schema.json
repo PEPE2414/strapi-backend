@@ -33,6 +33,16 @@
     "hadText": {
       "type": "boolean",
       "default": false
+    },
+    "currentScore": {
+      "type": "integer",
+      "required": false,
+      "min": 0,
+      "max": 100
+    },
+    "fullResult": {
+      "type": "json",
+      "required": false
     }
   }
 }
