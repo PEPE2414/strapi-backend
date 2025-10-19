@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "linkedin_results",
+  "info": {
+    "singularName": "linkedin-result",
+    "pluralName": "linkedin-results",
+    "displayName": "LinkedIn Result",
+    "description": "Stores LinkedIn optimization results for users"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "userId": {
+      "type": "string",
+      "required": true
+    },
+    "userEmail": {
+      "type": "string",
+      "required": true
+    },
+    "overallScore": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "subscores": {
+      "type": "json",
+      "required": false
+    },
+    "headlineVariants": {
+      "type": "json",
+      "required": false
+    },
+    "about": {
+      "type": "json",
+      "required": false
+    },
+    "quickWins": {
+      "type": "json",
+      "required": false
+    },
+    "experienceBullets": {
+      "type": "json",
+      "required": false
+    },
+    "skills": {
+      "type": "json",
+      "required": false
+    },
+    "postDrafts": {
+      "type": "json",
+      "required": false
+    },
+    "meta": {
+      "type": "json",
+      "required": false
+    },
+    "hadImage": {
+      "type": "boolean",
+      "default": false
+    },
+    "hadText": {
+      "type": "boolean",
+      "default": false
+    },
+    "context": {
+      "type": "json",
+      "required": false
+    },
+    "fullResult": {
+      "type": "json",
+      "required": false
+    }
+  }
+}
