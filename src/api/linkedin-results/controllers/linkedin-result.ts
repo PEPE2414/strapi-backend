@@ -5,7 +5,7 @@
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController(
-  'api::linkedin-result.linkedin-result' as any,
+  'api::linkedin-results.linkedin-result' as any,
   ({ strapi }) => ({
     // Override create to ensure only authenticated users can create
     async create(ctx) {
@@ -99,7 +99,7 @@ export default factories.createCoreController(
       }
 
       // Get the result and check if it belongs to the user
-      const result = await strapi.entityService.findOne('api::linkedin-result.linkedin-result' as any, ctx.params.id, {
+      const result = await strapi.entityService.findOne('api::linkedin-results.linkedin-result' as any, ctx.params.id, {
         populate: '*'
       }) as any;
 
