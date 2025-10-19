@@ -66,8 +66,9 @@ export default factories.createCoreController(
       }
 
       // Filter results to only show current user's results
+      const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query.filters = {
-        ...ctx.query.filters,
+        ...existingFilters,
         userId: user.id
       };
 
@@ -98,9 +99,9 @@ export default factories.createCoreController(
       }
 
       // Get the result and check if it belongs to the user
-      const result = await strapi.entityService.findOne('api::linkedin-result.linkedin-result', ctx.params.id, {
+      const result = await strapi.entityService.findOne('api::linkedin-result.linkedin-result' as any, ctx.params.id, {
         populate: '*'
-      });
+      }) as any;
 
       if (!result || result.userId !== user.id) {
         return ctx.notFound('Result not found');
