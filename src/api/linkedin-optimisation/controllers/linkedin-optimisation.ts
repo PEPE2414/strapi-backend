@@ -143,8 +143,16 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // For now, allow any authenticated user to view logs
-      // TODO: Add admin role checking if needed
+      // Filter results by user email
+      const existingFilters = ctx.query.filters as Record<string, any> || {};
+      ctx.query = {
+        ...ctx.query,
+        filters: {
+          ...existingFilters,
+          userEmail: user.email,
+        },
+      };
+
       return super.find(ctx);
     },
 
@@ -171,8 +179,20 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // For now, allow any authenticated user to view logs
-      // TODO: Add admin role checking if needed
+      // First get the result to check ownership
+      const result = await strapi.entityService.findOne('api::linkedin-optimisation.linkedin-optimisation' as any, ctx.params.id, {
+        populate: '*',
+      });
+
+      if (!result) {
+        return ctx.notFound('Result not found');
+      }
+
+      // Check if the result belongs to the authenticated user
+      if ((result as any).userEmail !== user.email) {
+        return ctx.forbidden('Access denied');
+      }
+
       return super.findOne(ctx);
     },
   })

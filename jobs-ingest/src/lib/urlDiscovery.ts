@@ -2,6 +2,7 @@ import { request } from 'undici';
 import * as cheerio from 'cheerio';
 import { fetchWithCloudflareBypass } from './cloudflareBypass';
 import { smartFetch } from './smartFetcher';
+import { getBetterUrlPatterns } from './betterUrlPatterns';
 
 /**
  * Adaptive URL discovery system
@@ -294,10 +295,81 @@ export async function discoverWorkingUrls(
   
   const workingUrls: string[] = [];
   
+  // Try better URL patterns first
+  const betterPatterns = getBetterUrlPatterns(boardKey);
+  if (betterPatterns.length > 0) {
+    console.log(`🎯 Trying ${betterPatterns.length} better URL patterns for ${boardKey}...`);
+    const betterResults = await testUrlPatterns(betterPatterns, boardKey);
+    if (betterResults.length > 0) {
+      console.log(`✅ Found ${betterResults.length} working URLs with better patterns`);
+      return betterResults;
+    }
+  }
+  
+  // Fall back to original patterns
+  console.log(`🔄 Trying ${knownPatterns.length} original URL patterns for ${boardKey}...`);
+  const originalResults = await testUrlPatterns(knownPatterns, boardKey);
+  if (originalResults.length > 0) {
+    console.log(`✅ Found ${originalResults.length} working URLs with original patterns`);
+    return originalResults;
+  }
+  
+  // If no patterns worked, try homepage discovery
+  if (originalResults.length === 0 && baseUrl) {
+    console.log(`⚠️  No URL patterns worked, trying homepage discovery...`);
+    try {
+      const discoveredUrl = await discoverFromHomepage(baseUrl);
+      if (discoveredUrl) {
+        workingUrls.push(discoveredUrl);
+        console.log(`✅ Homepage discovery found: ${discoveredUrl}`);
+      }
+    } catch (error) {
+      console.log(`⚠️  Homepage discovery failed:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+  
+  // If still no URLs found, try the base URL as a last resort
+  if (workingUrls.length === 0 && baseUrl) {
+    console.log(`⚠️  Trying base URL as last resort: ${baseUrl}`);
+    try {
+      const isValid = await testUrl(baseUrl);
+      if (isValid) {
+        workingUrls.push(baseUrl);
+        console.log(`✅ Base URL works: ${baseUrl}`);
+      } else {
+        console.log(`❌ Base URL not valid: ${baseUrl}`);
+      }
+    } catch (error) {
+      console.log(`❌ Base URL error:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+  
+  // Cache the results
+  urlCache.set(boardKey, {
+    working: workingUrls,
+    failed: [],
+    lastUpdated: new Date()
+  });
+  
+  if (workingUrls.length === 0) {
+    console.warn(`⚠️  No working URLs found for ${boardKey}`);
+  } else {
+    console.log(`✅ Found ${workingUrls.length} working URLs for ${boardKey}`);
+  }
+  
+  return workingUrls;
+}
+
+/**
+ * Test a list of URL patterns
+ */
+async function testUrlPatterns(urlPatterns: string[], boardKey: string): Promise<string[]> {
+  const workingUrls: string[] = [];
+  
   // Try all known URL patterns with more aggressive testing
-  for (let i = 0; i < knownPatterns.length; i++) {
-    const pattern = knownPatterns[i];
-    console.log(`🧪 Testing pattern ${i + 1}/${knownPatterns.length}: ${pattern}`);
+  for (let i = 0; i < urlPatterns.length; i++) {
+    const pattern = urlPatterns[i];
+    console.log(`🧪 Testing pattern ${i + 1}/${urlPatterns.length}: ${pattern}`);
     
     try {
       const isValid = await testUrl(pattern);

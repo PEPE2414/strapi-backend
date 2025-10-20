@@ -1,5 +1,6 @@
 import { request } from 'undici';
 import { fetchWithCloudflareBypass } from './cloudflareBypass';
+import { ultraFetch } from './ultraFetcher';
 
 /**
  * Smart fetcher that tries multiple strategies to avoid 403 errors
@@ -40,6 +41,16 @@ export async function smartFetch(url: string, retries: number = 3): Promise<{ ur
     } catch (error) {
       console.log(`  ⚠️  Rotated headers failed: ${error instanceof Error ? error.message : String(error)}`);
     }
+  }
+  
+  // Strategy 4: Try ultra-aggressive fetching
+  try {
+    console.log(`  🚀 Trying ultra-aggressive fetching...`);
+    const result = await ultraFetch(url);
+    console.log(`  ✅ Ultra fetch successful: ${result.html.length} chars`);
+    return result;
+  } catch (error) {
+    console.log(`  ⚠️  Ultra fetch failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   
   throw new Error(`All fetch strategies failed for ${url}`);
