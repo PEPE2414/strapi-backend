@@ -166,6 +166,12 @@
     },
     "fastTrackUntil": {
       "type": "datetime"
+    },
+    "linkedinOptimisations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::linkedin-optimisation.linkedin-optimisation",
+      "mappedBy": "user"
     }
   }
 }

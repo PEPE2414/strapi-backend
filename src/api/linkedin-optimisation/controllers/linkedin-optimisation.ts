@@ -111,9 +111,12 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // Attach user email if not provided
+      // Attach user email and user relationship if not provided
       if (!ctx.request.body.data.userEmail && user.email) {
         ctx.request.body.data.userEmail = user.email;
+      }
+      if (!ctx.request.body.data.user) {
+        ctx.request.body.data.user = user.id;
       }
 
       // Call default controller
@@ -143,13 +146,13 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // Filter results by user email
+      // Filter results by user relationship
       const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query = {
         ...ctx.query,
         filters: {
           ...existingFilters,
-          userEmail: user.email,
+          user: user.id,
         },
       };
 
@@ -181,7 +184,7 @@ export default factories.createCoreController(
 
       // First get the result to check ownership
       const result = await strapi.entityService.findOne('api::linkedin-optimisation.linkedin-optimisation' as any, ctx.params.id, {
-        populate: '*',
+        populate: ['user'],
       });
 
       if (!result) {
@@ -189,7 +192,7 @@ export default factories.createCoreController(
       }
 
       // Check if the result belongs to the authenticated user
-      if ((result as any).userEmail !== user.email) {
+      if ((result as any).user?.id !== user.id) {
         return ctx.forbidden('Access denied');
       }
 
