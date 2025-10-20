@@ -390,47 +390,6 @@ async function testUrlPatterns(urlPatterns: string[], boardKey: string): Promise
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
   
-  // If no patterns worked, try discovering from homepage
-  if (workingUrls.length === 0 && baseUrl) {
-    console.log(`⚠️  No URL patterns worked, trying homepage discovery...`);
-    try {
-      const discoveredUrl = await discoverFromHomepage(baseUrl);
-      if (discoveredUrl) {
-        workingUrls.push(discoveredUrl);
-        console.log(`✅ Homepage discovery found: ${discoveredUrl}`);
-      }
-    } catch (error) {
-      console.log(`⚠️  Homepage discovery failed:`, error instanceof Error ? error.message : String(error));
-    }
-  }
-  
-  // If still no URLs found, try the base URL as a last resort
-  if (workingUrls.length === 0 && baseUrl) {
-    console.log(`⚠️  Trying base URL as last resort: ${baseUrl}`);
-    try {
-      const isValid = await testUrl(baseUrl);
-      if (isValid) {
-        workingUrls.push(baseUrl);
-        console.log(`✅ Base URL works: ${baseUrl}`);
-      }
-    } catch (error) {
-      console.log(`⚠️  Base URL failed:`, error instanceof Error ? error.message : String(error));
-    }
-  }
-  
-  // Cache the results
-  urlCache.set(boardKey, {
-    working: workingUrls,
-    failed: knownPatterns.filter(p => !workingUrls.includes(p)),
-    lastUpdated: new Date()
-  });
-  
-  if (workingUrls.length > 0) {
-    console.log(`✅ Discovered ${workingUrls.length} working URLs for ${boardKey}`);
-  } else {
-    console.log(`❌ Could not find any working URLs for ${boardKey}`);
-  }
-  
   return workingUrls;
 }
 
