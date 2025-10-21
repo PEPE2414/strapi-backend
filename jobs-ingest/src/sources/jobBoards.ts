@@ -377,7 +377,7 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
             jobType: classifyJobType(title),
             salary: undefined,
             hash: sha256([title, 'Unknown', url].join('|')),
-            slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url].join('|')), 'UK')
+            slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url, Date.now().toString()].join('|')), 'UK')
           };
           
           // Only add if it's a relevant job type
@@ -426,7 +426,7 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
               jobType: classifyJobType(title),
               salary: undefined,
               hash: sha256([title, 'Unknown', url].join('|')),
-              slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url].join('|')), 'UK')
+              slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url, Date.now().toString()].join('|')), 'UK')
             };
             
             if (isRelevantJobType(title) && isUKJob(title)) {

@@ -217,7 +217,7 @@ function extractJobFromCard($card: cheerio.Cheerio<any>, boardName: string, boar
     jobType: 'graduate', // Default to graduate for these boards
     salary: undefined,
     applyDeadline: deadline,
-    slug: makeUniqueSlug(title, company, `job-${index}-${Date.now()}`),
+    slug: makeUniqueSlug(title, company, `job-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
     hash: `job-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
   };
   
@@ -257,7 +257,7 @@ function extractJobsFallback($: cheerio.CheerioAPI, boardName: string, boardKey:
         jobType: 'graduate',
         salary: undefined,
         applyDeadline: undefined,
-        slug: makeUniqueSlug(line, 'Unknown Company', `fallback-${jobCount}-${Date.now()}`),
+        slug: makeUniqueSlug(line, 'Unknown Company', `fallback-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
         hash: `fallback-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
       
