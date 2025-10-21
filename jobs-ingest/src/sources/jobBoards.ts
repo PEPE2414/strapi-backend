@@ -6,6 +6,7 @@ import { getWorkingUrlsMultiMethod } from '../lib/perplexityUrlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
 import { debugExtractJobs } from '../lib/debugExtractor';
+import { aggressiveExtractJobs } from '../lib/aggressiveJobExtractor';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -221,11 +222,20 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
 
     console.log(`📊 Fetched ${html.length} chars, parsing...`);
 
-    // Use debug extractor for maximum job discovery
-    const extractedJobs = debugExtractJobs($, boardName, boardKey, url);
-    if (extractedJobs.length > 0) {
-      console.log(`✅ Debug extractor found ${extractedJobs.length} jobs`);
-      return extractedJobs;
+    // Use aggressive extractor for maximum job discovery
+    const aggressiveJobs = aggressiveExtractJobs($, boardName, boardKey, url);
+    if (aggressiveJobs.length > 0) {
+      console.log(`✅ Aggressive extractor found ${aggressiveJobs.length} jobs`);
+      return aggressiveJobs;
+    }
+    
+    console.log(`⚠️  Aggressive extractor found 0 jobs, trying debug extractor...`);
+    
+    // Fallback to debug extractor
+    const debugJobs = debugExtractJobs($, boardName, boardKey, url);
+    if (debugJobs.length > 0) {
+      console.log(`✅ Debug extractor found ${debugJobs.length} jobs`);
+      return debugJobs;
     }
     
     console.log(`⚠️  Debug extractor found 0 jobs, trying specialized graduate extractor...`);

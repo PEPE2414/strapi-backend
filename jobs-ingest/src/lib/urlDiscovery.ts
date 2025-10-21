@@ -4,6 +4,7 @@ import { fetchWithCloudflareBypass } from './cloudflareBypass';
 import { smartFetch } from './smartFetcher';
 import { getBetterUrlPatterns } from './betterUrlPatterns';
 import { getRealisticUrlPatterns } from './realisticUrlPatterns';
+import { discoverUrlsWithPerplexity } from './perplexityUrlDiscovery';
 
 /**
  * Adaptive URL discovery system
@@ -296,7 +297,19 @@ export async function discoverWorkingUrls(
   
   const workingUrls: string[] = [];
   
-  // Try realistic URL patterns first (most likely to work)
+  // Try Perplexity AI discovery first (most likely to find current URLs)
+  try {
+    console.log(`🤖 Trying Perplexity AI discovery for ${boardKey}...`);
+    const perplexityResults = await discoverUrlsWithPerplexity(boardKey);
+    if (perplexityResults.length > 0) {
+      console.log(`✅ Found ${perplexityResults.length} working URLs with Perplexity AI`);
+      return perplexityResults;
+    }
+  } catch (error) {
+    console.log(`⚠️  Perplexity discovery failed:`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // Try realistic URL patterns as fallback
   const realisticPatterns = getRealisticUrlPatterns(boardKey);
   if (realisticPatterns.length > 0) {
     console.log(`🎯 Trying ${realisticPatterns.length} realistic URL patterns for ${boardKey}...`);
