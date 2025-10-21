@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio';
 import { fetchWithCloudflareBypass } from './cloudflareBypass';
 import { smartFetch } from './smartFetcher';
 import { getBetterUrlPatterns } from './betterUrlPatterns';
+import { getRealisticUrlPatterns } from './realisticUrlPatterns';
 
 /**
  * Adaptive URL discovery system
@@ -295,7 +296,18 @@ export async function discoverWorkingUrls(
   
   const workingUrls: string[] = [];
   
-  // Try better URL patterns first
+  // Try realistic URL patterns first (most likely to work)
+  const realisticPatterns = getRealisticUrlPatterns(boardKey);
+  if (realisticPatterns.length > 0) {
+    console.log(`🎯 Trying ${realisticPatterns.length} realistic URL patterns for ${boardKey}...`);
+    const realisticResults = await testUrlPatterns(realisticPatterns, boardKey);
+    if (realisticResults.length > 0) {
+      console.log(`✅ Found ${realisticResults.length} working URLs with realistic patterns`);
+      return realisticResults;
+    }
+  }
+  
+  // Try better URL patterns as fallback
   const betterPatterns = getBetterUrlPatterns(boardKey);
   if (betterPatterns.length > 0) {
     console.log(`🎯 Trying ${betterPatterns.length} better URL patterns for ${boardKey}...`);
@@ -377,8 +389,8 @@ async function testUrlPatterns(urlPatterns: string[], boardKey: string): Promise
         workingUrls.push(pattern);
         console.log(`✅ Found working URL: ${pattern}`);
         
-        // Stop after finding 3 working URLs (increased from 2)
-        if (workingUrls.length >= 3) {
+        // Stop after finding 2 working URLs (reduced from 3 for speed)
+        if (workingUrls.length >= 2) {
           break;
         }
       }
@@ -387,7 +399,7 @@ async function testUrlPatterns(urlPatterns: string[], boardKey: string): Promise
     }
     
     // Shorter delay between tests for faster discovery
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
   }
   
   return workingUrls;

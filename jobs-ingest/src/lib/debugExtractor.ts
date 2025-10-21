@@ -274,8 +274,8 @@ function extractJobFromElement(
     jobType: 'graduate',
     salary: undefined,
     applyDeadline: deadline,
-    slug: makeUniqueSlug(title, company, `debug-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
-    hash: `debug-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    slug: makeUniqueSlug(title, company, `debug-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`),
+    hash: `debug-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`
   };
   
   return job;
@@ -318,8 +318,8 @@ function extractJobsFromText($: cheerio.CheerioAPI, boardName: string, boardKey:
         jobType: 'graduate',
         salary: undefined,
         applyDeadline: undefined,
-        slug: makeUniqueSlug(line, 'Unknown Company', `text-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
-        hash: `text-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        slug: makeUniqueSlug(line, 'Unknown Company', `text-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`),
+        hash: `text-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`
       };
       
       jobs.push(job);
@@ -365,8 +365,8 @@ function extractJobsFromLinks($: cheerio.CheerioAPI, boardName: string, boardKey
         jobType: 'graduate',
         salary: undefined,
         applyDeadline: undefined,
-        slug: makeUniqueSlug(text, 'Unknown Company', `link-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
-        hash: `link-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        slug: makeUniqueSlug(text, 'Unknown Company', `link-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`),
+        hash: `link-${jobCount}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`
       };
       
       jobs.push(job);
@@ -424,8 +424,8 @@ function ultraAggressiveExtraction($: cheerio.CheerioAPI, boardName: string, boa
         jobType: 'graduate',
         salary: undefined,
         applyDeadline: undefined,
-        slug: makeUniqueSlug(phrase, 'Unknown Company', `aggressive-${i}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`),
-        hash: `aggressive-${i}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        slug: makeUniqueSlug(phrase, 'Unknown Company', `aggressive-${i}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`),
+        hash: `aggressive-${i}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${Math.random().toString(36).substr(2, 9)}`
       };
       
       jobs.push(job);

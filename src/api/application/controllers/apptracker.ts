@@ -164,12 +164,29 @@ export default {
     start.setHours(0, 0, 0, 0);
     start.setDate(start.getDate() - diffToMonday);
 
+    // Count applications that were moved to Phase1 (Applied) this week
+    // This includes both newly created applications and existing ones moved to Applied status
     const submittedThisWeek = await strapi.db.query('api::application.application').count({
-      where: { owner: userId, createdAt: { $gte: start.toISOString() } },
+      where: { 
+        owner: userId, 
+        stage: 'Phase1',
+        $or: [
+          { createdAt: { $gte: start.toISOString() } }, // Newly created this week
+          { updatedAt: { $gte: start.toISOString() } }  // Updated to Phase1 this week
+        ]
+      },
     });
 
     const verifiedThisWeek = await strapi.db.query('api::application.application').count({
-      where: { owner: userId, createdAt: { $gte: start.toISOString() }, verified: true },
+      where: { 
+        owner: userId, 
+        stage: 'Phase1',
+        verified: true,
+        $or: [
+          { createdAt: { $gte: start.toISOString() } }, // Newly created this week
+          { updatedAt: { $gte: start.toISOString() } }  // Updated to Phase1 this week
+        ]
+      },
     });
 
     ctx.body = { submittedThisWeek, verifiedThisWeek, weekStartISO: start.toISOString() };
