@@ -161,6 +161,7 @@ export function getBucketsForToday(): CrawlBucket[] {
     id: 'graduate-job-boards',
     name: 'Graduate Job Boards (High Priority - Enhanced)',
     sources: [
+      'direct-graduate-boards', // Direct aggressive scraping
       'gradcracker', 
       'targetjobs',
       'prospects',

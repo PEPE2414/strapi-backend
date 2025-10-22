@@ -48,6 +48,34 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
     'call center', 'call centre', 'telemarketing', 'cold calling',
     'door to door', 'canvassing', 'leafleting', 'promotional work',
     'event staff', 'catering', 'bar work', 'nightclub', 'pub',
+    
+    // Driver and transport exclusions
+    'driver', 'driving', 'hgv', 'lgv', 'van driver', 'truck driver', 'lorry driver',
+    'bus driver', 'coach driver', 'taxi', 'uber', 'delivery', 'courier',
+    '7.5 ton', '3.5 ton', '12 ton', '18 ton', '26 ton', '44 ton',
+    'heathrow', 'airport', 'aviation', 'pilot', 'cabin crew', 'flight attendant',
+    'ground crew', 'baggage handler', 'airport security', 'airport staff',
+    
+    // Manual labor exclusions
+    'labourer', 'laborer', 'construction', 'building', 'plumber', 'electrician',
+    'carpenter', 'painter', 'decorator', 'roofer', 'tiler', 'plasterer',
+    'mechanic', 'technician', 'maintenance', 'repair', 'servicing',
+    'gardener', 'landscaper', 'groundskeeper', 'groundsman',
+    
+    // Service industry exclusions
+    'hairdresser', 'barber', 'beautician', 'beauty therapist', 'nail technician',
+    'massage therapist', 'spa therapist', 'fitness instructor', 'personal trainer',
+    'lifeguard', 'swimming instructor', 'dance instructor', 'music teacher',
+    
+    // Sales and marketing exclusions
+    'sales rep', 'sales representative', 'sales executive', 'sales manager',
+    'marketing executive', 'marketing manager', 'marketing coordinator',
+    'business development', 'account manager', 'key account', 'territory manager',
+    
+    // Healthcare exclusions (non-graduate)
+    'care assistant', 'care worker', 'support worker', 'healthcare assistant',
+    'nursing assistant', 'care home', 'residential care', 'domiciliary care',
+    'mental health support', 'learning disability support', 'elderly care',
     'gym instructor', 'personal trainer', 'fitness', 'sports coach',
     'beauty therapist', 'hairdresser', 'nail technician', 'massage',
     'estate agent', 'lettings', 'property', 'mortgage advisor',
@@ -98,7 +126,45 @@ export function isRelevantJobType(text: string): boolean {
   const jobType = classifyJobType(text);
   
   // Only allow our three specific job types
-  return jobType === 'internship' || jobType === 'placement' || jobType === 'graduate';
+  if (jobType !== 'internship' && jobType !== 'placement' && jobType !== 'graduate') {
+    return false;
+  }
+  
+  // Additional filtering for graduate-specific content
+  const t = text.toLowerCase();
+  
+  // Must contain graduate-specific keywords
+  const graduateKeywords = [
+    'graduate', 'internship', 'placement', 'entry level', 'junior',
+    'assistant', 'coordinator', 'analyst', 'developer', 'engineer',
+    'consultant', 'manager', 'director', 'specialist', 'associate',
+    'trainee', 'apprentice', 'scheme', 'programme', 'program',
+    'opportunity', 'role', 'position', 'career', 'job'
+  ];
+  
+  const hasGraduateKeyword = graduateKeywords.some(keyword => t.includes(keyword));
+  if (!hasGraduateKeyword) {
+    return false;
+  }
+  
+  // Must NOT contain non-graduate keywords
+  const nonGraduateKeywords = [
+    'driver', 'driving', '7.5 ton', 'heathrow', 'airport', 'aviation',
+    'delivery', 'courier', 'taxi', 'uber', 'deliveroo', 'just eat',
+    'retail', 'hospitality', 'customer service', 'sales assistant',
+    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner',
+    'security', 'warehouse', 'forklift', 'picking', 'packing',
+    'call center', 'telemarketing', 'cold calling', 'door to door',
+    'care worker', 'support worker', 'nursing', 'healthcare assistant',
+    'admin', 'administrative', 'receptionist', 'secretary', 'data entry'
+  ];
+  
+  const hasNonGraduateKeyword = nonGraduateKeywords.some(keyword => t.includes(keyword));
+  if (hasNonGraduateKeyword) {
+    return false;
+  }
+  
+  return true;
 }
 
 // Enhanced UK location detection with comprehensive filtering

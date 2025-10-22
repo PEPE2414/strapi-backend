@@ -23,6 +23,7 @@ import {
 } from './sources/workingJobBoards';
 import { scrapeOptimizedJobBoards } from './sources/optimizedJobBoards';
 import { scrapeAllAPIJobBoards } from './sources/apiJobBoards';
+import { scrapeGraduateBoardsDirect } from './lib/directGraduateScraper';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -209,6 +210,9 @@ async function runAll() {
         } else if (source === 'api-job-boards') {
           console.log(`🔄 Scraping API Job Boards (Highest Priority)`);
           sourceJobs = await limiter.schedule(() => scrapeAllAPIJobBoards());
+        } else if (source === 'direct-graduate-boards') {
+          console.log(`🔄 Direct Scraping Graduate Job Boards (Aggressive)`);
+          sourceJobs = await limiter.schedule(() => scrapeGraduateBoardsDirect());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);
