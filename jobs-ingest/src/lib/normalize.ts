@@ -135,7 +135,37 @@ export function isRelevantJobType(text: string): boolean {
   
   // Must contain graduate-specific keywords
   const graduateKeywords = [
-    'graduate', 'internship', 'placement', 'entry level', 'junior',
+    // Graduate job variations
+    'graduate', 'graduate job', 'graduate role', 'graduate position', 'graduate opportunity',
+    'graduate scheme', 'graduate programme', 'graduate program', 'graduate trainee',
+    'graduate analyst', 'graduate engineer', 'graduate consultant', 'graduate manager',
+    'graduate developer', 'graduate coordinator', 'graduate specialist', 'graduate associate',
+    
+    // Internship variations
+    'internship', 'intern', 'intern role', 'intern position', 'intern opportunity',
+    'summer internship', 'winter internship', 'spring internship', 'autumn internship',
+    'paid internship', 'unpaid internship', 'internship programme', 'internship program',
+    'internship scheme', 'internship opportunity', 'internship role', 'internship position',
+    
+    // Placement variations
+    'placement', 'placement year', 'year in industry', 'industrial placement',
+    'work placement', 'student placement', 'university placement', 'college placement',
+    'placement programme', 'placement program', 'placement scheme', 'placement opportunity',
+    'placement role', 'placement position', 'placement trainee', 'placement analyst',
+    'sandwich year', 'gap year', 'year abroad', 'study abroad', 'exchange year',
+    
+    // Entry level variations
+    'entry level', 'entry-level', 'entry level role', 'entry level position',
+    'entry level job', 'entry level opportunity', 'entry level trainee',
+    'entry level analyst', 'entry level engineer', 'entry level consultant',
+    'entry level manager', 'entry level developer', 'entry level coordinator',
+    
+    // Junior variations
+    'junior', 'junior role', 'junior position', 'junior job', 'junior opportunity',
+    'junior analyst', 'junior engineer', 'junior consultant', 'junior manager',
+    'junior developer', 'junior coordinator', 'junior specialist', 'junior associate',
+    
+    // General graduate terms
     'assistant', 'coordinator', 'analyst', 'developer', 'engineer',
     'consultant', 'manager', 'director', 'specialist', 'associate',
     'trainee', 'apprentice', 'scheme', 'programme', 'program',
@@ -147,16 +177,31 @@ export function isRelevantJobType(text: string): boolean {
     return false;
   }
   
-  // Must NOT contain non-graduate keywords
+  // Must NOT contain non-graduate keywords (only the most obvious non-graduate roles)
   const nonGraduateKeywords = [
-    'driver', 'driving', '7.5 ton', 'heathrow', 'airport', 'aviation',
-    'delivery', 'courier', 'taxi', 'uber', 'deliveroo', 'just eat',
-    'retail', 'hospitality', 'customer service', 'sales assistant',
-    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner',
-    'security', 'warehouse', 'forklift', 'picking', 'packing',
+    // Driver and transport exclusions
+    'driver', 'driving', '7.5 ton', '3.5 ton', '12 ton', '18 ton', '26 ton', '44 ton',
+    'hgv', 'lgv', 'van driver', 'truck driver', 'lorry driver', 'bus driver', 'coach driver',
+    'taxi', 'uber', 'delivery', 'courier', 'heathrow', 'airport', 'aviation',
+    'pilot', 'cabin crew', 'flight attendant', 'ground crew', 'baggage handler',
+    
+    // Manual labor exclusions
+    'labourer', 'laborer', 'construction', 'building', 'plumber', 'electrician',
+    'carpenter', 'painter', 'decorator', 'roofer', 'tiler', 'plasterer',
+    'mechanic', 'technician', 'maintenance', 'repair', 'servicing',
+    'gardener', 'landscaper', 'groundskeeper', 'groundsman',
+    
+    // Service industry exclusions (non-graduate roles only)
+    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner', 'security',
+    'warehouse', 'forklift', 'picking', 'packing', 'stock', 'inventory',
     'call center', 'telemarketing', 'cold calling', 'door to door',
-    'care worker', 'support worker', 'nursing', 'healthcare assistant',
-    'admin', 'administrative', 'receptionist', 'secretary', 'data entry'
+    'care worker', 'support worker', 'nursing assistant', 'healthcare assistant',
+    'admin', 'administrative', 'receptionist', 'secretary', 'data entry',
+    
+    // Specific non-graduate exclusions
+    'hairdresser', 'barber', 'beautician', 'beauty therapist', 'nail technician',
+    'massage therapist', 'spa therapist', 'fitness instructor', 'personal trainer',
+    'lifeguard', 'swimming instructor', 'dance instructor', 'music teacher'
   ];
   
   const hasNonGraduateKeyword = nonGraduateKeywords.some(keyword => t.includes(keyword));
