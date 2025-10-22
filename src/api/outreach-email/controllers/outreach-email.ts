@@ -29,7 +29,13 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
       return ctx.unauthorized('Invalid token');
     }
     
-    const userId = user.id;
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[outreach-email] Invalid user ID in me: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
 
     const data = await strapi.entityService.findMany(OUTREACH_UID, {
       filters: { user: userId } as any,
@@ -58,7 +64,13 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
       return ctx.unauthorized('Invalid token');
     }
     
-    const userId = user.id;
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[outreach-email] Invalid user ID in findEmails: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
 
     const body = (ctx.request.body ?? {}) as Record<string, unknown>;
     const company = String(body.company ?? '').trim();

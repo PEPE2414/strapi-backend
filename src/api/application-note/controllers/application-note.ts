@@ -38,16 +38,24 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     // Try to find existing application note for this user
     let applicationNote = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { user: user.id },
+      where: { user: userId },
     });
 
     // If no existing note, create one with default questions
     if (!applicationNote) {
       applicationNote = await strapi.entityService.create('api::application-note.application-note' as any, {
         data: {
-          user: user.id,
+          user: userId,
           questions: DEFAULT_QUESTIONS,
         },
       });
@@ -77,6 +85,14 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in updateMe: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { questions } = ctx.request.body || {};
     if (!questions || !Array.isArray(questions)) {
       return ctx.badRequest('questions array is required');
@@ -91,14 +107,14 @@ export default factories.createCoreController('api::application-note.application
 
     // Find existing application note
     let applicationNote = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { user: user.id },
+      where: { user: userId },
     });
 
     // Create if doesn't exist
     if (!applicationNote) {
       applicationNote = await strapi.entityService.create('api::application-note.application-note' as any, {
         data: {
-          user: user.id,
+          user: userId,
           questions: questions,
         },
       });
@@ -133,16 +149,24 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in find: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     // Only return the current user's application note
     const applicationNote = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { user: user.id },
+      where: { user: userId },
     });
 
     if (!applicationNote) {
       // Create default if none exists
       const newNote = await strapi.entityService.create('api::application-note.application-note' as any, {
         data: {
-          user: user.id,
+          user: userId,
           questions: DEFAULT_QUESTIONS,
         },
       });
@@ -171,10 +195,18 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in findOne: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { id } = ctx.params;
 
     const applicationNote = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { id, user: user.id },
+      where: { id, user: userId },
     });
 
     if (!applicationNote) {
@@ -203,11 +235,19 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in create: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { questions } = ctx.request.body || {};
     
     // Check if user already has an application note
     const existing = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { user: user.id },
+      where: { user: userId },
     });
 
     if (existing) {
@@ -216,7 +256,7 @@ export default factories.createCoreController('api::application-note.application
 
     const applicationNote = await strapi.entityService.create('api::application-note.application-note' as any, {
       data: {
-        user: user.id,
+        user: userId,
         questions: questions || DEFAULT_QUESTIONS,
       },
     });
@@ -243,11 +283,19 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in update: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { id } = ctx.params;
 
     // Ensure user owns this application note
     const existing = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { id, user: user.id },
+      where: { id, user: userId },
     });
 
     if (!existing) {
@@ -280,11 +328,19 @@ export default factories.createCoreController('api::application-note.application
       return ctx.unauthorized('Invalid token');
     }
 
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[application-note] Invalid user ID in delete: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { id } = ctx.params;
 
     // Ensure user owns this application note
     const existing = await strapi.db.query('api::application-note.application-note').findOne({
-      where: { id, user: user.id },
+      where: { id, user: userId },
     });
 
     if (!existing) {

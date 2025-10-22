@@ -54,8 +54,16 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile:get] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       // Get full user data with populated fields
-      const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+      const fullUser = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: '*'
       });
 
@@ -101,7 +109,14 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile:update] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+      
       console.log('[profile:update] Authenticated user ID:', userId);
 
       // 2) Whitelist allowed fields
@@ -313,7 +328,14 @@ export default {
         console.log('[profile:getCv] No user found in JWT');
         return ctx.unauthorized('Authentication required');
       }
-      const userId = user.id;
+      
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile:getCv] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
   
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         populate: { cvFile: true },
@@ -362,7 +384,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile:linkCv] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // 1) Validate input and load file from Upload plugin
       const body = ctx.request.body || {};
@@ -598,7 +626,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile:validateText] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // 1) Validate input and load file from Upload plugin
       const body = ctx.request.body || {};
@@ -740,7 +774,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // 1) Get fileId from request
       const body = ctx.request.body || {};
@@ -831,7 +871,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // 1) Get fileId from request
       const fileId = Number(ctx.params.fileId);
@@ -898,7 +944,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // Get user with populated previousCoverLetterFiles
       const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
@@ -938,7 +990,13 @@ export default {
         return ctx.unauthorized('Authentication required');
       }
       
-      const userId = user.id;
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        console.log(`[profile] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
 
       // Fetch with multiple approaches
       const results: any = {};
