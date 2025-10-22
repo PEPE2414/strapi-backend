@@ -19,11 +19,25 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       // Use Strapi's JWT service to verify the token
       const jwtService = strapi.plugin('users-permissions').service('jwt');
       user = await jwtService.verify(token);
+      
+      // Debug logging to see what's in the JWT token
+      strapi.log.info(`[cover-letter] JWT verification result:`, JSON.stringify({
+        user: user,
+        userId: user?.id,
+        userIdType: typeof user?.id
+      }, null, 2));
     } catch (jwtError) {
+      strapi.log.error('[cover-letter] JWT verification failed:', jwtError);
       return ctx.unauthorized('Invalid token');
     }
     
-    const userId = user.id;
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[cover-letter] Invalid user ID: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
+    }
 
     // Get all cover letters and filter by user ID
     // This approach handles cases where some cover letters might not have user assignments
@@ -67,8 +81,24 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
       // Use Strapi's JWT service to verify the token
       const jwtService = strapi.plugin('users-permissions').service('jwt');
       user = await jwtService.verify(token);
+      
+      // Debug logging to see what's in the JWT token
+      strapi.log.info(`[cover-letter] JWT verification result in generate:`, JSON.stringify({
+        user: user,
+        userId: user?.id,
+        userIdType: typeof user?.id
+      }, null, 2));
     } catch (jwtError) {
+      strapi.log.error('[cover-letter] JWT verification failed in generate:', jwtError);
       return ctx.unauthorized('Invalid token');
+    }
+
+    // Ensure userId is a number
+    const userId = Number(user.id);
+    
+    if (!userId || !Number.isInteger(userId)) {
+      strapi.log.error(`[cover-letter] Invalid user ID in generate: ${user.id} (type: ${typeof user.id})`);
+      return ctx.badRequest('Invalid user ID');
     }
 
     const { title, company, companyUrl, description, location, jobType, source, savedJobId } = ctx.request.body || {};
@@ -91,7 +121,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
     // Load latest credits/points/cvText/packages
     const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
-      where: { id: user.id },
+      where: { id: userId },
       select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints', 'packages'],
     });
 
@@ -102,7 +132,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     if (!allow) return ctx.throw(402, 'No cover letter credits');
 
     // Create CL (pending) - ensure user is always set
-    if (!user.id) {
+    if (!userId) {
       strapi.log.error('[cover-letter] No user ID available for cover letter creation');
       return ctx.badRequest('User authentication required');
     }
@@ -118,11 +148,11 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
         source: source || 'manual',
         savedJobId: cleanSavedJobId,
         status: 'pending',
-        user: user.id,
+        user: userId,
       },
     });
 
-    strapi.log.info(`[cover-letter] Created cover letter ${cl.id} for user ${user.id}`);
+    strapi.log.info(`[cover-letter] Created cover letter ${cl.id} for user ${userId}`);
 
     // Idempotent usage-log
     const existingLog = await strapi.db.query('api::usage-log.usage-log').findOne({
@@ -131,7 +161,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     if (!existingLog) {
       await strapi.entityService.create('api::usage-log.usage-log' as any, {
         data: {
-          user: user.id,
+          user: userId,
           type: 'cover_letter',
           resourceId: cl.id,
           meta: { source: source || 'manual' },
@@ -142,13 +172,13 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     // Decrement credits only if not entitled
     if (!entitled) {
       await strapi.db.query('plugin::users-permissions.user').update({
-        where: { id: user.id },
+        where: { id: userId },
         data: { coverLetterCredits: Math.max(0, credits - 1) },
       });
     }
 
     // Fetch user's uploaded previous cover letter files and extract text
-    const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+    const userWithFiles = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
       populate: { previousCoverLetterFiles: true } as any,
     }) as any;
 
@@ -158,7 +188,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
     // Extract text from each uploaded cover letter file
     const files = userWithFiles?.previousCoverLetterFiles;
-    strapi.log.info(`[cover-letter] User ${user.id} has ${Array.isArray(files) ? files.length : 0} uploaded cover letter files`);
+    strapi.log.info(`[cover-letter] User ${userId} has ${Array.isArray(files) ? files.length : 0} uploaded cover letter files`);
     strapi.log.info(`[cover-letter] Files type: ${typeof files}, isArray: ${Array.isArray(files)}, value:`, files);
     
     if (Array.isArray(files) && files.length > 0) {
@@ -263,7 +293,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     try {
       const payload = {
         coverLetterId: cl.id,
-        userId: user.id,
+        userId: userId,
         title,
         company,
         companyUrl: companyUrl || null,
