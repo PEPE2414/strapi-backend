@@ -2,7 +2,6 @@ import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { smartFetch } from '../lib/smartFetcher';
 import { getWorkingUrls } from '../lib/urlDiscovery';
-import { getWorkingUrlsMultiMethod } from '../lib/perplexityUrlDiscovery';
 import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
 import { debugExtractJobs } from '../lib/debugExtractor';
@@ -174,7 +173,7 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   try {
     // AUTO-DISCOVER working URLs (tries multiple patterns, caches results)
     console.log(`🔍 Auto-discovering working URLs...`);
-    const workingUrls = await getWorkingUrlsMultiMethod(
+    const workingUrls = await getWorkingUrls(
       boardKey,
       board.urlPatterns,
       board.baseUrl
