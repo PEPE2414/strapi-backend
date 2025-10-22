@@ -110,7 +110,7 @@ async function queryPerplexityForUrls(query: string): Promise<string[]> {
       throw new Error(`Perplexity API error: ${response.status}`);
     }
     
-    const data = await response.json();
+    const data = await response.json() as any;
     const content = data.choices?.[0]?.message?.content || '';
     
     // Extract URLs from the response
@@ -141,7 +141,7 @@ function extractUrlsFromText(text: string): string[] {
     'ratemyplacement.co.uk'
   ];
   
-  return urls.filter(url => 
+  return urls.filter((url: string) => 
     relevantDomains.some(domain => url.includes(domain))
   );
 }
