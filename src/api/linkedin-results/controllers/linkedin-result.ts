@@ -30,9 +30,17 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-results] Invalid user ID in create: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       // Attach user info if not provided
-      if (!ctx.request.body.data.userId && user.id) {
-        ctx.request.body.data.userId = user.id;
+      if (!ctx.request.body.data.userId && userId) {
+        ctx.request.body.data.userId = userId;
       }
       if (!ctx.request.body.data.userEmail && user.email) {
         ctx.request.body.data.userEmail = user.email;
@@ -65,11 +73,19 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-results] Invalid user ID in find: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       // Filter results to only show current user's results
       const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query.filters = {
         ...existingFilters,
-        userId: user.id
+        userId: userId
       };
 
       return super.find(ctx);
@@ -98,12 +114,20 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-results] Invalid user ID in findOne: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       // Get the result and check if it belongs to the user
       const result = await strapi.entityService.findOne('api::linkedin-results.linkedin-result' as any, ctx.params.id, {
         populate: '*'
       }) as any;
 
-      if (!result || result.userId !== user.id) {
+      if (!result || result.userId !== userId) {
         return ctx.notFound('Result not found');
       }
 

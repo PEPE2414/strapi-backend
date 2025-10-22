@@ -33,6 +33,14 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-optimisation] Invalid user ID in optimize: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       const { profileData, context } = ctx.request.body || {};
       
       // Validate required fields
@@ -50,7 +58,7 @@ export default factories.createCoreController(
 
         // Prepare payload for n8n
         const payload = {
-          userId: user.id,
+          userId: userId,
           userEmail: user.email,
           profileData,
           context: context || {},
@@ -144,6 +152,14 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-optimisation] Invalid user ID in find: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
       // Filter results by user email (fallback until migration is applied)
       const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query = {
@@ -178,6 +194,14 @@ export default factories.createCoreController(
       
       if (!user || !user.id) {
         return ctx.unauthorized('Authentication required');
+      }
+
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-optimisation] Invalid user ID in findOne: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
       }
 
       // First get the result to check ownership
