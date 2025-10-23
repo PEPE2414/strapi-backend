@@ -145,9 +145,9 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           location, 
           jobType, 
           userId,
-          userFullName: userData?.fullName || null,
-          userUniversity: userData?.university || null,
-          userCourse: userData?.course || null
+          fullName: userData?.fullName || null,
+          university: userData?.university || null,
+          course: userData?.course || null
         }),
       });
 
