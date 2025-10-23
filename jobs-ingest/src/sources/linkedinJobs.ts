@@ -8,8 +8,8 @@ import { toISO } from '../lib/normalize';
 export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   
-  if (!process.env.LINKEDIN_API_KEY) {
-    console.warn('⚠️  LINKEDIN_API_KEY is not set. Skipping LinkedIn Jobs API.');
+  if (!process.env.RAPIDAPI_KEY) {
+    console.warn('⚠️  RAPIDAPI_KEY is not set. Skipping LinkedIn Jobs API.');
     return [];
   }
 
@@ -40,14 +40,20 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
       console.log(`  🔍 Searching LinkedIn for: "${term}"`);
       
       try {
-        const response = await fetch('https://api.linkedin.com/v2/jobSearch', {
-          method: 'GET',
+        const response = await fetch('https://linkedin-job-search-api.p.rapidapi.com/search', {
+          method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.LINKEDIN_API_KEY}`,
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+            'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com',
             'Content-Type': 'application/json'
           },
-          // Note: LinkedIn API parameters may vary - check their documentation
-          // This is a generic implementation that may need adjustment
+          body: JSON.stringify({
+            query: term,
+            location: 'United Kingdom',
+            country: 'UK',
+            limit: 50, // Max results per search
+            sort: 'date' // Most recent first
+          })
         });
 
         if (!response.ok) {
