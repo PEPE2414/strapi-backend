@@ -8,6 +8,9 @@ type EmailBlock = {
   email?: string | null;
   confidence?: number | null;
   message?: string | null;
+  linkedinUrl?: string | null;
+  linkedinConfidence?: number | null;
+  linkedinMessage?: string | null;
 };
 
 export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
@@ -184,7 +187,9 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
 
         const norm = (e: any): EmailBlock | null => {
           if (!e) return null;
-          const conf =
+          
+          // Email data
+          const emailConf =
             typeof e.confidence === 'number'
               ? e.confidence
               : typeof e.confidence === 'string'
@@ -201,7 +206,32 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
               ? e.content
               : '';
 
-          return { email, confidence: Number.isFinite(conf as number) ? conf! : null, message };
+          // LinkedIn data
+          const linkedinUrl =
+            typeof e['LinkedIn URL'] === 'string' && e['LinkedIn URL'].trim() 
+              ? e['LinkedIn URL'].trim() 
+              : null;
+
+          const linkedinConf =
+            typeof e.linkedinConfidence === 'number'
+              ? e.linkedinConfidence
+              : typeof e.linkedinConfidence === 'string'
+              ? parseFloat(e.linkedinConfidence)
+              : null;
+
+          const linkedinMessage =
+            typeof e.linkedinMessage === 'string'
+              ? e.linkedinMessage
+              : '';
+
+          return { 
+            email, 
+            confidence: Number.isFinite(emailConf as number) ? emailConf! : null, 
+            message,
+            linkedinUrl,
+            linkedinConfidence: Number.isFinite(linkedinConf as number) ? linkedinConf! : null,
+            linkedinMessage
+          };
         };
 
         recruiter = norm(pick('recruiter'));
@@ -233,12 +263,20 @@ Thanks so much,
         location,
         jobType,
         source,
+        // Email data
         recruiterEmail: recruiter?.email ?? null,
         recruiterConfidence: recruiter?.confidence ?? null,
         recruiterMessage: recruiter?.message || defaultMsg,
         managerEmail: manager?.email ?? null,
         managerConfidence: manager?.confidence ?? null,
         managerMessage: manager?.message || defaultMsg,
+        // LinkedIn data
+        recruiterLinkedInUrl: recruiter?.linkedinUrl ?? null,
+        recruiterLinkedInConfidence: recruiter?.linkedinConfidence ?? null,
+        recruiterLinkedInMessage: recruiter?.linkedinMessage || '',
+        managerLinkedInUrl: manager?.linkedinUrl ?? null,
+        managerLinkedInConfidence: manager?.linkedinConfidence ?? null,
+        managerLinkedInMessage: manager?.linkedinMessage || '',
       } as any,
     } as any);
 

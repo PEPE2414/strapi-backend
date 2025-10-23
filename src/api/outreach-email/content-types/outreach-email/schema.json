@@ -30,9 +30,15 @@
     "recruiterEmail": { "type": "email" },
     "recruiterConfidence": { "type": "float" },
     "recruiterMessage": { "type": "text" },
+    "recruiterLinkedInUrl": { "type": "string" },
+    "recruiterLinkedInConfidence": { "type": "float" },
+    "recruiterLinkedInMessage": { "type": "text" },
 
     "managerEmail": { "type": "email" },
     "managerConfidence": { "type": "float" },
-    "managerMessage": { "type": "text" }
+    "managerMessage": { "type": "text" },
+    "managerLinkedInUrl": { "type": "string" },
+    "managerLinkedInConfidence": { "type": "float" },
+    "managerLinkedInMessage": { "type": "text" }
   }
 }
