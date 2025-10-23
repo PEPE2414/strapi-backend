@@ -158,93 +158,17 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
         }),
       });
 
-    try {
-      if (!urls.length) throw new Error('Missing OUTREACH_WEBHOOK_URL');
-
-      let parsed: any = null;
-
-      for (const url of urls) {
-        strapi.log.info(`[outreach] webhook try → ${safeUrl(url)}`);
-        let resp = await callWebhook(url);
-
-        // If someone accidentally points to a /webhook-test/ URL, try swapping to /webhook/ once.
-        if (resp.status === 404 && url.includes('/webhook-test/')) {
-          const prodUrl = url.replace('/webhook-test/', '/webhook/');
-          strapi.log.warn(`[outreach] 404 on test URL, retrying production URL: ${prodUrl}`);
-          resp = await callWebhook(prodUrl);
-        }
-
-        const rawText = await resp.text();
-        strapi.log.info(`[outreach] webhook status ${resp.status} for ${safeUrl(url)}`);
-        if (rawText) strapi.log.debug(`[outreach] webhook body (first 500): ${rawText.slice(0, 500)}`);
-
-        if (resp.ok) {
-          try { parsed = rawText ? JSON.parse(rawText) : null; } catch { parsed = null; }
-          break; // success → stop trying other URLs
-        }
-      }
-
-      if (parsed) {
-        const asArray = Array.isArray(parsed?.emails) ? parsed.emails : [];
-        const pick = (role: string) =>
-          asArray.find((e: any) => String(e.role || '').toLowerCase() === role) || parsed?.[role];
-
-        const norm = (e: any): EmailBlock | null => {
-          if (!e) return null;
-          
-          // Email data
-          const emailConf =
-            typeof e.confidence === 'number'
-              ? e.confidence
-              : typeof e.confidence === 'string'
-              ? parseFloat(e.confidence)
-              : null;
-
-          const email =
-            typeof e.email === 'string' && e.email.trim() ? e.email.trim() : null;
-
-          const message =
-            typeof e.message === 'string'
-              ? e.message
-              : typeof e.content === 'string'
-              ? e.content
-              : '';
-
-          // LinkedIn data
-          const linkedinUrl =
-            typeof e['LinkedIn URL'] === 'string' && e['LinkedIn URL'].trim() 
-              ? e['LinkedIn URL'].trim() 
-              : null;
-
-          const linkedinConf =
-            typeof e.linkedinConfidence === 'number'
-              ? e.linkedinConfidence
-              : typeof e.linkedinConfidence === 'string'
-              ? parseFloat(e.linkedinConfidence)
-              : null;
-
-          const linkedinMessage =
-            typeof e.linkedinMessage === 'string'
-              ? e.linkedinMessage
-              : '';
-
-          return { 
-            email, 
-            confidence: Number.isFinite(emailConf as number) ? emailConf! : null, 
-            message,
-            linkedinUrl,
-            linkedinConfidence: Number.isFinite(linkedinConf as number) ? linkedinConf! : null,
-            linkedinMessage
-          };
-        };
-
-        recruiter = norm(pick('recruiter'));
-        manager   = norm(pick('manager'));
-      }
-    } catch (err) {
-      strapi.log.warn(
-        `[outreach] webhook call failed: ${err instanceof Error ? err.message : String(err)}`
-      );
+    // Send webhook asynchronously (don't wait for response)
+    if (urls.length > 0) {
+      const webhookUrl = urls[0]; // Use primary URL
+      strapi.log.info(`[outreach] sending async webhook to ${safeUrl(webhookUrl)}`);
+      
+      // Fire and forget - don't await the response
+      callWebhook(webhookUrl).catch(err => {
+        strapi.log.warn(`[outreach] async webhook failed: ${err instanceof Error ? err.message : String(err)}`);
+      });
+    } else {
+      strapi.log.warn('[outreach] No webhook URLs configured - results will be empty');
     }
 
     const defaultMsg = `Subject: Quick note re: ${title} @ ${company}
@@ -285,7 +209,7 @@ Thanks so much,
       } as any,
     } as any);
 
-    ctx.set('x-outreach-webhook', recruiter || manager ? 'ok' : 'fallback');
+    ctx.set('x-outreach-webhook', 'pending');
     ctx.body = created;
   },
 

@@ -90,7 +90,8 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
               };
 
               // Filter for UK jobs and relevant job types
-              if (isUKJob(canonicalJob.location) && isRelevantJobType(canonicalJob.title + ' ' + (canonicalJob.descriptionText || ''))) {
+              const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
+              if (isUKJob(canonicalJob.location) && isRelevantJobType(jobText)) {
                 jobs.push(canonicalJob);
               }
             } catch (error) {
