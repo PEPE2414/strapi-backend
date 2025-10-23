@@ -61,7 +61,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
           continue;
         }
 
-        const data = await response.json();
+        const data = await response.json() as any;
         
         if (data.elements && Array.isArray(data.elements)) {
           console.log(`  📦 Found ${data.elements.length} jobs for "${term}"`);
@@ -84,7 +84,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                   currency: job.salary.currency || 'GBP',
                   period: job.salary.period || 'year'
                 } : undefined,
-                applyDeadline: job.deadline || job.expires || job.closingDate ? toISO(new Date(job.deadline || job.expires || job.closingDate)) : undefined,
+                applyDeadline: job.deadline || job.expires || job.closingDate ? toISO(job.deadline || job.expires || job.closingDate) : undefined,
                 slug: generateSlug(job.title, job.companyName || job.company?.name),
                 hash: generateHash(job.title, job.companyName || job.company?.name, job.id)
               };

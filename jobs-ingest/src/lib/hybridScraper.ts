@@ -84,7 +84,9 @@ export class HybridScraper {
     
     try {
       // Set realistic user agent and headers
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+      await page.setExtraHTTPHeaders({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      });
       
       // Navigate to the page
       await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });

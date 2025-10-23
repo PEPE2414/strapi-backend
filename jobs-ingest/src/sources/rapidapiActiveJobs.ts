@@ -61,7 +61,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
           continue;
         }
 
-        const data = await response.json();
+        const data = await response.json() as any;
         
         if (data.jobs && Array.isArray(data.jobs)) {
           console.log(`  📦 Found ${data.jobs.length} jobs for "${term}"`);
@@ -84,7 +84,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                   currency: job.salary.currency || 'GBP',
                   period: job.salary.period || 'year'
                 } : undefined,
-                applyDeadline: job.deadline || job.expires || job.closing_date ? toISO(new Date(job.deadline || job.expires || job.closing_date)) : undefined,
+                applyDeadline: job.deadline || job.expires || job.closing_date ? toISO(job.deadline || job.expires || job.closing_date) : undefined,
                 slug: generateSlug(job.title, job.company || job.employer),
                 hash: generateHash(job.title, job.company || job.employer, job.id)
               };
