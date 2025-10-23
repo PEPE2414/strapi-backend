@@ -156,12 +156,13 @@ export function getBucketsForToday(): CrawlBucket[] {
     priority: 'high'
   });
   
-  // PRIORITY 2: Graduate-focused job boards (using enhanced anti-blocking)
+  // PRIORITY 2: Graduate-focused job boards (using hybrid multi-strategy approach)
   buckets.push({
     id: 'graduate-job-boards',
-    name: 'Graduate Job Boards (High Priority - Enhanced)',
+    name: 'Graduate Job Boards (High Priority - Hybrid)',
     sources: [
-      'direct-graduate-boards', // Direct aggressive scraping
+      'hybrid-graduate-boards', // Hybrid multi-strategy scraping
+      'direct-graduate-boards', // Direct aggressive scraping fallback
       'gradcracker', 
       'targetjobs',
       'prospects',
