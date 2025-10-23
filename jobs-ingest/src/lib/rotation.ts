@@ -151,7 +151,8 @@ export function getBucketsForToday(): CrawlBucket[] {
     name: 'API Job Boards (Highest Priority)',
     sources: [
       // API-based scrapers - these should yield 500-1000+ jobs
-      'api-job-boards'
+      'api-job-boards',
+      'rapidapi-linkedin-jobs' // RapidAPI + LinkedIn Jobs APIs
     ],
     priority: 'high'
   });

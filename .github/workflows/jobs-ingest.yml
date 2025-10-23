@@ -52,6 +52,9 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           # Playwright browser automation
           PLAYWRIGHT_HEADLESS: true
+          # RapidAPI and LinkedIn Jobs APIs
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
           CRAWL_TYPE: ats-only
           MAX_RUNTIME_MINUTES: 15
 
@@ -86,6 +89,9 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           # Playwright browser automation
           PLAYWRIGHT_HEADLESS: true
+          # RapidAPI and LinkedIn Jobs APIs
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
           CRAWL_TYPE: full-crawl
           MAX_RUNTIME_MINUTES: 60
 
@@ -120,6 +126,9 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           # Playwright browser automation
           PLAYWRIGHT_HEADLESS: true
+          # RapidAPI and LinkedIn Jobs APIs
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
           CRAWL_TYPE: deep-refresh
           MAX_RUNTIME_MINUTES: 60
           ENABLE_DISCOVERY: true
@@ -155,5 +164,8 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           # Playwright browser automation
           PLAYWRIGHT_HEADLESS: true
+          # RapidAPI and LinkedIn Jobs APIs
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          LINKEDIN_API_KEY: ${{ secrets.LINKEDIN_API_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
           MAX_RUNTIME_MINUTES: 60

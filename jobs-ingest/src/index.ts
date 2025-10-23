@@ -23,6 +23,7 @@ import {
 } from './sources/workingJobBoards';
 import { scrapeOptimizedJobBoards } from './sources/optimizedJobBoards';
 import { scrapeAllAPIJobBoards } from './sources/apiJobBoards';
+import { scrapeRapidAPILinkedInJobs } from './sources/rapidapiLinkedInJobs';
 import { scrapeGraduateBoardsDirect } from './lib/directGraduateScraper';
 import { scrapeGraduateBoardsHybrid } from './lib/hybridGraduateScraper';
 import { upsertJobs, testAuth } from './lib/strapi';
@@ -211,6 +212,9 @@ async function runAll() {
         } else if (source === 'api-job-boards') {
           console.log(`🔄 Scraping API Job Boards (Highest Priority)`);
           sourceJobs = await limiter.schedule(() => scrapeAllAPIJobBoards());
+        } else if (source === 'rapidapi-linkedin-jobs') {
+          console.log(`🔄 Scraping RapidAPI + LinkedIn Jobs APIs (High Priority)`);
+          sourceJobs = await limiter.schedule(() => scrapeRapidAPILinkedInJobs());
         } else if (source === 'direct-graduate-boards') {
           console.log(`🔄 Direct Scraping Graduate Job Boards (Aggressive)`);
           sourceJobs = await limiter.schedule(() => scrapeGraduateBoardsDirect());
