@@ -114,6 +114,21 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
       }
     };
 
+    // Fetch user data to include in webhook
+    let userData = null;
+    try {
+      userData = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        fields: ['preferredName', 'university', 'course'],
+      } as any);
+      strapi.log.info(`[outreach-email] Fetched user data for userId ${userId}:`, {
+        preferredName: userData?.preferredName,
+        university: userData?.university,
+        course: userData?.course
+      });
+    } catch (userError) {
+      strapi.log.warn(`[outreach-email] Failed to fetch user data for userId ${userId}:`, userError);
+    }
+
     const callWebhook = async (url: string) =>
       fetch(url, {
         method: 'POST',
@@ -121,7 +136,19 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           'Content-Type': 'application/json',
           ...(secret ? { 'x-outreach-secret': secret } : {}),
         },
-        body: JSON.stringify({ company, title, description, jobUrl, location, jobType, userId }),
+        body: JSON.stringify({ 
+          company, 
+          title, 
+          description, 
+          jobUrl, 
+          location, 
+          jobType, 
+          userId,
+          userFirstName: userData?.preferredName || null,
+          userLastName: null, // Not available in current schema
+          userUniversity: userData?.university || null,
+          userCourse: userData?.course || null
+        }),
       });
 
     try {
