@@ -118,10 +118,11 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     let userData = null;
     try {
       userData = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-        fields: ['preferredName', 'university', 'course'],
+        fields: ['preferredName', 'fullName', 'university', 'course'],
       } as any);
       strapi.log.info(`[outreach-email] Fetched user data for userId ${userId}:`, {
         preferredName: userData?.preferredName,
+        fullName: userData?.fullName,
         university: userData?.university,
         course: userData?.course
       });
@@ -144,8 +145,7 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           location, 
           jobType, 
           userId,
-          userFirstName: userData?.preferredName || null,
-          userLastName: null, // Not available in current schema
+          userFullName: userData?.fullName || null,
           userUniversity: userData?.university || null,
           userCourse: userData?.course || null
         }),

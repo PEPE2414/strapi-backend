@@ -124,13 +124,13 @@ export default {
       console.log('[profile:update] Request body:', ctx.request.body);
       console.log('[profile:update] Extracted data:', body);
       
-      const allowed = ['preferredName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps', 'preferences', 'profilePicture', 'avatarChoice'];
+      const allowed = ['preferredName', 'fullName', 'university', 'course', 'studyField', 'keyStats', 'coverLetterPoints', 'weeklyGoal', 'notificationPrefs', 'deadlineCheckboxes', 'deadlineTodos', 'skippedPastApps', 'preferences', 'profilePicture', 'avatarChoice'];
       const data: Record<string, any> = {};
       for (const k of allowed) if (body[k] !== undefined) data[k] = body[k];
       console.log('[profile:update] Filtered data:', data);
 
       // 3) Normalise types
-      ['preferredName', 'university', 'course', 'studyField'].forEach((k) => {
+      ['preferredName', 'fullName', 'university', 'course', 'studyField'].forEach((k) => {
         if (typeof data[k] === 'string') data[k] = data[k].trim();
       });
 
