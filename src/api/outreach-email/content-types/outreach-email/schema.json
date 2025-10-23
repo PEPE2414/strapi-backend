@@ -26,6 +26,7 @@
       "enum": ["saved-job", "manual", "other"],
       "default": "manual"
     },
+    "requestId": { "type": "string", "unique": true },
 
     "recruiterEmail": { "type": "email" },
     "recruiterConfidence": { "type": "float" },

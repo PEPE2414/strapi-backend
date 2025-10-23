@@ -133,6 +133,9 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
       strapi.log.warn(`[outreach-email] Failed to fetch user data for userId ${userId}:`, userError);
     }
 
+    // Generate unique ID for this request
+    const requestId = `outreach_${userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
     const callWebhook = async (url: string) =>
       fetch(url, {
         method: 'POST',
@@ -141,6 +144,7 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           ...(secret ? { 'x-outreach-secret': secret } : {}),
         },
         body: JSON.stringify({ 
+          requestId,
           company, 
           title, 
           description, 
@@ -256,6 +260,7 @@ Thanks so much,
     const created = await strapi.entityService.create(OUTREACH_UID, {
       data: {
         user: userId,
+        requestId,
         company,
         title,
         description,
@@ -282,5 +287,110 @@ Thanks so much,
 
     ctx.set('x-outreach-webhook', recruiter || manager ? 'ok' : 'fallback');
     ctx.body = created;
+  },
+
+  async uploadResults(ctx) {
+    const body = (ctx.request.body ?? {}) as Record<string, unknown>;
+    const requestId = String(body.requestId ?? '').trim();
+    
+    if (!requestId) {
+      return ctx.badRequest('requestId is required');
+    }
+
+    strapi.log.info(`[outreach-email] Received results upload for requestId: ${requestId}`);
+
+    // Find the existing record by requestId
+    const existingRecord = await strapi.entityService.findMany(OUTREACH_UID, {
+      filters: { requestId } as any,
+      limit: 1,
+    } as any);
+
+    if (!existingRecord || existingRecord.length === 0) {
+      strapi.log.warn(`[outreach-email] No record found for requestId: ${requestId}`);
+      return ctx.notFound('No record found for this request ID');
+    }
+
+    const record = existingRecord[0];
+    const recordId = record.id;
+
+    // Parse the results from n8n
+    const recruiter = body.recruiter as any;
+    const manager = body.manager as any;
+
+    const norm = (e: any): EmailBlock | null => {
+      if (!e) return null;
+      
+      // Email data
+      const emailConf =
+        typeof e.confidence === 'number'
+          ? e.confidence
+          : typeof e.confidence === 'string'
+          ? parseFloat(e.confidence)
+          : null;
+
+      const email =
+        typeof e.email === 'string' && e.email.trim() ? e.email.trim() : null;
+
+      const message =
+        typeof e.message === 'string'
+          ? e.message
+          : typeof e.content === 'string'
+          ? e.content
+          : '';
+
+      // LinkedIn data
+      const linkedinUrl =
+        typeof e['LinkedIn URL'] === 'string' && e['LinkedIn URL'].trim() 
+          ? e['LinkedIn URL'].trim() 
+          : null;
+
+      const linkedinConf =
+        typeof e.linkedinConfidence === 'number'
+          ? e.linkedinConfidence
+          : typeof e.linkedinConfidence === 'string'
+          ? parseFloat(e.linkedinConfidence)
+          : null;
+
+      const linkedinMessage =
+        typeof e.linkedinMessage === 'string'
+          ? e.linkedinMessage
+          : '';
+
+      return { 
+        email, 
+        confidence: Number.isFinite(emailConf as number) ? emailConf! : null, 
+        message,
+        linkedinUrl,
+        linkedinConfidence: Number.isFinite(linkedinConf as number) ? linkedinConf! : null,
+        linkedinMessage
+      };
+    };
+
+    const recruiterData = norm(recruiter);
+    const managerData = norm(manager);
+
+    // Update the record with the new data
+    const updated = await strapi.entityService.update(OUTREACH_UID, recordId, {
+      data: {
+        // Email data
+        recruiterEmail: recruiterData?.email ?? null,
+        recruiterConfidence: recruiterData?.confidence ?? null,
+        recruiterMessage: recruiterData?.message || (record as any).recruiterMessage,
+        managerEmail: managerData?.email ?? null,
+        managerConfidence: managerData?.confidence ?? null,
+        managerMessage: managerData?.message || (record as any).managerMessage,
+        // LinkedIn data
+        recruiterLinkedInUrl: recruiterData?.linkedinUrl ?? null,
+        recruiterLinkedInConfidence: recruiterData?.linkedinConfidence ?? null,
+        recruiterLinkedInMessage: recruiterData?.linkedinMessage || '',
+        managerLinkedInUrl: managerData?.linkedinUrl ?? null,
+        managerLinkedInConfidence: managerData?.linkedinConfidence ?? null,
+        managerLinkedInMessage: managerData?.linkedinMessage || '',
+      } as any,
+    } as any);
+
+    strapi.log.info(`[outreach-email] Updated record ${recordId} with results for requestId: ${requestId}`);
+    
+    ctx.body = { success: true, recordId };
   },
 }));

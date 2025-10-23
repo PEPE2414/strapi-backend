@@ -19,6 +19,16 @@ export default {
         policies: [],
         middlewares: []
       }
+    },
+    {
+      method: 'POST',
+      path: '/outreach-emails/upload-results',
+      handler: 'outreach-email.uploadResults',
+      config: { 
+        auth: false,
+        policies: [],
+        middlewares: []
+      }
     }
   ]
 };
