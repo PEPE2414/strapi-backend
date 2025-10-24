@@ -1,0 +1,38 @@
+name: Remove Duplicate Jobs
+
+on:
+  workflow_dispatch:  # Manual trigger only
+  schedule:
+    - cron: '0 2 * * 0'  # Run every Sunday at 2 AM UTC
+
+jobs:
+  remove-duplicates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd strapi-backend
+          npm ci
+          
+      - name: Remove duplicate jobs
+        env:
+          STRAPI_URL: ${{ secrets.STRAPI_URL }}
+          STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
+        run: |
+          cd strapi-backend
+          node jobs-ingest/remove-duplicates-robust.js
+          
+      - name: Report results
+        if: always()
+        run: |
+          echo "Duplicate removal job completed"
+          echo "Check the logs above for results"
