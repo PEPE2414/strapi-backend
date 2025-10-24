@@ -121,7 +121,6 @@ function findDuplicates(jobs) {
       // Handle different job structures
       const title = job.attributes?.title || job.title || '';
       const company = job.attributes?.company || job.company || '';
-      const location = job.attributes?.location || job.location || '';
       
       // Skip jobs with missing essential data
       if (!title || !company) {
@@ -129,7 +128,8 @@ function findDuplicates(jobs) {
         continue;
       }
       
-      const key = `${title.toLowerCase().trim()}_${company.toLowerCase().trim()}_${location.toLowerCase().trim()}`;
+      // Create key using only title + company (case-insensitive, trimmed)
+      const key = `${title.toLowerCase().trim()}_${company.toLowerCase().trim()}`;
       
       if (seen.has(key)) {
         // This is a duplicate
