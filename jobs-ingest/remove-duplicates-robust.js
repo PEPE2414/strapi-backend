@@ -109,6 +109,16 @@ async function getAllJobs(baseEndpoint) {
   return allJobs;
 }
 
+// Function to normalize text for comparison
+function normalizeText(text) {
+  if (!text) return '';
+  return text.toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s]/g, '') // Remove special characters
+    .replace(/\s+/g, ' '); // Replace multiple spaces with single space
+}
+
 // Function to identify duplicates
 function findDuplicates(jobs) {
   console.log('🔍 Analyzing jobs for duplicates...');
@@ -128,11 +138,12 @@ function findDuplicates(jobs) {
         continue;
       }
       
-      // Create key using only title + company (case-insensitive, trimmed)
-      // If company is empty, use just title
-      const companyStr = company ? company.toString().toLowerCase().trim() : '';
-      const titleStr = title.toString().toLowerCase().trim();
-      const key = companyStr ? `${titleStr}_${companyStr}` : titleStr;
+      // Normalize text for better comparison
+      const normalizedTitle = normalizeText(title);
+      const normalizedCompany = normalizeText(company);
+      
+      // Create key using normalized title + company
+      const key = normalizedCompany ? `${normalizedTitle}_${normalizedCompany}` : normalizedTitle;
       
       if (seen.has(key)) {
         // This is a duplicate
@@ -212,6 +223,33 @@ async function removeDuplicates() {
     if (duplicates.length === 0) {
       console.log('✅ No duplicates found!');
       return;
+    }
+    
+    // Show detailed analysis of duplicates
+    console.log(`\n🔍 Detailed duplicate analysis:`);
+    const duplicateGroups = new Map();
+    duplicates.forEach(dup => {
+      const key = dup.key;
+      if (!duplicateGroups.has(key)) {
+        duplicateGroups.set(key, []);
+      }
+      duplicateGroups.get(key).push(dup.duplicate);
+    });
+    
+    console.log(`📊 Found ${duplicateGroups.size} unique duplicate groups:`);
+    let groupIndex = 1;
+    for (const [key, jobs] of duplicateGroups) {
+      console.log(`   Group ${groupIndex}: "${key}" (${jobs.length} duplicates)`);
+      jobs.forEach((job, index) => {
+        const title = job.attributes?.title || job.title || 'Unknown';
+        const company = job.attributes?.company || job.company || 'No company';
+        console.log(`      ${index + 1}. ID: ${job.id} - "${title}" at ${company}`);
+      });
+      groupIndex++;
+      if (groupIndex > 10) {
+        console.log(`   ... and ${duplicateGroups.size - 10} more groups`);
+        break;
+      }
     }
     
     console.log(`\n📊 Duplicate Analysis:`);
