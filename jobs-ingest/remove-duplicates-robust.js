@@ -122,14 +122,17 @@ function findDuplicates(jobs) {
       const title = job.attributes?.title || job.title || '';
       const company = job.attributes?.company || job.company || '';
       
-      // Skip jobs with missing essential data
-      if (!title || !company) {
-        console.log(`⚠️  Skipping job with missing data: title="${title}", company="${company}"`);
+      // Skip jobs with missing title only (company can be empty)
+      if (!title) {
+        console.log(`⚠️  Skipping job with missing title: title="${title}"`);
         continue;
       }
       
       // Create key using only title + company (case-insensitive, trimmed)
-      const key = `${title.toLowerCase().trim()}_${company.toLowerCase().trim()}`;
+      // If company is empty, use just title
+      const companyStr = company ? company.toString().toLowerCase().trim() : '';
+      const titleStr = title.toString().toLowerCase().trim();
+      const key = companyStr ? `${titleStr}_${companyStr}` : titleStr;
       
       if (seen.has(key)) {
         // This is a duplicate
@@ -221,7 +224,7 @@ async function removeDuplicates() {
     console.log(`\n📋 Example duplicates:`);
     duplicates.slice(0, 5).forEach((dup, index) => {
       const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
-      const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+      const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'No company';
       console.log(`   ${index + 1}. "${title}" at ${company}`);
     });
     
@@ -236,12 +239,12 @@ async function removeDuplicates() {
       if (success) {
         deletedCount++;
         const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
-        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'No company';
         console.log(`✅ Deleted: "${title}" at ${company}`);
       } else {
         errorCount++;
         const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
-        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'No company';
         console.log(`❌ Failed to delete: "${title}" at ${company}`);
       }
       
