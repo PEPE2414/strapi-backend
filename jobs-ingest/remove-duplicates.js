@@ -32,7 +32,7 @@ async function getAllJobs() {
   
   while (true) {
     try {
-      const url = `${STRAPI_URL}/api/content-manager/collection-types/api::job.job?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=*`;
+      const url = `${STRAPI_URL}/content-manager/collection-types/api::job.job?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=*`;
       console.log(`🔗 Fetching: ${url}`);
       console.log(`🔑 Using token: ${STRAPI_API_TOKEN.substring(0, 20)}...`);
       
@@ -106,7 +106,7 @@ function findDuplicates(jobs) {
 // Function to delete a job
 async function deleteJob(jobId) {
   try {
-    const response = await fetch(`${STRAPI_URL}/api/content-manager/collection-types/api::job.job/${jobId}`, {
+    const response = await fetch(`${STRAPI_URL}/content-manager/collection-types/api::job.job/${jobId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
@@ -130,7 +130,7 @@ async function testApiConnection() {
   console.log('🧪 Testing API connection...');
   
   try {
-    const response = await fetch(`${STRAPI_URL}/api/content-manager/collection-types/api::job.job?pagination[page]=1&pagination[pageSize]=1`, {
+    const response = await fetch(`${STRAPI_URL}/content-manager/collection-types/api::job.job?pagination[page]=1&pagination[pageSize]=1`, {
       headers: {
         'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
         'Content-Type': 'application/json'
