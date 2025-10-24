@@ -117,18 +117,35 @@ function findDuplicates(jobs) {
   const seen = new Map();
   
   for (const job of jobs) {
-    const key = `${job.attributes.title?.toLowerCase().trim()}_${job.attributes.company?.toLowerCase().trim()}_${job.attributes.location?.toLowerCase().trim()}`;
-    
-    if (seen.has(key)) {
-      // This is a duplicate
-      const original = seen.get(key);
-      duplicates.push({
-        original: original,
-        duplicate: job,
-        key: key
-      });
-    } else {
-      seen.set(key, job);
+    try {
+      // Handle different job structures
+      const title = job.attributes?.title || job.title || '';
+      const company = job.attributes?.company || job.company || '';
+      const location = job.attributes?.location || job.location || '';
+      
+      // Skip jobs with missing essential data
+      if (!title || !company) {
+        console.log(`⚠️  Skipping job with missing data: title="${title}", company="${company}"`);
+        continue;
+      }
+      
+      const key = `${title.toLowerCase().trim()}_${company.toLowerCase().trim()}_${location.toLowerCase().trim()}`;
+      
+      if (seen.has(key)) {
+        // This is a duplicate
+        const original = seen.get(key);
+        duplicates.push({
+          original: original,
+          duplicate: job,
+          key: key
+        });
+      } else {
+        seen.set(key, job);
+      }
+    } catch (error) {
+      console.log(`⚠️  Error processing job: ${error.message}`);
+      console.log(`   Job structure:`, JSON.stringify(job, null, 2).substring(0, 200) + '...');
+      continue;
     }
   }
   
@@ -203,7 +220,9 @@ async function removeDuplicates() {
     // Show some examples
     console.log(`\n📋 Example duplicates:`);
     duplicates.slice(0, 5).forEach((dup, index) => {
-      console.log(`   ${index + 1}. "${dup.duplicate.attributes.title}" at ${dup.duplicate.attributes.company}`);
+      const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
+      const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+      console.log(`   ${index + 1}. "${title}" at ${company}`);
     });
     
     // Delete duplicates
@@ -216,10 +235,14 @@ async function removeDuplicates() {
       const success = await deleteJob(dup.duplicate.id, workingEndpoint);
       if (success) {
         deletedCount++;
-        console.log(`✅ Deleted: "${dup.duplicate.attributes.title}" at ${dup.duplicate.attributes.company}`);
+        const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
+        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+        console.log(`✅ Deleted: "${title}" at ${company}`);
       } else {
         errorCount++;
-        console.log(`❌ Failed to delete: "${dup.duplicate.attributes.title}" at ${dup.duplicate.attributes.company}`);
+        const title = dup.duplicate.attributes?.title || dup.duplicate.title || 'Unknown';
+        const company = dup.duplicate.attributes?.company || dup.duplicate.company || 'Unknown';
+        console.log(`❌ Failed to delete: "${title}" at ${company}`);
       }
       
       // Small delay to avoid overwhelming the API
