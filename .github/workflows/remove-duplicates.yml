@@ -20,7 +20,6 @@ jobs:
           
       - name: Install dependencies
         run: |
-          cd strapi-backend
           npm ci
           
       - name: Remove duplicate jobs
@@ -28,7 +27,6 @@ jobs:
           STRAPI_URL: ${{ secrets.STRAPI_URL }}
           STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
         run: |
-          cd strapi-backend
           node jobs-ingest/remove-duplicates-robust.js
           
       - name: Report results
