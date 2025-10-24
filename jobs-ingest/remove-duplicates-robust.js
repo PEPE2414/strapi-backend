@@ -194,8 +194,11 @@ async function testDeleteEndpoint(baseEndpoint) {
     const testJob = testData.data[0];
     console.log(`🧪 Testing delete with job ID: ${testJob.id}`);
     
-    // Try to delete the test job
-    const deleteResponse = await fetch(`${baseEndpoint}/${testJob.id}`, {
+    // Try to delete the test job using the correct API endpoint
+    const deleteUrl = `${STRAPI_URL}/api/jobs/${testJob.id}`;
+    console.log(`🧪 Testing delete with URL: ${deleteUrl}`);
+    
+    const deleteResponse = await fetch(deleteUrl, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
@@ -223,7 +226,8 @@ async function testDeleteEndpoint(baseEndpoint) {
 // Function to delete a job
 async function deleteJob(jobId, baseEndpoint) {
   try {
-    const deleteUrl = `${baseEndpoint}/${jobId}`;
+    // Use the correct API endpoint for deletion
+    const deleteUrl = `${STRAPI_URL}/api/jobs/${jobId}`;
     console.log(`🗑️  Deleting job ${jobId} from: ${deleteUrl}`);
     
     const response = await fetch(deleteUrl, {
@@ -249,8 +253,8 @@ async function deleteJob(jobId, baseEndpoint) {
     // Wait a moment for the deletion to propagate
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Try to fetch the job to verify it's deleted
-    const verifyResponse = await fetch(`${baseEndpoint}/${jobId}`, {
+    // Try to fetch the job to verify it's deleted using the correct API endpoint
+    const verifyResponse = await fetch(`${STRAPI_URL}/api/jobs/${jobId}`, {
       headers: {
         'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
         'Content-Type': 'application/json'
