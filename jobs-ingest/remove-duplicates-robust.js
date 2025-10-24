@@ -167,6 +167,59 @@ function findDuplicates(jobs) {
   return duplicates;
 }
 
+// Function to test delete endpoint
+async function testDeleteEndpoint(baseEndpoint) {
+  try {
+    console.log('🧪 Testing delete endpoint permissions...');
+    
+    // Try to get a single job first
+    const testResponse = await fetch(`${baseEndpoint}?pagination[page]=1&pagination[pageSize]=1`, {
+      headers: {
+        'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!testResponse.ok) {
+      console.log(`❌ Cannot fetch jobs for testing: ${testResponse.status}`);
+      return false;
+    }
+    
+    const testData = await testResponse.json();
+    if (!testData.data || testData.data.length === 0) {
+      console.log('❌ No jobs found to test delete endpoint');
+      return false;
+    }
+    
+    const testJob = testData.data[0];
+    console.log(`🧪 Testing delete with job ID: ${testJob.id}`);
+    
+    // Try to delete the test job
+    const deleteResponse = await fetch(`${baseEndpoint}/${testJob.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    console.log(`📊 Delete test response: ${deleteResponse.status} ${deleteResponse.statusText}`);
+    
+    if (deleteResponse.ok) {
+      console.log('✅ Delete endpoint test successful');
+      return true;
+    } else {
+      const errorText = await deleteResponse.text();
+      console.log(`❌ Delete endpoint test failed: ${errorText}`);
+      return false;
+    }
+    
+  } catch (error) {
+    console.log(`❌ Delete endpoint test error: ${error.message}`);
+    return false;
+  }
+}
+
 // Function to delete a job
 async function deleteJob(jobId, baseEndpoint) {
   try {
@@ -181,11 +234,37 @@ async function deleteJob(jobId, baseEndpoint) {
       }
     });
     
+    console.log(`📊 Delete response: ${response.status} ${response.statusText}`);
+    
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`❌ Delete failed for job ${jobId}: ${response.status} ${response.statusText}`);
+      console.error(`❌ Error details: ${errorText}`);
+      return false;
     }
     
-    return true;
+    // Verify the deletion by trying to fetch the job
+    console.log(`✅ Delete request successful for job ${jobId}, verifying...`);
+    
+    // Wait a moment for the deletion to propagate
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Try to fetch the job to verify it's deleted
+    const verifyResponse = await fetch(`${baseEndpoint}/${jobId}`, {
+      headers: {
+        'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (verifyResponse.status === 404) {
+      console.log(`✅ Job ${jobId} successfully deleted and verified`);
+      return true;
+    } else {
+      console.log(`⚠️  Job ${jobId} delete request succeeded but job still exists (status: ${verifyResponse.status})`);
+      return false;
+    }
+    
   } catch (error) {
     console.error(`❌ Error deleting job ${jobId}:`, error.message);
     return false;
@@ -208,6 +287,15 @@ async function removeDuplicates() {
     }
     
     console.log(`✅ Found working endpoint: ${workingEndpoint}`);
+    
+    // Test delete endpoint before proceeding
+    console.log('\n🧪 Testing delete endpoint...');
+    const testDelete = await testDeleteEndpoint(workingEndpoint);
+    if (!testDelete) {
+      console.error('❌ Delete endpoint test failed. Cannot proceed with deletions.');
+      console.error('   Please check your API token permissions for DELETE operations.');
+      process.exit(1);
+    }
     
     // Get all jobs
     const allJobs = await getAllJobs(workingEndpoint);
