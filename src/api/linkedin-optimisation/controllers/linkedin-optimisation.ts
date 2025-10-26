@@ -119,11 +119,19 @@ export default factories.createCoreController(
         return ctx.unauthorized('Authentication required');
       }
 
-      // Attach user email if not provided
+      // Ensure userId is a number
+      const userId = Number(user.id);
+      
+      if (!userId || !Number.isInteger(userId)) {
+        strapi.log.error(`[linkedin-optimisation] Invalid user ID in create: ${user.id} (type: ${typeof user.id})`);
+        return ctx.badRequest('Invalid user ID');
+      }
+
+      // Attach user relationship and email
+      ctx.request.body.data.user = userId;
       if (!ctx.request.body.data.userEmail && user.email) {
         ctx.request.body.data.userEmail = user.email;
       }
-      // Note: user relationship will be added after migration is applied
 
       // Call default controller
       return super.create(ctx);
@@ -160,13 +168,15 @@ export default factories.createCoreController(
         return ctx.badRequest('Invalid user ID');
       }
 
-      // Filter results by user email (fallback until migration is applied)
+      // Filter results by user relationship (primary method)
       const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query = {
         ...ctx.query,
         filters: {
           ...existingFilters,
-          userEmail: user.email,
+          user: {
+            id: userId,
+          },
         },
       };
 
@@ -204,17 +214,17 @@ export default factories.createCoreController(
         return ctx.badRequest('Invalid user ID');
       }
 
-      // First get the result to check ownership
+      // First get the result to check ownership using user relationship
       const result = await strapi.entityService.findOne('api::linkedin-optimisation.linkedin-optimisation' as any, ctx.params.id, {
-        populate: '*',
+        populate: ['user'],
       });
 
       if (!result) {
         return ctx.notFound('Result not found');
       }
 
-      // Check if the result belongs to the authenticated user
-      if ((result as any).userEmail !== user.email) {
+      // Check if the result belongs to the authenticated user using user relationship
+      if ((result as any).user?.id !== userId) {
         return ctx.forbidden('Access denied');
       }
 
