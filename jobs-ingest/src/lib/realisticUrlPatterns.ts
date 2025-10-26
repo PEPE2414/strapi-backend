@@ -64,13 +64,17 @@ export const REALISTIC_URL_PATTERNS = {
   ],
   
   ratemyplacement: [
-    // Main working URLs
-    'https://www.ratemyplacement.co.uk/placements',
-    'https://www.ratemyplacement.co.uk/',
+    // New Higherin URLs
+    'https://higherin.com/search-jobs',
+    'https://higherin.com/placements',
+    'https://higherin.com/internships',
+    'https://higherin.com/graduate-jobs',
+    'https://higherin.com/graduate-schemes',
     
-    // Simple category pages
+    // Old RateMyPlacement URLs (fallback)
+    'https://www.ratemyplacement.co.uk/placements',
     'https://www.ratemyplacement.co.uk/internships',
-    'https://www.ratemyplacement.co.uk/graduate-jobs'
+    'https://www.ratemyplacement.co.uk/'
   ]
 };
 

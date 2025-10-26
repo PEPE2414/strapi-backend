@@ -59,13 +59,16 @@ export async function scrapeGraduateBoardsHybrid(): Promise<CanonicalJob[]> {
       ]
     },
     ratemyplacement: {
-      name: 'Rate My Placement',
+      name: 'Higherin (formerly Rate My Placement)',
       urls: [
+        'https://higherin.com/search-jobs',
+        'https://higherin.com/placements',
+        'https://higherin.com/internships',
+        'https://higherin.com/graduate-jobs',
+        'https://higherin.com/graduate-schemes',
         'https://www.ratemyplacement.co.uk/placements',
         'https://www.ratemyplacement.co.uk/internships',
-        'https://www.ratemyplacement.co.uk/',
-        'https://www.ratemyplacement.co.uk/graduate-jobs',
-        'https://www.ratemyplacement.co.uk/graduate-schemes'
+        'https://www.ratemyplacement.co.uk/'
       ]
     }
   };

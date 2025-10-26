@@ -34,10 +34,12 @@ export const FALLBACK_URLS = {
     'https://www.brightnetwork.co.uk/search'
   ],
   ratemyplacement: [
+    'https://higherin.com/search-jobs',
+    'https://higherin.com/placements',
+    'https://higherin.com/internships',
+    'https://higherin.com/graduate-jobs',
     'https://www.ratemyplacement.co.uk/placements',
-    'https://www.ratemyplacement.co.uk/',
-    'https://www.ratemyplacement.co.uk/jobs',
-    'https://www.ratemyplacement.co.uk/search-jobs'
+    'https://www.ratemyplacement.co.uk/'
   ]
 };
 
