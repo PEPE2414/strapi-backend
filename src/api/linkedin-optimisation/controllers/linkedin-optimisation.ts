@@ -175,23 +175,22 @@ export default factories.createCoreController(
         return ctx.badRequest('Invalid user ID');
       }
 
-      // Filter results by user relationship using user_id field
+      // Filter results by user using the user relationship
       const existingFilters = ctx.query.filters as Record<string, any> || {};
-      ctx.query = {
-        ...ctx.query,
-        filters: {
-          ...existingFilters,
-          user_id: {
-            $eq: userId,
-          },
-        },
+      
+      // Build the query with proper user filtering
+      const filters = {
+        ...existingFilters,
+        user: userId,
       };
-
-      // Populate the user relationship to return full data
+      
       ctx.query = {
         ...ctx.query,
+        filters,
         populate: ['user'],
       };
+
+      strapi.log.info(`[linkedin-optimisation] Finding results for user ${userId} with filters:`, filters);
 
       return super.find(ctx);
     },
