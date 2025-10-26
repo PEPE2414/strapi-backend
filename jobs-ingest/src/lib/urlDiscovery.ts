@@ -309,35 +309,36 @@ export async function discoverWorkingUrls(
     console.log(`⚠️  Perplexity discovery failed:`, error instanceof Error ? error.message : String(error));
   }
   
-  // Try realistic URL patterns as fallback
+  // Try realistic URL patterns as fallback (skipping heavy testing)
   const realisticPatterns = getRealisticUrlPatterns(boardKey);
   if (realisticPatterns.length > 0) {
-    console.log(`🎯 Trying ${realisticPatterns.length} realistic URL patterns for ${boardKey}...`);
-    const realisticResults = await testUrlPatterns(realisticPatterns, boardKey);
-    if (realisticResults.length > 0) {
-      console.log(`✅ Found ${realisticResults.length} working URLs with realistic patterns`);
-      return realisticResults;
-    }
+    console.log(`🎯 Using ${realisticPatterns.length} realistic URL patterns for ${boardKey} (skipping heavy testing)...`);
+    // Return first 3 patterns without testing to speed up
+    const selectedPatterns = realisticPatterns.slice(0, 3);
+    console.log(`✅ Using realistic patterns: ${selectedPatterns.join(', ')}`);
+    return selectedPatterns;
   }
   
-  // Try better URL patterns as fallback
+  // Try better URL patterns as fallback (skipping heavy testing)
   const betterPatterns = getBetterUrlPatterns(boardKey);
   if (betterPatterns.length > 0) {
-    console.log(`🎯 Trying ${betterPatterns.length} better URL patterns for ${boardKey}...`);
-    const betterResults = await testUrlPatterns(betterPatterns, boardKey);
-    if (betterResults.length > 0) {
-      console.log(`✅ Found ${betterResults.length} working URLs with better patterns`);
-      return betterResults;
-    }
+    console.log(`🎯 Using ${betterPatterns.length} better URL patterns for ${boardKey} (skipping heavy testing)...`);
+    // Return first 3 patterns without testing to speed up
+    const selectedPatterns = betterPatterns.slice(0, 3);
+    console.log(`✅ Using better patterns: ${selectedPatterns.join(', ')}`);
+    return selectedPatterns;
   }
   
-  // Fall back to original patterns
-  console.log(`🔄 Trying ${knownPatterns.length} original URL patterns for ${boardKey}...`);
-  const originalResults = await testUrlPatterns(knownPatterns, boardKey);
-  if (originalResults.length > 0) {
-    console.log(`✅ Found ${originalResults.length} working URLs with original patterns`);
-    return originalResults;
+  // Fall back to original patterns (skipping heavy testing)
+  if (knownPatterns.length > 0) {
+    console.log(`🔄 Using ${knownPatterns.length} original URL patterns for ${boardKey} (skipping heavy testing)...`);
+    // Return first 3 patterns without testing to speed up
+    const selectedPatterns = knownPatterns.slice(0, 3);
+    console.log(`✅ Using original patterns: ${selectedPatterns.join(', ')}`);
+    return selectedPatterns;
   }
+  
+  const originalResults: string[] = [];
   
   // If no patterns worked, try homepage discovery
   if (originalResults.length === 0 && baseUrl) {
