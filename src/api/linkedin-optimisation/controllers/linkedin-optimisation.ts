@@ -175,16 +175,22 @@ export default factories.createCoreController(
         return ctx.badRequest('Invalid user ID');
       }
 
-      // Filter results by user relationship (primary method)
+      // Filter results by user relationship using user_id field
       const existingFilters = ctx.query.filters as Record<string, any> || {};
       ctx.query = {
         ...ctx.query,
         filters: {
           ...existingFilters,
-          user: {
-            id: userId,
+          user_id: {
+            $eq: userId,
           },
         },
+      };
+
+      // Populate the user relationship to return full data
+      ctx.query = {
+        ...ctx.query,
+        populate: ['user'],
       };
 
       return super.find(ctx);
