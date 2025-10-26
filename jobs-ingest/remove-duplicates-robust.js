@@ -19,12 +19,12 @@ async function findWorkingEndpoint() {
   console.log('\n🔍 Finding working API endpoint...');
   
   const endpoints = [
-    `${STRAPI_URL}/content-manager/collection-types/api::job.job`,
-    `${STRAPI_URL}/api/content-manager/collection-types/api::job.job`,
     `${STRAPI_URL}/api/jobs`,
     `${STRAPI_URL}/api/job`,
     `${STRAPI_URL}/jobs`,
-    `${STRAPI_URL}/job`
+    `${STRAPI_URL}/job`,
+    `${STRAPI_URL}/content-manager/collection-types/api::job.job`,
+    `${STRAPI_URL}/api/content-manager/collection-types/api::job.job`
   ];
   
   for (const endpoint of endpoints) {
@@ -194,8 +194,8 @@ async function testDeleteEndpoint(baseEndpoint) {
     const testJob = testData.data[0];
     console.log(`🧪 Testing delete with job ID: ${testJob.id}`);
     
-    // Try to delete the test job using the correct API endpoint
-    const deleteUrl = `${STRAPI_URL}/api/jobs/${testJob.id}`;
+    // Try to delete the test job using the same base endpoint
+    const deleteUrl = `${baseEndpoint}/${testJob.id}`;
     console.log(`🧪 Testing delete with URL: ${deleteUrl}`);
     
     const deleteResponse = await fetch(deleteUrl, {
@@ -226,8 +226,8 @@ async function testDeleteEndpoint(baseEndpoint) {
 // Function to delete a job
 async function deleteJob(jobId, baseEndpoint) {
   try {
-    // Use the correct API endpoint for deletion
-    const deleteUrl = `${STRAPI_URL}/api/jobs/${jobId}`;
+    // Use the same base endpoint for deletion as we used for fetching
+    const deleteUrl = `${baseEndpoint}/${jobId}`;
     console.log(`🗑️  Deleting job ${jobId} from: ${deleteUrl}`);
     
     const response = await fetch(deleteUrl, {
@@ -253,8 +253,8 @@ async function deleteJob(jobId, baseEndpoint) {
     // Wait a moment for the deletion to propagate
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Try to fetch the job to verify it's deleted using the correct API endpoint
-    const verifyResponse = await fetch(`${STRAPI_URL}/api/jobs/${jobId}`, {
+    // Try to fetch the job to verify it's deleted using the same base endpoint
+    const verifyResponse = await fetch(`${baseEndpoint}/${jobId}`, {
       headers: {
         'Authorization': `Bearer ${STRAPI_API_TOKEN}`,
         'Content-Type': 'application/json'
