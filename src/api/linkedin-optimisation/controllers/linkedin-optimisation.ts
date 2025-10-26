@@ -175,24 +175,26 @@ export default factories.createCoreController(
         return ctx.badRequest('Invalid user ID');
       }
 
-      // Filter results by user using the user relationship
-      const existingFilters = ctx.query.filters as Record<string, any> || {};
-      
-      // Build the query with proper user filtering
-      const filters = {
-        ...existingFilters,
-        user: userId,
-      };
-      
-      ctx.query = {
-        ...ctx.query,
-        filters,
-        populate: ['user'],
-      };
+      // Use entityService directly to avoid query validation issues
+      const results = await strapi.entityService.findMany('api::linkedin-optimisation.linkedin-optimisation' as any, {
+        filters: { user: userId } as any,
+        sort: { createdAt: 'desc' } as any,
+        populate: ['user'] as any,
+      } as any);
 
-      strapi.log.info(`[linkedin-optimisation] Finding results for user ${userId} with filters:`, filters);
+      strapi.log.info(`[linkedin-optimisation] Found ${results.length} results for user ${userId}`);
 
-      return super.find(ctx);
+      ctx.body = {
+        data: results,
+        meta: {
+          pagination: {
+            page: 1,
+            pageSize: results.length,
+            pageCount: 1,
+            total: results.length,
+          },
+        },
+      };
     },
 
     // Override findOne to restrict to authenticated users only
