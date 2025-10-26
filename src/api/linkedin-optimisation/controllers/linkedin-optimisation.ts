@@ -128,7 +128,11 @@ export default factories.createCoreController(
       }
 
       // Attach user relationship and email
-      ctx.request.body.data.user = userId;
+      // Ensure the user ID is properly set (overwrite any existing value)
+      ctx.request.body.data = {
+        ...ctx.request.body.data,
+        user: userId,
+      };
       if (!ctx.request.body.data.userEmail && user.email) {
         ctx.request.body.data.userEmail = user.email;
       }
