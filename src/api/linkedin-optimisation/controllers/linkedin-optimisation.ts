@@ -88,6 +88,9 @@ export default factories.createCoreController(
 
         const result = await response.json();
         
+        // Log the result for debugging
+        strapi.log.info('[linkedin-optimisation] Webhook response:', JSON.stringify(result, null, 2));
+        
         // Return the result to frontend
         ctx.body = result;
       } catch (err) {

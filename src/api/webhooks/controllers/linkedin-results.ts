@@ -29,6 +29,7 @@ export default {
       // Use the existing linkedin-optimisations table
       const linkedinResult = await strapi.db.query('api::linkedin-optimisation.linkedin-optimisation').create({
         data: {
+          user: userId, // Set the user relationship
           userEmail,
           overallScore: result.overallScore,
           currentScore: result.currentScore || null,
