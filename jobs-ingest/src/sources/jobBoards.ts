@@ -191,9 +191,9 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
       try {
         console.log(`🔄 Scraping: ${searchUrl}`);
         const searchJobs = await scrapeSearchPageDirect(searchUrl, board.name, boardKey);
-        jobs.push(...searchJobs);
+          jobs.push(...searchJobs);
         console.log(`✅ Extracted ${searchJobs.length} jobs from this URL`);
-        
+          
         // Add delay between URLs
         await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
         } catch (error) {
@@ -534,7 +534,7 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
 
           jobs.push(job);
         console.log(`  ✅ #${i+1}: "${title}" at ${company || 'Unknown'} (${location || 'N/A'})`);
-      } catch (error) {
+  } catch (error) {
         console.warn(`  ⚠️  Error extracting job #${i}:`, error);
       }
     }
@@ -542,7 +542,7 @@ async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: 
     console.log(`📊 Successfully extracted ${jobs.length} jobs from search page`);
     return jobs;
 
-  } catch (error) {
+      } catch (error) {
     console.warn(`Failed to fetch search page ${url}:`, error instanceof Error ? error.message : String(error));
     return [];
   }

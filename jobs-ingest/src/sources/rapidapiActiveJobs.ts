@@ -14,6 +14,11 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   }
 
   console.log('🔄 Scraping RapidAPI Active Jobs DB...');
+  console.log('⚠️  WARNING: This API returns 404 errors');
+  console.log('💡 Solution needed: Check your RapidAPI dashboard and share the correct API name and endpoints');
+  
+  // For now, skip this to avoid errors
+  return [];
 
   // Search terms for graduate jobs and placements
   const searchTerms = [
