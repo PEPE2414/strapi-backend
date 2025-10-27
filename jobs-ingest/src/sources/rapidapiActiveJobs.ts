@@ -14,11 +14,6 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   }
 
   console.log('🔄 Scraping RapidAPI Active Jobs DB...');
-  console.log('⚠️  WARNING: This API returns 404 errors');
-  console.log('💡 Solution needed: Check your RapidAPI dashboard and share the correct API name and endpoints');
-  
-  // For now, skip this to avoid errors
-  return [];
 
   // Search terms for graduate jobs and placements
   const searchTerms = [
@@ -45,20 +40,16 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
       console.log(`  🔍 Searching for: "${term}"`);
       
       try {
-        const response = await fetch('https://active-jobs-db.p.rapidapi.com/search', {
-          method: 'POST',
+        // Use the correct GET endpoint with query parameters
+        const encodedTerm = encodeURIComponent(`"${term}"`);
+        const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=50&offset=0`;
+        
+        const response = await fetch(url, {
+          method: 'GET',
           headers: {
-            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-            'X-RapidAPI-Host': 'active-jobs-db.p.rapidapi.com',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: term,
-            location: 'United Kingdom',
-            country: 'UK',
-            limit: 50, // Max results per search
-            sort: 'date' // Most recent first
-          })
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+            'X-RapidAPI-Host': 'active-jobs-db.p.rapidapi.com'
+          }
         });
 
         if (!response.ok) {
@@ -70,30 +61,25 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
         const data = await response.json() as any;
         
-        if (data.jobs && Array.isArray(data.jobs)) {
-          console.log(`  📦 Found ${data.jobs.length} jobs for "${term}"`);
+        if (data.results && Array.isArray(data.results)) {
+          console.log(`  📦 Found ${data.results.length} jobs for "${term}"`);
           
-          for (const job of data.jobs) {
+          for (const job of data.results) {
             try {
               const canonicalJob: CanonicalJob = {
                 title: job.title || 'Unknown Title',
-                company: { name: job.company || job.employer || 'Unknown Company' },
-                location: job.location || job.city || 'UK',
-                applyUrl: job.url || job.apply_url || job.link || `https://rapidapi-active-jobs-db.com/job/${job.id}`,
-                descriptionText: job.description || job.summary || '',
-                descriptionHtml: job.description || job.summary || '',
+                company: { name: job.company_name || 'Unknown Company' },
+                location: job.location || 'UK',
+                applyUrl: job.apply_url || job.details_url || '',
+                descriptionText: job.description_text || '',
+                descriptionHtml: job.description_html || job.description_text || '',
                 source: 'RapidAPI Active Jobs DB',
-                sourceUrl: 'https://rapidapi.com/active-jobs-db',
-                jobType: classifyJobType(job.title + ' ' + (job.description || '')),
-                salary: job.salary ? {
-                  min: job.salary.min || job.salary.from,
-                  max: job.salary.max || job.salary.to,
-                  currency: job.salary.currency || 'GBP',
-                  period: job.salary.period || 'year'
-                } : undefined,
-                applyDeadline: job.deadline || job.expires || job.closing_date ? toISO(job.deadline || job.expires || job.closing_date) : undefined,
-                slug: generateSlug(job.title, job.company || job.employer),
-                hash: generateHash(job.title, job.company || job.employer, job.id)
+                sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/active-jobs-db',
+                jobType: classifyJobType(job.title + ' ' + (job.description_text || '')),
+                salary: undefined, // Not provided by this API
+                applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
+                slug: generateSlug(job.title, job.company_name),
+                hash: generateHash(job.title, job.company_name, job.id)
               };
 
               // Filter for UK jobs and relevant job types

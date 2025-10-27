@@ -14,11 +14,6 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   }
 
   console.log('🔄 Scraping LinkedIn Jobs API...');
-  console.log('⚠️  WARNING: This API returns 404 errors');
-  console.log('💡 Solution needed: Check your RapidAPI dashboard and share the correct API name and endpoints');
-  
-  // For now, skip this to avoid errors
-  return [];
 
   // Search terms for graduate jobs and placements
   const searchTerms = [
@@ -45,20 +40,16 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
       console.log(`  🔍 Searching LinkedIn for: "${term}"`);
       
       try {
-        const response = await fetch('https://linkedin-job-search-api.p.rapidapi.com/search', {
-          method: 'POST',
+        // Use the correct GET endpoint with query parameters
+        const encodedTerm = encodeURIComponent(`"${term}"`);
+        const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&limit=50&offset=0`;
+        
+        const response = await fetch(url, {
+          method: 'GET',
           headers: {
-            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-            'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: term,
-            location: 'United Kingdom',
-            country: 'UK',
-            limit: 50, // Max results per search
-            sort: 'date' // Most recent first
-          })
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+            'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
+          }
         });
 
         if (!response.ok) {
@@ -70,30 +61,25 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
 
         const data = await response.json() as any;
         
-        if (data.elements && Array.isArray(data.elements)) {
-          console.log(`  📦 Found ${data.elements.length} jobs for "${term}"`);
+        if (data.results && Array.isArray(data.results)) {
+          console.log(`  📦 Found ${data.results.length} jobs for "${term}"`);
           
-          for (const job of data.elements) {
+          for (const job of data.results) {
             try {
               const canonicalJob: CanonicalJob = {
                 title: job.title || 'Unknown Title',
-                company: { name: job.companyName || job.company?.name || 'Unknown Company' },
-                location: job.location || job.locationName || 'UK',
-                applyUrl: job.jobPostingUrl || job.url || `https://linkedin.com/jobs/view/${job.id}`,
-                descriptionText: job.description || job.summary || '',
-                descriptionHtml: job.description || job.summary || '',
-                source: 'LinkedIn Jobs API',
-                sourceUrl: 'https://linkedin.com',
-                jobType: classifyJobType(job.title + ' ' + (job.description || '')),
-                salary: job.salary ? {
-                  min: job.salary.min || job.salary.from,
-                  max: job.salary.max || job.salary.to,
-                  currency: job.salary.currency || 'GBP',
-                  period: job.salary.period || 'year'
-                } : undefined,
-                applyDeadline: job.deadline || job.expires || job.closingDate ? toISO(job.deadline || job.expires || job.closingDate) : undefined,
-                slug: generateSlug(job.title, job.companyName || job.company?.name),
-                hash: generateHash(job.title, job.companyName || job.company?.name, job.id)
+                company: { name: job.company_name || 'Unknown Company' },
+                location: job.location || 'UK',
+                applyUrl: job.apply_url || job.external_apply_url || '',
+                descriptionText: job.description_text || '',
+                descriptionHtml: job.description_text || '',
+                source: 'LinkedIn Jobs API (via RapidAPI)',
+                sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/linkedin-job-search-api',
+                jobType: classifyJobType(job.title + ' ' + (job.description_text || '')),
+                salary: undefined, // Not provided by this API
+                applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
+                slug: generateSlug(job.title, job.company_name),
+                hash: generateHash(job.title, job.company_name, job.id)
               };
 
               // Filter for UK jobs and relevant job types
