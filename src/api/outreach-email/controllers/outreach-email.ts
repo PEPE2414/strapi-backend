@@ -121,13 +121,15 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
     let userData = null;
     try {
       userData = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-        fields: ['preferredName', 'fullName', 'university', 'course'],
+        fields: ['preferredName', 'fullName', 'university', 'course', 'cvText'],
       } as any);
       strapi.log.info(`[outreach-email] Fetched user data for userId ${userId}:`, {
         preferredName: userData?.preferredName,
         fullName: userData?.fullName,
         university: userData?.university,
-        course: userData?.course
+        course: userData?.course,
+        hasCvText: !!userData?.cvText,
+        cvTextLength: userData?.cvText ? String(userData.cvText).length : 0
       });
     } catch (userError) {
       strapi.log.warn(`[outreach-email] Failed to fetch user data for userId ${userId}:`, userError);
@@ -154,7 +156,8 @@ export default factories.createCoreController(OUTREACH_UID, ({ strapi }) => ({
           userId,
           fullName: userData?.fullName || null,
           university: userData?.university || null,
-          course: userData?.course || null
+          course: userData?.course || null,
+          cvText: userData?.cvText || null
         }),
       });
 
