@@ -57,7 +57,9 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
         });
 
         if (!response.ok) {
+          const errorText = await response.text();
           console.warn(`  ⚠️  RapidAPI request failed: ${response.status} ${response.statusText}`);
+          console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
           continue;
         }
 

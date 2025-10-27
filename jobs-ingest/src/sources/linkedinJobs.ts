@@ -57,7 +57,9 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         });
 
         if (!response.ok) {
+          const errorText = await response.text();
           console.warn(`  ⚠️  LinkedIn API request failed: ${response.status} ${response.statusText}`);
+          console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
           continue;
         }
 
