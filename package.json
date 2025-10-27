@@ -16,6 +16,7 @@
     "jobs:ingest": "tsx jobs-ingest/src/index.ts",
     "jobs:test": "tsx jobs-ingest/src/test.ts",
     "jobs:test-keys": "tsx jobs-ingest/test-api-keys.ts",
+    "jobs:test-endpoints": "tsx jobs-ingest/test-rapidapi-endpoints.ts",
     "jobs:build": "tsc -p jobs-ingest/tsconfig.json",
     "jobs:cleanup": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.cleanup()).then(console.log).catch(console.error)\"",
     "jobs:cleanup-stats": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.getStats()).then(console.log).catch(console.error)\"",
