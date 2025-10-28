@@ -40,24 +40,34 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
     console.log(`🧪 Broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Search terms for graduate jobs and placements
+  // Search terms for graduate jobs and placements (broader variants)
   const searchTerms = [
     'graduate',
     'graduate scheme', 
+    'graduate program',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate developer',
     'entry level',
+    'entry level analyst',
+    'entry level engineer',
+    'entry level developer',
     'placement',
     'industrial placement',
     'placement year',
     'year in industry',
     'internship',
     'summer internship',
-    'graduate trainee',
-    'graduate analyst',
-    'graduate engineer',
-    'graduate consultant',
     'junior',
-    'entry level analyst',
-    'entry level engineer'
+    'junior analyst',
+    'junior engineer',
+    'junior developer',
+    'trainee',
+    'apprentice',
+    'new graduate',
+    'recent graduate'
   ];
 
   try {
@@ -67,7 +77,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
       try {
         // Use the correct GET endpoint with query parameters
         const encodedTerm = encodeURIComponent(`"${term}"`);
-        const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=50&offset=0`;
+        const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=100&offset=0`;
         
         const response = await fetch(url, {
           method: 'GET',
