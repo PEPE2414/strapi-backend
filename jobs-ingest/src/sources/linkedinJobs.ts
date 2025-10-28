@@ -15,6 +15,31 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
 
   console.log('🔄 Scraping LinkedIn Jobs API...');
 
+  // First, test with a very broad search to see if the API has any jobs
+  console.log('🧪 Testing LinkedIn API with broad search...');
+  try {
+    const testUrl = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?location_filter="United Kingdom"&description_type=text&limit=5&offset=0`;
+    const testResponse = await fetch(testUrl, {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+        'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
+      }
+    });
+    
+    if (testResponse.ok) {
+      const testData = await testResponse.json() as any;
+      console.log(`🧪 LinkedIn broad test found ${testData.results?.length || 0} total jobs in UK`);
+      if (testData.results && testData.results.length > 0) {
+        console.log(`🧪 LinkedIn sample: ${testData.results[0].title} at ${testData.results[0].company_name}`);
+      }
+    } else {
+      console.log(`🧪 LinkedIn broad test failed: ${testResponse.status}`);
+    }
+  } catch (error) {
+    console.log(`🧪 LinkedIn broad test error:`, error instanceof Error ? error.message : String(error));
+  }
+
   // Search terms for graduate jobs and placements
   const searchTerms = [
     'graduate',
@@ -93,6 +118,8 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
           }
         } else {
           console.log(`  📄 No jobs found for "${term}"`);
+          // Debug: Show the actual response structure
+          console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
         }
 
         // Rate limiting - wait between requests

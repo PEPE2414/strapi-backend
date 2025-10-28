@@ -15,6 +15,31 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
   console.log('🔄 Scraping RapidAPI Active Jobs DB...');
 
+  // First, test with a very broad search to see if the API has any jobs
+  console.log('🧪 Testing API with broad search...');
+  try {
+    const testUrl = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?location_filter="United Kingdom"&limit=5&offset=0`;
+    const testResponse = await fetch(testUrl, {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+        'X-RapidAPI-Host': 'active-jobs-db.p.rapidapi.com'
+      }
+    });
+    
+    if (testResponse.ok) {
+      const testData = await testResponse.json() as any;
+      console.log(`🧪 Broad test found ${testData.results?.length || 0} total jobs in UK`);
+      if (testData.results && testData.results.length > 0) {
+        console.log(`🧪 Sample: ${testData.results[0].title} at ${testData.results[0].company_name}`);
+      }
+    } else {
+      console.log(`🧪 Broad test failed: ${testResponse.status}`);
+    }
+  } catch (error) {
+    console.log(`🧪 Broad test error:`, error instanceof Error ? error.message : String(error));
+  }
+
   // Search terms for graduate jobs and placements
   const searchTerms = [
     'graduate',
@@ -64,6 +89,11 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
         if (data.results && Array.isArray(data.results)) {
           console.log(`  📦 Found ${data.results.length} jobs for "${term}"`);
           
+          // Debug: Show first few jobs to understand the data structure
+          if (data.results.length > 0) {
+            console.log(`  🔍 Sample job: ${data.results[0].title} at ${data.results[0].company_name}`);
+          }
+          
           for (const job of data.results) {
             try {
               const canonicalJob: CanonicalJob = {
@@ -93,6 +123,8 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
           }
         } else {
           console.log(`  📄 No jobs found for "${term}"`);
+          // Debug: Show the actual response structure
+          console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
         }
 
         // Rate limiting - wait between requests
