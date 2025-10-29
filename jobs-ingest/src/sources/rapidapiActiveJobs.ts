@@ -29,9 +29,11 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
     
     if (testResponse.ok) {
       const testData = await testResponse.json() as any;
-      console.log(`🧪 Broad test found ${testData.results?.length || 0} total jobs in UK`);
-      if (testData.results && testData.results.length > 0) {
-        console.log(`🧪 Sample: ${testData.results[0].title} at ${testData.results[0].company_name}`);
+      const testJobArray = Array.isArray(testData) ? testData : (testData.results && Array.isArray(testData.results) ? testData.results : []);
+      console.log(`🧪 Broad test found ${testJobArray.length} total jobs in UK`);
+      if (testJobArray.length > 0) {
+        const sampleJob = testJobArray[0];
+        console.log(`🧪 Sample: ${sampleJob.title} at ${sampleJob.company_name || sampleJob.organization || 'Unknown'}`);
       }
     } else {
       console.log(`🧪 Broad test failed: ${testResponse.status}`);
@@ -96,15 +98,19 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
         const data = await response.json() as any;
         
-        if (data.results && Array.isArray(data.results)) {
-          console.log(`  📦 Found ${data.results.length} jobs for "${term}"`);
+        // Handle both array response and wrapped response
+        const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
+        
+        if (jobArray.length > 0) {
+          console.log(`  📦 Found ${jobArray.length} jobs for "${term}"`);
           
           // Debug: Show first few jobs to understand the data structure
-          if (data.results.length > 0) {
-            console.log(`  🔍 Sample job: ${data.results[0].title} at ${data.results[0].company_name}`);
+          if (jobArray.length > 0) {
+            const sampleJob = jobArray[0];
+            console.log(`  🔍 Sample job: ${sampleJob.title} at ${sampleJob.company_name || sampleJob.organization || 'Unknown'}`);
           }
           
-          for (const job of data.results) {
+          for (const job of jobArray) {
             try {
               const canonicalJob: CanonicalJob = {
                 title: job.title || 'Unknown Title',
@@ -134,7 +140,9 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
         } else {
           console.log(`  📄 No jobs found for "${term}"`);
           // Debug: Show the actual response structure
-          console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
+          if (jobArray.length === 0) {
+            console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
+          }
         }
 
         // Rate limiting - wait between requests
