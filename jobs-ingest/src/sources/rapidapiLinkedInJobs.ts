@@ -1,4 +1,4 @@
-import { scrapeRapidAPIActiveJobs } from './rapidapiActiveJobs';
+import { scrapeJSearch } from './jsearch';
 import { scrapeLinkedInJobs } from './linkedinJobs';
 import { CanonicalJob } from '../types';
 
@@ -9,16 +9,16 @@ import { CanonicalJob } from '../types';
 export async function scrapeRapidAPILinkedInJobs(): Promise<CanonicalJob[]> {
   const allJobs: CanonicalJob[] = [];
   
-  console.log('🔄 Scraping RapidAPI + LinkedIn Jobs APIs...');
+  console.log('🔄 Scraping JSearch + LinkedIn Jobs APIs...');
   
-  // Scrape RapidAPI Active Jobs DB
+  // Scrape JSearch API
   try {
-    console.log('\n📡 Scraping RapidAPI Active Jobs DB...');
-    const rapidApiJobs = await scrapeRapidAPIActiveJobs();
-    allJobs.push(...rapidApiJobs);
-    console.log(`✅ RapidAPI: Found ${rapidApiJobs.length} jobs`);
+    console.log('\n📡 Scraping JSearch API...');
+    const jsearchJobs = await scrapeJSearch();
+    allJobs.push(...jsearchJobs);
+    console.log(`✅ JSearch: Found ${jsearchJobs.length} jobs`);
   } catch (error) {
-    console.warn('❌ RapidAPI Active Jobs DB failed:', error instanceof Error ? error.message : String(error));
+    console.warn('❌ JSearch API failed:', error instanceof Error ? error.message : String(error));
   }
   
   // Scrape LinkedIn Jobs API
