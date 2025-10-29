@@ -3,7 +3,7 @@ import { scrapeLinkedInJobs } from './linkedinJobs';
 import { CanonicalJob } from '../types';
 
 /**
- * Combined scraper for RapidAPI Active Jobs DB and LinkedIn Jobs API
+ * Combined scraper for JSearch API and LinkedIn Jobs API
  * Searches for graduate jobs, internships, and placements in UK
  */
 export async function scrapeRapidAPILinkedInJobs(): Promise<CanonicalJob[]> {
