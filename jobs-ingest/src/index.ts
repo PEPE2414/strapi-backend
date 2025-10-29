@@ -244,6 +244,9 @@ async function runAll() {
         sourceStats[source].total = sourceJobs.length;
 
         // Validate and filter jobs with detailed logging
+        // API sources (rapidapi-linkedin-jobs) already filter by location and job type
+        const isAPISource = source === 'rapidapi-linkedin-jobs';
+        
         const validJobs = sourceJobs.filter(job => {
           // Check if job is fresh (relaxed to 90 days)
           if (!isJobFresh(job, 90)) {
@@ -257,17 +260,26 @@ async function runAll() {
             return false;
           }
 
-          // Check UK location
-          const fullText = `${job.title} ${job.descriptionText || job.descriptionHtml || ''} ${job.location || ''}`;
-          if (!isUKJob(fullText)) {
-            sourceStats[source].invalid++;
-            return false;
-          }
+          // For API sources, skip redundant location/job type checks (already filtered by API)
+          if (!isAPISource) {
+            // Check UK location
+            const fullText = `${job.title} ${job.descriptionText || job.descriptionHtml || ''} ${job.location || ''}`;
+            if (!isUKJob(fullText)) {
+              sourceStats[source].invalid++;
+              return false;
+            }
 
-          // Check job type
-          if (!isRelevantJobType(fullText)) {
-            sourceStats[source].invalid++;
-            return false;
+            // Check job type
+            if (!isRelevantJobType(fullText)) {
+              sourceStats[source].invalid++;
+              return false;
+            }
+          } else {
+            // For API sources, only verify job type is one of the three valid types
+            if (job.jobType && job.jobType !== 'graduate' && job.jobType !== 'placement' && job.jobType !== 'internship') {
+              sourceStats[source].invalid++;
+              return false;
+            }
           }
 
           sourceStats[source].valid++;

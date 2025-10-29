@@ -41,34 +41,23 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     console.log(`🧪 LinkedIn broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Search terms for graduate jobs and placements (broader variants)
+  // Search terms for graduate jobs and placements
   const searchTerms = [
     'graduate',
     'graduate scheme', 
     'graduate program',
-    'graduate trainee',
-    'graduate analyst',
-    'graduate engineer',
-    'graduate consultant',
-    'graduate developer',
+    'graduate role',
+    'graduate position',
     'entry level',
-    'entry level analyst',
-    'entry level engineer',
-    'entry level developer',
     'placement',
     'industrial placement',
     'placement year',
     'year in industry',
+    'work experience placement',
+    'sandwich course',
     'internship',
     'summer internship',
-    'junior',
-    'junior analyst',
-    'junior engineer',
-    'junior developer',
-    'trainee',
-    'apprentice',
-    'new graduate',
-    'recent graduate'
+    'junior'
   ];
 
   try {
@@ -121,9 +110,11 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                 hash: generateHash(job.title, job.organization || job.company_name, job.id || job.id?.toString())
               };
 
-              // Filter for UK jobs and relevant job types
+              // Filter for relevant job types (placement, graduate, or internship)
+              // Location is already filtered by API parameter (United Kingdom)
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
-              if (isUKJob(canonicalJob.location || '') && isRelevantJobType(jobText)) {
+              const jobType = classifyJobType(jobText);
+              if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
                 jobs.push(canonicalJob);
               }
             } catch (error) {
@@ -160,7 +151,8 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
   if (t.includes('internship') || t.includes('intern')) {
     return 'internship';
   }
-  if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement')) {
+  if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement') || 
+      t.includes('sandwich course') || t.includes('work experience placement')) {
     return 'placement';
   }
   if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
