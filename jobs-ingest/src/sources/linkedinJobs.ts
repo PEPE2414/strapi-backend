@@ -55,6 +55,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     'year in industry',
     'work experience placement',
     'sandwich course',
+    'sandwich degree',
     'internship',
     'summer internship',
     'junior'
@@ -152,7 +153,7 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     return 'internship';
   }
   if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement') || 
-      t.includes('sandwich course') || t.includes('work experience placement')) {
+      t.includes('sandwich course') || t.includes('sandwich degree') || t.includes('work experience placement')) {
     return 'placement';
   }
   if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
