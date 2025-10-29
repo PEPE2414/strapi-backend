@@ -9,6 +9,7 @@ export default {
       path: '/stats/users-with-subscriptions',
       handler: 'stats.usersWithSubscriptions',
       config: {
+        auth: false, // Public endpoint
         policies: [],
         middlewares: [],
       },
