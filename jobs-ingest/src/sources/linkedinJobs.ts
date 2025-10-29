@@ -29,9 +29,10 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     
     if (testResponse.ok) {
       const testData = await testResponse.json() as any;
-      console.log(`🧪 LinkedIn broad test found ${testData.results?.length || 0} total jobs in UK`);
-      if (testData.results && testData.results.length > 0) {
-        console.log(`🧪 LinkedIn sample: ${testData.results[0].title} at ${testData.results[0].company_name}`);
+      const testJobArray = Array.isArray(testData) ? testData : (testData.results && Array.isArray(testData.results) ? testData.results : []);
+      console.log(`🧪 LinkedIn broad test found ${testJobArray.length} total jobs in UK`);
+      if (testJobArray.length > 0) {
+        console.log(`🧪 LinkedIn sample: ${testJobArray[0].title} at ${testJobArray[0].organization || testJobArray[0].company_name}`);
       }
     } else {
       console.log(`🧪 LinkedIn broad test failed: ${testResponse.status}`);
@@ -96,25 +97,28 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
 
         const data = await response.json() as any;
         
-        if (data.results && Array.isArray(data.results)) {
-          console.log(`  📦 Found ${data.results.length} jobs for "${term}"`);
+        // Handle both array response and wrapped response
+        const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
+        
+        if (jobArray.length > 0) {
+          console.log(`  📦 Found ${jobArray.length} jobs for "${term}"`);
           
-          for (const job of data.results) {
+          for (const job of jobArray) {
             try {
               const canonicalJob: CanonicalJob = {
                 title: job.title || 'Unknown Title',
-                company: { name: job.company_name || 'Unknown Company' },
-                location: job.location || 'UK',
-                applyUrl: job.apply_url || job.external_apply_url || '',
-                descriptionText: job.description_text || '',
-                descriptionHtml: job.description_text || '',
+                company: { name: job.organization || job.company_name || 'Unknown Company' },
+                location: job.location || job.location_name || 'UK',
+                applyUrl: job.apply_url || job.external_apply_url || job.organization_url || '',
+                descriptionText: job.description_text || job.description || '',
+                descriptionHtml: job.description_html || job.description_text || job.description || '',
                 source: 'LinkedIn Jobs API (via RapidAPI)',
                 sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/linkedin-job-search-api',
-                jobType: classifyJobType(job.title + ' ' + (job.description_text || '')),
+                jobType: classifyJobType(job.title + ' ' + (job.description_text || job.description || '')),
                 salary: undefined, // Not provided by this API
-                applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
-                slug: generateSlug(job.title, job.company_name),
-                hash: generateHash(job.title, job.company_name, job.id)
+                applyDeadline: job.date_posted || job.posted_at ? toISO(job.date_posted || job.posted_at) : undefined,
+                slug: generateSlug(job.title, job.organization || job.company_name),
+                hash: generateHash(job.title, job.organization || job.company_name, job.id || job.id?.toString())
               };
 
               // Filter for UK jobs and relevant job types
@@ -129,7 +133,9 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         } else {
           console.log(`  📄 No jobs found for "${term}"`);
           // Debug: Show the actual response structure
-          console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
+          if (jobArray.length === 0) {
+            console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
+          }
         }
 
         // Rate limiting - wait between requests
