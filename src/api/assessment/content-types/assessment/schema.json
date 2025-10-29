@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "assessments",
+  "info": {
+    "singularName": "assessment",
+    "pluralName": "assessments",
+    "displayName": "Assessment",
+    "description": "Assessment submissions and results from Assessment Lab"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "assessmentId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "assessmentType": {
+      "type": "enumeration",
+      "enum": ["binary", "longform"],
+      "required": true
+    },
+    "testType": {
+      "type": "string"
+    },
+    "taskType": {
+      "type": "string"
+    },
+    "setId": {
+      "type": "string"
+    },
+    "feedback": {
+      "type": "richtext"
+    },
+    "score": {
+      "type": "json"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "processing", "completed", "failed"],
+      "default": "pending"
+    },
+    "completedAt": {
+      "type": "datetime"
+    },
+    "questions": {
+      "type": "json"
+    },
+    "answers": {
+      "type": "json"
+    }
+  }
+}
+

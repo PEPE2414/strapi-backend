@@ -1,8 +1,9 @@
 // src/api/assessment/controllers/assessment.ts
 import { factories } from '@strapi/strapi';
-import type { UID } from '@strapi/types';
 
-export default factories.createCoreController('api::assessment.assessment', ({ strapi }) => ({
+const ASSESSMENT_UID = 'api::assessment.assessment' as any;
+
+export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
   /**
    * Allow n8n to POST assessment results back
    * This endpoint accepts results from n8n workflow after processing
@@ -30,7 +31,7 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
       }
 
       // Find existing assessment by assessmentId
-      const existingAssessment = await strapi.entityService.findMany('api::assessment.assessment', {
+      const existingAssessment = await strapi.entityService.findMany(ASSESSMENT_UID, {
         filters: { assessmentId } as any,
         limit: 1,
       } as any);
@@ -39,7 +40,7 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
       if (existingAssessment && existingAssessment.length > 0) {
         // Update existing assessment
         result = await strapi.entityService.update(
-          'api::assessment.assessment',
+          ASSESSMENT_UID,
           existingAssessment[0].id,
           {
             data: {
@@ -52,7 +53,7 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
         );
       } else {
         // Create new assessment result
-        result = await strapi.entityService.create('api::assessment.assessment', {
+        result = await strapi.entityService.create(ASSESSMENT_UID, {
           data: {
             assessmentId,
             user: userId,
@@ -100,7 +101,7 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
       }
 
       // Find assessment
-      const assessment = await strapi.entityService.findMany('api::assessment.assessment', {
+      const assessment = await strapi.entityService.findMany(ASSESSMENT_UID, {
         filters: { assessmentId } as any,
         populate: ['user'] as any,
         limit: 1,
@@ -110,10 +111,10 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
         return ctx.notFound('Assessment not found');
       }
 
-      const assessmentData = assessment[0];
+      const assessmentData = assessment[0] as any;
 
       // Verify ownership - only the user who took the assessment can see results
-      const assessmentUserId = assessmentData.user?.id || assessmentData.userId;
+      const assessmentUserId = (assessmentData.user as any)?.id || assessmentData.userId;
       if (Number(assessmentUserId) !== Number(user.id)) {
         return ctx.forbidden('You do not have access to this assessment');
       }
@@ -156,7 +157,7 @@ export default factories.createCoreController('api::assessment.assessment', ({ s
       const userId = Number(user.id);
 
       // Get all assessments for this user
-      const assessments = await strapi.entityService.findMany('api::assessment.assessment', {
+      const assessments = await strapi.entityService.findMany(ASSESSMENT_UID, {
         filters: { user: userId } as any,
         sort: { createdAt: 'desc' } as any,
         populate: [] as any,
