@@ -6,6 +6,7 @@
  */
 
 import { jobCleanupService } from './jobCleanup';
+import { jobDeduplicationService } from './jobDeduplication';
 
 interface ScheduledTaskConfig {
   name: string;
@@ -29,6 +30,13 @@ class ScheduledTasksService {
     this.tasks.set('jobCleanup', {
       name: 'Job Cleanup',
       interval: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+      enabled: true
+    });
+
+    // Job deduplication runs daily at ~2:10 AM
+    this.tasks.set('jobDeduplication', {
+      name: 'Job Deduplication',
+      interval: 24 * 60 * 60 * 1000,
       enabled: true
     });
   }
@@ -94,10 +102,12 @@ class ScheduledTasksService {
       }
     };
 
-    // Calculate initial delay to run at 2 AM
+    // Calculate initial delay to run at 2 AM (or slightly staggered per task)
     const now = new Date();
     const nextRun = new Date(now);
-    nextRun.setHours(2, 0, 0, 0);
+    // Stagger start times to avoid spikes: deduplication starts at 2:10
+    const minutes = taskId === 'jobDeduplication' ? 10 : 0;
+    nextRun.setHours(2, minutes, 0, 0);
     
     // If it's already past 2 AM today, schedule for tomorrow
     if (nextRun <= now) {
@@ -130,6 +140,17 @@ class ScheduledTasksService {
           referenced: stats.jobsReferencedBySavedJobs,
           deleted: stats.jobsDeleted,
           errors: stats.errors.length
+        });
+        break;
+      case 'jobDeduplication':
+        const dStats = await jobDeduplicationService.deduplicate();
+        console.log(`📊 Job dedupe stats:`, {
+          scanned: dStats.totalJobsScanned,
+          unknownRemoved: dStats.unknownCompanyRemoved,
+          groups: dStats.duplicateGroupsFound,
+          dupDeleted: dStats.jobsDeletedAsDuplicates,
+          repointed: dStats.savedJobsRepointed,
+          errors: dStats.errors.length,
         });
         break;
         
