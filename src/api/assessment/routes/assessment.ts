@@ -12,6 +12,16 @@ export default {
       },
     },
     {
+      method: 'POST',
+      path: '/assessment/submit-longform',
+      handler: 'assessment.submitLongform',
+      config: {
+        auth: false, // controller verifies JWT manually
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
       method: 'GET',
       path: '/assessment/result/:assessmentId',
       handler: 'assessment.getResult',

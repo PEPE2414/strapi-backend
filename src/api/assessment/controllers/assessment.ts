@@ -5,6 +5,64 @@ const ASSESSMENT_UID = 'api::assessment.assessment' as any;
 
 export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
   /**
+   * Submit long-form assessment to n8n via backend (uses Railway env vars)
+   * Frontend posts here; backend forwards to N8N webhook with shared secret
+   */
+  async submitLongform(ctx) {
+    try {
+      // Manual JWT verification
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ctx.unauthorized('Authentication required');
+      }
+
+      const token = authHeader.slice(7);
+      let user = null;
+      try {
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        return ctx.unauthorized('Invalid token');
+      }
+
+      const webhookUrl = process.env.N8N_ASSESSMENT_WEBHOOK_URL;
+      if (!webhookUrl) {
+        strapi.log.error('[Assessment] N8N_ASSESSMENT_WEBHOOK_URL is not set');
+        return ctx.internalServerError('Webhook not configured');
+      }
+
+      const sharedSecret = process.env.N8N_SHARED_SECRET;
+      const body = ctx.request.body || {};
+
+      // Enrich with backend-known userId if missing
+      const enrichedPayload = {
+        ...body,
+        userId: body?.userId ?? Number(user?.id ?? null),
+      };
+
+      const res = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sharedSecret ? { 'x-cl-secret': sharedSecret } : {}),
+        },
+        body: JSON.stringify(enrichedPayload),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        strapi.log.error(`[Assessment] n8n forward failed: ${res.status} ${text}`);
+        return ctx.internalServerError('Failed to submit assessment');
+      }
+
+      const data = await res.json().catch(() => ({ success: true }));
+      return ctx.send({ success: true, forwarded: true, data });
+    } catch (error) {
+      strapi.log.error('[Assessment] Error submitting longform:', error);
+      return ctx.internalServerError('Failed to submit assessment');
+    }
+  },
+  /**
    * Allow n8n to POST assessment results back
    * This endpoint accepts results from n8n workflow after processing
    */
