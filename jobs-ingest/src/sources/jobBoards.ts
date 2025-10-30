@@ -14,6 +14,7 @@ import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
 import { sha256 } from '../lib/hash';
 import { classifyJobType, parseSalary, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { scrapeUrlsWithHybrid } from '../lib/hybridScraper';
 
 // Job board configurations with MULTIPLE URL patterns
 // The scraper will auto-discover which URLs actually work
@@ -185,6 +186,13 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
     }
     
     console.log(`✅ Found ${workingUrls.length} working URLs for ${board.name}`);
+    
+    // For TARGETjobs, use the hybrid scraper (Direct → Playwright → ScraperAPI)
+    if (boardKey === 'targetjobs') {
+      console.log(`🎭 Using hybrid scraper for ${board.name}...`);
+      const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 3), board.name, boardKey);
+      return hybridJobs;
+    }
     
     // Scrape each working URL
     for (const searchUrl of workingUrls.slice(0, 2)) {
