@@ -89,27 +89,67 @@ export default {
     if (!webhook) return ctx.badRequest('Webhook not configured');
 
     try {
+      // Create pending record on user.cvRefineResults
+      const requestId = Math.random().toString(36).slice(2) + Date.now();
+      try {
+        const me = await strapi.entityService.findOne('plugin::users-permissions.user', auth.id, { fields: ['id', 'cvRefineResults'] });
+        const list = Array.isArray((me as any)?.cvRefineResults) ? (me as any).cvRefineResults : [];
+        const item = { id: requestId, status: 'pending', createdAt: new Date().toISOString(), industry, subrole };
+        await strapi.entityService.update('plugin::users-permissions.user', auth.id, { data: { cvRefineResults: [...list, item] } });
+      } catch (e: any) {
+        strapi.log.warn('[cv-refiner] failed to create pending entry: ' + e?.message);
+      }
+
       const res = await fetch(webhook, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: auth.id,
+          requestId,
           industry,
           subrole,
           tangible,
           cvText,
-          meta: { source: source, userEmail: auth.email }
+          meta: {
+            source: source,
+            userEmail: auth.email,
+            callbackUrl: (process.env.PUBLIC_API_URL || process.env.API_URL || '') + '/api/cv-refiner/complete',
+            callbackSecret: process.env.CV_REFINE_WEBHOOK_SECRET || ''
+          }
         }),
       });
       const ok = res.ok;
       let payload: any = null;
       try { payload = await res.json(); } catch { payload = { status: res.status }; }
-      ctx.body = { ok, data: payload };
+      ctx.body = { ok, data: { requestId, ...payload } };
     } catch (e: any) {
       strapi.log.error('[cv-refiner] webhook call failed: ' + e?.message);
       ctx.throw(500, 'Webhook call failed');
     }
   },
+  async me(ctx: Context) {
+    const user = ctx.state.user;
+    if (!user) return ctx.unauthorized('Authentication required');
+    const me = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, { fields: ['id', 'cvRefineResults'] });
+    const list = Array.isArray((me as any)?.cvRefineResults) ? (me as any).cvRefineResults : [];
+    ctx.body = { results: list };
+  },
+  async complete(ctx: Context) {
+    const secret = ctx.request.headers['x-webhook-secret'] || ctx.request.query.secret || (ctx.request.body && (ctx.request.body.secret || ctx.request.body.meta?.callbackSecret));
+    if (!secret || String(secret) !== String(process.env.CV_REFINE_WEBHOOK_SECRET || '')) {
+      return ctx.unauthorized('Invalid secret');
+    }
+    const b = ctx.request.body || {};
+    const userId = Number(b.userId);
+    const requestId = String(b.requestId || '');
+    if (!userId || !requestId) return ctx.badRequest('userId and requestId required');
+
+    const me = await strapi.entityService.findOne('plugin::users-permissions.user', userId, { fields: ['id', 'cvRefineResults'] });
+    const list = Array.isArray((me as any)?.cvRefineResults) ? (me as any).cvRefineResults : [];
+    const updated = list.map((it: any) => it.id === requestId ? { ...it, status: 'ready', completedAt: new Date().toISOString(), content: b.content || b.result || {}, summary: b.summary || '', keywordsMatched: b.keywordsMatched || 0, edits: b.edits || 0 } : it);
+    await strapi.entityService.update('plugin::users-permissions.user', userId, { data: { cvRefineResults: updated } });
+    ctx.body = { ok: true };
+  }
 };
 
 

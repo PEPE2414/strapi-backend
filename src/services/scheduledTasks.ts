@@ -102,22 +102,49 @@ class ScheduledTasksService {
       }
     };
 
-    // Calculate initial delay to run at 2 AM (or slightly staggered per task)
-    const now = new Date();
-    const nextRun = new Date(now);
-    // Stagger start times to avoid spikes: deduplication starts at 2:10
-    const minutes = taskId === 'jobDeduplication' ? 10 : 0;
-    nextRun.setHours(2, minutes, 0, 0);
-    
-    // If it's already past 2 AM today, schedule for tomorrow
-    if (nextRun <= now) {
-      nextRun.setDate(nextRun.getDate() + 1);
-    }
-    
-    const initialDelay = nextRun.getTime() - now.getTime();
+    // Calculate initial delay to run at 12:00 (UK time) or 12:10 for deduplication
+    const computeInitialDelayForLondon = (targetHour: number, targetMinute: number): { delayMs: number; nextRun: Date } => {
+      const now = new Date();
+      let candidate = new Date(now.getTime() + 1000); // start searching from the next second
+
+      const fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/London',
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      const getHM = (d: Date): { h: number; m: number } => {
+        const parts = fmt.formatToParts(d);
+        const h = Number(parts.find(p => p.type === 'hour')?.value || '0');
+        const m = Number(parts.find(p => p.type === 'minute')?.value || '0');
+        return { h, m };
+      };
+
+      // Find the next time in real milliseconds when London time equals targetHour:targetMinute
+      // We iterate minute by minute to handle DST transitions (23/25-hour days)
+      let attempts = 0;
+      while (attempts < 2880) { // up to 2 days
+        const { h, m } = getHM(candidate);
+        if (h === targetHour && m === targetMinute) {
+          const delayMs = Math.max(0, candidate.getTime() - now.getTime());
+          return { delayMs, nextRun: candidate };
+        }
+        candidate = new Date(candidate.getTime() + 60 * 1000);
+        attempts++;
+      }
+      // Fallback: 24 hours from now
+      return { delayMs: 24 * 60 * 60 * 1000, nextRun: new Date(now.getTime() + 24 * 60 * 60 * 1000) };
+    };
+
+    const isDeduplication = taskId === 'jobDeduplication';
+    const { delayMs: initialDelay, nextRun } = computeInitialDelayForLondon(12, isDeduplication ? 10 : 0);
+
     config.nextRun = nextRun;
-    
-    console.log(`⏰ Task ${config.name} scheduled to run at ${nextRun.toISOString()}`);
+    console.log(`⏰ Task ${config.name} scheduled to run at ${nextRun.toISOString()} (Europe/London 12:${isDeduplication ? '10' : '00'})`);
     
     // Set initial timeout
     const initialTimeout = setTimeout(() => {
