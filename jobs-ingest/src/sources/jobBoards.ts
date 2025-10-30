@@ -65,17 +65,14 @@ const JOB_BOARDS = {
     ]
   },
   'ratemyplacement': {
-    name: 'RateMyPlacement',
-    baseUrl: 'https://www.ratemyplacement.co.uk',
+    name: 'Higherin (formerly Rate My Placement)',
+    baseUrl: 'https://higherin.com',
     urlPatterns: [
-      'https://www.ratemyplacement.co.uk/placements',
-      'https://www.ratemyplacement.co.uk/jobs',
-      'https://www.ratemyplacement.co.uk/search-jobs',
-      'https://www.ratemyplacement.co.uk/placement-jobs',
-      'https://www.ratemyplacement.co.uk/jobs/search',
-      'https://www.ratemyplacement.co.uk/internships',
-      'https://www.ratemyplacement.co.uk/graduate-jobs',
-      'https://www.ratemyplacement.co.uk/work-experience'
+      'https://higherin.com/search-jobs',
+      'https://higherin.com/placements',
+      'https://higherin.com/internships',
+      'https://higherin.com/graduate-jobs',
+      'https://higherin.com/graduate-schemes'
     ]
   },
   'brightnetwork': {
@@ -187,8 +184,9 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
     
     console.log(`✅ Found ${workingUrls.length} working URLs for ${board.name}`);
     
-    // For TARGETjobs, use the hybrid scraper (Direct → Playwright → ScraperAPI)
-    if (boardKey === 'targetjobs') {
+    // Use the hybrid scraper (Direct → Playwright → ScraperAPI) for JS-heavy boards
+    const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround']);
+    if (HYBRID_BOARDS.has(boardKey)) {
       console.log(`🎭 Using hybrid scraper for ${board.name}...`);
       const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 3), board.name, boardKey);
       return hybridJobs;

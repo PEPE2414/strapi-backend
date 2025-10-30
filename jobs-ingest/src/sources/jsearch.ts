@@ -64,14 +64,24 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     'junior'
   ];
 
+  // Site-constrained targets (UK graduate boards)
+  const sites = [
+    { key: 'gradcracker', domain: 'gradcracker.com' },
+    { key: 'targetjobs', domain: 'targetjobs.co.uk' },
+    { key: 'prospects', domain: 'prospects.ac.uk' },
+    { key: 'milkround', domain: 'milkround.com' },
+    { key: 'brightnetwork', domain: 'brightnetwork.co.uk' },
+    { key: 'higherin', domain: 'higherin.com' }
+  ];
+
   try {
     for (const term of searchTerms) {
-      console.log(`  🔍 Searching JSearch for: "${term}"`);
+      console.log(`  🔍 Searching JSearch for: "${term}" (UK-wide)`);
       
       try {
         // JSearch API endpoint with query parameters
         const encodedTerm = encodeURIComponent(term);
-        const url = `https://jsearch.p.rapidapi.com/search?query=${encodedTerm}&location=United%20Kingdom&page=1&num_pages=3`;
+        const url = `https://jsearch.p.rapidapi.com/search?query=${encodedTerm}&location=United%20Kingdom&page=1&num_pages=2`;
         
         const response = await fetch(url, {
           method: 'GET',
@@ -152,6 +162,80 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   } catch (error) {
     console.warn('Failed to scrape JSearch API:', error instanceof Error ? error.message : String(error));
+  }
+
+  // Site-constrained queries to focus on specific UK boards
+  try {
+    for (const site of sites) {
+      for (const term of searchTerms.slice(0, 6)) { // keep it lean per site
+        const query = `${term} site:${site.domain}`;
+        console.log(`  🌐 Site search (${site.key}): "${query}"`);
+        try {
+          const encodedQuery = encodeURIComponent(query);
+          const url = `https://jsearch.p.rapidapi.com/search?query=${encodedQuery}&location=United%20Kingdom&page=1&num_pages=2`;
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+              'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
+            }
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.warn(`    ⚠️  JSearch site request failed: ${response.status} ${response.statusText}`);
+            console.warn(`    📄 Error response: ${errorText.substring(0, 200)}`);
+            continue;
+          }
+
+          const data = await response.json() as any;
+          const jobArray = (data.data && Array.isArray(data.data)) ? data.data : [];
+
+          if (jobArray.length > 0) {
+            console.log(`    📦 ${site.key}: ${jobArray.length} jobs for "${term}"`);
+          }
+
+          for (const job of jobArray) {
+            try {
+              const canonicalJob: CanonicalJob = {
+                title: job.job_title || job.title || 'Unknown Title',
+                company: { name: job.employer_name || job.company_name || job.employer || 'Unknown Company' },
+                location: job.job_city || job.job_state || job.location || job.job_location || 'UK',
+                applyUrl: job.job_apply_link || job.apply_url || job.job_url || job.url || '',
+                descriptionText: job.job_description || job.description || job.job_highlights?.summary?.[0] || '',
+                descriptionHtml: job.job_description || job.description || '',
+                source: `JSearch API (${site.key})`,
+                sourceUrl: `https://jsearch.p.rapidapi.com/search?site=${site.domain}`,
+                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + (job.job_description || job.description || '')),
+                salary: job.job_min_salary || job.job_max_salary ? {
+                  min: job.job_min_salary,
+                  max: job.job_max_salary,
+                  currency: job.job_salary_currency || 'GBP'
+                } : undefined,
+                applyDeadline: job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at ? 
+                  toISO(job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at) : undefined,
+                slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
+                hash: generateHash(job.job_title || job.title, job.employer_name || job.company_name, job.job_id || job.id)
+              };
+
+              const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
+              const jobType = classifyJobType(jobText);
+              if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
+                jobs.push(canonicalJob);
+              }
+            } catch (error) {
+              console.warn(`    ⚠️  Error processing site job:`, error instanceof Error ? error.message : String(error));
+            }
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        } catch (error) {
+          console.warn(`    ❌ Failed site search (${site.key}):`, error instanceof Error ? error.message : String(error));
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Failed site-constrained JSearch:', error instanceof Error ? error.message : String(error));
   }
 
   console.log(`📊 JSearch API: Found ${jobs.length} total jobs`);
