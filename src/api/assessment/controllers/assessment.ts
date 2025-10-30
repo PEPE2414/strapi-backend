@@ -28,7 +28,11 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       const webhookUrl = process.env.N8N_ASSESSMENT_WEBHOOK_URL;
       if (!webhookUrl) {
         strapi.log.error('[Assessment] N8N_ASSESSMENT_WEBHOOK_URL is not set');
-        return ctx.internalServerError('Webhook not configured');
+        return ctx.badRequest('Webhook not configured');
+      }
+      if (!/^https?:\/\//i.test(webhookUrl)) {
+        strapi.log.error(`[Assessment] Invalid N8N_ASSESSMENT_WEBHOOK_URL: ${webhookUrl}`);
+        return ctx.badRequest('Invalid webhook URL');
       }
 
       const sharedSecret = process.env.N8N_SHARED_SECRET;
@@ -40,7 +44,10 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
         userId: body?.userId ?? Number(user?.id ?? null),
       };
 
-      const res = await fetch(webhookUrl, {
+      // Ensure fetch is available (Node 18+ has global fetch; fallback to node-fetch otherwise)
+      const doFetch = (global as any).fetch || (await import('node-fetch')).default;
+
+      const res = await doFetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,10 +59,15 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         strapi.log.error(`[Assessment] n8n forward failed: ${res.status} ${text}`);
-        return ctx.internalServerError('Failed to submit assessment');
+        return ctx.send({ success: false, status: res.status, error: 'Forward to webhook failed', details: text }, res.status);
       }
 
-      const data = await res.json().catch(() => ({ success: true }));
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = { success: true };
+      }
       return ctx.send({ success: true, forwarded: true, data });
     } catch (error) {
       strapi.log.error('[Assessment] Error submitting longform:', error);
