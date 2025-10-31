@@ -82,23 +82,37 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
   async receiveResults(ctx) {
     try {
       const body = ctx.request.body as any;
+      
+      strapi.log.info('[Assessment] Received results request', { 
+        hasBody: !!body, 
+        bodyKeys: body ? Object.keys(body) : [],
+        headers: Object.keys(ctx.request.headers || {})
+      });
+
       const { assessmentId, userId, status } = body;
 
       // Verify assessmentId and userId are provided
       if (!assessmentId) {
-        return ctx.badRequest('assessmentId is required');
+        strapi.log.warn('[Assessment] Missing assessmentId');
+        return ctx.badRequest({ error: 'assessmentId is required' });
       }
 
       if (!userId) {
-        return ctx.badRequest('userId is required');
+        strapi.log.warn('[Assessment] Missing userId');
+        return ctx.badRequest({ error: 'userId is required' });
       }
 
       // Optional: Verify shared secret from n8n
       const sharedSecret = process.env.N8N_SHARED_SECRET;
-      const providedSecret = ctx.request.headers['x-cl-secret'];
+      const providedSecret = ctx.request.headers['x-cl-secret'] || ctx.request.headers['X-Cl-Secret'];
+      
       if (sharedSecret && providedSecret !== sharedSecret) {
-        strapi.log.warn('[Assessment] Unauthorized result submission attempt');
-        return ctx.unauthorized('Invalid secret');
+        strapi.log.warn('[Assessment] Unauthorized result submission attempt', {
+          hasSecret: !!sharedSecret,
+          providedSecretLength: providedSecret?.length || 0,
+          expectedLength: sharedSecret?.length || 0
+        });
+        return ctx.unauthorized({ error: 'Invalid secret' });
       }
 
       // Build structured feedback object from n8n payload
@@ -140,13 +154,12 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       const resultData: any = {
         status: status || 'completed',
         completedAt: new Date().toISOString(),
+        score: structuredScore,
       };
-
-      // Store comprehensive results in score JSON field
-      resultData.score = structuredScore;
 
       if (existingAssessment && existingAssessment.length > 0) {
         // Update existing assessment
+        strapi.log.info(`[Assessment] Updating existing assessment ${assessmentId}`);
         result = await strapi.entityService.update(
           ASSESSMENT_UID,
           existingAssessment[0].id,
@@ -154,20 +167,30 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
         );
       } else {
         // Create new assessment result
+        // Note: assessmentType is required by schema, defaulting to 'longform' since this comes from n8n processing
+        strapi.log.info(`[Assessment] Creating new assessment ${assessmentId} for user ${userId}`);
         result = await strapi.entityService.create(ASSESSMENT_UID, {
           data: {
             assessmentId,
             user: userId,
+            assessmentType: 'longform', // Default to longform since this endpoint receives processed results
             ...resultData,
           } as any,
         });
       }
 
-      strapi.log.info(`[Assessment] Received results for assessment ${assessmentId}, user ${userId}`);
+      strapi.log.info(`[Assessment] Successfully saved results for assessment ${assessmentId}, user ${userId}`);
       return ctx.send({ success: true, assessmentId, id: result.id });
-    } catch (error) {
-      strapi.log.error('[Assessment] Error receiving results:', error);
-      return ctx.internalServerError('Failed to save assessment results');
+    } catch (error: any) {
+      strapi.log.error('[Assessment] Error receiving results:', {
+        error: error?.message || String(error),
+        stack: error?.stack,
+        body: ctx.request.body
+      });
+      return ctx.internalServerError({ 
+        error: 'Failed to save assessment results',
+        message: error?.message || String(error)
+      });
     }
   },
 

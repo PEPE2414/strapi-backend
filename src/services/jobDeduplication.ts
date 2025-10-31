@@ -37,11 +37,11 @@ function buildDedupeKey(job: JobRow): string {
 }
 
 async function listJobsBatch(offset: number, limit: number): Promise<JobRow[]> {
-  // Strapi v5 query engine supports limit/offset
-  return await strapi.db.query('api::job.job').findMany({
-    select: ['id', 'title', 'location', 'createdAt', 'postedAt', 'company'],
-    orderBy: { createdAt: 'asc' },
-    offset,
+  // Use pagination to load jobs in batches
+  return await strapi.entityService.findMany('api::job.job', {
+    fields: ['id', 'title', 'location', 'createdAt', 'postedAt', 'company'],
+    sort: { createdAt: 'asc' },
+    start: offset,
     limit,
   }) as unknown as JobRow[];
 }

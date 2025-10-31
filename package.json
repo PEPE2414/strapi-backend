@@ -20,6 +20,7 @@
     "jobs:build": "tsc -p jobs-ingest/tsconfig.json",
     "jobs:cleanup": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.cleanup()).then(console.log).catch(console.error)\"",
     "jobs:cleanup-stats": "tsx -e \"import('./src/services/jobCleanup').then(m => m.jobCleanupService.getStats()).then(console.log).catch(console.error)\"",
+    "jobs:dedupe": "tsx -e \"import('./src/services/jobDeduplication').then(m => m.jobDeduplicationService.deduplicate()).then(console.log).catch(console.error)\"",
     "jobs:remove-duplicates": "node jobs-ingest/remove-duplicates.js",
     "jobs:remove-duplicates-robust": "node jobs-ingest/remove-duplicates-robust.js",
     "referrals:generate": "tsx -e \"import('./src/scripts/generate-referral-codes').then(m => m.default()).then(() => console.log('Done')).catch(console.error)\""
