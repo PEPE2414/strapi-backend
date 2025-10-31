@@ -226,10 +226,21 @@ Thanks so much,
 
     strapi.log.info(`[outreach-email] Received results upload for requestId: ${requestId}`);
 
+    // Extract userId from requestId (format: outreach_${userId}_${timestamp}_${random})
+    let extractedUserId: number | null = null;
+    const requestIdMatch = requestId.match(/^outreach_(\d+)_/);
+    if (requestIdMatch && requestIdMatch[1]) {
+      extractedUserId = parseInt(requestIdMatch[1], 10);
+      strapi.log.info(`[outreach-email] Extracted userId ${extractedUserId} from requestId: ${requestId}`);
+    } else {
+      strapi.log.warn(`[outreach-email] Could not extract userId from requestId: ${requestId}`);
+    }
+
     // Find the existing record by requestId
     const existingRecord = await strapi.entityService.findMany(OUTREACH_UID, {
       filters: { requestId } as any,
       limit: 1,
+      populate: { user: true } as any,
     } as any);
 
     if (!existingRecord || existingRecord.length === 0) {
@@ -239,6 +250,26 @@ Thanks so much,
 
     const record = existingRecord[0];
     const recordId = record.id;
+    
+    // Get the current user from the record (from relation or attributes)
+    const currentUserId = (record as any).user?.id ?? (record as any).user ?? (record as any).attributes?.user?.data?.id ?? (record as any).attributes?.user;
+    
+    // Determine which userId to use: prefer current record's user, fallback to extracted
+    let userIdToUse: number | null = null;
+    if (currentUserId) {
+      userIdToUse = Number(currentUserId);
+      if (extractedUserId && userIdToUse !== extractedUserId) {
+        strapi.log.warn(`[outreach-email] UserId mismatch: record has ${userIdToUse}, requestId suggests ${extractedUserId}. Using record's userId.`);
+      }
+    } else if (extractedUserId) {
+      userIdToUse = extractedUserId;
+      strapi.log.warn(`[outreach-email] Record has no user association. Setting userId ${userIdToUse} from requestId.`);
+    }
+    
+    if (!userIdToUse || !Number.isInteger(userIdToUse)) {
+      strapi.log.error(`[outreach-email] Could not determine valid userId for record ${recordId}. Current: ${currentUserId}, Extracted: ${extractedUserId}`);
+      return ctx.badRequest('Could not determine user association for this request');
+    }
 
     // Parse the results from n8n
     const recruiter = body.recruiter as any;
@@ -296,9 +327,11 @@ Thanks so much,
     const recruiterData = norm(recruiter);
     const managerData = norm(manager);
 
-    // Update the record with the new data
+    // Update the record with the new data - explicitly preserve user association
     const updated = await strapi.entityService.update(OUTREACH_UID, recordId, {
       data: {
+        // Explicitly set user to ensure association is preserved
+        user: userIdToUse,
         // Email data
         recruiterEmail: recruiterData?.email ?? null,
         recruiterConfidence: recruiterData?.confidence ?? null,
@@ -316,7 +349,7 @@ Thanks so much,
       } as any,
     } as any);
 
-    strapi.log.info(`[outreach-email] Updated record ${recordId} with results for requestId: ${requestId}`);
+    strapi.log.info(`[outreach-email] Updated record ${recordId} (user: ${userIdToUse}) with results for requestId: ${requestId}`);
     
     ctx.body = { success: true, recordId };
   },
