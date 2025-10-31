@@ -12,6 +12,16 @@ export default {
       },
     },
     {
+      method: 'GET',
+      path: '/assessment/test',
+      handler: 'assessment.test',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
       method: 'POST',
       path: '/assessment/submit-longform',
       handler: 'assessment.submitLongform',

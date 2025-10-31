@@ -5,6 +5,16 @@ const ASSESSMENT_UID = 'api::assessment.assessment' as any;
 
 export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
   /**
+   * Test endpoint to verify route is working
+   */
+  async test(ctx) {
+    try {
+      return ctx.send({ success: true, message: 'Assessment API is working', timestamp: new Date().toISOString() });
+    } catch (error) {
+      return ctx.internalServerError('Test endpoint failed');
+    }
+  },
+  /**
    * Submit long-form assessment to n8n via backend (uses Railway env vars)
    * Frontend posts here; backend forwards to N8N webhook with shared secret
    */
@@ -81,7 +91,25 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
    */
   async receiveResults(ctx) {
     try {
+      // Log request details for debugging
+      strapi.log.info('[Assessment] receiveResults called', {
+        method: ctx.request.method,
+        url: ctx.request.url,
+        hasBody: !!ctx.request.body,
+        bodyType: typeof ctx.request.body,
+      });
+
       const body = ctx.request.body as any;
+      
+      // Handle case where body might not be parsed
+      if (!body && ctx.request.rawBody) {
+        try {
+          const parsedBody = JSON.parse(ctx.request.rawBody.toString());
+          Object.assign(ctx.request, { body: parsedBody });
+        } catch (e) {
+          strapi.log.warn('[Assessment] Failed to parse raw body');
+        }
+      }
       
       strapi.log.info('[Assessment] Received results request', { 
         hasBody: !!body, 
@@ -94,12 +122,12 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       // Verify assessmentId and userId are provided
       if (!assessmentId) {
         strapi.log.warn('[Assessment] Missing assessmentId');
-        return ctx.badRequest({ error: 'assessmentId is required' });
+        return ctx.badRequest('assessmentId is required');
       }
 
       if (!userId) {
         strapi.log.warn('[Assessment] Missing userId');
-        return ctx.badRequest({ error: 'userId is required' });
+        return ctx.badRequest('userId is required');
       }
 
       // Optional: Verify shared secret from n8n
@@ -112,7 +140,7 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
           providedSecretLength: providedSecret?.length || 0,
           expectedLength: sharedSecret?.length || 0
         });
-        return ctx.unauthorized({ error: 'Invalid secret' });
+        return ctx.unauthorized('Invalid secret');
       }
 
       // Build structured feedback object from n8n payload
@@ -187,10 +215,7 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
         stack: error?.stack,
         body: ctx.request.body
       });
-      return ctx.internalServerError({ 
-        error: 'Failed to save assessment results',
-        message: error?.message || String(error)
-      });
+      return ctx.internalServerError('Failed to save assessment results');
     }
   },
 
