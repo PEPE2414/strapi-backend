@@ -77,11 +77,12 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
   /**
    * Allow n8n to POST assessment results back
    * This endpoint accepts results from n8n workflow after processing
+   * Expects detailed feedback structure with good/bad/next_time and rubric scores
    */
   async receiveResults(ctx) {
     try {
       const body = ctx.request.body as any;
-      const { assessmentId, userId, feedback, score, status } = body;
+      const { assessmentId, userId, status } = body;
 
       // Verify assessmentId and userId are provided
       if (!assessmentId) {
@@ -100,6 +101,35 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
         return ctx.unauthorized('Invalid secret');
       }
 
+      // Build structured feedback object from n8n payload
+      const structuredFeedback: any = {};
+      if (body['feedback (good)']) structuredFeedback.good = body['feedback (good)'];
+      if (body['feedback (bad)']) structuredFeedback.bad = body['feedback (bad)'];
+      if (body['feedback (next_time)']) structuredFeedback.next_time = body['feedback (next_time)'];
+
+      // Build structured rubric object from n8n payload
+      const rubric: any = {};
+      const rubricCriteria = ['coverage', 'clarity', 'tone', 'accuracy', 'conciseness', 'actionability'];
+      
+      for (const criterion of rubricCriteria) {
+        const scoreKey = `score (${criterion})`;
+        const notesKey = `notes (${criterion})`;
+        if (body[scoreKey] !== undefined || body[notesKey]) {
+          rubric[criterion] = {
+            score: body[scoreKey] !== undefined ? body[scoreKey] : null,
+            notes: body[notesKey] || null,
+          };
+        }
+      }
+
+      // Build comprehensive results object stored in score JSON field
+      // This includes overall score, feedback structure, and rubric
+      const structuredScore: any = {
+        overall: body.score || null,
+        feedback: Object.keys(structuredFeedback).length > 0 ? structuredFeedback : null,
+        rubric: Object.keys(rubric).length > 0 ? rubric : null,
+      };
+
       // Find existing assessment by assessmentId
       const existingAssessment = await strapi.entityService.findMany(ASSESSMENT_UID, {
         filters: { assessmentId } as any,
@@ -107,19 +137,20 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       } as any);
 
       let result;
+      const resultData: any = {
+        status: status || 'completed',
+        completedAt: new Date().toISOString(),
+      };
+
+      // Store comprehensive results in score JSON field
+      resultData.score = structuredScore;
+
       if (existingAssessment && existingAssessment.length > 0) {
         // Update existing assessment
         result = await strapi.entityService.update(
           ASSESSMENT_UID,
           existingAssessment[0].id,
-          {
-            data: {
-              feedback: feedback || null,
-              score: score || null,
-              status: status || 'completed',
-              completedAt: new Date().toISOString(),
-            } as any,
-          }
+          { data: resultData } as any
         );
       } else {
         // Create new assessment result
@@ -127,10 +158,7 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
           data: {
             assessmentId,
             user: userId,
-            feedback: feedback || null,
-            score: score || null,
-            status: status || 'completed',
-            completedAt: new Date().toISOString(),
+            ...resultData,
           } as any,
         });
       }
