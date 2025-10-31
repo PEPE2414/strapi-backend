@@ -101,16 +101,6 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
 
       const body = ctx.request.body as any;
       
-      // Handle case where body might not be parsed
-      if (!body && ctx.request.rawBody) {
-        try {
-          const parsedBody = JSON.parse(ctx.request.rawBody.toString());
-          Object.assign(ctx.request, { body: parsedBody });
-        } catch (e) {
-          strapi.log.warn('[Assessment] Failed to parse raw body');
-        }
-      }
-      
       strapi.log.info('[Assessment] Received results request', { 
         hasBody: !!body, 
         bodyKeys: body ? Object.keys(body) : [],
