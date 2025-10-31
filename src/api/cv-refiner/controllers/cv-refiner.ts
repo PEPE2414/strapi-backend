@@ -65,14 +65,35 @@ async function extractTextFromFileId(fileId: number): Promise<string> {
 
 export default {
   async refine(ctx: Context) {
-    const auth = ctx.state.user;
-    if (!auth) return ctx.unauthorized('Authentication required');
+    // Manual JWT verification (auth: false bypasses built-in auth)
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let auth = null;
+    
+    try {
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      auth = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    if (!auth || !auth.id) {
+      return ctx.unauthorized('Authentication required');
+    }
 
     const body = ctx.request.body || {};
     const source = String(body.source || 'paste');
     const industry = String(body.industry || '');
     const subrole = String(body.subrole || '');
     const tangible = String(body.tangible || '');
+    const sections = body.sections || {};
+    const preferConcise = Boolean(body.preferConcise);
+    const quantify = Boolean(body.quantify);
+    const showDiff = Boolean(body.showDiff !== false); // default true
 
     let cvText = String(body.text || '').trim();
 
@@ -110,6 +131,10 @@ export default {
           subrole,
           tangible,
           cvText,
+          sections,
+          preferConcise,
+          quantify,
+          showDiff,
           meta: {
             source: source,
             userEmail: auth.email,
@@ -128,8 +153,26 @@ export default {
     }
   },
   async me(ctx: Context) {
-    const user = ctx.state.user;
-    if (!user) return ctx.unauthorized('Authentication required');
+    // Manual JWT verification (auth: false bypasses built-in auth)
+    const authHeader = ctx.request.header.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
+    const token = authHeader.slice(7);
+    let user = null;
+    
+    try {
+      const jwtService = strapi.plugin('users-permissions').service('jwt');
+      user = await jwtService.verify(token);
+    } catch (jwtError) {
+      return ctx.unauthorized('Invalid token');
+    }
+    
+    if (!user || !user.id) {
+      return ctx.unauthorized('Authentication required');
+    }
+    
     const me = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, { fields: ['id', 'cvRefineResults'] });
     const list = Array.isArray((me as any)?.cvRefineResults) ? (me as any).cvRefineResults : [];
     ctx.body = { results: list };

@@ -5,7 +5,9 @@ export default {
       path: '/cv-refiner/refine',
       handler: 'cv-refiner.refine',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -13,7 +15,9 @@ export default {
       path: '/cv-refiner/me',
       handler: 'cv-refiner.me',
       config: {
-        policies: ['global::is-authenticated'],
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
+        middlewares: [],
       },
     },
     {
