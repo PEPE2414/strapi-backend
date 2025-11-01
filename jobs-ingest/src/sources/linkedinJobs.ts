@@ -295,4 +295,3 @@ function generateHash(title: string, company: string, id?: string): string {
   return Buffer.from(content).toString('base64').slice(0, 16);
 }
 
-}
