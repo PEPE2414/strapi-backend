@@ -72,7 +72,7 @@ async function deleteJob(jobId: string | number): Promise<void> {
 
 async function removeUnknownCompanyJobs(): Promise<{ removed: number }> {
   // Company is JSON with default { name: 'Unknown' }
-  // We consider unknown when company.name is empty/null/'unknown' (case-insensitive)
+  // We consider unknown when company.name is empty/null/'unknown'/'unknown company' (case-insensitive)
   const candidates = await strapi.db.query('api::job.job').findMany({
     select: ['id', 'company'],
   }) as unknown as JobRow[];
@@ -80,7 +80,8 @@ async function removeUnknownCompanyJobs(): Promise<{ removed: number }> {
   let removed = 0;
   for (const job of candidates) {
     const companyName = job.company?.name ?? '';
-    const isUnknown = normalize(companyName) === 'unknown' || normalize(companyName) === '';
+    const normalizedName = normalize(companyName);
+    const isUnknown = normalizedName === 'unknown' || normalizedName === 'unknown company' || normalizedName === '';
     if (!isUnknown) continue;
 
     // If referenced by saved jobs, skip deletion to avoid breaking references

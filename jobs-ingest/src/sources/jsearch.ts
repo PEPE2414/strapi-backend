@@ -18,7 +18,17 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   // First, test with a very broad search to see if the API has any jobs
   console.log('🧪 Testing JSearch API with broad search...');
   try {
-    const testUrl = `https://jsearch.p.rapidapi.com/search?query=graduate&location=United%20Kingdom&page=1&num_pages=1`;
+    const testParams = new URLSearchParams({
+      query: 'graduate',
+      location: 'United Kingdom',
+      page: '1',
+      num_pages: '1',
+      job_requirements: 'entry_level',
+      date_posted: 'month',
+      employment_types: 'fulltime,internship',
+      jobs_per_page: '20'
+    });
+    const testUrl = `https://jsearch.p.rapidapi.com/search?${testParams.toString()}`;
     const testResponse = await fetch(testUrl, {
       method: 'GET',
       headers: {
@@ -44,24 +54,66 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     console.log(`🧪 Broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Search terms for graduate jobs and placements
+  // Expanded search terms for graduate jobs and placements
+  // Target: 50,000 jobs/month = ~1,667 jobs/day
+  // Strategy: Expand terms, increase pagination, use location/city searches
   const searchTerms = [
+    // Core graduate terms
     'graduate',
     'graduate scheme', 
     'graduate program',
     'graduate role',
     'graduate position',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate developer',
+    'graduate accountant',
+    'graduate marketing',
+    'graduate sales',
+    'graduate finance',
+    'graduate hr',
+    'graduate it',
+    'graduate business',
+    'graduate management',
+    'graduate operations',
+    
+    // Entry level and junior
     'entry level',
+    'junior',
+    'trainee',
+    'apprentice',
+    
+    // Placement terms
     'placement',
     'industrial placement',
     'placement year',
     'year in industry',
     'work experience placement',
+    'student placement',
     'sandwich course',
     'sandwich degree',
+    'year placement',
+    '12 month placement',
+    'year long placement',
+    
+    // Internship terms
     'internship',
     'summer internship',
-    'junior'
+    'winter internship',
+    'paid internship',
+    'graduate internship',
+    
+    // Additional variations
+    'new graduate',
+    'recent graduate',
+    'graduate entry',
+    'graduate level',
+    'graduate scheme 2024',
+    'graduate scheme 2025',
+    'graduate program 2024',
+    'graduate program 2025'
   ];
 
   // Site-constrained targets (UK graduate boards)
@@ -74,14 +126,46 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     { key: 'higherin', domain: 'higherin.com' }
   ];
 
+  const jobsPerTerm: { [term: string]: number } = {};
+  const MAX_SEARCHES_PER_DAY = 200; // Conservative limit for JSearch (higher limit than LinkedIn)
+  let totalSearches = 0;
+  
   try {
     for (const term of searchTerms) {
+      if (totalSearches >= MAX_SEARCHES_PER_DAY) {
+        console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping early`);
+        break;
+      }
+      
       console.log(`  🔍 Searching JSearch for: "${term}" (UK-wide)`);
+      totalSearches++;
       
       try {
-        // JSearch API endpoint with query parameters
+        // JSearch API endpoint with optimized query parameters
+        // Parameters used:
+        // - query: Search term for job title/keywords
+        // - location: Geographic location filter (United Kingdom)
+        // - page: Starting page number
+        // - num_pages: Number of pages to fetch (maximize for quota)
+        // - job_requirements: Filter by experience level (entry_level for graduates)
+        // - date_posted: Filter by posting date (month = last 30 days, gets fresh jobs)
+        // - employment_types: Filter job types (fulltime, internship for graduates)
+        // - jobs_per_page: Results per page (default 10, max typically 20-30)
         const encodedTerm = encodeURIComponent(term);
-        const url = `https://jsearch.p.rapidapi.com/search?query=${encodedTerm}&location=United%20Kingdom&page=1&num_pages=2`;
+        
+        // Build URL with additional filters for better targeting
+        const urlParams = new URLSearchParams({
+          query: term,
+          location: 'United Kingdom',
+          page: '1',
+          num_pages: '5',
+          job_requirements: 'entry_level', // Focus on entry-level roles
+          date_posted: 'month', // Get jobs posted in last 30 days
+          employment_types: 'fulltime,internship', // Include full-time and internships
+          jobs_per_page: '20' // More results per page
+        });
+        
+        const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
         
         const response = await fetch(url, {
           method: 'GET',
@@ -103,8 +187,11 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         // JSearch typically returns { data: [...] }
         const jobArray = (data.data && Array.isArray(data.data)) ? data.data : [];
         
-        if (jobArray.length > 0) {
-          console.log(`  📦 Found ${jobArray.length} jobs for "${term}"`);
+        const termJobsFound = jobArray.length;
+        
+        if (termJobsFound > 0) {
+          console.log(`  📦 Found ${termJobsFound} jobs for "${term}"`);
+          jobsPerTerm[term] = (jobsPerTerm[term] || 0) + termJobsFound;
           
           // Debug: Show first few jobs to understand the data structure
           if (jobArray.length > 0) {
@@ -165,14 +252,34 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   }
 
   // Site-constrained queries to focus on specific UK boards
+  // Maximize site searches to get more targeted results
   try {
     for (const site of sites) {
-      for (const term of searchTerms.slice(0, 6)) { // keep it lean per site
+      for (const term of searchTerms.slice(0, 10)) { // Increase to 10 terms per site
+        if (totalSearches >= MAX_SEARCHES_PER_DAY) {
+          console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping site searches`);
+          break;
+        }
+        
         const query = `${term} site:${site.domain}`;
         console.log(`  🌐 Site search (${site.key}): "${query}"`);
+        totalSearches++;
+        
         try {
-          const encodedQuery = encodeURIComponent(query);
-          const url = `https://jsearch.p.rapidapi.com/search?query=${encodedQuery}&location=United%20Kingdom&page=1&num_pages=2`;
+          // Site-constrained search with optimized parameters
+          // Same filters as UK-wide but with site:domain in query
+          const urlParams = new URLSearchParams({
+            query: query, // Already includes site:domain
+            location: 'United Kingdom',
+            page: '1',
+            num_pages: '4',
+            job_requirements: 'entry_level', // Focus on entry-level roles
+            date_posted: 'month', // Get jobs posted in last 30 days
+            employment_types: 'fulltime,internship', // Include full-time and internships
+            jobs_per_page: '20' // More results per page
+          });
+          
+          const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -191,8 +298,11 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           const data = await response.json() as any;
           const jobArray = (data.data && Array.isArray(data.data)) ? data.data : [];
 
-          if (jobArray.length > 0) {
-            console.log(`    📦 ${site.key}: ${jobArray.length} jobs for "${term}"`);
+          const siteTermJobs = jobArray.length;
+          if (siteTermJobs > 0) {
+            console.log(`    📦 ${site.key}: ${siteTermJobs} jobs for "${term}"`);
+            const siteTermKey = `${site.key}:${term}`;
+            jobsPerTerm[siteTermKey] = (jobsPerTerm[siteTermKey] || 0) + siteTermJobs;
           }
 
           for (const job of jobArray) {
@@ -236,6 +346,20 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     }
   } catch (error) {
     console.warn('Failed site-constrained JSearch:', error instanceof Error ? error.message : String(error));
+  }
+
+  // Summary: Show jobs per term
+  if (Object.keys(jobsPerTerm).length > 0) {
+    console.log(`\n📊 JSearch Summary:`);
+    const sortedTerms = Object.entries(jobsPerTerm)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20); // Show top 20 terms
+    sortedTerms.forEach(([term, count]) => {
+      console.log(`  "${term}": ${count} jobs`);
+    });
+    const totalJobsFromAPI = Object.values(jobsPerTerm).reduce((sum, count) => sum + count, 0);
+    console.log(`  📈 Total jobs from API: ${totalJobsFromAPI}`);
+    console.log(`  📉 After filtering: ${jobs.length} relevant jobs`);
   }
 
   console.log(`📊 JSearch API: Found ${jobs.length} total jobs`);

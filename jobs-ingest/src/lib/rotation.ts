@@ -146,13 +146,17 @@ export function getBucketsForToday(): CrawlBucket[] {
   const buckets: CrawlBucket[] = [];
   
   // PRIORITY 1: API-based job boards (most reliable, highest volume, no blocking)
+  // Target: LinkedIn (10K/month) + JSearch (50K/month) = 60K jobs/month
+  // These run DAILY to maximize monthly quota usage
   buckets.push({
     id: 'api-job-boards',
-    name: 'API Job Boards (Highest Priority)',
+    name: 'API Job Boards (Highest Priority - Daily)',
     sources: [
-      // API-based scrapers - these should yield 500-1000+ jobs
-      'api-job-boards',
-      'rapidapi-linkedin-jobs' // RapidAPI + LinkedIn Jobs APIs
+      // API-based scrapers - these should yield 2000+ jobs/day
+      // LinkedIn API: 10,000/month = ~333/day (with pagination: up to 1000/day)
+      // JSearch API: 50,000/month = ~1,667/day (with pagination: up to 2000/day)
+      'rapidapi-linkedin-jobs', // RapidAPI + LinkedIn Jobs APIs (runs first)
+      'api-job-boards' // Other API boards
     ],
     priority: 'high'
   });

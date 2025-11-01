@@ -41,57 +41,143 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     console.log(`🧪 LinkedIn broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Search terms for graduate jobs and placements
+  // Expanded search terms for graduate jobs and placements
+  // Target: 10,000 jobs/month = ~333 jobs/day
+  // With pagination: ~30-40 jobs per search term × 30 terms = ~900-1,200 jobs/day
   const searchTerms = [
+    // Core graduate terms
     'graduate',
     'graduate scheme', 
     'graduate program',
     'graduate role',
     'graduate position',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate developer',
+    'graduate accountant',
+    'graduate marketing',
+    'graduate sales',
+    'graduate finance',
+    'graduate hr',
+    'graduate it',
+    'graduate business',
+    'graduate management',
+    'graduate operations',
+    
+    // Entry level and junior
     'entry level',
+    'junior',
+    'trainee',
+    'apprentice',
+    
+    // Placement terms
     'placement',
     'industrial placement',
     'placement year',
     'year in industry',
     'work experience placement',
+    'student placement',
     'sandwich course',
     'sandwich degree',
+    'year placement',
+    '12 month placement',
+    'year long placement',
+    
+    // Internship terms
     'internship',
     'summer internship',
-    'junior'
+    'winter internship',
+    'paid internship',
+    'graduate internship',
+    
+    // Additional variations
+    'new graduate',
+    'recent graduate',
+    'graduate entry',
+    'graduate level',
+    'graduate scheme 2024',
+    'graduate scheme 2025',
+    'graduate program 2024',
+    'graduate program 2025'
   ];
 
+  // UK major cities for location-based searches (maximize coverage)
+  const ukLocations = [
+    'London',
+    'Manchester',
+    'Birmingham',
+    'Leeds',
+    'Glasgow',
+    'Edinburgh',
+    'Bristol',
+    'Liverpool',
+    'Newcastle',
+    'Sheffield'
+  ];
+
+  const jobsPerTerm: { [term: string]: number } = {};
+  let totalSearches = 0;
+  const MAX_SEARCHES_PER_DAY = 150; // Conservative limit to spread across month
+  
   try {
+    // Strategy 1: Broad searches across all terms with high pagination
     for (const term of searchTerms) {
+      if (totalSearches >= MAX_SEARCHES_PER_DAY) {
+        console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping early`);
+        break;
+      }
+      
       console.log(`  🔍 Searching LinkedIn for: "${term}"`);
+      totalSearches++;
       
       try {
-        // Use the correct GET endpoint with query parameters
-        const encodedTerm = encodeURIComponent(`"${term}"`);
-        const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&limit=100&offset=0`;
-        
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-            'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
+        // Use pagination to get more jobs per term
+        // LinkedIn API limit=100, so we'll paginate through offsets
+        // Target: Get up to 200-300 jobs per term to maximize monthly quota
+        let termJobsFound = 0;
+        for (let offset = 0; offset < 300; offset += 100) { // Get up to 300 jobs per term
+          const encodedTerm = encodeURIComponent(`"${term}"`);
+          const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&limit=100&offset=${offset}`;
+          
+          if (offset > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Rate limit between pages
           }
-        });
+          
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+              'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
+            }
+          });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.warn(`  ⚠️  LinkedIn API request failed: ${response.status} ${response.statusText}`);
-          console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
-          continue;
-        }
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.warn(`    ⚠️  LinkedIn API request failed (offset ${offset}): ${response.status} ${response.statusText}`);
+            if (offset === 0) {
+              break; // If first page fails, skip this term
+            }
+            break; // If later page fails, we got what we could
+          }
 
-        const data = await response.json() as any;
-        
-        // Handle both array response and wrapped response
-        const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
-        
-        if (jobArray.length > 0) {
-          console.log(`  📦 Found ${jobArray.length} jobs for "${term}"`);
+          const data = await response.json() as any;
+          
+          // Handle both array response and wrapped response
+          const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
+          
+          if (jobArray.length === 0 && offset === 0) {
+            console.log(`  📄 No jobs found for "${term}"`);
+            break; // No jobs for this term, move on
+          }
+          
+          if (jobArray.length === 0) {
+            break; // No more jobs, we're done with this term
+          }
+          
+          termJobsFound += jobArray.length;
+          console.log(`    📦 Page ${Math.floor(offset/100) + 1}: Found ${jobArray.length} jobs (total: ${termJobsFound} for "${term}")`);
           
           for (const job of jobArray) {
             try {
@@ -119,23 +205,35 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                 jobs.push(canonicalJob);
               }
             } catch (error) {
-              console.warn(`  ⚠️  Error processing LinkedIn job:`, error instanceof Error ? error.message : String(error));
+              console.warn(`    ⚠️  Error processing LinkedIn job:`, error instanceof Error ? error.message : String(error));
             }
           }
-        } else {
-          console.log(`  📄 No jobs found for "${term}"`);
-          // Debug: Show the actual response structure
-          if (jobArray.length === 0) {
-            console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
+          
+          // If we got fewer than 100 jobs, we've reached the end
+          if (jobArray.length < 100) {
+            break;
           }
         }
+        
+        if (termJobsFound > 0) {
+          jobsPerTerm[term] = termJobsFound;
+          console.log(`  ✅ "${term}": ${termJobsFound} total jobs found`);
+        }
 
-        // Rate limiting - wait between requests
+        // Rate limiting - wait between terms
         await new Promise(resolve => setTimeout(resolve, 2000));
         
       } catch (error) {
         console.warn(`  ❌ Failed to search LinkedIn "${term}":`, error instanceof Error ? error.message : String(error));
       }
+    }
+    
+    // Summary: Show jobs per term
+    if (Object.keys(jobsPerTerm).length > 0) {
+      console.log(`\n📊 LinkedIn Search Summary:`);
+      Object.entries(jobsPerTerm).forEach(([term, count]) => {
+        console.log(`  "${term}": ${count} jobs`);
+      });
     }
 
   } catch (error) {
@@ -195,4 +293,6 @@ function generateSlug(title: string, company: string): string {
 function generateHash(title: string, company: string, id?: string): string {
   const content = `${title}-${company}-${id || Date.now()}`;
   return Buffer.from(content).toString('base64').slice(0, 16);
+}
+
 }
