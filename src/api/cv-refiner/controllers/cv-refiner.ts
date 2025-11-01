@@ -178,7 +178,7 @@ export default {
     ctx.body = { results: list };
   },
   async complete(ctx: Context) {
-    const secret = ctx.request.headers['x-webhook-secret'] || ctx.request.query.secret || (ctx.request.body && (ctx.request.body.secret || ctx.request.body.meta?.callbackSecret));
+    const secret = ctx.request.headers['x-cl-secret'] || ctx.request.headers['x-webhook-secret'] || ctx.request.query.secret || (ctx.request.body && (ctx.request.body.secret || ctx.request.body.meta?.callbackSecret));
     if (!secret || String(secret) !== String(process.env.CV_REFINE_WEBHOOK_SECRET || '')) {
       return ctx.unauthorized('Invalid secret');
     }
