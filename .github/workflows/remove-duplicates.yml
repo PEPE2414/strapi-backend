@@ -10,24 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          
-      - name: Install dependencies
-        run: |
-          npm ci
-          
-      - name: Remove duplicate jobs
+      - name: Remove duplicate jobs via Strapi API
         env:
           STRAPI_URL: ${{ secrets.STRAPI_URL }}
-          STRAPI_API_TOKEN: ${{ secrets.STRAPI_API_TOKEN }}
+          STRAPI_INGEST_SECRET: ${{ secrets.STRAPI_INGEST_SECRET }}
         run: |
-          node jobs-ingest/remove-duplicates-robust.js
+          echo "🔍 Triggering job deduplication via Strapi API..."
+          echo "🔗 Endpoint: $STRAPI_URL/api/jobs/dedupe/trigger"
+          
+          response=$(curl -s -w "\n%{http_code}" \
+            -H "x-seed-secret: $STRAPI_INGEST_SECRET" \
+            "$STRAPI_URL/api/jobs/dedupe/trigger")
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "📊 Response HTTP Status: $http_code"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Deduplication completed successfully"
+            if command -v jq &> /dev/null; then
+              echo "$body" | jq '.'
+            else
+              echo "$body"
+            fi
+          else
+            echo "❌ Deduplication failed with HTTP $http_code"
+            echo "$body"
+            exit 1
+          fi
           
       - name: Report results
         if: always()
