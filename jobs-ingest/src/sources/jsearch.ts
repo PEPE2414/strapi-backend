@@ -85,18 +85,45 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     'trainee',
     'apprentice',
     
-    // Placement terms
+    // Placement terms (comprehensive synonyms)
     'placement',
     'industrial placement',
     'placement year',
     'year in industry',
     'work experience placement',
     'student placement',
-    'sandwich course',
-    'sandwich degree',
+    'work placement',
+    'industry placement',
+    'professional placement',
     'year placement',
     '12 month placement',
     'year long placement',
+    'industrial experience',
+    'year in industry placement',
+    'sandwich placement',
+    'sandwich course',
+    'sandwich degree',
+    'sandwich year',
+    'thick sandwich',
+    'thin sandwich',
+    'co-op',
+    'coop',
+    'cooperative placement',
+    'co-operative education',
+    'practicum',
+    'industrial year',
+    'placement opportunity',
+    'work-based learning',
+    'work integrated learning',
+    'professional year',
+    'industry year',
+    'placement programme',
+    'placement program',
+    'industrial year out',
+    'year out placement',
+    'work experience year',
+    'industrial training',
+    'professional training year',
     
     // Internship terms
     'internship',
@@ -369,13 +396,57 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
   const t = text.toLowerCase();
   
+  // Check for internship first (more specific)
   if (t.includes('internship') || t.includes('intern')) {
     return 'internship';
   }
-  if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement') || 
-      t.includes('sandwich course') || t.includes('sandwich degree') || t.includes('work experience placement')) {
+  
+  // Comprehensive placement detection (all synonyms)
+  const placementKeywords = [
+    'placement',
+    'year in industry',
+    'industrial placement',
+    'industrial experience',
+    'sandwich course',
+    'sandwich degree',
+    'sandwich year',
+    'sandwich placement',
+    'thick sandwich',
+    'thin sandwich',
+    'work experience placement',
+    'work placement',
+    'industry placement',
+    'professional placement',
+    'student placement',
+    'placement year',
+    'year placement',
+    '12 month placement',
+    'year long placement',
+    'co-op',
+    'coop',
+    'cooperative placement',
+    'co-operative education',
+    'practicum',
+    'industrial year',
+    'placement opportunity',
+    'work-based learning',
+    'work integrated learning',
+    'professional year',
+    'industry year',
+    'placement programme',
+    'placement program',
+    'industrial year out',
+    'year out placement',
+    'work experience year',
+    'industrial training',
+    'professional training year'
+  ];
+  
+  if (placementKeywords.some(keyword => t.includes(keyword))) {
     return 'placement';
   }
+  
+  // Graduate/entry-level roles
   if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
     return 'graduate';
   }
