@@ -25,7 +25,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
       num_pages: '1',
       job_requirements: 'entry_level',
       date_posted: 'month',
-      employment_types: 'fulltime,internship',
+      employment_types: 'FULLTIME,INTERNSHIP', // Uppercase required: FULLTIME, PARTTIME, INTERNSHIP, CONTRACT, TEMPORARY, VOLUNTEER
       jobs_per_page: '20'
     });
     const testUrl = `https://jsearch.p.rapidapi.com/search?${testParams.toString()}`;
@@ -182,6 +182,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         const encodedTerm = encodeURIComponent(term);
         
         // Build URL with additional filters for better targeting
+        // Note: employment_types accepts: FULLTIME, PARTTIME, INTERNSHIP, CONTRACT, TEMPORARY, VOLUNTEER (uppercase)
         const urlParams = new URLSearchParams({
           query: term,
           location: 'United Kingdom',
@@ -189,7 +190,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           num_pages: '5',
           job_requirements: 'entry_level', // Focus on entry-level roles
           date_posted: 'month', // Get jobs posted in last 30 days
-          employment_types: 'fulltime,internship', // Include full-time and internships
+          employment_types: 'FULLTIME,INTERNSHIP', // Include full-time and internships (uppercase required)
           jobs_per_page: '20' // More results per page
         });
         
@@ -303,7 +304,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
             num_pages: '4',
             job_requirements: 'entry_level', // Focus on entry-level roles
             date_posted: 'month', // Get jobs posted in last 30 days
-            employment_types: 'fulltime,internship', // Include full-time and internships
+            employment_types: 'FULLTIME,INTERNSHIP', // Include full-time and internships (uppercase required)
             jobs_per_page: '20' // More results per page
           });
           
