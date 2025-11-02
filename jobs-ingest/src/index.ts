@@ -15,7 +15,7 @@ import { scrapeStudentCircus } from './sources/studentcircus';
 import { scrapeGradsmart } from './sources/gradsmart';
 import { 
   scrapeTargetJobs, scrapeMilkround, scrapeProspects, scrapeRateMyPlacement,
-  scrapeBrightNetwork, scrapeStudentJobUK, scrapeE4S, scrapeRateMyApprenticeship,
+  scrapeTrackr, scrapeBrightNetwork, scrapeStudentJobUK, scrapeE4S, scrapeRateMyApprenticeship,
   scrapeWorkInStartups, scrapeTotalJobs, scrapeReed, scrapeEscapeTheCity
 } from './sources/jobBoards';
 import { 
@@ -173,6 +173,9 @@ async function runAll() {
         } else if (source === 'ratemyplacement') {
           console.log(`🔄 Scraping RateMyPlacement`);
           sourceJobs = await limiter.schedule(() => scrapeRateMyPlacement());
+        } else if (source === 'trackr') {
+          console.log(`🔄 Scraping Trackr`);
+          sourceJobs = await limiter.schedule(() => scrapeTrackr());
         } else if (source === 'brightnetwork') {
           console.log(`🔄 Scraping BrightNetwork`);
           sourceJobs = await limiter.schedule(() => scrapeBrightNetwork());

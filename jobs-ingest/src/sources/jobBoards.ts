@@ -75,6 +75,24 @@ const JOB_BOARDS = {
       'https://higherin.com/graduate-schemes'
     ]
   },
+  'trackr': {
+    name: 'Trackr (formerly Bristol Tracker)',
+    baseUrl: 'https://the-trackr.com',
+    urlPatterns: [
+      'https://the-trackr.com',
+      'https://the-trackr.com/uk-finance',
+      'https://the-trackr.com/uk-technology',
+      'https://the-trackr.com/uk-law',
+      'https://the-trackr.com/north-america-finance',
+      'https://the-trackr.com/eu-finance',
+      'https://the-trackr.com/jobs',
+      'https://the-trackr.com/graduate-jobs',
+      'https://the-trackr.com/internships',
+      'https://the-trackr.com/placements',
+      'https://the-trackr.com/programs',
+      'https://the-trackr.com/schemes'
+    ]
+  },
   'brightnetwork': {
     name: 'BrightNetwork',
     baseUrl: 'https://www.brightnetwork.co.uk',
@@ -185,7 +203,7 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
     console.log(`✅ Found ${workingUrls.length} working URLs for ${board.name}`);
     
     // Use the hybrid scraper (Direct → Playwright → ScraperAPI) for JS-heavy boards
-    const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround']);
+    const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround', 'trackr']);
     if (HYBRID_BOARDS.has(boardKey)) {
       console.log(`🎭 Using hybrid scraper for ${board.name}...`);
       const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 3), board.name, boardKey);
@@ -559,6 +577,7 @@ export const scrapeTargetJobs = () => scrapeJobBoard('targetjobs');
 export const scrapeMilkround = () => scrapeJobBoard('milkround');
 export const scrapeProspects = () => scrapeJobBoard('prospects');
 export const scrapeRateMyPlacement = () => scrapeJobBoard('ratemyplacement');
+export const scrapeTrackr = () => scrapeJobBoard('trackr');
 export const scrapeBrightNetwork = () => scrapeJobBoard('brightnetwork');
 export const scrapeStudentJobUK = () => scrapeJobBoard('studentjob');
 export const scrapeE4S = () => scrapeJobBoard('e4s');

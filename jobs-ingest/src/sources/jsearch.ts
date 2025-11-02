@@ -150,7 +150,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     { key: 'prospects', domain: 'prospects.ac.uk' },
     { key: 'milkround', domain: 'milkround.com' },
     { key: 'brightnetwork', domain: 'brightnetwork.co.uk' },
-    { key: 'higherin', domain: 'higherin.com' }
+    { key: 'higherin', domain: 'higherin.com' },
+    { key: 'trackr', domain: 'the-trackr.com' }
   ];
 
   const jobsPerTerm: { [term: string]: number } = {};

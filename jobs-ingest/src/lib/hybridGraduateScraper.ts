@@ -70,6 +70,23 @@ export async function scrapeGraduateBoardsHybrid(): Promise<CanonicalJob[]> {
         'https://www.ratemyplacement.co.uk/internships',
         'https://www.ratemyplacement.co.uk/'
       ]
+    },
+    trackr: {
+      name: 'Trackr (formerly Bristol Tracker)',
+      urls: [
+        'https://the-trackr.com',
+        'https://the-trackr.com/uk-finance',
+        'https://the-trackr.com/uk-technology',
+        'https://the-trackr.com/uk-law',
+        'https://the-trackr.com/north-america-finance',
+        'https://the-trackr.com/eu-finance',
+        'https://the-trackr.com/jobs',
+        'https://the-trackr.com/graduate-jobs',
+        'https://the-trackr.com/internships',
+        'https://the-trackr.com/placements',
+        'https://the-trackr.com/programs',
+        'https://the-trackr.com/schemes'
+      ]
     }
   };
   

@@ -173,7 +173,8 @@ export function getBucketsForToday(): CrawlBucket[] {
       'prospects',
       'milkround',
       'brightnetwork',
-      'ratemyplacement'
+      'ratemyplacement',
+      'trackr'
     ],
     priority: 'high'
   });
