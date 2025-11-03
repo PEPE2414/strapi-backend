@@ -1132,12 +1132,18 @@ export default {
           const leadDays = notificationPrefs.applications.leadDays || 0;
           const secondReminder = notificationPrefs.applications.secondReminder || 0;
 
+          // Determine reminder configuration type
+          const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
+          const reminderCount = hasSecondReminder ? 2 : 1;
+
           // Get user's applications
           const applications = await strapi.entityService.findMany('api::application.application', {
             filters: {
               owner: { id: user.id },
-              deadline: { $notNull: true },
-              deadline: { $gte: today.toISOString().split('T')[0] }, // Only future deadlines
+              deadline: { 
+                $notNull: true,
+                $gte: today.toISOString().split('T')[0] // Only future deadlines
+              },
             },
           });
 
@@ -1156,6 +1162,9 @@ export default {
                 email: user.email,
                 preferredName: user.preferredName || user.username,
                 reminderType: 'first',
+                reminderIndex: 1,
+                reminderCount: reminderCount, // 1 or 2
+                isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1167,12 +1176,15 @@ export default {
             }
 
             // Second reminder check (if configured and different from first)
-            if (secondReminder > 0 && secondReminder !== leadDays && daysUntilDeadline === secondReminder) {
+            if (hasSecondReminder && daysUntilDeadline === secondReminder) {
               reminders.applications.push({
                 userId: user.id,
                 email: user.email,
                 preferredName: user.preferredName || user.username,
                 reminderType: 'second',
+                reminderIndex: 2,
+                reminderCount: reminderCount, // Always 2 if second reminder is configured
+                isLastReminder: true, // Always true for second reminder
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1198,6 +1210,10 @@ export default {
             },
           });
 
+          // Determine reminder configuration type
+          const hasSecondReminder = secondReminder > 0;
+          const reminderCount = hasSecondReminder ? 2 : 1;
+
           for (const app of applications) {
             if (!app.createdAt) continue;
             
@@ -1206,38 +1222,54 @@ export default {
             
             const daysSinceApplication = Math.floor((today.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
 
-            // First follow-up reminder
+            // First follow-up reminder (X days after applying)
             if (daysSinceApplication === daysAfter) {
               reminders.followUps.push({
                 userId: user.id,
                 email: user.email,
                 preferredName: user.preferredName || user.username,
                 reminderType: 'first',
+                reminderIndex: 1,
+                reminderCount: reminderCount, // 1 or 2
+                isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
                 application: {
                   id: app.id,
                   title: app.title,
                   company: app.company,
                   appliedDate: app.createdAt,
+                  deadline: app.deadline || null,
                 },
                 daysAfter: daysAfter,
               });
             }
 
-            // Second follow-up reminder (if configured)
-            if (secondReminder > 0 && daysSinceApplication === daysAfter + secondReminder) {
-              reminders.followUps.push({
-                userId: user.id,
-                email: user.email,
-                preferredName: user.preferredName || user.username,
-                reminderType: 'second',
-                application: {
-                  id: app.id,
-                  title: app.title,
-                  company: app.company,
-                  appliedDate: app.createdAt,
-                },
-                daysAfter: daysAfter + secondReminder,
-              });
+            // Second follow-up reminder: X days before deadline (if deadline exists)
+            if (hasSecondReminder && app.deadline) {
+              const deadline = new Date(app.deadline);
+              deadline.setHours(0, 0, 0, 0);
+              
+              const daysUntilDeadline = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+              
+              // Second reminder triggers X days before the deadline
+              if (daysUntilDeadline === secondReminder && daysUntilDeadline > 0) {
+                reminders.followUps.push({
+                  userId: user.id,
+                  email: user.email,
+                  preferredName: user.preferredName || user.username,
+                  reminderType: 'second',
+                  reminderIndex: 2,
+                  reminderCount: reminderCount, // Always 2 if second reminder is configured
+                  isLastReminder: true, // Always true for second reminder
+                  application: {
+                    id: app.id,
+                    title: app.title,
+                    company: app.company,
+                    appliedDate: app.createdAt,
+                    deadline: app.deadline,
+                  },
+                  daysBefore: secondReminder,
+                });
+              }
             }
           }
         }
@@ -1247,13 +1279,19 @@ export default {
           const leadDays = notificationPrefs.interviews.leadDays || 0;
           const secondReminder = notificationPrefs.interviews.secondReminder || 0;
 
+          // Determine reminder configuration type
+          const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
+          const reminderCount = hasSecondReminder ? 2 : 1;
+
           // Get user's applications with interview stage and nextActionDate
           const applications = await strapi.entityService.findMany('api::application.application', {
             filters: {
               owner: { id: user.id },
               stage: 'Interview',
-              nextActionDate: { $notNull: true },
-              nextActionDate: { $gte: today.toISOString() }, // Only future interviews
+              nextActionDate: { 
+                $notNull: true,
+                $gte: today.toISOString() // Only future interviews
+              },
             },
           });
 
@@ -1272,6 +1310,9 @@ export default {
                 email: user.email,
                 preferredName: user.preferredName || user.username,
                 reminderType: 'first',
+                reminderIndex: 1,
+                reminderCount: reminderCount, // 1 or 2
+                isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1283,12 +1324,15 @@ export default {
             }
 
             // Second interview reminder (if configured and different from first)
-            if (secondReminder > 0 && secondReminder !== leadDays && daysUntilInterview === secondReminder) {
+            if (hasSecondReminder && daysUntilInterview === secondReminder) {
               reminders.interviews.push({
                 userId: user.id,
                 email: user.email,
                 preferredName: user.preferredName || user.username,
                 reminderType: 'second',
+                reminderIndex: 2,
+                reminderCount: reminderCount, // Always 2 if second reminder is configured
+                isLastReminder: true, // Always true for second reminder
                 application: {
                   id: app.id,
                   title: app.title,
