@@ -1138,12 +1138,16 @@ export default {
       });
 
       console.log(`[profile:getRemindersNeeded] Found ${users.length} users with notification preferences`);
+      console.log(`[profile:getRemindersNeeded] Today's date: ${today.toISOString().split('T')[0]}`);
 
       for (const user of users) {
         const prefs = user.notificationPrefs || {};
         
         // Parse JSON if it's a string
         const notificationPrefs = typeof prefs === 'string' ? JSON.parse(prefs) : prefs;
+        
+        console.log(`[profile:getRemindersNeeded] Processing user ${user.id} (${user.email})`);
+        console.log(`[profile:getRemindersNeeded] User preferences:`, JSON.stringify(notificationPrefs, null, 2));
 
         // 1. Application deadline reminders
         if (notificationPrefs.applications?.enabled) {
@@ -1164,6 +1168,9 @@ export default {
             },
           });
 
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications with future deadlines`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: leadDays=${leadDays}, secondReminder=${secondReminder}`);
+
           for (const app of applications) {
             if (!app.deadline) continue;
             
@@ -1171,9 +1178,12 @@ export default {
             deadline.setHours(0, 0, 0, 0);
             
             const daysUntilDeadline = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+            
+            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): deadline=${app.deadline}, daysUntilDeadline=${daysUntilDeadline}, leadDays=${leadDays}`);
 
             // First reminder check
             if (daysUntilDeadline === leadDays) {
+              console.log(`[profile:getRemindersNeeded] ✓ Adding first application reminder for user ${user.id}, app ${app.id}`);
               reminders.applications.push({
                 userId: user.id,
                 email: user.email,
@@ -1195,6 +1205,7 @@ export default {
 
             // Second reminder check (if configured and different from first)
             if (hasSecondReminder && daysUntilDeadline === secondReminder) {
+              console.log(`[profile:getRemindersNeeded] ✓ Adding second application reminder for user ${user.id}, app ${app.id}`);
               reminders.applications.push({
                 userId: user.id,
                 email: user.email,
@@ -1229,6 +1240,9 @@ export default {
             },
           });
 
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications in follow-up stages`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: daysAfter=${daysAfter}, secondReminder=${secondReminder}`);
+
           // Determine reminder configuration type
           const hasSecondReminder = secondReminder > 0;
           const reminderCount = hasSecondReminder ? 2 : 1;
@@ -1240,9 +1254,12 @@ export default {
             createdAt.setHours(0, 0, 0, 0);
             
             const daysSinceApplication = Math.floor((today.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
+            
+            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): createdAt=${app.createdAt}, daysSinceApplication=${daysSinceApplication}, daysAfter=${daysAfter}`);
 
             // First follow-up reminder (X days after applying)
             if (daysSinceApplication === daysAfter) {
+              console.log(`[profile:getRemindersNeeded] ✓ Adding first follow-up reminder for user ${user.id}, app ${app.id}`);
               reminders.followUps.push({
                 userId: user.id,
                 email: user.email,
@@ -1315,6 +1332,9 @@ export default {
             },
           });
 
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications in Interview stage with future dates`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: leadDays=${leadDays}, secondReminder=${secondReminder}`);
+
           for (const app of applications) {
             if (!app.nextActionDate) continue;
             
@@ -1322,9 +1342,12 @@ export default {
             interviewDate.setHours(0, 0, 0, 0);
             
             const daysUntilInterview = Math.ceil((interviewDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+            
+            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): interviewDate=${app.nextActionDate}, daysUntilInterview=${daysUntilInterview}, leadDays=${leadDays}`);
 
             // First interview reminder
             if (daysUntilInterview === leadDays) {
+              console.log(`[profile:getRemindersNeeded] ✓ Adding first interview reminder for user ${user.id}, app ${app.id}`);
               reminders.interviews.push({
                 userId: user.id,
                 email: user.email,
