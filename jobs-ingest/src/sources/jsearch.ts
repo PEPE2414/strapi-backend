@@ -1,9 +1,11 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
+import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 
 /**
  * Scraper for RapidAPI JSearch
  * Searches for graduate jobs, internships, and placements in UK
+ * Target: 50,000 jobs/month = ~1,667 jobs/day
  */
 export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
@@ -19,14 +21,13 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   console.log('🧪 Testing JSearch API with broad search...');
   try {
     const testParams = new URLSearchParams({
-      query: 'graduate',
-      location: 'United Kingdom',
+      query: 'graduate jobs in uk',
+      country: 'uk',
       page: '1',
       num_pages: '1',
-      job_requirements: 'entry_level',
       date_posted: 'month',
-      // employment_types removed - not supported or causes errors. Using job_requirements and date_posted filters instead.
-      jobs_per_page: '20'
+      employment_types: 'FULLTIME,INTERN',
+      job_requirements: 'no_experience,under_3_years_experience'
     });
     const testUrl = `https://jsearch.p.rapidapi.com/search?${testParams.toString()}`;
     const testResponse = await fetch(testUrl, {
@@ -48,100 +49,118 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     } else {
       console.log(`🧪 Broad test failed: ${testResponse.status}`);
       const errorText = await testResponse.text();
-      console.log(`🧪 Error: ${errorText.substring(0, 200)}`);
+      console.log(`🧪 Error: ${errorText.substring(0, 300)}`);
     }
   } catch (error) {
     console.log(`🧪 Broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Expanded search terms for graduate jobs and placements
-  // Target: 50,000 jobs/month = ~1,667 jobs/day
-  // Strategy: Expand terms, increase pagination, use location/city searches
-  const searchTerms = [
-    // Core graduate terms
-    'graduate',
-    'graduate scheme', 
-    'graduate program',
-    'graduate role',
-    'graduate position',
-    'graduate trainee',
-    'graduate analyst',
-    'graduate engineer',
-    'graduate consultant',
-    'graduate developer',
-    'graduate accountant',
-    'graduate marketing',
-    'graduate sales',
-    'graduate finance',
-    'graduate hr',
-    'graduate it',
-    'graduate business',
-    'graduate management',
-    'graduate operations',
+  // Popular industries (priority - more searches)
+  const popularIndustries = [
+    'business', 'finance', 'engineering', 'accounting', 'marketing', 
+    'consulting', 'it', 'technology', 'law', 'sales', 'data', 'analytics'
+  ];
+
+  // Other industries (lower priority - fewer searches)
+  const otherIndustries = [
+    'hr', 'human resources', 'operations', 'project management', 'supply chain',
+    'pharmaceutical', 'healthcare', 'media', 'advertising', 'retail',
+    'hospitality', 'tourism', 'education', 'research', 'science',
+    'chemistry', 'physics', 'biology', 'mathematics', 'statistics',
+    'architecture', 'design', 'civil engineering', 'mechanical engineering',
+    'electrical engineering', 'software engineering', 'chemical engineering',
+    'aerospace', 'automotive', 'energy', 'renewable energy', 'sustainability',
+    'environmental', 'agriculture', 'food', 'manufacturing', 'logistics'
+  ];
+
+  // Job type prefixes
+  const graduatePrefixes = ['graduate', 'graduate scheme', 'graduate program', 'graduate trainee', 'graduate entry'];
+  const placementPrefixes = [
+    'placement', 'industrial placement', 'placement year', 'year in industry',
+    'industrial experience', 'sandwich placement', 'sandwich course', 'sandwich degree',
+    'year placement', '12 month placement', 'co-op', 'cooperative placement'
+  ];
+  const internshipPrefixes = ['internship', 'summer internship', 'paid internship', 'graduate internship'];
+
+  // Build comprehensive search terms
+  // Priority industries get all combinations, others get core terms only
+  const searchTerms: string[] = [];
+
+  // Core general terms (high priority)
+  searchTerms.push(
+    'graduate jobs in uk',
+    'graduate scheme uk',
+    'graduate program uk',
+    'entry level jobs uk',
+    'junior jobs uk',
+    'placement uk',
+    'industrial placement uk',
+    'year in industry uk',
+    'internship uk',
+    'summer internship uk'
+  );
+
+  // Popular industries: graduate + placement + internship for each
+  for (const industry of popularIndustries) {
+    // Graduate terms
+    for (const prefix of graduatePrefixes.slice(0, 3)) { // Top 3 graduate prefixes
+      searchTerms.push(`${prefix} ${industry} uk`);
+      searchTerms.push(`${prefix} ${industry} jobs uk`);
+    }
     
-    // Entry level and junior
-    'entry level',
-    'junior',
-    'trainee',
-    'apprentice',
-    
-    // Placement terms (comprehensive synonyms)
-    'placement',
-    'industrial placement',
-    'placement year',
-    'year in industry',
-    'work experience placement',
-    'student placement',
-    'work placement',
-    'industry placement',
-    'professional placement',
-    'year placement',
-    '12 month placement',
-    'year long placement',
-    'industrial experience',
-    'year in industry placement',
-    'sandwich placement',
-    'sandwich course',
-    'sandwich degree',
-    'sandwich year',
-    'thick sandwich',
-    'thin sandwich',
-    'co-op',
-    'coop',
-    'cooperative placement',
-    'co-operative education',
-    'practicum',
-    'industrial year',
-    'placement opportunity',
-    'work-based learning',
-    'work integrated learning',
-    'professional year',
-    'industry year',
-    'placement programme',
-    'placement program',
-    'industrial year out',
-    'year out placement',
-    'work experience year',
-    'industrial training',
-    'professional training year',
+    // Placement terms (comprehensive)
+    for (const prefix of placementPrefixes.slice(0, 6)) { // Top 6 placement prefixes
+      searchTerms.push(`${prefix} ${industry} uk`);
+      searchTerms.push(`${industry} ${prefix} uk`);
+    }
     
     // Internship terms
-    'internship',
-    'summer internship',
-    'winter internship',
-    'paid internship',
-    'graduate internship',
-    
-    // Additional variations
-    'new graduate',
-    'recent graduate',
-    'graduate entry',
-    'graduate level',
-    'graduate scheme 2024',
-    'graduate scheme 2025',
-    'graduate program 2024',
-    'graduate program 2025'
+    for (const prefix of internshipPrefixes.slice(0, 2)) { // Top 2 internship prefixes
+      searchTerms.push(`${prefix} ${industry} uk`);
+      searchTerms.push(`${industry} ${prefix} uk`);
+    }
+  }
+
+  // Other industries: core terms only (graduate, placement, internship)
+  for (const industry of otherIndustries) {
+    searchTerms.push(`graduate ${industry} uk`);
+    searchTerms.push(`placement ${industry} uk`);
+    searchTerms.push(`${industry} placement uk`);
+    searchTerms.push(`internship ${industry} uk`);
+  }
+
+  // Additional placement synonyms (standalone)
+  const placementTerms = [
+    'placement year in uk',
+    'year in industry uk',
+    'industrial placement uk',
+    'sandwich placement uk',
+    'sandwich course uk',
+    'sandwich degree uk',
+    'co-op uk',
+    'cooperative placement uk',
+    'work placement uk',
+    'student placement uk',
+    'professional placement uk',
+    'industry placement uk',
+    '12 month placement uk',
+    'year long placement uk',
+    'industrial year uk',
+    'placement programme uk',
+    'placement program uk'
   ];
+  searchTerms.push(...placementTerms);
+
+  // Location-specific searches for major UK cities (graduate, placement, internship)
+  const majorCities = ['london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool'];
+  const cityJobTypes = ['graduate', 'placement', 'internship'];
+  
+  for (const city of majorCities) {
+    for (const jobType of cityJobTypes) {
+      searchTerms.push(`${jobType} jobs ${city} uk`);
+      searchTerms.push(`${jobType} ${city} uk`);
+    }
+  }
 
   // Site-constrained targets (UK graduate boards)
   const sites = [
@@ -155,7 +174,13 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   ];
 
   const jobsPerTerm: { [term: string]: number } = {};
-  const MAX_SEARCHES_PER_DAY = 200; // Conservative limit for JSearch (higher limit than LinkedIn)
+  
+  // Calculate daily limit: 50,000/month ≈ 1,667/day
+  // Each search with num_pages=5 can return up to 50 jobs (5 pages × 10 jobs/page)
+  // To hit quota: ~1,667 jobs/day ÷ 50 jobs/search ≈ 33 searches/day minimum
+  // But we want more variety, so aim for ~100-150 searches/day
+  // With pagination multiplier (2x for 2-10 pages), we can do more searches
+  const MAX_SEARCHES_PER_DAY = 150;
   let totalSearches = 0;
   
   try {
@@ -165,34 +190,26 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         break;
       }
       
-      console.log(`  🔍 Searching JSearch for: "${term}" (UK-wide)`);
+      console.log(`  🔍 Searching JSearch for: "${term}"`);
       totalSearches++;
       
       try {
-        // JSearch API endpoint with optimized query parameters
-        // Parameters used:
-        // - query: Search term for job title/keywords
-        // - location: Geographic location filter (United Kingdom)
-        // - page: Starting page number
-        // - num_pages: Number of pages to fetch (maximize for quota)
-        // - job_requirements: Filter by experience level (entry_level for graduates)
-        // - date_posted: Filter by posting date (month = last 30 days, gets fresh jobs)
-        // - employment_types: Filter job types (fulltime, internship for graduates)
-        // - jobs_per_page: Results per page (default 10, max typically 20-30)
-        const encodedTerm = encodeURIComponent(term);
-        
-        // Build URL with additional filters for better targeting
-        // Note: employment_types parameter removed - not supported by API or causes errors
-        // Using job_requirements=entry_level and date_posted=month for filtering instead
+        // JSearch API parameters per documentation:
+        // - query: Free-form search query (include job title and location)
+        // - country: UK country code (uk)
+        // - page: Starting page (1-50)
+        // - num_pages: Number of pages (1-50, 2-10 pages charged 2x, >10 pages charged 3x)
+        // - date_posted: all, today, 3days, week, month
+        // - employment_types: FULLTIME, CONTRACTOR, PARTTIME, INTERN (comma-delimited)
+        // - job_requirements: no_experience, under_3_years_experience, more_than_3_years_experience, no_degree (comma-delimited)
         const urlParams = new URLSearchParams({
           query: term,
-          location: 'United Kingdom',
+          country: 'uk',
           page: '1',
-          num_pages: '5',
-          job_requirements: 'entry_level', // Focus on entry-level roles
-          date_posted: 'month', // Get jobs posted in last 30 days
-          // employment_types removed - not supported
-          jobs_per_page: '20' // More results per page
+          num_pages: '5', // 5 pages = 50 jobs max, charged 2x (worth it for coverage)
+          date_posted: 'month', // Last 30 days
+          employment_types: 'FULLTIME,INTERN', // Graduate roles and internships
+          job_requirements: 'no_experience,under_3_years_experience' // Entry-level focus
         });
         
         const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
@@ -208,7 +225,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         if (!response.ok) {
           const errorText = await response.text();
           console.warn(`  ⚠️  JSearch API request failed: ${response.status} ${response.statusText}`);
-          console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
+          console.warn(`  📄 Error response: ${errorText.substring(0, 300)}`);
           continue;
         }
 
@@ -223,40 +240,60 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           console.log(`  📦 Found ${termJobsFound} jobs for "${term}"`);
           jobsPerTerm[term] = (jobsPerTerm[term] || 0) + termJobsFound;
           
-          // Debug: Show first few jobs to understand the data structure
+          // Debug: Show first job to understand the data structure
           if (jobArray.length > 0) {
             const sampleJob = jobArray[0];
-            console.log(`  🔍 Sample job: ${sampleJob.job_title || sampleJob.title} at ${sampleJob.employer_name || sampleJob.company_name || 'Unknown'}`);
+            console.log(`  🔍 Sample: ${sampleJob.job_title || sampleJob.title} at ${sampleJob.employer_name || sampleJob.company_name || 'Unknown'}`);
           }
           
           for (const job of jobArray) {
             try {
+              // Get best apply URL from apply_options array (prefer direct links)
+              let bestApplyUrl = job.job_apply_link || '';
+              if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
+                // Prefer direct apply links
+                const directLink = job.apply_options.find((opt: any) => opt.is_direct === true);
+                if (directLink && directLink.apply_link) {
+                  bestApplyUrl = directLink.apply_link;
+                } else if (job.apply_options[0] && job.apply_options[0].apply_link) {
+                  bestApplyUrl = job.apply_options[0].apply_link;
+                }
+              }
+              
+              // Get job description (may be missing for some jobs)
+              const jobDescription = job.job_description || job.description || '';
+              
               const canonicalJob: CanonicalJob = {
                 title: job.job_title || job.title || 'Unknown Title',
                 company: { name: job.employer_name || job.company_name || job.employer || 'Unknown Company' },
-                location: job.job_city || job.job_state || job.location || job.job_location || 'UK',
-                applyUrl: job.job_apply_link || job.apply_url || job.job_url || job.url || '',
-                descriptionText: job.job_description || job.description || job.job_highlights?.summary?.[0] || '',
-                descriptionHtml: job.job_description || job.description || '',
+                location: job.job_city || job.job_location || job.location || job.job_state || 'UK',
+                applyUrl: bestApplyUrl,
+                descriptionText: jobDescription,
+                descriptionHtml: jobDescription,
                 source: 'JSearch API (via RapidAPI)',
                 sourceUrl: 'https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch',
-                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + (job.job_description || job.description || '')),
+                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + jobDescription),
                 salary: job.job_min_salary || job.job_max_salary ? {
                   min: job.job_min_salary,
                   max: job.job_max_salary,
                   currency: job.job_salary_currency || 'GBP'
                 } : undefined,
-                applyDeadline: job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at ? 
-                  toISO(job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at) : undefined,
+                applyDeadline: job.job_posted_at_datetime_utc ? 
+                  toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
                 hash: generateHash(job.job_title || job.title, job.employer_name || job.company_name, job.job_id || job.id)
               };
 
               // Filter for relevant job types (placement, graduate, or internship)
-              // Location is already filtered by API parameter (United Kingdom)
+              // Location is already filtered by country=uk parameter
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
+                // If description is missing or too short, enhance it from apply URL
+                if (!canonicalJob.descriptionText || canonicalJob.descriptionText.length < 200) {
+                  console.log(`  🔍 Enhancing description for: ${canonicalJob.title}`);
+                  await enhanceJobDescription(canonicalJob);
+                }
                 jobs.push(canonicalJob);
               }
             } catch (error) {
@@ -265,11 +302,9 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           }
         } else {
           console.log(`  📄 No jobs found for "${term}"`);
-          // Debug: Show the actual response structure
-          console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
         }
 
-        // Rate limiting - wait between requests
+        // Rate limiting - wait between requests (2 seconds to avoid hitting rate limits)
         await new Promise(resolve => setTimeout(resolve, 2000));
         
       } catch (error) {
@@ -282,10 +317,15 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   }
 
   // Site-constrained queries to focus on specific UK boards
-  // Maximize site searches to get more targeted results
+  // Use fewer searches per site to stay within daily limit
   try {
+    const siteSearchTerms = [
+      'graduate', 'graduate scheme', 'placement', 'industrial placement', 
+      'year in industry', 'internship', 'summer internship'
+    ];
+    
     for (const site of sites) {
-      for (const term of searchTerms.slice(0, 10)) { // Increase to 10 terms per site
+      for (const term of siteSearchTerms) {
         if (totalSearches >= MAX_SEARCHES_PER_DAY) {
           console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping site searches`);
           break;
@@ -296,17 +336,15 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         totalSearches++;
         
         try {
-          // Site-constrained search with optimized parameters
-          // Same filters as UK-wide but with site:domain in query
+          // Site-constrained search with same filters
           const urlParams = new URLSearchParams({
             query: query, // Already includes site:domain
-            location: 'United Kingdom',
+            country: 'uk',
             page: '1',
-            num_pages: '4',
-            job_requirements: 'entry_level', // Focus on entry-level roles
-            date_posted: 'month', // Get jobs posted in last 30 days
-            // employment_types removed - not supported
-            jobs_per_page: '20' // More results per page
+            num_pages: '4', // 4 pages = 40 jobs max, charged 2x
+            date_posted: 'month',
+            employment_types: 'FULLTIME,INTERN',
+            job_requirements: 'no_experience,under_3_years_experience'
           });
           
           const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
@@ -321,7 +359,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           if (!response.ok) {
             const errorText = await response.text();
             console.warn(`    ⚠️  JSearch site request failed: ${response.status} ${response.statusText}`);
-            console.warn(`    📄 Error response: ${errorText.substring(0, 200)}`);
+            console.warn(`    📄 Error response: ${errorText.substring(0, 300)}`);
             continue;
           }
 
@@ -337,23 +375,38 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
           for (const job of jobArray) {
             try {
+              // Get best apply URL from apply_options array (prefer direct links)
+              let bestApplyUrl = job.job_apply_link || '';
+              if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
+                // Prefer direct apply links
+                const directLink = job.apply_options.find((opt: any) => opt.is_direct === true);
+                if (directLink && directLink.apply_link) {
+                  bestApplyUrl = directLink.apply_link;
+                } else if (job.apply_options[0] && job.apply_options[0].apply_link) {
+                  bestApplyUrl = job.apply_options[0].apply_link;
+                }
+              }
+              
+              // Get job description (may be missing for some jobs)
+              const jobDescription = job.job_description || job.description || '';
+              
               const canonicalJob: CanonicalJob = {
                 title: job.job_title || job.title || 'Unknown Title',
                 company: { name: job.employer_name || job.company_name || job.employer || 'Unknown Company' },
-                location: job.job_city || job.job_state || job.location || job.job_location || 'UK',
-                applyUrl: job.job_apply_link || job.apply_url || job.job_url || job.url || '',
-                descriptionText: job.job_description || job.description || job.job_highlights?.summary?.[0] || '',
-                descriptionHtml: job.job_description || job.description || '',
+                location: job.job_city || job.job_location || job.location || job.job_state || 'UK',
+                applyUrl: bestApplyUrl,
+                descriptionText: jobDescription,
+                descriptionHtml: jobDescription,
                 source: `JSearch API (${site.key})`,
                 sourceUrl: `https://jsearch.p.rapidapi.com/search?site=${site.domain}`,
-                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + (job.job_description || job.description || '')),
+                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + jobDescription),
                 salary: job.job_min_salary || job.job_max_salary ? {
                   min: job.job_min_salary,
                   max: job.job_max_salary,
                   currency: job.job_salary_currency || 'GBP'
                 } : undefined,
-                applyDeadline: job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at ? 
-                  toISO(job.job_posted_at_datetime_utc || job.job_posted_at || job.posted_at) : undefined,
+                applyDeadline: job.job_posted_at_datetime_utc ? 
+                  toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
                 hash: generateHash(job.job_title || job.title, job.employer_name || job.company_name, job.job_id || job.id)
               };
@@ -361,6 +414,11 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
+                // If description is missing or too short, enhance it from apply URL
+                if (!canonicalJob.descriptionText || canonicalJob.descriptionText.length < 200) {
+                  console.log(`    🔍 Enhancing description for: ${canonicalJob.title}`);
+                  await enhanceJobDescription(canonicalJob);
+                }
                 jobs.push(canonicalJob);
               }
             } catch (error) {
@@ -383,13 +441,14 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     console.log(`\n📊 JSearch Summary:`);
     const sortedTerms = Object.entries(jobsPerTerm)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 20); // Show top 20 terms
+      .slice(0, 30); // Show top 30 terms
     sortedTerms.forEach(([term, count]) => {
       console.log(`  "${term}": ${count} jobs`);
     });
     const totalJobsFromAPI = Object.values(jobsPerTerm).reduce((sum, count) => sum + count, 0);
     console.log(`  📈 Total jobs from API: ${totalJobsFromAPI}`);
     console.log(`  📉 After filtering: ${jobs.length} relevant jobs`);
+    console.log(`  🔢 Total searches performed: ${totalSearches}`);
   }
 
   console.log(`📊 JSearch API: Found ${jobs.length} total jobs`);
@@ -470,4 +529,3 @@ function generateHash(title: string, company: string, id?: string): string {
   const content = `${title}-${company}-${id || Date.now()}`;
   return Buffer.from(content).toString('base64').slice(0, 16);
 }
-

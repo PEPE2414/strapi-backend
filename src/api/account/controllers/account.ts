@@ -88,8 +88,14 @@ export default {
         userId
       );
 
-      // 4) Check if user already has a plan
+      // 4) Check if user already has a plan or packages
       if (user.plan && user.plan !== 'none') {
+        return ctx.badRequest('You already have an active plan');
+      }
+      
+      // Check if user has any active packages
+      const packagesArr = Array.isArray(user.packages) ? user.packages : [];
+      if (packagesArr.length > 0) {
         return ctx.badRequest('You already have an active plan');
       }
 
