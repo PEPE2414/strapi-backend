@@ -1106,6 +1106,10 @@ export default {
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
 
+      // Get frontend URL for dashboard links
+      const frontendUrl = process.env.FRONTEND_URL || 'https://your-frontend-domain.com';
+      const dashboardUrl = `${frontendUrl}/app/dashboard`;
+
       const reminders: any = {
         applications: [],
         followUps: [],
@@ -1164,6 +1168,7 @@ export default {
                 reminderIndex: 1,
                 reminderCount: reminderCount, // 1 or 2
                 isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
+                dashboardUrl: dashboardUrl,
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1184,6 +1189,7 @@ export default {
                 reminderIndex: 2,
                 reminderCount: reminderCount, // Always 2 if second reminder is configured
                 isLastReminder: true, // Always true for second reminder
+                dashboardUrl: dashboardUrl,
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1231,6 +1237,7 @@ export default {
                 reminderIndex: 1,
                 reminderCount: reminderCount, // 1 or 2
                 isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
+                dashboardUrl: dashboardUrl,
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1259,6 +1266,7 @@ export default {
                   reminderIndex: 2,
                   reminderCount: reminderCount, // Always 2 if second reminder is configured
                   isLastReminder: true, // Always true for second reminder
+                  dashboardUrl: dashboardUrl,
                   application: {
                     id: app.id,
                     title: app.title,
@@ -1311,6 +1319,7 @@ export default {
                 reminderIndex: 1,
                 reminderCount: reminderCount, // 1 or 2
                 isLastReminder: !hasSecondReminder, // true if 1/1, false if 1/2
+                dashboardUrl: dashboardUrl,
                 application: {
                   id: app.id,
                   title: app.title,
@@ -1331,6 +1340,7 @@ export default {
                 reminderIndex: 2,
                 reminderCount: reminderCount, // Always 2 if second reminder is configured
                 isLastReminder: true, // Always true for second reminder
+                dashboardUrl: dashboardUrl,
                 application: {
                   id: app.id,
                   title: app.title,
