@@ -110,5 +110,15 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'GET',
+      path: '/profile/reminders-needed',
+      handler: 'profile.getRemindersNeeded',
+      config: {
+        auth: false, // API key auth handled in controller
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };

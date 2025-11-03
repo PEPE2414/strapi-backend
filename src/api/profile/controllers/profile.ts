@@ -1086,4 +1086,238 @@ export default {
       ctx.throw(500, 'Debug failed');
     }
   },
+
+  // ====== Get users who need email reminders (for n8n automation) ======
+  async getRemindersNeeded(ctx) {
+    try {
+      console.log('[profile:getRemindersNeeded] Starting request');
+      
+      // Simple API key check for security (you should set this in your .env)
+      const apiKey = ctx.request.header['x-api-key'] || ctx.query.apiKey;
+      const expectedKey = process.env.REMINDERS_API_KEY || 'change-me-in-production';
+      
+      if (!apiKey || apiKey !== expectedKey) {
+        console.log('[profile:getRemindersNeeded] Invalid or missing API key');
+        return ctx.unauthorized('Invalid API key');
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const reminders: any = {
+        applications: [],
+        followUps: [],
+        interviews: [],
+      };
+
+      // Get all users with notification preferences
+      const users = await strapi.entityService.findMany('plugin::users-permissions.user', {
+        filters: {
+          notificationPrefs: { $notNull: true },
+        },
+      });
+
+      console.log(`[profile:getRemindersNeeded] Found ${users.length} users with notification preferences`);
+
+      for (const user of users) {
+        const prefs = user.notificationPrefs || {};
+        
+        // Parse JSON if it's a string
+        const notificationPrefs = typeof prefs === 'string' ? JSON.parse(prefs) : prefs;
+
+        // 1. Application deadline reminders
+        if (notificationPrefs.applications?.enabled) {
+          const leadDays = notificationPrefs.applications.leadDays || 0;
+          const secondReminder = notificationPrefs.applications.secondReminder || 0;
+
+          // Get user's applications
+          const applications = await strapi.entityService.findMany('api::application.application', {
+            filters: {
+              owner: { id: user.id },
+              deadline: { $notNull: true },
+              deadline: { $gte: today.toISOString().split('T')[0] }, // Only future deadlines
+            },
+          });
+
+          for (const app of applications) {
+            if (!app.deadline) continue;
+            
+            const deadline = new Date(app.deadline);
+            deadline.setHours(0, 0, 0, 0);
+            
+            const daysUntilDeadline = Math.ceil((deadline.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+            // First reminder check
+            if (daysUntilDeadline === leadDays) {
+              reminders.applications.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'first',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  deadline: app.deadline,
+                },
+                daysBefore: leadDays,
+              });
+            }
+
+            // Second reminder check (if configured and different from first)
+            if (secondReminder > 0 && secondReminder !== leadDays && daysUntilDeadline === secondReminder) {
+              reminders.applications.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'second',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  deadline: app.deadline,
+                },
+                daysBefore: secondReminder,
+              });
+            }
+          }
+        }
+
+        // 2. Follow-up reminders
+        if (notificationPrefs.followUps?.enabled) {
+          const daysAfter = notificationPrefs.followUps.daysAfter || 0;
+          const secondReminder = notificationPrefs.followUps.secondReminder || 0;
+
+          // Get user's applications that need follow-up
+          const applications = await strapi.entityService.findMany('api::application.application', {
+            filters: {
+              owner: { id: user.id },
+              stage: { $in: ['Phase1', 'Phase2', 'Assessment'] }, // Stages that might need follow-up
+            },
+          });
+
+          for (const app of applications) {
+            if (!app.createdAt) continue;
+            
+            const createdAt = new Date(app.createdAt);
+            createdAt.setHours(0, 0, 0, 0);
+            
+            const daysSinceApplication = Math.floor((today.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
+
+            // First follow-up reminder
+            if (daysSinceApplication === daysAfter) {
+              reminders.followUps.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'first',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  appliedDate: app.createdAt,
+                },
+                daysAfter: daysAfter,
+              });
+            }
+
+            // Second follow-up reminder (if configured)
+            if (secondReminder > 0 && daysSinceApplication === daysAfter + secondReminder) {
+              reminders.followUps.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'second',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  appliedDate: app.createdAt,
+                },
+                daysAfter: daysAfter + secondReminder,
+              });
+            }
+          }
+        }
+
+        // 3. Interview reminders
+        if (notificationPrefs.interviews?.enabled) {
+          const leadDays = notificationPrefs.interviews.leadDays || 0;
+          const secondReminder = notificationPrefs.interviews.secondReminder || 0;
+
+          // Get user's applications with interview stage and nextActionDate
+          const applications = await strapi.entityService.findMany('api::application.application', {
+            filters: {
+              owner: { id: user.id },
+              stage: 'Interview',
+              nextActionDate: { $notNull: true },
+              nextActionDate: { $gte: today.toISOString() }, // Only future interviews
+            },
+          });
+
+          for (const app of applications) {
+            if (!app.nextActionDate) continue;
+            
+            const interviewDate = new Date(app.nextActionDate);
+            interviewDate.setHours(0, 0, 0, 0);
+            
+            const daysUntilInterview = Math.ceil((interviewDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+            // First interview reminder
+            if (daysUntilInterview === leadDays) {
+              reminders.interviews.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'first',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  interviewDate: app.nextActionDate,
+                },
+                daysBefore: leadDays,
+              });
+            }
+
+            // Second interview reminder (if configured and different from first)
+            if (secondReminder > 0 && secondReminder !== leadDays && daysUntilInterview === secondReminder) {
+              reminders.interviews.push({
+                userId: user.id,
+                email: user.email,
+                preferredName: user.preferredName || user.username,
+                reminderType: 'second',
+                application: {
+                  id: app.id,
+                  title: app.title,
+                  company: app.company,
+                  interviewDate: app.nextActionDate,
+                },
+                daysBefore: secondReminder,
+              });
+            }
+          }
+        }
+      }
+
+      console.log(`[profile:getRemindersNeeded] Found ${reminders.applications.length} application reminders, ${reminders.followUps.length} follow-up reminders, ${reminders.interviews.length} interview reminders`);
+
+      ctx.body = {
+        success: true,
+        date: today.toISOString().split('T')[0],
+        reminders,
+        summary: {
+          applications: reminders.applications.length,
+          followUps: reminders.followUps.length,
+          interviews: reminders.interviews.length,
+          total: reminders.applications.length + reminders.followUps.length + reminders.interviews.length,
+        },
+      };
+    } catch (e: any) {
+      console.error('[profile:getRemindersNeeded] unexpected error:', e?.message || e);
+      ctx.throw(500, 'Failed to get reminders needed');
+    }
+  },
 };
