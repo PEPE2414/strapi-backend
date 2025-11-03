@@ -8,6 +8,14 @@ export default {
     strapi.server.app.proxy = true;
   },
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    // Run trial fields migration
+    try {
+      await runTrialFieldsMigration(strapi);
+      strapi.log.info('✅ Trial fields migration completed');
+    } catch (error) {
+      strapi.log.warn('⚠️  Trial fields migration failed:', error);
+    }
+
     try {
       // Grant permissions to authenticated role for custom API routes using direct database approach
       const authenticatedRole = await strapi.db.query('plugin::users-permissions.role').findOne({
@@ -71,3 +79,36 @@ export default {
     }
   },
 };
+
+async function runTrialFieldsMigration(strapi: Core.Strapi) {
+  const hasTrialActive = await strapi.db.connection.schema.hasColumn('up_users', 'trial_active');
+  const hasTrialEndsAt = await strapi.db.connection.schema.hasColumn('up_users', 'trial_ends_at');
+  const hasTrialLimits = await strapi.db.connection.schema.hasColumn('up_users', 'trial_limits');
+
+  if (!hasTrialActive || !hasTrialEndsAt || !hasTrialLimits) {
+    strapi.log.info('🔧 Adding trial fields to up_users table...');
+    
+    if (!hasTrialActive) {
+      await strapi.db.connection.schema.alterTable('up_users', (table) => {
+        table.boolean('trial_active').defaultTo(false);
+      });
+      strapi.log.info('✅ Added trial_active column');
+    }
+
+    if (!hasTrialEndsAt) {
+      await strapi.db.connection.schema.alterTable('up_users', (table) => {
+        table.dateTime('trial_ends_at').nullable();
+      });
+      strapi.log.info('✅ Added trial_ends_at column');
+    }
+
+    if (!hasTrialLimits) {
+      await strapi.db.connection.schema.alterTable('up_users', (table) => {
+        table.jsonb('trial_limits').nullable();
+      });
+      strapi.log.info('✅ Added trial_limits column');
+    }
+  } else {
+    strapi.log.info('ℹ️  Trial fields already exist in up_users table');
+  }
+}
