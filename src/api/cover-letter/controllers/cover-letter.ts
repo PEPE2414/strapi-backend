@@ -1,4 +1,5 @@
 import { factories } from '@strapi/strapi';
+import { checkCoverLetterAccess } from '../../../services/trialAccess';
 
 export default factories.createCoreController('api::cover-letter.cover-letter' as any, ({ strapi }) => ({
   /**
@@ -119,17 +120,20 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
     }
     const cleanSavedJobId = savedJobId == null ? null : String(savedJobId);
 
-    // Load latest credits/points/cvText/packages
+    // Load latest user data to check trial/plan access
     const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
       where: { id: userId },
-      select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints', 'packages'],
+      select: ['id', 'coverLetterCredits', 'cvText', 'coverLetterPoints', 'packages', 'plan', 'trialActive', 'trialEndsAt', 'trialLimits'],
     });
 
-    const credits = freshUser?.coverLetterCredits ?? 0;
-    const packagesArr = Array.isArray((freshUser as any)?.packages) ? (freshUser as any).packages : [];
-    const entitled = packagesArr.includes('find-track') || packagesArr.includes('fast-track');
-    const allow = entitled || credits > 0;
-    if (!allow) return ctx.throw(402, 'No cover letter credits');
+    // Check if user has access using trial helper
+    const accessCheck = await checkCoverLetterAccess(freshUser as any, userId);
+    if (!accessCheck.hasAccess) {
+      if (accessCheck.limit !== undefined && accessCheck.remaining !== undefined) {
+        return ctx.throw(402, `You've reached your trial limit of ${accessCheck.limit} cover letters`);
+      }
+      return ctx.throw(402, 'No cover letter access. Upgrade or start a trial to continue.');
+    }
 
     // Create CL (pending) - ensure user is always set
     if (!userId) {
@@ -166,14 +170,6 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
           resourceId: cl.id,
           meta: { source: source || 'manual' },
         },
-      });
-    }
-
-    // Decrement credits only if not entitled
-    if (!entitled) {
-      await strapi.db.query('plugin::users-permissions.user').update({
-        where: { id: userId },
-        data: { coverLetterCredits: Math.max(0, credits - 1) },
       });
     }
 

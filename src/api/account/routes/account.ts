@@ -10,5 +10,13 @@ export default {
         // (No need to toggle any Strapi "Permissions" in Admin for this custom route.)
       },
     },
+    {
+      method: 'POST',
+      path: '/account/start-trial',
+      handler: 'account.startTrial',
+      config: {
+        // We verify the JWT inside the controller, so no public access here.
+      },
+    },
   ],
 };

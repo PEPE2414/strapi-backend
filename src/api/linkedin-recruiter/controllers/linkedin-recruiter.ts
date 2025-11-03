@@ -1,3 +1,5 @@
+import { checkRecruiterLookupAccess } from '../../../services/trialAccess';
+
 export default {
   async search(ctx) {
     // Manual JWT verification since auth: false bypasses built-in auth
@@ -17,17 +19,37 @@ export default {
       return ctx.unauthorized('Invalid token');
     }
 
+    const userId = Number(user.id);
+    if (!userId || !Number.isInteger(userId)) {
+      return ctx.badRequest('Invalid user ID');
+    }
+
     const { company, roleKeywords, location, limit } = ctx.request.body;
 
     if (!company || !company.trim()) {
       return ctx.badRequest('Company is required');
     }
 
+    // Load latest user data to check trial/plan access
+    const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+      where: { id: userId },
+      select: ['id', 'packages', 'plan', 'trialActive', 'trialEndsAt', 'trialLimits'],
+    });
+
+    // Check if user has access using trial helper
+    const accessCheck = await checkRecruiterLookupAccess(freshUser as any, userId);
+    if (!accessCheck.hasAccess) {
+      if (accessCheck.limit !== undefined && accessCheck.remaining !== undefined) {
+        return ctx.throw(402, `You've reached your trial limit of ${accessCheck.limit} recruiter lookups`);
+      }
+      return ctx.throw(402, 'No recruiter lookup access. Upgrade or start a trial to continue.');
+    }
+
     // Basic rate limiting: Check for recent searches in the last 20 seconds
     const twentySecondsAgo = new Date(Date.now() - 20000);
     const recentSearches = await strapi.entityService.findMany('api::linkedin-recruiter.linkedin-recruiter' as any, {
       filters: { 
-        owner: user.id,
+        owner: userId,
         createdAt: { $gte: twentySecondsAgo }
       },
       limit: 1

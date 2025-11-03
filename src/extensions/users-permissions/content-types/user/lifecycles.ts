@@ -54,7 +54,7 @@ export default {
         promoCode
       );
       
-      // Update user with referral data
+      // Update user with referral data (NO trial auto-activation - user must click Start trial button)
       await strapi.entityService.update('plugin::users-permissions.user', user.id, {
         data: {
           referralCode,

@@ -1,5 +1,6 @@
 // src/api/saved-job/controllers/savedtracker.ts
 // Plain controller for saved-jobs (no factories). Owner-scoped, JWT verified in-controller.
+import { checkSavedJobsAccess } from '../../../services/trialAccess';
 
 function toData(entity: any) {
   return { id: entity.id, attributes: entity };
@@ -127,6 +128,21 @@ export default {
   async create(ctx: any) {
     const userId = await getUserId(ctx);
     if (!userId) return ctx.unauthorized();
+
+    // Load latest user data to check trial/plan access
+    const freshUser = await strapi.db.query('plugin::users-permissions.user').findOne({
+      where: { id: userId },
+      select: ['id', 'packages', 'plan', 'trialActive', 'trialEndsAt', 'trialLimits'],
+    });
+
+    // Check if user has access using trial helper
+    const accessCheck = await checkSavedJobsAccess(freshUser as any, userId);
+    if (!accessCheck.hasAccess) {
+      if (accessCheck.limit !== undefined && accessCheck.remaining !== undefined) {
+        return ctx.throw(402, `You've reached your trial limit of ${accessCheck.limit} saved jobs`);
+      }
+      return ctx.throw(402, 'No saved jobs access. Upgrade or start a trial to continue.');
+    }
 
     const body = (ctx.request.body?.data || ctx.request.body || {}) as any;
     if (body.owner) delete body.owner;

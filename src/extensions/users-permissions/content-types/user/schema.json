@@ -173,6 +173,21 @@
       "relation": "oneToMany",
       "target": "api::linkedin-optimisation.linkedin-optimisation",
       "mappedBy": "user"
+    },
+    "trialActive": {
+      "type": "boolean",
+      "default": false
+    },
+    "trialEndsAt": {
+      "type": "datetime"
+    },
+    "trialLimits": {
+      "type": "json",
+      "default": {
+        "coverLetters": 10,
+        "recruiterLookups": 10,
+        "savedJobs": 20
+      }
     }
   }
 }
