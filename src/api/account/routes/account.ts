@@ -6,8 +6,9 @@ export default {
       path: '/account/me',
       handler: 'account.updateMe',
       config: {
-        // We verify the JWT inside the controller, so no public access here.
-        // (No need to toggle any Strapi "Permissions" in Admin for this custom route.)
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -15,7 +16,9 @@ export default {
       path: '/account/start-trial',
       handler: 'account.startTrial',
       config: {
-        // We verify the JWT inside the controller, so no public access here.
+        auth: false, // Bypass permission checks, verify auth in controller
+        policies: [],
+        middlewares: [],
       },
     },
   ],
