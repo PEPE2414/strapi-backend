@@ -1356,6 +1356,8 @@ export default {
 
       console.log(`[profile:getRemindersNeeded] Found ${reminders.applications.length} application reminders, ${reminders.followUps.length} follow-up reminders, ${reminders.interviews.length} interview reminders`);
 
+      // Set explicit JSON content type
+      ctx.type = 'json';
       ctx.body = {
         success: true,
         date: today.toISOString().split('T')[0],
