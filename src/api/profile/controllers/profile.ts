@@ -1141,8 +1141,7 @@ export default {
             filters: {
               owner: { id: user.id },
               deadline: { 
-                $notNull: true,
-                $gte: today.toISOString().split('T')[0] // Only future deadlines
+                $gte: today.toISOString().split('T')[0] // Only future deadlines (implies not null)
               },
             },
           });
@@ -1289,8 +1288,7 @@ export default {
               owner: { id: user.id },
               stage: 'Interview',
               nextActionDate: { 
-                $notNull: true,
-                $gte: today.toISOString() // Only future interviews
+                $gte: today.toISOString() // Only future interviews (implies not null)
               },
             },
           });
