@@ -1090,16 +1090,30 @@ export default {
   // ====== Get users who need email reminders (for n8n automation) ======
   async getRemindersNeeded(ctx) {
     try {
-      console.log('[profile:getRemindersNeeded] Starting request');
+      // Log immediately to verify request reaches here
+      console.log('[profile:getRemindersNeeded] Request received');
+      console.log('[profile:getRemindersNeeded] Headers:', JSON.stringify(ctx.request.header));
+      console.log('[profile:getRemindersNeeded] Query:', JSON.stringify(ctx.query));
+      console.log('[profile:getRemindersNeeded] Method:', ctx.method);
+      console.log('[profile:getRemindersNeeded] URL:', ctx.url);
       
       // Simple API key check for security (you should set this in your .env)
-      const apiKey = ctx.request.header['x-api-key'] || ctx.query.apiKey;
+      const apiKey = ctx.request.header['x-api-key'] || ctx.request.header['X-Api-Key'] || ctx.query.apiKey;
       const expectedKey = process.env.REMINDERS_API_KEY || 'change-me-in-production';
+      
+      console.log('[profile:getRemindersNeeded] API key provided:', !!apiKey);
+      console.log('[profile:getRemindersNeeded] Expected key exists:', !!expectedKey);
       
       if (!apiKey || apiKey !== expectedKey) {
         console.log('[profile:getRemindersNeeded] Invalid or missing API key');
-        return ctx.unauthorized('Invalid API key');
+        console.log('[profile:getRemindersNeeded] Provided:', apiKey ? 'present' : 'missing');
+        console.log('[profile:getRemindersNeeded] Expected:', expectedKey ? 'present' : 'missing');
+        ctx.status = 401;
+        ctx.body = { error: 'Invalid or missing API key' };
+        return;
       }
+      
+      console.log('[profile:getRemindersNeeded] API key validated successfully');
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
