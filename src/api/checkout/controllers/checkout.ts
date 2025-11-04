@@ -134,7 +134,22 @@ export default {
 
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      ctx.internalServerError('Failed to create checkout session');
+      // Return more detailed error information
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorDetails = error?.type || error?.code || 'unknown';
+      
+      console.error('Stripe error details:', {
+        message: errorMessage,
+        type: errorDetails,
+        statusCode: error?.statusCode
+      });
+      
+      ctx.internalServerError({
+        error: {
+          message: errorMessage,
+          type: errorDetails
+        }
+      });
     }
   }
 };
