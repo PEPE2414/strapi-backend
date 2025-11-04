@@ -73,15 +73,34 @@ export default {
 
       const { packageSlug, billingPeriod = 'monthly', promo, ref } = ctx.request.body;
 
-      if (!packageSlug || !PACKAGE_PRICE_MAP[packageSlug]) {
-        return ctx.badRequest('Invalid package slug');
+      console.log('Checkout request:', { packageSlug, billingPeriod, promo, ref });
+      console.log('Available packages:', Object.keys(PACKAGE_PRICE_MAP));
+      console.log('PACKAGE_PRICE_MAP structure:', JSON.stringify(PACKAGE_PRICE_MAP, null, 2));
+
+      if (!packageSlug) {
+        console.error('Package slug is missing');
+        return ctx.badRequest('Package slug is required');
+      }
+
+      const packageConfig = PACKAGE_PRICE_MAP[packageSlug];
+      console.log(`Package config for "${packageSlug}":`, packageConfig);
+
+      if (!packageConfig) {
+        const availablePackages = Object.keys(PACKAGE_PRICE_MAP).join(', ');
+        const errorMsg = `Invalid package slug: "${packageSlug}". Available packages: ${availablePackages}`;
+        console.error(errorMsg);
+        return ctx.badRequest(errorMsg);
       }
 
       // Get price ID based on package and billing period
-      const priceId = PACKAGE_PRICE_MAP[packageSlug]?.[billingPeriod] || PACKAGE_PRICE_MAP[packageSlug]?.monthly;
+      const priceId = packageConfig?.[billingPeriod] || packageConfig?.monthly;
+      
+      console.log('Price ID lookup:', { packageSlug, billingPeriod, priceId, packageConfig });
       
       if (!priceId) {
-        return ctx.badRequest(`Price ID not found for package: ${packageSlug}, billing period: ${billingPeriod}`);
+        const errorMsg = `Price ID not found for package: ${packageSlug}, billing period: ${billingPeriod}. Available periods: ${Object.keys(packageConfig).join(', ')}`;
+        console.error(errorMsg);
+        return ctx.badRequest(errorMsg);
       }
       
       // Build session parameters
