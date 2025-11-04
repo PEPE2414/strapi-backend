@@ -254,15 +254,22 @@ async function runAll() {
         // API sources (rapidapi-linkedin-jobs) already filter by location and job type
         const isAPISource = source === 'rapidapi-linkedin-jobs';
         
+        let freshnessRejected = 0;
+        let missingFieldsRejected = 0;
+        let locationRejected = 0;
+        let jobTypeRejected = 0;
+        
         const validJobs = sourceJobs.filter(job => {
           // Check if job is fresh (relaxed to 90 days)
           if (!isJobFresh(job, 90)) {
+            freshnessRejected++;
             sourceStats[source].invalid++;
             return false;
           }
 
           // Basic validation only
           if (!job.title || !job.company?.name || !job.applyUrl) {
+            missingFieldsRejected++;
             sourceStats[source].invalid++;
             return false;
           }
@@ -272,18 +279,21 @@ async function runAll() {
             // Check UK location
             const fullText = `${job.title} ${job.descriptionText || job.descriptionHtml || ''} ${job.location || ''}`;
             if (!isUKJob(fullText)) {
+              locationRejected++;
               sourceStats[source].invalid++;
               return false;
             }
 
             // Check job type
             if (!isRelevantJobType(fullText)) {
+              jobTypeRejected++;
               sourceStats[source].invalid++;
               return false;
             }
           } else {
             // For API sources, only verify job type is one of the three valid types
             if (job.jobType && job.jobType !== 'graduate' && job.jobType !== 'placement' && job.jobType !== 'internship') {
+              jobTypeRejected++;
               sourceStats[source].invalid++;
               return false;
             }
@@ -292,6 +302,14 @@ async function runAll() {
           sourceStats[source].valid++;
           return true;
         });
+        
+        // Log rejection reasons for API sources
+        if (isAPISource && sourceJobs.length > 0) {
+          const totalRejected = freshnessRejected + missingFieldsRejected + locationRejected + jobTypeRejected;
+          if (totalRejected > 0) {
+            console.log(`  📊 Rejection breakdown: ${freshnessRejected} stale, ${missingFieldsRejected} missing fields, ${locationRejected} location, ${jobTypeRejected} job type`);
+          }
+        }
 
         totalJobsFound += validJobs.length;
         
@@ -315,6 +333,12 @@ async function runAll() {
   // Flatten all results
   const results = batches.flat();
   console.log(`\n📊 Total valid jobs found: ${results.length}`);
+  console.log(`📊 Breakdown by source:`);
+  Object.entries(sourceStats).forEach(([source, stats]) => {
+    if (stats.valid > 0) {
+      console.log(`  ${source}: ${stats.valid} valid jobs (${stats.total} total, ${stats.invalid} invalid)`);
+    }
+  });
 
   // Enhanced LLM processing with better validation
   console.log('🤖 Processing job descriptions with LLM...');
@@ -387,12 +411,24 @@ async function runAll() {
 
   const duration = Math.round((Date.now() - startTime.getTime()) / 1000);
   console.log(`\n🎉 Enhanced job ingestion completed!`);
-  console.log(`📊 Total jobs found: ${results.length}`);
-  console.log(`📊 Total jobs created (NEW): ${totalCreated}`);
-  console.log(`📊 Total jobs updated (duplicates): ${totalUpdated}`);
-  console.log(`📊 Total jobs skipped: ${totalSkipped}`);
-  console.log(`📊 Total jobs processed: ${totalProcessed}`);
-  console.log(`⏱️  Duration: ${duration}s`);
+  console.log(`\n📊 Pipeline Summary:`);
+  console.log(`  Step 1 - Scraped: ${totalJobsFound} jobs (validated)`);
+  console.log(`  Step 2 - After LLM/Enhancement: ${results.length} jobs`);
+  console.log(`  Step 3 - Sent to Strapi: ${totalProcessed} jobs (created + updated)`);
+  console.log(`  Step 4 - Final Results:`);
+  console.log(`    ✅ Created (NEW): ${totalCreated} jobs`);
+  console.log(`    🔄 Updated (duplicates): ${totalUpdated} jobs`);
+  console.log(`    ⏭️  Skipped: ${totalSkipped} jobs`);
+  console.log(`\n📈 Job Loss Analysis:`);
+  const jobsLostInPipeline = results.length - totalProcessed;
+  if (jobsLostInPipeline > 0) {
+    console.log(`  ⚠️  ${jobsLostInPipeline} jobs lost during Strapi ingestion (deduplication/validation)`);
+  }
+  const jobsLostInValidation = totalJobsFound - results.length;
+  if (jobsLostInValidation > 0) {
+    console.log(`  ⚠️  ${jobsLostInValidation} jobs lost during LLM/enhancement phase`);
+  }
+  console.log(`\n⏱️  Duration: ${duration}s`);
   console.log(`🚀 Rate: ${Math.round(totalProcessed / duration)} jobs/second`);
   
   // Print source performance report

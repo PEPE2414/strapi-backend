@@ -539,22 +539,53 @@ export function isJobFresh(job: any, maxAgeDays: number = 30): boolean {
   const now = new Date();
   const maxAge = maxAgeDays * 24 * 60 * 60 * 1000; // Convert days to milliseconds
   
-  // Check posted date
-  if (job.postedAt) {
-    const posted = new Date(job.postedAt);
-    if (now.getTime() - posted.getTime() > maxAge) {
-      return false;
+  // Check posted date (multiple field names for compatibility)
+  const postedDate = job.postedAt || job.posted_at || job.datePosted || job.date_posted;
+  if (postedDate) {
+    try {
+      const posted = new Date(postedDate);
+      if (!isNaN(posted.getTime()) && now.getTime() - posted.getTime() > maxAge) {
+        return false;
+      }
+    } catch (e) {
+      // Invalid date, continue to other checks
+    }
+  }
+  
+  // Check apply deadline (API jobs often use this field)
+  const deadlineDate = job.applyDeadline || job.apply_deadline || job.deadline;
+  if (deadlineDate) {
+    try {
+      const deadline = new Date(deadlineDate);
+      if (!isNaN(deadline.getTime())) {
+        // If deadline is in the past, job is still fresh if it was posted recently
+        // For API jobs, if deadline is future, consider it fresh
+        if (deadline.getTime() > now.getTime()) {
+          return true; // Future deadline = fresh
+        }
+        // If deadline passed but was recent, still consider fresh
+        if (now.getTime() - deadline.getTime() < maxAge) {
+          return true;
+        }
+      }
+    } catch (e) {
+      // Invalid date, continue to other checks
     }
   }
   
   // Check if job has been updated recently (if we have that info)
-  if (job.updatedAt) {
-    const updated = new Date(job.updatedAt);
-    if (now.getTime() - updated.getTime() > maxAge) {
-      return false;
+  if (job.updatedAt || job.updated_at) {
+    try {
+      const updated = new Date(job.updatedAt || job.updated_at);
+      if (!isNaN(updated.getTime()) && now.getTime() - updated.getTime() > maxAge) {
+        return false;
+      }
+    } catch (e) {
+      // Invalid date, continue
     }
   }
   
   // If no dates available, assume fresh (better to include than exclude)
+  // This is especially important for API jobs that may not have postedAt
   return true;
 }
