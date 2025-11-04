@@ -1158,22 +1158,40 @@ export default {
           const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
           const reminderCount = hasSecondReminder ? 2 : 1;
 
-          // Get user's applications
-          const applications = await strapi.entityService.findMany('api::application.application', {
+          // First, get ALL applications with deadlines to see what we have
+          const allAppsWithDeadlines = await strapi.entityService.findMany('api::application.application', {
             filters: {
               owner: { id: user.id },
-              deadline: { 
-                $gte: today.toISOString().split('T')[0] // Only future deadlines (implies not null)
-              },
+              deadline: { $notNull: true },
             },
           });
 
-          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications with future deadlines`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${allAppsWithDeadlines.length} total applications with deadlines`);
+          
+          // Log all deadlines for debugging
+          allAppsWithDeadlines.forEach((app: any) => {
+            console.log(`[profile:getRemindersNeeded] App ${app.id}: ${app.title} at ${app.company} - deadline=${app.deadline} (type: ${typeof app.deadline})`);
+          });
+
+          // Filter for future deadlines in JavaScript (more reliable than Strapi filter)
+          const applications = allAppsWithDeadlines.filter((app: any) => {
+            if (!app.deadline) return false;
+            
+            // Parse deadline - handle both date strings and Date objects
+            const deadlineDate = new Date(app.deadline);
+            deadlineDate.setHours(0, 0, 0, 0);
+            
+            // Only include future or today's deadlines
+            return deadlineDate >= today;
+          });
+
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications with future deadlines (after filtering)`);
           console.log(`[profile:getRemindersNeeded] User ${user.id}: leadDays=${leadDays}, secondReminder=${secondReminder}`);
 
           for (const app of applications) {
             if (!app.deadline) continue;
             
+            // Parse deadline - handle both date strings and Date objects
             const deadline = new Date(app.deadline);
             deadline.setHours(0, 0, 0, 0);
             

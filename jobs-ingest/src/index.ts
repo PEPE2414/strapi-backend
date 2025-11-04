@@ -356,18 +356,26 @@ async function runAll() {
   // Enhanced upsert with better error handling
   console.log('💾 Ingesting jobs to Strapi...');
   const BATCH_SIZE = SCALE_CONFIG.INGEST_BATCH_SIZE;
-  let totalIngested = 0;
+  let totalCreated = 0;
+  let totalUpdated = 0;
   let totalSkipped = 0;
+  let totalProcessed = 0;
 
   for (let i = 0; i < results.length; i += BATCH_SIZE) {
     const batch = results.slice(i, i + BATCH_SIZE);
     try {
       const r = await upsertJobs(batch);
-      const count = (r as any)?.count ?? batch.length;
-      const skipped = batch.length - count;
-      totalIngested += count;
+      const created = (r as any)?.created ?? 0;
+      const updated = (r as any)?.updated ?? 0;
+      const skipped = (r as any)?.skipped ?? 0;
+      const count = (r as any)?.count ?? (created + updated);
+      
+      totalCreated += created;
+      totalUpdated += updated;
       totalSkipped += skipped;
-      console.log(`📦 Ingested batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(results.length/BATCH_SIZE)}: ${count} jobs (${skipped} skipped)`);
+      totalProcessed += count;
+      
+      console.log(`📦 Batch ${Math.floor(i/BATCH_SIZE) + 1}/${Math.ceil(results.length/BATCH_SIZE)}: ${created} created, ${updated} updated, ${skipped} skipped`);
     } catch (error) {
       console.error(`❌ Failed to ingest batch ${Math.floor(i/BATCH_SIZE) + 1}:`, error);
     }
@@ -376,10 +384,12 @@ async function runAll() {
   const duration = Math.round((Date.now() - startTime.getTime()) / 1000);
   console.log(`\n🎉 Enhanced job ingestion completed!`);
   console.log(`📊 Total jobs found: ${results.length}`);
-  console.log(`📊 Total jobs ingested: ${totalIngested}`);
+  console.log(`📊 Total jobs created (NEW): ${totalCreated}`);
+  console.log(`📊 Total jobs updated (duplicates): ${totalUpdated}`);
   console.log(`📊 Total jobs skipped: ${totalSkipped}`);
+  console.log(`📊 Total jobs processed: ${totalProcessed}`);
   console.log(`⏱️  Duration: ${duration}s`);
-  console.log(`🚀 Rate: ${Math.round(totalIngested / duration)} jobs/second`);
+  console.log(`🚀 Rate: ${Math.round(totalProcessed / duration)} jobs/second`);
   
   // Print source performance report
   console.log(`\n📈 Source Performance Report:`);
@@ -419,14 +429,16 @@ async function runAll() {
   
   console.log(`${'='.repeat(80)}`);
   
-  // Check if we met the target
-  if (totalIngested >= 1000) {
-    console.log(`\n✅ SUCCESS: Target of 1000+ jobs met! (${totalIngested} jobs ingested)`);
-  } else if (totalIngested >= 500) {
-    console.log(`\n⚠️  PARTIAL SUCCESS: ${totalIngested} jobs ingested (target: 1000+)`);
+  // Check if we met the target (based on NEW jobs created)
+  if (totalCreated >= 1000) {
+    console.log(`\n✅ SUCCESS: Target of 1000+ NEW jobs met! (${totalCreated} jobs created)`);
+  } else if (totalCreated >= 500) {
+    console.log(`\n⚠️  PARTIAL SUCCESS: ${totalCreated} NEW jobs created (target: 1000+)`);
+    console.log(`   Note: ${totalUpdated} jobs were duplicates (updated), ${totalSkipped} were skipped`);
     console.log(`   Consider setting API keys for more job boards (see documentation).`);
   } else {
-    console.log(`\n⚠️  WARNING: Target of 1000+ jobs not met. Only ${totalIngested} jobs ingested.`);
+    console.log(`\n⚠️  WARNING: Target of 1000+ NEW jobs not met. Only ${totalCreated} jobs created.`);
+    console.log(`   Note: ${totalUpdated} jobs were duplicates (updated), ${totalSkipped} were skipped`);
     console.log(`   Make sure to set API keys: ADZUNA_APP_ID, ADZUNA_APP_KEY, REED_API_KEY`);
     console.log(`   See: https://developer.adzuna.com/ and https://www.reed.co.uk/developers`);
   }

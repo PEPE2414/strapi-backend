@@ -39,6 +39,9 @@ export default {
       const priceId = PACKAGE_PRICE_MAP[packageSlug];
       
       // Build session parameters
+      // Support both embedded and hosted checkout modes
+      const isEmbedded = ctx.request.body.embedded === true;
+      
       const sessionParams: any = {
         mode: 'subscription',
         payment_method_types: ['card'],
@@ -48,8 +51,6 @@ export default {
             quantity: 1
           }
         ],
-        success_url: `${process.env.FRONTEND_URL}/app/dashboard?success=true`,
-        cancel_url: `${process.env.FRONTEND_URL}/pricing?cancelled=true`,
         client_reference_id: user.id.toString(),
         metadata: {
           userId: user.id.toString(),
@@ -58,6 +59,16 @@ export default {
           promoCode: promo || ''
         }
       };
+
+      // For embedded checkout, use embedded mode
+      if (isEmbedded) {
+        sessionParams.ui_mode = 'embedded';
+        sessionParams.return_url = `${process.env.FRONTEND_URL}/pricing?session_id={CHECKOUT_SESSION_ID}`;
+      } else {
+        // For hosted checkout, use redirect URLs
+        sessionParams.success_url = `${process.env.FRONTEND_URL}/app/dashboard?success=true`;
+        sessionParams.cancel_url = `${process.env.FRONTEND_URL}/pricing?cancelled=true`;
+      }
 
       // Handle promotion code
       if (promo) {
@@ -101,12 +112,25 @@ export default {
 
       const session = await stripe.checkout.sessions.create(sessionParams);
 
-      ctx.body = {
-        data: {
-          sessionId: session.id,
-          url: session.url
-        }
-      };
+      // For embedded checkout, the client_secret is available on the session
+      if (isEmbedded) {
+        // For embedded checkout, client_secret is available directly on the session
+        // when ui_mode is 'embedded'
+        ctx.body = {
+          data: {
+            sessionId: session.id,
+            clientSecret: session.client_secret,
+            url: session.url // Keep for fallback
+          }
+        };
+      } else {
+        ctx.body = {
+          data: {
+            sessionId: session.id,
+            url: session.url
+          }
+        };
+      }
 
     } catch (error) {
       console.error('Error creating checkout session:', error);

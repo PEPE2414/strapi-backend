@@ -46,8 +46,14 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     console.log(`Job ingest request: ${items.length} items from ${ctx.request.ip}`);
 
     let count = 0;
+    let createdCount = 0;
+    let updatedCount = 0;
+    let skippedCount = 0;
     for (const inJob of items) {
-      if (!inJob.hash) continue;
+      if (!inJob.hash) {
+        skippedCount++;
+        continue;
+      }
 
       // ensure slug exists (defensive)
       let slug = inJob.slug;
@@ -57,11 +63,52 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         slug = `${base}-${inJob.hash.slice(0,8)}`;
       }
 
-            // Use raw query to avoid TypeScript issues with hash field
-            const existing = await strapi.db.query('api::job.job').findMany({
-              where: { hash: inJob.hash },
-              limit: 1
-            });
+      // Normalize company name, title, and location for duplicate checking
+      const normalizedCompanyName = (inJob.company?.name || '').trim().toLowerCase();
+      const normalizedTitle = (inJob.title || '').trim().toLowerCase();
+      const normalizedLocation = (inJob.location || '').trim().toLowerCase();
+
+      // Check for duplicate based on company + title + location (as per requirements)
+      // First check by hash (for backward compatibility and performance)
+      let existing = await strapi.db.query('api::job.job').findMany({
+        where: { hash: inJob.hash },
+        limit: 1
+      });
+
+      // If no match by hash, check by company + title + location
+      // This ensures we catch duplicates even if hash calculation doesn't include location
+      if (!existing?.length && normalizedCompanyName && normalizedTitle) {
+        // Build query conditions - location should match if provided
+        const whereConditions: any[] = [
+          { 'company.name': { $eqi: normalizedCompanyName } },
+          { title: { $eqi: normalizedTitle } }
+        ];
+
+        // Include location in duplicate check if it's provided
+        if (normalizedLocation) {
+          whereConditions.push({ location: { $eqi: normalizedLocation } });
+        } else {
+          // If no location provided, match jobs with empty/null location
+          whereConditions.push({ 
+            $or: [
+              { location: { $null: true } },
+              { location: { $eq: '' } }
+            ]
+          });
+        }
+
+        // Query for exact match on company + title + location (case-insensitive)
+        const duplicateCheck = await strapi.db.query('api::job.job').findMany({
+          where: { $and: whereConditions },
+          populate: ['company'],
+          limit: 1
+        });
+
+        if (duplicateCheck.length > 0) {
+          existing = [duplicateCheck[0]];
+          console.log(`🔄 Duplicate detected (company+title+location): ${inJob.title} at ${inJob.company?.name} in ${inJob.location || 'no location'}`);
+        }
+      }
 
       const data = {
         ...inJob,
@@ -71,13 +118,18 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       if (existing?.length) {
         console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
         await strapi.entityService.update('api::job.job', existing[0].id, { data });
+        count++;
+        updatedCount++;
       } else {
         console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
         await strapi.entityService.create('api::job.job', { data });
+        count++;
+        createdCount++;
       }
-      count++;
     }
-    ctx.body = { ok: true, count };
+    
+    console.log(`📊 Ingest summary: ${items.length} received, ${createdCount} created, ${updatedCount} updated, ${skippedCount} skipped`);
+    ctx.body = { ok: true, count, created: createdCount, updated: updatedCount, skipped: skippedCount };
   },
 
   // Simple per-user recommendations (weights on user.preferences)
