@@ -37,6 +37,7 @@
     "description": { "type": "richtext" },
     "notes": { "type": "richtext" },
     "tags": { "type": "json" },
+    "stageDeadlines": { "type": "json" },
     "owner": {
       "type": "relation",
       "relation": "manyToOne",
