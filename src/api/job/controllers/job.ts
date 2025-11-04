@@ -110,21 +110,61 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         }
       }
 
+      // Ensure required fields are present
+      if (!inJob.source || !inJob.title || !inJob.applyUrl || !inJob.jobType || !inJob.hash) {
+        console.warn(`⚠️  Skipping job with missing required fields: ${inJob.title} at ${inJob.company?.name} (missing: ${!inJob.source ? 'source ' : ''}${!inJob.title ? 'title ' : ''}${!inJob.applyUrl ? 'applyUrl ' : ''}${!inJob.jobType ? 'jobType ' : ''}${!inJob.hash ? 'hash' : ''})`);
+        skippedCount++;
+        continue;
+      }
+
+      // Ensure jobType is valid enum value
+      if (!['internship', 'placement', 'graduate', 'other'].includes(inJob.jobType)) {
+        console.warn(`⚠️  Skipping job with invalid jobType: ${inJob.title} at ${inJob.company?.name} (jobType: ${inJob.jobType})`);
+        skippedCount++;
+        continue;
+      }
+
       const data = {
         ...inJob,
         slug
       };
 
-      if (existing?.length) {
-        console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
-        await strapi.entityService.update('api::job.job', existing[0].id, { data });
-        count++;
-        updatedCount++;
-      } else {
-        console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
-        await strapi.entityService.create('api::job.job', { data });
-        count++;
-        createdCount++;
+      try {
+        if (existing?.length) {
+          console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
+          const updated = await strapi.entityService.update('api::job.job', existing[0].id, { data });
+          if (updated) {
+            count++;
+            updatedCount++;
+          } else {
+            console.warn(`⚠️  Update returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            skippedCount++;
+          }
+        } else {
+          console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
+          const created = await strapi.entityService.create('api::job.job', { data });
+          if (created) {
+            count++;
+            createdCount++;
+            console.log(`✅ Successfully created job: ${created.id} - ${inJob.title}`);
+          } else {
+            console.warn(`⚠️  Create returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            skippedCount++;
+          }
+        }
+      } catch (error) {
+        console.error(`❌ Error creating/updating job "${inJob.title}" at ${inJob.company?.name}:`, error instanceof Error ? error.message : String(error));
+        if (error instanceof Error && error.message) {
+          console.error(`   Error details: ${error.message}`);
+          if (error.message.includes('unique') || error.message.includes('duplicate')) {
+            console.log(`   → Duplicate detected (hash/slug conflict)`);
+            skippedCount++;
+          } else {
+            skippedCount++;
+          }
+        } else {
+          skippedCount++;
+        }
       }
     }
     
