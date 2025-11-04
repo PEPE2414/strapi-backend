@@ -102,6 +102,13 @@ export default {
         console.error(errorMsg);
         return ctx.badRequest(errorMsg);
       }
+
+      // Validate that priceId is actually a Price ID (starts with 'price_') not a Product ID (starts with 'prod_')
+      if (!priceId.startsWith('price_')) {
+        const errorMsg = `Invalid Price ID format: "${priceId}". Price IDs must start with "price_". This looks like a Product ID (starts with "prod_"). Please check your environment variables in Railway.`;
+        console.error(errorMsg);
+        return ctx.badRequest(errorMsg);
+      }
       
       // Build session parameters
       // Support both embedded and hosted checkout modes
@@ -171,8 +178,15 @@ export default {
             }
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error updating price metadata:', error);
+        // If it's a Stripe error about invalid price ID, provide helpful message
+        if (error?.type === 'StripeInvalidRequestError' && error?.code === 'resource_missing') {
+          const errorMsg = `Stripe Price ID "${priceId}" not found. Please check that this Price ID exists in your Stripe account and matches the environment variable in Railway. Error: ${error.message}`;
+          console.error(errorMsg);
+          return ctx.badRequest(errorMsg);
+        }
+        // For other errors, log but continue (metadata update is optional)
       }
 
       const session = await stripe.checkout.sessions.create(sessionParams);
