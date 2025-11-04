@@ -1365,10 +1365,20 @@ export default {
             console.log(`[profile:getRemindersNeeded]   - stageDeadlines: ${JSON.stringify(app.stageDeadlines)}`);
           });
 
-          // Filter applications that have either nextActionDate or deadline set
+          // Filter applications that have nextActionDate, deadline, or stageDeadlines.Interview set
           const applications = allInterviewApps.filter((app: any) => {
-            const hasDate = app.nextActionDate || app.deadline;
-            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: hasDate=${hasDate}, nextActionDate=${app.nextActionDate}, deadline=${app.deadline}`);
+            // Check if any date field is available
+            let hasDate = app.nextActionDate || app.deadline;
+            
+            // Also check stageDeadlines if it exists
+            if (!hasDate && app.stageDeadlines) {
+              const stageDeadlines = typeof app.stageDeadlines === 'string' 
+                ? JSON.parse(app.stageDeadlines) 
+                : app.stageDeadlines;
+              hasDate = stageDeadlines?.Interview || stageDeadlines?.interview || stageDeadlines?.InterviewDate;
+            }
+            
+            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: hasDate=${hasDate}, nextActionDate=${app.nextActionDate}, deadline=${app.deadline}, stageDeadlines=${JSON.stringify(app.stageDeadlines)}`);
             return hasDate;
           });
 
@@ -1377,14 +1387,14 @@ export default {
           console.log(`[profile:getRemindersNeeded] User ${user.id}: Today=${today.toISOString().split('T')[0]}`);
 
           for (const app of applications) {
-            // Try to get interview date from multiple sources:
-            // 1. deadline field
-            // 2. nextActionDate field  
-            // 3. stageDeadlines.Interview (if it exists)
-            let interviewDateValue = app.deadline || app.nextActionDate;
+            // For interview reminders, prioritize interview-specific fields over generic deadline
+            // 1. nextActionDate (specific interview date)
+            // 2. stageDeadlines.Interview (stage-specific date)
+            // 3. deadline (fallback, but might be application deadline, not interview date)
+            let interviewDateValue = app.nextActionDate;
             
-            // Check stageDeadlines if deadline/nextActionDate aren't set
-            if (!interviewDateValue && app.stageDeadlines && typeof app.stageDeadlines === 'object') {
+            // If nextActionDate isn't set, check stageDeadlines
+            if (!interviewDateValue && app.stageDeadlines) {
               const stageDeadlines = typeof app.stageDeadlines === 'string' 
                 ? JSON.parse(app.stageDeadlines) 
                 : app.stageDeadlines;
@@ -1393,6 +1403,12 @@ export default {
               interviewDateValue = stageDeadlines?.Interview || stageDeadlines?.interview || stageDeadlines?.InterviewDate;
               
               console.log(`[profile:getRemindersNeeded] App ${app.id}: Checking stageDeadlines, found: ${interviewDateValue}`);
+            }
+            
+            // Only use deadline as last resort if nothing else is set
+            if (!interviewDateValue) {
+              interviewDateValue = app.deadline;
+              console.log(`[profile:getRemindersNeeded] App ${app.id}: Using deadline as fallback: ${interviewDateValue}`);
             }
             
             console.log(`[profile:getRemindersNeeded] Processing interview app ${app.id}: interviewDateValue=${interviewDateValue}, deadline=${app.deadline}, nextActionDate=${app.nextActionDate}, stageDeadlines=${JSON.stringify(app.stageDeadlines)}`);
