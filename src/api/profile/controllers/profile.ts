@@ -1357,32 +1357,47 @@ export default {
           
           // Log all interview apps for debugging
           allInterviewApps.forEach((app: any) => {
-            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: ${app.title} at ${app.company} - nextActionDate=${app.nextActionDate}, deadline=${app.deadline}`);
+            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: ${app.title} at ${app.company} - nextActionDate=${app.nextActionDate}, deadline=${app.deadline}, stage=${app.stage}`);
           });
 
           // Filter applications that have either nextActionDate or deadline set
           const applications = allInterviewApps.filter((app: any) => {
-            return app.nextActionDate || app.deadline;
+            const hasDate = app.nextActionDate || app.deadline;
+            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: hasDate=${hasDate}, nextActionDate=${app.nextActionDate}, deadline=${app.deadline}`);
+            return hasDate;
           });
 
           console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications in Interview stage with dates (after filtering)`);
           console.log(`[profile:getRemindersNeeded] User ${user.id}: leadDays=${leadDays}, secondReminder=${secondReminder}`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Today=${today.toISOString().split('T')[0]}`);
 
           for (const app of applications) {
             // Use deadline if available, otherwise use nextActionDate
             const interviewDateValue = app.deadline || app.nextActionDate;
             
-            if (!interviewDateValue) continue;
+            console.log(`[profile:getRemindersNeeded] Processing interview app ${app.id}: interviewDateValue=${interviewDateValue}, deadline=${app.deadline}, nextActionDate=${app.nextActionDate}`);
+            
+            if (!interviewDateValue) {
+              console.log(`[profile:getRemindersNeeded] Skipping app ${app.id}: no interview date value`);
+              continue;
+            }
             
             const interviewDate = new Date(interviewDateValue);
             interviewDate.setHours(0, 0, 0, 0);
             
+            console.log(`[profile:getRemindersNeeded] App ${app.id}: interviewDate=${interviewDate.toISOString().split('T')[0]}, today=${today.toISOString().split('T')[0]}`);
+            
             // Only process future dates
-            if (interviewDate < today) continue;
+            if (interviewDate < today) {
+              console.log(`[profile:getRemindersNeeded] Skipping app ${app.id}: interview date is in the past`);
+              continue;
+            }
             
             const daysUntilInterview = Math.ceil((interviewDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
             
-            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): interviewDate=${interviewDateValue}, daysUntilInterview=${daysUntilInterview}, leadDays=${leadDays}`);
+            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): interviewDate=${interviewDateValue}, daysUntilInterview=${daysUntilInterview}, leadDays=${leadDays}, secondReminder=${secondReminder}`);
+            console.log(`[profile:getRemindersNeeded] App ${app.id}: daysUntilInterview === leadDays? ${daysUntilInterview === leadDays}`);
+            console.log(`[profile:getRemindersNeeded] App ${app.id}: hasSecondReminder=${hasSecondReminder}, secondReminder !== leadDays? ${secondReminder !== leadDays}, daysUntilInterview === secondReminder? ${daysUntilInterview === secondReminder}`);
 
             // First interview reminder
             if (daysUntilInterview === leadDays) {
