@@ -1351,13 +1351,18 @@ export default {
               owner: { id: user.id },
               stage: 'Interview',
             },
+            populate: '*', // Populate all fields to see what we have
           });
 
           console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${allInterviewApps.length} total applications in Interview stage`);
           
-          // Log all interview apps for debugging
+          // Log all interview apps for debugging with full details
           allInterviewApps.forEach((app: any) => {
-            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: ${app.title} at ${app.company} - nextActionDate=${app.nextActionDate}, deadline=${app.deadline}, stage=${app.stage}`);
+            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: ${app.title} at ${app.company}`);
+            console.log(`[profile:getRemindersNeeded]   - stage: ${app.stage}`);
+            console.log(`[profile:getRemindersNeeded]   - deadline: ${app.deadline} (type: ${typeof app.deadline})`);
+            console.log(`[profile:getRemindersNeeded]   - nextActionDate: ${app.nextActionDate} (type: ${typeof app.nextActionDate})`);
+            console.log(`[profile:getRemindersNeeded]   - stageDeadlines: ${JSON.stringify(app.stageDeadlines)}`);
           });
 
           // Filter applications that have either nextActionDate or deadline set
@@ -1372,10 +1377,25 @@ export default {
           console.log(`[profile:getRemindersNeeded] User ${user.id}: Today=${today.toISOString().split('T')[0]}`);
 
           for (const app of applications) {
-            // Use deadline if available, otherwise use nextActionDate
-            const interviewDateValue = app.deadline || app.nextActionDate;
+            // Try to get interview date from multiple sources:
+            // 1. deadline field
+            // 2. nextActionDate field  
+            // 3. stageDeadlines.Interview (if it exists)
+            let interviewDateValue = app.deadline || app.nextActionDate;
             
-            console.log(`[profile:getRemindersNeeded] Processing interview app ${app.id}: interviewDateValue=${interviewDateValue}, deadline=${app.deadline}, nextActionDate=${app.nextActionDate}`);
+            // Check stageDeadlines if deadline/nextActionDate aren't set
+            if (!interviewDateValue && app.stageDeadlines && typeof app.stageDeadlines === 'object') {
+              const stageDeadlines = typeof app.stageDeadlines === 'string' 
+                ? JSON.parse(app.stageDeadlines) 
+                : app.stageDeadlines;
+              
+              // Check for Interview stage date
+              interviewDateValue = stageDeadlines?.Interview || stageDeadlines?.interview || stageDeadlines?.InterviewDate;
+              
+              console.log(`[profile:getRemindersNeeded] App ${app.id}: Checking stageDeadlines, found: ${interviewDateValue}`);
+            }
+            
+            console.log(`[profile:getRemindersNeeded] Processing interview app ${app.id}: interviewDateValue=${interviewDateValue}, deadline=${app.deadline}, nextActionDate=${app.nextActionDate}, stageDeadlines=${JSON.stringify(app.stageDeadlines)}`);
             
             if (!interviewDateValue) {
               console.log(`[profile:getRemindersNeeded] Skipping app ${app.id}: no interview date value`);

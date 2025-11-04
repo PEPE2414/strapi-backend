@@ -26,6 +26,7 @@ import { scrapeAllAPIJobBoards } from './sources/apiJobBoards';
 import { scrapeRapidAPILinkedInJobs } from './sources/rapidapiLinkedInJobs';
 import { scrapeGraduateBoardsDirect } from './lib/directGraduateScraper';
 import { scrapeGraduateBoardsHybrid } from './lib/hybridGraduateScraper';
+import { scrapeFinanceBankCareers } from './sources/financeBankCareers';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
@@ -224,6 +225,9 @@ async function runAll() {
         } else if (source === 'hybrid-graduate-boards') {
           console.log(`🔄 Hybrid Scraping Graduate Job Boards (Multi-Strategy)`);
           sourceJobs = await limiter.schedule(() => scrapeGraduateBoardsHybrid());
+        } else if (source === 'finance-bank-careers') {
+          console.log(`🔄 Scraping Finance & Bank Career Sites (Weekly)`);
+          sourceJobs = await limiter.schedule(() => scrapeFinanceBankCareers());
         } else if (source.startsWith('high-volume:')) {
           const boardName = source.replace('high-volume:', '');
           console.log(`🔄 Scraping High Volume Board: ${boardName}`);

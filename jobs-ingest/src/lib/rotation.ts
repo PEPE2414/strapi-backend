@@ -227,6 +227,17 @@ export function getBucketsForToday(): CrawlBucket[] {
     priority: 'low'
   });
   
+  // PRIORITY 5: Finance & Bank Career Sites (Weekly - runs on Sunday)
+  // These sites are scraped once per week due to their size and complexity
+  if (dayOfWeek === 0) { // Sunday (0 = Sunday, 6 = Saturday)
+    buckets.push({
+      id: 'finance-bank-careers',
+      name: 'Finance & Bank Career Sites (Weekly - Sunday)',
+      sources: ['finance-bank-careers'],
+      priority: 'medium'
+    });
+  }
+  
   return buckets;
 }
 
