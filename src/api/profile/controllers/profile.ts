@@ -1155,7 +1155,10 @@ export default {
           const secondReminder = notificationPrefs.applications.secondReminder || 0;
 
           // Determine reminder configuration type
-          const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
+          // If secondReminder is set and different from leadDays, we have 2 separate reminders
+          // If secondReminder is set but same as leadDays, we still have 2 reminders (user wants both)
+          // If secondReminder is 0, we have 1 reminder
+          const hasSecondReminder = secondReminder > 0;
           const reminderCount = hasSecondReminder ? 2 : 1;
 
           // First, get ALL applications with deadlines to see what we have
@@ -1222,7 +1225,7 @@ export default {
             }
 
             // Second reminder check (if configured and different from first)
-            if (hasSecondReminder && daysUntilDeadline === secondReminder) {
+            if (hasSecondReminder && secondReminder !== leadDays && daysUntilDeadline === secondReminder) {
               console.log(`[profile:getRemindersNeeded] ✓ Adding second application reminder for user ${user.id}, app ${app.id}`);
               reminders.applications.push({
                 userId: user.id,
@@ -1336,7 +1339,10 @@ export default {
           const secondReminder = notificationPrefs.interviews.secondReminder || 0;
 
           // Determine reminder configuration type
-          const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
+          // If secondReminder is set and different from leadDays, we have 2 separate reminders
+          // If secondReminder is set but same as leadDays, we still have 2 reminders (user wants both)
+          // If secondReminder is 0, we have 1 reminder
+          const hasSecondReminder = secondReminder > 0;
           const reminderCount = hasSecondReminder ? 2 : 1;
 
           // Get ALL applications in Interview stage (we'll check both nextActionDate and deadline)
@@ -1403,7 +1409,7 @@ export default {
             }
 
             // Second interview reminder (if configured and different from first)
-            if (hasSecondReminder && daysUntilInterview === secondReminder) {
+            if (hasSecondReminder && secondReminder !== leadDays && daysUntilInterview === secondReminder) {
               console.log(`[profile:getRemindersNeeded] ✓ Adding second interview reminder for user ${user.id}, app ${app.id}`);
               reminders.interviews.push({
                 userId: user.id,
