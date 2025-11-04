@@ -2,18 +2,37 @@
 import { stripe } from '../../../utils/stripe';
 
 // Map internal package slugs to Stripe price IDs
+// Note: fast-track package = "Offer Fast-Track" on site
+//       interview-pack package = "Interview Fast-Track" on site
 const PACKAGE_PRICE_MAP = {
-  'fast-track': process.env.STRIPE_FAST_TRACK_PRICE_ID,
-  'interview-pack': process.env.STRIPE_INTERVIEW_PACK_PRICE_ID,
-  'premium': process.env.STRIPE_PREMIUM_PRICE_ID,
-  'standard': process.env.STRIPE_STANDARD_PRICE_ID,
-  'basic': process.env.STRIPE_BASIC_PRICE_ID
+  'fast-track': {
+    monthly: process.env.STRIPE_FAST_TRACK_PRICE_ID,
+    '4-month': process.env.STRIPE_FAST_TRACK_PRICE_ID_4MONTHS
+  },
+  'interview-pack': {
+    monthly: process.env.STRIPE_INTERVIEW_PACK_PRICE_ID,
+    '4-month': process.env.STRIPE_INTERVIEW_FAST_TRACK_PRICE_ID_4MONTHS
+  },
+  'premium': {
+    monthly: process.env.STRIPE_PREMIUM_PRICE_ID,
+    '4-month': process.env.STRIPE_PREMIUM_PRICE_ID
+  },
+  'standard': {
+    monthly: process.env.STRIPE_STANDARD_PRICE_ID,
+    '4-month': process.env.STRIPE_STANDARD_PRICE_ID
+  },
+  'basic': {
+    monthly: process.env.STRIPE_BASIC_PRICE_ID,
+    '4-month': process.env.STRIPE_BASIC_PRICE_ID
+  }
 };
 
 // Validate required environment variables
 const requiredEnvVars = [
   'STRIPE_FAST_TRACK_PRICE_ID',
-  'STRIPE_INTERVIEW_PACK_PRICE_ID'
+  'STRIPE_INTERVIEW_PACK_PRICE_ID',
+  'STRIPE_FAST_TRACK_PRICE_ID_4MONTHS',
+  'STRIPE_INTERVIEW_FAST_TRACK_PRICE_ID_4MONTHS'
 ];
 
 for (const envVar of requiredEnvVars) {
@@ -26,7 +45,7 @@ export default {
   async createSession(ctx) {
     try {
       const { user } = ctx.state;
-      const { packageSlug, promo, ref } = ctx.request.body;
+      const { packageSlug, billingPeriod = 'monthly', promo, ref } = ctx.request.body;
 
       if (!user) {
         return ctx.unauthorized('Authentication required');
@@ -36,7 +55,12 @@ export default {
         return ctx.badRequest('Invalid package slug');
       }
 
-      const priceId = PACKAGE_PRICE_MAP[packageSlug];
+      // Get price ID based on package and billing period
+      const priceId = PACKAGE_PRICE_MAP[packageSlug]?.[billingPeriod] || PACKAGE_PRICE_MAP[packageSlug]?.monthly;
+      
+      if (!priceId) {
+        return ctx.badRequest(`Price ID not found for package: ${packageSlug}, billing period: ${billingPeriod}`);
+      }
       
       // Build session parameters
       // Support both embedded and hosted checkout modes
