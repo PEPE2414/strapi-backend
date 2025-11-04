@@ -1339,29 +1339,44 @@ export default {
           const hasSecondReminder = secondReminder > 0 && secondReminder !== leadDays;
           const reminderCount = hasSecondReminder ? 2 : 1;
 
-          // Get user's applications with interview stage and nextActionDate
-          const applications = await strapi.entityService.findMany('api::application.application', {
+          // Get ALL applications in Interview stage (we'll check both nextActionDate and deadline)
+          const allInterviewApps = await strapi.entityService.findMany('api::application.application', {
             filters: {
               owner: { id: user.id },
               stage: 'Interview',
-              nextActionDate: { 
-                $gte: today.toISOString() // Only future interviews (implies not null)
-              },
             },
           });
 
-          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications in Interview stage with future dates`);
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${allInterviewApps.length} total applications in Interview stage`);
+          
+          // Log all interview apps for debugging
+          allInterviewApps.forEach((app: any) => {
+            console.log(`[profile:getRemindersNeeded] Interview App ${app.id}: ${app.title} at ${app.company} - nextActionDate=${app.nextActionDate}, deadline=${app.deadline}`);
+          });
+
+          // Filter applications that have either nextActionDate or deadline set
+          const applications = allInterviewApps.filter((app: any) => {
+            return app.nextActionDate || app.deadline;
+          });
+
+          console.log(`[profile:getRemindersNeeded] User ${user.id}: Found ${applications.length} applications in Interview stage with dates (after filtering)`);
           console.log(`[profile:getRemindersNeeded] User ${user.id}: leadDays=${leadDays}, secondReminder=${secondReminder}`);
 
           for (const app of applications) {
-            if (!app.nextActionDate) continue;
+            // Use deadline if available, otherwise use nextActionDate
+            const interviewDateValue = app.deadline || app.nextActionDate;
             
-            const interviewDate = new Date(app.nextActionDate);
+            if (!interviewDateValue) continue;
+            
+            const interviewDate = new Date(interviewDateValue);
             interviewDate.setHours(0, 0, 0, 0);
+            
+            // Only process future dates
+            if (interviewDate < today) continue;
             
             const daysUntilInterview = Math.ceil((interviewDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
             
-            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): interviewDate=${app.nextActionDate}, daysUntilInterview=${daysUntilInterview}, leadDays=${leadDays}`);
+            console.log(`[profile:getRemindersNeeded] App ${app.id} (${app.title}): interviewDate=${interviewDateValue}, daysUntilInterview=${daysUntilInterview}, leadDays=${leadDays}`);
 
             // First interview reminder
             if (daysUntilInterview === leadDays) {
@@ -1379,7 +1394,9 @@ export default {
                   id: app.id,
                   title: app.title,
                   company: app.company,
-                  interviewDate: app.nextActionDate,
+                  interviewDate: interviewDateValue,
+                  deadline: app.deadline,
+                  nextActionDate: app.nextActionDate,
                 },
                 daysBefore: leadDays,
               });
@@ -1387,6 +1404,7 @@ export default {
 
             // Second interview reminder (if configured and different from first)
             if (hasSecondReminder && daysUntilInterview === secondReminder) {
+              console.log(`[profile:getRemindersNeeded] ✓ Adding second interview reminder for user ${user.id}, app ${app.id}`);
               reminders.interviews.push({
                 userId: user.id,
                 email: user.email,
@@ -1400,7 +1418,9 @@ export default {
                   id: app.id,
                   title: app.title,
                   company: app.company,
-                  interviewDate: app.nextActionDate,
+                  interviewDate: interviewDateValue,
+                  deadline: app.deadline,
+                  nextActionDate: app.nextActionDate,
                 },
                 daysBefore: secondReminder,
               });
