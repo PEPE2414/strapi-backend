@@ -44,12 +44,34 @@ for (const envVar of requiredEnvVars) {
 export default {
   async createSession(ctx) {
     try {
-      const { user } = ctx.state;
-      const { packageSlug, billingPeriod = 'monthly', promo, ref } = ctx.request.body;
-
-      if (!user) {
+      // Manual JWT verification since auth: false bypasses built-in auth
+      const authHeader = ctx.request.header.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return ctx.unauthorized('Authentication required');
       }
+      
+      const token = authHeader.slice(7);
+      let user = null;
+      
+      try {
+        // Use Strapi's JWT service to verify the token
+        const jwtService = strapi.plugin('users-permissions').service('jwt');
+        user = await jwtService.verify(token);
+      } catch (jwtError) {
+        console.error('JWT verification failed:', jwtError.message);
+        return ctx.unauthorized('Invalid token');
+      }
+
+      // Get user from database
+      const userEntity = await strapi.entityService.findOne('plugin::users-permissions.user', user.id, {
+        populate: ['*']
+      });
+
+      if (!userEntity) {
+        return ctx.unauthorized('User not found');
+      }
+
+      const { packageSlug, billingPeriod = 'monthly', promo, ref } = ctx.request.body;
 
       if (!packageSlug || !PACKAGE_PRICE_MAP[packageSlug]) {
         return ctx.badRequest('Invalid package slug');
@@ -75,9 +97,9 @@ export default {
             quantity: 1
           }
         ],
-        client_reference_id: user.id.toString(),
+        client_reference_id: userEntity.id.toString(),
         metadata: {
-          userId: user.id.toString(),
+          userId: userEntity.id.toString(),
           packageSlug,
           refCode: ref || '',
           promoCode: promo || ''

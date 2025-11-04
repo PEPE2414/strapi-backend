@@ -6,9 +6,7 @@ export default {
       path: '/checkout/session',
       handler: 'checkout.createSession',
       config: {
-        auth: {
-          scope: ['authenticated']
-        }
+        auth: false // Bypass permission checks, verify auth in controller
       }
     }
   ]
