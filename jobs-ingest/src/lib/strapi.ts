@@ -41,18 +41,31 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
 
   // Deduplicate jobs within this batch
   const uniqueJobs = deduplicateJobs(jobs);
-  console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
+  const dedupRemoved = jobs.length - uniqueJobs.length;
+  if (dedupRemoved > 0) {
+    console.log(`🔄 Deduplication: Removed ${dedupRemoved} duplicate jobs (${jobs.length} → ${uniqueJobs.length})`);
+  } else {
+    console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
+  }
   
   // Validate jobs before sending to Strapi
+  let validationFailures = 0;
   const validJobs = uniqueJobs.filter(job => {
     const validation = validateJobForUpsert(job);
     if (!validation.valid) {
-      console.log(`❌ Job validation failed: ${validation.reason} - "${job.title}" at ${job.company?.name}`);
+      validationFailures++;
+      if (validationFailures <= 5) { // Only log first 5 failures to avoid spam
+        console.log(`❌ Job validation failed: ${validation.reason} - "${job.title}" at ${job.company?.name}`);
+      }
       return false;
     }
     return true;
   });
-  console.log(`✅ ${validJobs.length} jobs passed validation (${uniqueJobs.length - validJobs.length} failed)`);
+  if (validationFailures > 0) {
+    console.log(`⚠️  ${validationFailures} jobs failed validation (${uniqueJobs.length} → ${validJobs.length} valid)`);
+  } else {
+    console.log(`✅ ${validJobs.length} jobs passed validation`);
+  }
 
   const res = await fetch(`${BASE}/jobs/ingest`, {
     method:'POST',
@@ -83,7 +96,20 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
   }
   
   const result = await res.json() as any;
-  console.log(`✅ Successfully ingested ${result.count || validJobs.length} jobs to Strapi`);
+  const created = result.created || 0;
+  const updated = result.updated || 0;
+  const skipped = result.skipped || 0;
+  const totalProcessed = result.count || (created + updated);
+  
+  console.log(`✅ Strapi ingestion: ${validJobs.length} sent → ${created} created, ${updated} updated, ${skipped} skipped (${totalProcessed} total)`);
+  
+  if (validJobs.length > totalProcessed) {
+    const lost = validJobs.length - totalProcessed - skipped;
+    if (lost > 0) {
+      console.warn(`⚠️  ${lost} jobs were lost during ingestion (${validJobs.length} sent but only ${totalProcessed} processed)`);
+    }
+  }
+  
   return result;
 }
 
@@ -152,8 +178,9 @@ export function validateJobForUpsert(job: CanonicalJob): { valid: boolean; reaso
     console.log(`⚠️  Job without description: "${job.title}" at ${job.company?.name}`);
   }
   
-  // Log description length for debugging
-  console.log(`📝 Job "${job.title}" description length: ${cleanDescription.length} chars`);
+  // Log description length for debugging (only for first few to avoid spam)
+  // Commented out to reduce log noise - uncomment if debugging description issues
+  // console.log(`📝 Job "${job.title}" description length: ${cleanDescription.length} chars`);
   
   // Company page URL is now optional (removed requirement)
   // Apply URL aggregator filter removed to allow major job boards
