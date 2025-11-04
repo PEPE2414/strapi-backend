@@ -135,11 +135,37 @@ export default {
       // For embedded checkout, use embedded mode
       if (isEmbedded) {
         sessionParams.ui_mode = 'embedded';
-        sessionParams.return_url = `${process.env.FRONTEND_URL}/pricing?session_id={CHECKOUT_SESSION_ID}`;
+        
+        // Ensure FRONTEND_URL has a scheme (https://)
+        const frontendUrl = process.env.FRONTEND_URL || '';
+        if (!frontendUrl) {
+          console.error('FRONTEND_URL environment variable is not set');
+          return ctx.badRequest('Frontend URL is not configured. Please set FRONTEND_URL in Railway.');
+        }
+        
+        // Add https:// if missing
+        const returnUrl = frontendUrl.startsWith('http://') || frontendUrl.startsWith('https://')
+          ? `${frontendUrl}/pricing?session_id={CHECKOUT_SESSION_ID}`
+          : `https://${frontendUrl}/pricing?session_id={CHECKOUT_SESSION_ID}`;
+        
+        sessionParams.return_url = returnUrl;
+        console.log('Embedded checkout return_url:', returnUrl);
       } else {
         // For hosted checkout, use redirect URLs
-        sessionParams.success_url = `${process.env.FRONTEND_URL}/app/dashboard?success=true`;
-        sessionParams.cancel_url = `${process.env.FRONTEND_URL}/pricing?cancelled=true`;
+        const frontendUrl = process.env.FRONTEND_URL || '';
+        if (!frontendUrl) {
+          console.error('FRONTEND_URL environment variable is not set');
+          return ctx.badRequest('Frontend URL is not configured. Please set FRONTEND_URL in Railway.');
+        }
+        
+        // Add https:// if missing
+        const baseUrl = frontendUrl.startsWith('http://') || frontendUrl.startsWith('https://')
+          ? frontendUrl
+          : `https://${frontendUrl}`;
+        
+        sessionParams.success_url = `${baseUrl}/app/dashboard?success=true`;
+        sessionParams.cancel_url = `${baseUrl}/pricing?cancelled=true`;
+        console.log('Hosted checkout URLs:', { success_url: sessionParams.success_url, cancel_url: sessionParams.cancel_url });
       }
 
       // Handle promotion code
