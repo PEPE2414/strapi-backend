@@ -78,6 +78,29 @@ export function getPackageSlugFromPrice(price: Stripe.Price): string {
   return price.metadata?.package_slug || 'fast-track';
 }
 
+// Check if a price is a 4-month subscription
+export function is4MonthSubscription(price: Stripe.Price): boolean {
+  // Check metadata for billing period
+  if (price.metadata?.billing_period === '4-month') {
+    return true;
+  }
+  
+  // Check price ID - if it contains '4month' or similar pattern
+  if (price.id.toLowerCase().includes('4month') || price.id.toLowerCase().includes('4-month')) {
+    return true;
+  }
+  
+  // Check interval and interval_count
+  if (price.recurring) {
+    // 4-month subscriptions typically have interval_count = 4 and interval = 'month'
+    if (price.recurring.interval === 'month' && price.recurring.interval_count === 4) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 // Get package slug from Stripe product metadata
 export function getPackageSlugFromProduct(product: Stripe.Product): string {
   return product.metadata?.package_slug || 'fast-track';
