@@ -82,3 +82,33 @@ export function getPackageSlugFromPrice(price: Stripe.Price): string {
 export function getPackageSlugFromProduct(product: Stripe.Product): string {
   return product.metadata?.package_slug || 'fast-track';
 }
+
+// Look up referrer by referral code (EF-REF-{userId} format)
+export async function lookupReferrerByReferralCode(referralCode: string): Promise<string | null> {
+  try {
+    // Check if it matches EF-REF-{userId} format
+    const match = referralCode.match(/^EF-REF-(\d+)$/i);
+    if (match) {
+      const userId = match[1];
+      // Verify user exists
+      const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        fields: ['id']
+      });
+      return user ? userId : null;
+    }
+    
+    // Fallback: try to find by referral code field
+    const users = await strapi.entityService.findMany('plugin::users-permissions.user', {
+      filters: {
+        referralCode: referralCode
+      },
+      fields: ['id'],
+      limit: 1
+    });
+    
+    return users.length > 0 ? users[0].id.toString() : null;
+  } catch (error) {
+    console.error('Error looking up referrer by referral code:', error);
+    return null;
+  }
+}

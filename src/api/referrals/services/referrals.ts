@@ -144,10 +144,10 @@ export default {
     // Check milestone: 7 qualified referrals
     let guaranteeActive = referrer.guaranteeActive || false;
     if (newQualifiedReferrals >= 7 && !guaranteeActive) {
-      // Grant +3 months of fast-track
+      // Grant +4 months of fast-track
       await this.grantMonthsFastTrack(
         referrerId,
-        3,
+        4,
         'Milestone reward: 7 qualified referrals'
       );
 
