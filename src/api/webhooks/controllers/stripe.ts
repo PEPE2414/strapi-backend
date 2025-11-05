@@ -59,15 +59,14 @@ async function handleCheckoutSessionCompleted(session: any) {
     const invoiceId = typeof subscription.latest_invoice === 'string' 
       ? subscription.latest_invoice 
       : subscription.latest_invoice.id;
-    const invoice = await stripe.invoices.retrieve(invoiceId);
+    const invoice = await stripe.invoices.retrieve(invoiceId) as any;
 
     // Safety check: Only activate if payment was successful
     if (invoice.payment_intent) {
-      const paymentIntent = await stripe.paymentIntents.retrieve(
-        typeof invoice.payment_intent === 'string' 
-          ? invoice.payment_intent 
-          : invoice.payment_intent.id
-      );
+      const paymentIntentId = typeof invoice.payment_intent === 'string' 
+        ? invoice.payment_intent 
+        : invoice.payment_intent.id;
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
       if (paymentIntent.status !== 'succeeded') {
         console.log(`Payment not succeeded (status: ${paymentIntent.status}), skipping activation for session: ${session.id}`);
