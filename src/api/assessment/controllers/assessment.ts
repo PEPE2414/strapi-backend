@@ -140,17 +140,30 @@ export default factories.createCoreController(ASSESSMENT_UID, ({ strapi }) => ({
       if (body['feedback (next_time)']) structuredFeedback.next_time = body['feedback (next_time)'];
 
       // Build structured rubric object from n8n payload
+      // Dynamically extract all rubric criteria by looking for keys matching "score (criterion)" or "notes (criterion)"
       const rubric: any = {};
-      const rubricCriteria = ['coverage', 'clarity', 'tone', 'accuracy', 'conciseness', 'actionability'];
+      const seenCriteria = new Set<string>();
       
-      for (const criterion of rubricCriteria) {
-        const scoreKey = `score (${criterion})`;
-        const notesKey = `notes (${criterion})`;
-        if (body[scoreKey] !== undefined || body[notesKey]) {
-          rubric[criterion] = {
-            score: body[scoreKey] !== undefined ? body[scoreKey] : null,
-            notes: body[notesKey] || null,
-          };
+      // Extract all rubric criteria dynamically from the request body
+      for (const key of Object.keys(body)) {
+        // Match keys like "score (criterion_name)" or "notes (criterion_name)"
+        const scoreMatch = key.match(/^score \(([^)]+)\)$/);
+        const notesMatch = key.match(/^notes \(([^)]+)\)$/);
+        
+        if (scoreMatch) {
+          const criterion = scoreMatch[1];
+          seenCriteria.add(criterion);
+          if (!rubric[criterion]) {
+            rubric[criterion] = { score: null, notes: null };
+          }
+          rubric[criterion].score = body[key] !== undefined ? body[key] : null;
+        } else if (notesMatch) {
+          const criterion = notesMatch[1];
+          seenCriteria.add(criterion);
+          if (!rubric[criterion]) {
+            rubric[criterion] = { score: null, notes: null };
+          }
+          rubric[criterion].notes = body[key] || null;
         }
       }
 
