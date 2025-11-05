@@ -422,11 +422,24 @@ async function runAll() {
   console.log(`\n📈 Job Loss Analysis:`);
   const jobsLostInPipeline = results.length - totalProcessed;
   if (jobsLostInPipeline > 0) {
-    console.log(`  ⚠️  ${jobsLostInPipeline} jobs lost during Strapi ingestion (deduplication/validation)`);
+    const lostPercent = Math.round((jobsLostInPipeline / results.length) * 100);
+    console.log(`  ⚠️  ${jobsLostInPipeline} jobs lost during Strapi ingestion (${lostPercent}% of ${results.length} jobs)`);
+    console.log(`     → This includes jobs deduplicated within batches and jobs rejected by Strapi validation`);
   }
   const jobsLostInValidation = totalJobsFound - results.length;
   if (jobsLostInValidation > 0) {
     console.log(`  ⚠️  ${jobsLostInValidation} jobs lost during LLM/enhancement phase`);
+  }
+  
+  // Calculate creation rate
+  const creationRate = totalJobsFound > 0 ? Math.round((totalCreated / totalJobsFound) * 100) : 0;
+  console.log(`\n📊 Creation Rate: ${creationRate}% (${totalCreated}/${totalJobsFound} jobs created)`);
+  if (creationRate < 10) {
+    console.warn(`  ⚠️  Very low creation rate (${creationRate}%) - most jobs are being marked as duplicates`);
+    console.warn(`     This suggests:`);
+    console.warn(`     1. Many jobs already exist in the database from previous runs`);
+    console.warn(`     2. Same jobs are appearing multiple times from different search queries`);
+    console.warn(`     3. Hash generation might be creating collisions (same hash for different jobs)`);
   }
   console.log(`\n⏱️  Duration: ${duration}s`);
   console.log(`🚀 Rate: ${Math.round(totalProcessed / duration)} jobs/second`);

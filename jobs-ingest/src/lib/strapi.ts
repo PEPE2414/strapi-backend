@@ -43,7 +43,13 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
   const uniqueJobs = deduplicateJobs(jobs);
   const dedupRemoved = jobs.length - uniqueJobs.length;
   if (dedupRemoved > 0) {
-    console.log(`🔄 Deduplication: Removed ${dedupRemoved} duplicate jobs (${jobs.length} → ${uniqueJobs.length})`);
+    const dedupPercent = Math.round((dedupRemoved / jobs.length) * 100);
+    console.log(`🔄 Deduplication: Removed ${dedupRemoved} duplicate jobs (${jobs.length} → ${uniqueJobs.length}, ${dedupPercent}% removed)`);
+    
+    // Warn if too many are being removed (might indicate hash generation issues)
+    if (dedupPercent > 50) {
+      console.warn(`⚠️  High deduplication rate (${dedupPercent}%) - this might indicate hash generation issues`);
+    }
   } else {
     console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
   }
@@ -119,18 +125,22 @@ function deduplicateJobs(jobs: CanonicalJob[]): CanonicalJob[] {
   const seenHashes = new Set<string>();
   const seenSecondary = new Set<string>();
   const duplicates: string[] = [];
+  let hashDuplicates = 0;
+  let secondaryDuplicates = 0;
   
   for (const job of jobs) {
     // Primary key: hash (most reliable)
     if (seenHashes.has(job.hash)) {
-      duplicates.push(`Hash: ${job.hash}`);
+      hashDuplicates++;
+      duplicates.push(`Hash: ${job.hash.substring(0, 8)}...`);
       continue;
     }
     
     // Secondary key: applyUrl + company + title (fallback)
     const secondaryKey = `${job.applyUrl}|${job.company.name}|${job.title}`;
     if (seenSecondary.has(secondaryKey)) {
-      duplicates.push(`Secondary: ${secondaryKey}`);
+      secondaryDuplicates++;
+      duplicates.push(`Secondary: ${job.title.substring(0, 30)}...`);
       continue;
     }
     
@@ -141,7 +151,12 @@ function deduplicateJobs(jobs: CanonicalJob[]): CanonicalJob[] {
   }
   
   if (duplicates.length > 0) {
-    console.log(`🔄 Removed ${duplicates.length} duplicate jobs`);
+    console.log(`🔄 Removed ${duplicates.length} duplicate jobs (${hashDuplicates} by hash, ${secondaryDuplicates} by secondary key)`);
+    
+    // Warn if too many hash duplicates (might indicate hash generation issues)
+    if (hashDuplicates > duplicates.length * 0.8) {
+      console.warn(`⚠️  High hash collision rate (${hashDuplicates}/${duplicates.length}) - hash generation might need improvement`);
+    }
   }
   
   return Array.from(seen.values()).filter(job => job.hash);

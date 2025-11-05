@@ -94,6 +94,13 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         where: { hash: inJob.hash },
         limit: 1
       });
+      
+      // Log hash lookup results for debugging (only first few to avoid spam)
+      if (createdCount + updatedCount < 5) {
+        if (existing.length > 0) {
+          console.log(`  🔍 Hash match found: ${inJob.title} at ${inJob.company?.name} (hash: ${inJob.hash.substring(0, 8)}...)`);
+        }
+      }
 
       // If no match by hash, check by company + title + location
       // This ensures we catch duplicates even if hash calculation doesn't include location
@@ -238,6 +245,14 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     }
     
       console.log(`📊 Ingest summary: ${items.length} received, ${createdCount} created, ${updatedCount} updated, ${skippedCount} skipped`);
+      
+      // Log duplicate detection statistics
+      const duplicateRate = items.length > 0 ? Math.round((updatedCount / items.length) * 100) : 0;
+      if (duplicateRate > 50) {
+        console.warn(`⚠️  High duplicate rate: ${duplicateRate}% of jobs were duplicates (${updatedCount}/${items.length})`);
+        console.warn(`   This suggests many jobs already exist in the database from previous runs`);
+      }
+      
       ctx.body = { ok: true, count, created: createdCount, updated: updatedCount, skipped: skippedCount };
     } catch (error) {
       console.error('❌ Critical error in ingest endpoint:', error);
