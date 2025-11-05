@@ -97,19 +97,20 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 
       // If no match by hash, check by company + title + location
       // This ensures we catch duplicates even if hash calculation doesn't include location
+      // Note: company is a JSON field, so we need to query it differently
       if (!existing?.length && normalizedCompanyName && normalizedTitle) {
-        // Build query conditions - location should match if provided
-        const whereConditions: any[] = [
-          { 'company.name': { $eqi: normalizedCompanyName } },
+        // Since company is JSON, we need to fetch jobs and check company.name in JavaScript
+        // First, get all jobs with matching title and location
+        const titleLocationConditions: any[] = [
           { title: { $eqi: normalizedTitle } }
         ];
 
         // Include location in duplicate check if it's provided
         if (normalizedLocation) {
-          whereConditions.push({ location: { $eqi: normalizedLocation } });
+          titleLocationConditions.push({ location: { $eqi: normalizedLocation } });
         } else {
           // If no location provided, match jobs with empty/null location
-          whereConditions.push({ 
+          titleLocationConditions.push({ 
             $or: [
               { location: { $null: true } },
               { location: { $eq: '' } }
@@ -117,11 +118,16 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
           });
         }
 
-        // Query for exact match on company + title + location (case-insensitive)
-        const duplicateCheck = await strapi.db.query('api::job.job').findMany({
-          where: { $and: whereConditions },
-          populate: ['company'],
-          limit: 1
+        // Query for jobs with matching title and location, then filter by company name in code
+        const candidateJobs = await strapi.db.query('api::job.job').findMany({
+          where: { $and: titleLocationConditions },
+          limit: 50 // Get more candidates to filter by company name
+        });
+
+        // Filter by company name (JSON field comparison)
+        const duplicateCheck = candidateJobs.filter((job: any) => {
+          const jobCompanyName = (job.company?.name || '').trim().toLowerCase();
+          return jobCompanyName === normalizedCompanyName;
         });
 
         if (duplicateCheck.length > 0) {
