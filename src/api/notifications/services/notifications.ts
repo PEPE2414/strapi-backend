@@ -30,15 +30,17 @@ export default {
    * Send subscription failure notification to n8n
    */
   async sendSubscriptionFailureNotification(data: SubscriptionFailureNotification): Promise<void> {
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+    // Support both single URL with path and separate URLs
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL_SubscriptionFailure || 
+                         (process.env.N8N_WEBHOOK_URL ? `${process.env.N8N_WEBHOOK_URL}/subscription-failure` : null);
     
     if (!n8nWebhookUrl) {
-      console.warn('N8N_WEBHOOK_URL not set, skipping notification');
+      console.warn('N8N_WEBHOOK_URL_SubscriptionFailure or N8N_WEBHOOK_URL not set, skipping notification');
       return;
     }
 
     try {
-      const response = await fetch(`${n8nWebhookUrl}/subscription-failure`, {
+      const response = await fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,15 +73,17 @@ export default {
    * Send subscription cancellation notification to n8n
    */
   async sendSubscriptionCancellationNotification(data: SubscriptionCancellationNotification): Promise<void> {
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+    // Support both single URL with path and separate URLs
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL_SubscriptionCancellation || 
+                         (process.env.N8N_WEBHOOK_URL ? `${process.env.N8N_WEBHOOK_URL}/subscription-cancellation` : null);
     
     if (!n8nWebhookUrl) {
-      console.warn('N8N_WEBHOOK_URL not set, skipping notification');
+      console.warn('N8N_WEBHOOK_URL_SubscriptionCancellation or N8N_WEBHOOK_URL not set, skipping notification');
       return;
     }
 
     try {
-      const response = await fetch(`${n8nWebhookUrl}/subscription-cancellation`, {
+      const response = await fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,10 +114,14 @@ export default {
    * Send guarantee redemption notification to n8n (for 4-month subscriptions)
    */
   async sendGuaranteeRedemptionNotification(data: GuaranteeRedemptionNotification): Promise<void> {
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+    // Support both single URL with path and separate URLs
+    // Note: Fix typo in env var name (Guranatee -> Guarantee)
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL_GuaranteeRedemption || 
+                         process.env.N8N_WEBHOOK_URL_GuranateeRedemption || 
+                         (process.env.N8N_WEBHOOK_URL ? `${process.env.N8N_WEBHOOK_URL}/guarantee-redemption` : null);
     
     if (!n8nWebhookUrl) {
-      console.warn('N8N_WEBHOOK_URL not set, skipping notification');
+      console.warn('N8N_WEBHOOK_URL_GuaranteeRedemption or N8N_WEBHOOK_URL not set, skipping notification');
       return;
     }
 
@@ -123,7 +131,7 @@ export default {
         ? 'offers' 
         : 'interviews';
 
-      const response = await fetch(`${n8nWebhookUrl}/guarantee-redemption`, {
+      const response = await fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
