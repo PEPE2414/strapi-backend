@@ -19,31 +19,51 @@ function slugify(input: string) {
 
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
   async ingest(ctx) {
-    const secretHeader = ctx.request.headers[SECRET_HEADER];
-    const secret = Array.isArray(secretHeader) ? secretHeader[0] : secretHeader;
-    const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
-    
-    // Debug logging (safe - don't log actual secrets)
-    console.log('Auth debug:', {
-      hasSecretHeader: !!secretHeader,
-      secretLength: secret?.length || 0,
-      hasExpectedSecret: !!expectedSecret,
-      expectedSecretLength: expectedSecret?.length || 0,
-      secretHeaderName: SECRET_HEADER,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Validate secret with constant-time comparison
-    if (!secret || !expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
-      console.warn('Invalid ingest secret provided');
-      return ctx.unauthorized('Invalid secret');
-    }
-    
-    const items = ctx.request.body?.data || [];
-    if (!Array.isArray(items)) return ctx.badRequest('data must be array');
-    
-    // Safe logging - don't log sensitive data
-    console.log(`Job ingest request: ${items.length} items from ${ctx.request.ip}`);
+    try {
+      const secretHeader = ctx.request.headers[SECRET_HEADER];
+      const secret = Array.isArray(secretHeader) ? secretHeader[0] : secretHeader;
+      const expectedSecret = process.env.SEED_SECRET || process.env.STRAPI_INGEST_SECRET;
+      
+      // Debug logging (safe - don't log actual secrets)
+      console.log('Auth debug:', {
+        hasSecretHeader: !!secretHeader,
+        secretLength: secret?.length || 0,
+        hasExpectedSecret: !!expectedSecret,
+        expectedSecretLength: expectedSecret?.length || 0,
+        secretHeaderName: SECRET_HEADER,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Validate secret with constant-time comparison
+      if (!secret || !expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
+        console.warn('Invalid ingest secret provided');
+        return ctx.unauthorized('Invalid secret');
+      }
+      
+      const items = ctx.request.body?.data || [];
+      if (!Array.isArray(items)) {
+        console.error('Invalid request body: data is not an array');
+        return ctx.badRequest('data must be array');
+      }
+      
+      // Safe logging - don't log sensitive data
+      console.log(`Job ingest request: ${items.length} items from ${ctx.request.ip}`);
+      
+      // Log first job structure for debugging (safely)
+      if (items.length > 0) {
+        const firstJob = items[0];
+        console.log('First job structure:', {
+          hasTitle: !!firstJob.title,
+          hasCompany: !!firstJob.company,
+          hasSource: !!firstJob.source,
+          hasJobType: !!firstJob.jobType,
+          hasHash: !!firstJob.hash,
+          hasSlug: !!firstJob.slug,
+          hasApplyUrl: !!firstJob.applyUrl,
+          jobType: firstJob.jobType,
+          companyType: typeof firstJob.company
+        });
+      }
 
     let count = 0;
     let createdCount = 0;
@@ -124,10 +144,53 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         continue;
       }
 
-      const data = {
-        ...inJob,
-        slug
+      // Helper function to format dates safely
+      const formatDate = (dateValue: any): string | null => {
+        if (!dateValue) return null;
+        try {
+          const date = new Date(dateValue);
+          if (isNaN(date.getTime())) return null;
+          return date.toISOString();
+        } catch {
+          return null;
+        }
       };
+
+      // Build clean data object with only schema fields
+      // This prevents issues with extra fields that might cause Strapi to reject the job
+      const data: any = {
+        source: inJob.source,
+        sourceUrl: inJob.sourceUrl || undefined,
+        title: inJob.title,
+        company: inJob.company || { name: 'Unknown' }, // JSON field - ensure it's an object
+        location: inJob.location || undefined,
+        descriptionHtml: inJob.descriptionHtml || undefined,
+        descriptionText: inJob.descriptionText || undefined,
+        applyUrl: inJob.applyUrl,
+        jobType: inJob.jobType,
+        startDate: formatDate(inJob.startDate),
+        endDate: formatDate(inJob.endDate),
+        duration: inJob.duration || undefined,
+        experience: inJob.experience || undefined,
+        companyPageUrl: inJob.companyPageUrl || undefined,
+        remotePolicy: inJob.remotePolicy || undefined,
+        applyDeadline: formatDate(inJob.applyDeadline),
+        salary: inJob.salary || undefined,
+        relatedDegree: inJob.relatedDegree || undefined,
+        degreeLevel: inJob.degreeLevel || undefined,
+        postedAt: formatDate(inJob.postedAt || inJob.posted_at || inJob.datePosted || inJob.date_posted),
+        slug: slug,
+        hash: inJob.hash,
+        qualityScore: inJob.qualityScore || undefined,
+        lastValidated: formatDate(inJob.lastValidated)
+      };
+
+      // Remove undefined values (but keep null for dates if needed)
+      Object.keys(data).forEach(key => {
+        if (data[key] === undefined) {
+          delete data[key];
+        }
+      });
 
       try {
         if (existing?.length) {
@@ -168,8 +231,32 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
       }
     }
     
-    console.log(`📊 Ingest summary: ${items.length} received, ${createdCount} created, ${updatedCount} updated, ${skippedCount} skipped`);
-    ctx.body = { ok: true, count, created: createdCount, updated: updatedCount, skipped: skippedCount };
+      console.log(`📊 Ingest summary: ${items.length} received, ${createdCount} created, ${updatedCount} updated, ${skippedCount} skipped`);
+      ctx.body = { ok: true, count, created: createdCount, updated: updatedCount, skipped: skippedCount };
+    } catch (error) {
+      console.error('❌ Critical error in ingest endpoint:', error);
+      console.error('Error stack:', error instanceof Error ? error.stack : String(error));
+      console.error('Error message:', error instanceof Error ? error.message : String(error));
+      
+      // Log request details for debugging
+      console.error('Request details:', {
+        bodyLength: ctx.request.body?.data?.length || 0,
+        hasBody: !!ctx.request.body,
+        contentType: ctx.request.headers['content-type'],
+        ip: ctx.request.ip
+      });
+      
+      // Return detailed error for debugging
+      ctx.status = 500;
+      ctx.body = {
+        error: {
+          status: 500,
+          name: 'InternalServerError',
+          message: error instanceof Error ? error.message : 'Internal Server Error',
+          details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : String(error)) : undefined
+        }
+      };
+    }
   },
 
   // Simple per-user recommendations (weights on user.preferences)
