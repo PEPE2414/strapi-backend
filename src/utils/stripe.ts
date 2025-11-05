@@ -9,7 +9,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-09-30.clover',
+  apiVersion: '2024-11-20.acacia',
 });
 
 export { stripe };
@@ -46,20 +46,76 @@ export async function createUserPromotionCode(
 ): Promise<{ promotionCodeId: string; promotionCode: string }> {
   const couponId = await ensureReferralCoupon();
   
-  const promotionCode = await stripe.promotionCodes.create({
-    coupon: couponId,
-    code: promoCode,
-    // No max_redemptions - allow unlimited uses so the promo code can be shared
-    metadata: {
-      userId,
-      type: 'referral_code'
+  // Verify the coupon exists before creating the promotion code
+  try {
+    const coupon = await stripe.coupons.retrieve(couponId);
+    if (!coupon) {
+      throw new Error(`Coupon ${couponId} does not exist`);
     }
-  } as any);
+  } catch (error) {
+    console.error('Error verifying coupon before creating promotion code:', error);
+    throw error;
+  }
+  
+  // Check if a promotion code with this code already exists
+  try {
+    const existingCodes = await stripe.promotionCodes.list({
+      code: promoCode,
+      limit: 1
+    });
+    
+    if (existingCodes.data.length > 0) {
+      const existingCode = existingCodes.data[0];
+      // Verify it belongs to this user
+      if (existingCode.metadata?.userId === userId) {
+        return {
+          promotionCodeId: existingCode.id,
+          promotionCode: existingCode.code
+        };
+      }
+    }
+  } catch (error) {
+    console.log('Error checking for existing promotion code, will create new one:', error);
+  }
+  
+  // Create new promotion code
+  try {
+    // Explicitly type the parameters to ensure correct format
+    const promotionCodeParams: Stripe.PromotionCodeCreateParams = {
+      coupon: couponId,
+      code: promoCode,
+      // No max_redemptions - allow unlimited uses so the promo code can be shared
+      metadata: {
+        userId,
+        type: 'referral_code'
+      }
+    };
+    
+    const promotionCode = await stripe.promotionCodes.create(promotionCodeParams);
 
-  return {
-    promotionCodeId: promotionCode.id,
-    promotionCode: promotionCode.code
-  };
+    return {
+      promotionCodeId: promotionCode.id,
+      promotionCode: promotionCode.code
+    };
+  } catch (error: any) {
+    console.error('Error creating promotion code:', error);
+    // If it's a duplicate code error, try to find the existing one
+    if (error.code === 'resource_already_exists' || error.message?.includes('already exists')) {
+      const existingCodes = await stripe.promotionCodes.list({
+        code: promoCode,
+        limit: 1
+      });
+      
+      if (existingCodes.data.length > 0) {
+        const existingCode = existingCodes.data[0];
+        return {
+          promotionCodeId: existingCode.id,
+          promotionCode: existingCode.code
+        };
+      }
+    }
+    throw error;
+  }
 }
 
 // Look up referrer by promotion code ID
