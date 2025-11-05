@@ -14,23 +14,23 @@ const stripe = new Stripe(stripeSecretKey, {
 
 export { stripe };
 
-// Ensure the 20_OFF_FIRST coupon exists
+// Ensure the 30_OFF_REFERRAL coupon exists
 export async function ensureReferralCoupon(): Promise<string> {
   try {
     // Try to retrieve existing coupon
-    const coupon = await stripe.coupons.retrieve('20_OFF_FIRST');
+    const coupon = await stripe.coupons.retrieve('30_OFF_REFERRAL');
     return coupon.id;
   } catch (error) {
     // Coupon doesn't exist, create it
     if (error instanceof Stripe.errors.StripeError && error.code === 'resource_missing') {
       const coupon = await stripe.coupons.create({
-        id: '20_OFF_FIRST',
-        name: '20% Off First Month',
-        percent_off: 20,
+        id: '30_OFF_REFERRAL',
+        name: '30% Off Referral Discount',
+        percent_off: 30,
         duration: 'once',
         metadata: {
           type: 'referral_discount',
-          description: '20% off first month for referred users'
+          description: '30% off any package for referred users'
         }
       });
       return coupon.id;
@@ -49,7 +49,7 @@ export async function createUserPromotionCode(
   const promotionCode = await stripe.promotionCodes.create({
     coupon: couponId,
     code: promoCode,
-    max_redemptions: 1,
+    // No max_redemptions - allow unlimited uses so the promo code can be shared
     metadata: {
       userId,
       type: 'referral_code'

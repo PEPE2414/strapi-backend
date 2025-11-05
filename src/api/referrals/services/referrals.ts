@@ -1,5 +1,5 @@
 // src/api/referrals/services/referrals.ts
-import { lookupReferrerByPromotionCodeId } from '../../../utils/stripe';
+import { lookupReferrerByPromotionCodeId, createUserPromotionCode } from '../../../utils/stripe';
 
 interface ReferralSummary {
   promoCode: string;
@@ -18,21 +18,83 @@ interface RewardEntry {
   packageSlug?: string;
 }
 
+// Generate a short referral code (base36)
+function generateReferralCode(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Generate promo code from username or referral code
+function generatePromoCode(username: string, referralCode: string): string {
+  const base = username.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const suffix = referralCode.toUpperCase();
+  return `EF-${base}-${suffix}`;
+}
+
 export default {
   async getReferralSummary(userId: string): Promise<ReferralSummary> {
-    const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-      fields: ['promoCode', 'referralCode', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
+    let user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+      fields: ['promoCode', 'referralCode', 'username', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
     });
 
     if (!user) {
       throw new Error('User not found');
     }
 
+    // If user doesn't have a promo code, create one
+    if (!user.promoCode || !user.referralCode) {
+      // Generate referral code if missing
+      let referralCode = user.referralCode || generateReferralCode();
+      
+      // Ensure uniqueness
+      if (!user.referralCode) {
+        let attempts = 0;
+        while (attempts < 10) {
+          const existing = await strapi.entityService.findMany('plugin::users-permissions.user', {
+            filters: { referralCode },
+            limit: 1
+          });
+          
+          if (existing.length === 0) break;
+          
+          referralCode = generateReferralCode();
+          attempts++;
+        }
+      }
+
+      // Generate promo code
+      const promoCode = generatePromoCode(user.username || `USER${userId}`, referralCode);
+      
+      // Create Stripe promotion code
+      const { promotionCodeId, promotionCode: actualPromoCode } = await createUserPromotionCode(
+        userId.toString(),
+        promoCode
+      );
+      
+      // Update user with referral data
+      await strapi.entityService.update('plugin::users-permissions.user', userId, {
+        data: {
+          referralCode,
+          promoCode: actualPromoCode,
+          promoCodeId: promotionCodeId
+        }
+      });
+
+      // Reload user to get updated data
+      user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
+        fields: ['promoCode', 'referralCode', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
+      });
+    }
+
     const referralLink = `https://effort-free.co.uk/pricing?ref=${user.referralCode}&promo=${user.promoCode}`;
-    const nextMilestone = Math.max(0, 7 - user.qualifiedReferrals);
+    const nextMilestone = Math.max(0, 7 - (user.qualifiedReferrals || 0));
 
     return {
-      promoCode: user.promoCode,
+      promoCode: user.promoCode || '',
       referralLink,
       qualifiedReferrals: user.qualifiedReferrals || 0,
       nextMilestone,

@@ -38,17 +38,11 @@ export default {
       
       console.log('[referrals:me] User found:', user.id, user.username);
 
-      // Simple fallback - return basic referral data without complex logic
-      const referralSummary = {
-        promoCode: `EF-${user.username?.toUpperCase() || 'USER'}-DEMO`,
-        referralLink: `https://effort-free.co.uk/pricing?ref=${user.username || 'demo'}&promo=EF-${user.username?.toUpperCase() || 'USER'}-DEMO`,
-        qualifiedReferrals: 0,
-        nextMilestone: 7,
-        fastTrackUntil: null,
-        guaranteeActive: false
-      };
+      // Use the referrals service to get the actual referral summary
+      const referralService = strapi.service('api::referrals.referrals');
+      const referralSummary = await referralService.getReferralSummary(user.id.toString());
 
-      console.log('[referrals:me] Returning simple referral summary:', referralSummary);
+      console.log('[referrals:me] Returning referral summary:', referralSummary);
       
       ctx.body = {
         data: referralSummary
