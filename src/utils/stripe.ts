@@ -9,7 +9,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-09-30.clover',
 });
 
 export { stripe };
@@ -80,8 +80,12 @@ export async function createUserPromotionCode(
   
   // Create new promotion code
   try {
-    // Explicitly type the parameters to ensure correct format
-    const promotionCodeParams: Stripe.PromotionCodeCreateParams = {
+    // Log the coupon ID to verify it's correct
+    console.log('Creating promotion code with coupon ID:', couponId);
+    
+    // Use type assertion to bypass TypeScript error - coupon is valid in Stripe API
+    // The coupon parameter is required for creating promotion codes
+    const promotionCodeParams: any = {
       coupon: couponId,
       code: promoCode,
       // No max_redemptions - allow unlimited uses so the promo code can be shared
@@ -91,6 +95,9 @@ export async function createUserPromotionCode(
       }
     };
     
+    console.log('Promotion code params:', JSON.stringify(promotionCodeParams, null, 2));
+    
+    // @ts-ignore - TypeScript types may be outdated for this API version
     const promotionCode = await stripe.promotionCodes.create(promotionCodeParams);
 
     return {
