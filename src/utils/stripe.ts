@@ -17,32 +17,50 @@ export { stripe };
 // Ensure the Effort-Free-WithPromo coupon exists
 export async function ensureReferralCoupon(): Promise<string> {
   try {
-    // Try to retrieve existing coupon by ID
-    // Note: Stripe coupon IDs are case-sensitive and may have different format
-    const coupon = await stripe.coupons.retrieve('Effort-Free-WithPromo');
-    return coupon.id;
-  } catch (error) {
-    // If retrieval fails, try to find it by name or list all coupons
-    if (error instanceof Stripe.errors.StripeError && error.code === 'resource_missing') {
+    // Try to retrieve existing coupon by ID (try different possible formats)
+    const possibleIds = [
+      'Effort-Free-WithPromo',
+      'effort-free-withpromo',
+      'EFFORT-FREE-WITHPROMO',
+      'EffortFreeWithPromo'
+    ];
+    
+    for (const couponId of possibleIds) {
       try {
-        // Try to find coupon by listing all coupons
-        const coupons = await stripe.coupons.list({ limit: 100 });
-        const foundCoupon = coupons.data.find(c => 
-          c.id === 'Effort-Free-WithPromo' || 
-          c.name === 'Effort-Free-WithPromo' ||
-          c.id.toLowerCase() === 'effort-free-withpromo'
-        );
-        
-        if (foundCoupon) {
-          return foundCoupon.id;
+        const coupon = await stripe.coupons.retrieve(couponId);
+        console.log(`✓ Found coupon by ID: ${coupon.id} (name: ${coupon.name})`);
+        return coupon.id;
+      } catch (err: any) {
+        if (err.code !== 'resource_missing') {
+          throw err; // Re-throw if it's not a "not found" error
         }
-        
-        // If not found, throw error - user needs to create it in Stripe dashboard
-        throw new Error('Coupon "Effort-Free-WithPromo" not found in Stripe. Please create it in Stripe Dashboard first.');
-      } catch (listError) {
-        throw new Error('Could not find coupon "Effort-Free-WithPromo" in Stripe. Please verify it exists in Stripe Dashboard.');
       }
     }
+    
+    // If not found by ID, try to find it by name
+    console.log('Coupon not found by ID, searching by name...');
+    const coupons = await stripe.coupons.list({ limit: 100 });
+    const foundCoupon = coupons.data.find(c => 
+      c.name === 'Effort-Free-WithPromo' ||
+      c.name?.toLowerCase() === 'effort-free-withpromo' ||
+      c.id === 'Effort-Free-WithPromo' ||
+      c.id.toLowerCase() === 'effort-free-withpromo'
+    );
+    
+    if (foundCoupon) {
+      console.log(`✓ Found coupon by name: ${foundCoupon.id} (name: ${foundCoupon.name})`);
+      return foundCoupon.id;
+    }
+    
+    // If still not found, list all coupons for debugging
+    console.error('Available coupons in Stripe:');
+    coupons.data.forEach(c => {
+      console.error(`  - ID: ${c.id}, Name: ${c.name || 'N/A'}`);
+    });
+    
+    throw new Error('Coupon "Effort-Free-WithPromo" not found in Stripe. Please verify it exists in Stripe Dashboard.');
+  } catch (error) {
+    console.error('Error finding coupon:', error);
     throw error;
   }
 }
@@ -121,6 +139,18 @@ export async function createUserPromotionCode(
 
         promotionCodeId = promotionCodeResult.id;
         console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
+        
+        // Verify the promotion code actually exists and is active
+        try {
+          const verified = await stripe.promotionCodes.retrieve(promotionCodeId);
+          if (!verified.active) {
+            console.warn(`Warning: Promotion code ${promotionCodeId} was created but is not active`);
+          }
+          console.log(`✓ Verified promotion code exists: ${verified.code} (ID: ${promotionCodeId})`);
+        } catch (verifyError) {
+          console.error(`Error verifying promotion code after creation:`, verifyError);
+        }
+        
         break; // Success - exit retry loop
       } catch (stripeError: any) {
         lastError = stripeError;
@@ -149,12 +179,37 @@ export async function createUserPromotionCode(
           stripeError.code === 'rate_limit' || // Rate limit - retry
           (stripeError.statusCode && stripeError.statusCode >= 500); // Server error - retry
         
-        // If it's a parameter_unknown error, it's likely an API version issue that won't be fixed by retrying
-        // In this case, we'll return the promo code string which can still be used manually
+        // If it's a parameter_unknown error, it's likely an API version issue
+        // Try alternative approach: create promotion code using different method
         if (stripeError.code === 'parameter_unknown' && stripeError.param === 'coupon') {
-          console.warn(`Stripe API version issue: parameter 'coupon' not recognized. Promo code string will be used directly: ${promoCode}`);
-          promotionCodeId = null; // Will return null but promo code string will still work
-          break; // Exit retry loop - this won't be fixed by retrying
+          console.warn(`Attempt ${attempt}: Stripe API rejected 'coupon' parameter. Trying alternative approach...`);
+          
+          // Try using the coupon object directly or different parameter structure
+          try {
+            // Alternative: Try creating with just the coupon ID as a string
+            const altResult = await (stripe.promotionCodes as any).create({
+              coupon: couponId,
+              code: promoCode,
+              metadata: {
+                userId: userId,
+                type: 'referral_code'
+              }
+            });
+            
+            promotionCodeId = altResult.id;
+            console.log(`✓ Successfully created promotion code using alternative method: ${promotionCodeId}`);
+            break;
+          } catch (altError: any) {
+            console.warn(`Alternative method also failed: ${altError.message}`);
+            // Continue to retry logic below
+          }
+          
+          // If still failing after all retries, we'll return null
+          if (attempt >= maxRetries) {
+            console.error(`Failed to create Stripe promotion code after ${maxRetries} attempts. The promo code string will be stored but won't work in Stripe checkout.`);
+            promotionCodeId = null;
+            break;
+          }
         }
         
         if (!shouldRetry) {

@@ -172,28 +172,61 @@ export default {
       if (promo) {
         // Look up the promotion code to get its ID
         try {
+          console.log(`Looking up promotion code in Stripe: ${promo}`);
           const promotionCodes = await stripe.promotionCodes.list({
             code: promo,
             limit: 1
           });
 
           if (promotionCodes.data.length > 0) {
+            const foundCode = promotionCodes.data[0];
+            console.log(`✓ Found Stripe promotion code: ${foundCode.code} (ID: ${foundCode.id}, Active: ${foundCode.active})`);
+            
+            if (!foundCode.active) {
+              console.warn(`Warning: Promotion code ${foundCode.code} is not active`);
+            }
+            
             // Found a Stripe promotion code - use it
             sessionParams.discounts = [{
-              promotion_code: promotionCodes.data[0].id
+              promotion_code: foundCode.id
             }];
           } else {
-            // Promotion code not found in Stripe - check if it's a user's referral code
-            // If so, apply the 30% referral coupon directly
-            const { ensureReferralCoupon } = await import('../../../utils/stripe');
-            const couponId = await ensureReferralCoupon();
+            // Promotion code not found in Stripe
+            console.warn(`Promotion code "${promo}" not found in Stripe. Checking if it's a user referral code...`);
             
-            // Apply the coupon directly since promotion code creation failed
-            sessionParams.discounts = [{
-              coupon: couponId
-            }];
+            // Check if this is a user's referral code by looking it up in the database
+            const users = await strapi.entityService.findMany('plugin::users-permissions.user', {
+              filters: { promoCode: promo },
+              fields: ['id', 'promoCode', 'promoCodeId'],
+              limit: 1
+            });
             
-            console.log(`Applied referral coupon directly for promo code: ${promo}`);
+            if (users.length > 0 && users[0].promoCodeId) {
+              // User has a promoCodeId - try to retrieve it from Stripe
+              try {
+                const promoCodeObj = await stripe.promotionCodes.retrieve(users[0].promoCodeId);
+                console.log(`✓ Found promotion code by ID from database: ${promoCodeObj.code} (ID: ${promoCodeObj.id})`);
+                sessionParams.discounts = [{
+                  promotion_code: promoCodeObj.id
+                }];
+              } catch (retrieveError) {
+                console.warn(`Could not retrieve promotion code by ID ${users[0].promoCodeId}, applying coupon directly`);
+                // Fall through to apply coupon directly
+              }
+            }
+            
+            // If still no discount applied, apply the coupon directly
+            if (!sessionParams.discounts) {
+              const { ensureReferralCoupon } = await import('../../../utils/stripe');
+              const couponId = await ensureReferralCoupon();
+              
+              // Apply the coupon directly since promotion code creation failed
+              sessionParams.discounts = [{
+                coupon: couponId
+              }];
+              
+              console.log(`Applied referral coupon directly for promo code: ${promo}`);
+            }
           }
         } catch (error) {
           console.error('Error looking up promotion code:', error);
