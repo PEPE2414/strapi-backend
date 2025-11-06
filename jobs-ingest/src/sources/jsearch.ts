@@ -178,9 +178,10 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   // Calculate daily limit: 50,000/month ≈ 1,667/day
   // Each search with num_pages=5 can return up to 50 jobs (5 pages × 10 jobs/page)
   // To hit quota: ~1,667 jobs/day ÷ 50 jobs/search ≈ 33 searches/day minimum
-  // But we want more variety, so aim for ~100-150 searches/day
+  // But we want more variety, so aim for ~200-250 searches/day to maximize quota usage
   // With pagination multiplier (2x for 2-10 pages), we can do more searches
-  const MAX_SEARCHES_PER_DAY = 150;
+  // Increased from 150 to 250 to better utilize the 50,000/month quota
+  const MAX_SEARCHES_PER_DAY = 250;
   let totalSearches = 0;
   
   try {

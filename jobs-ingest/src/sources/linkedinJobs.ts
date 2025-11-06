@@ -119,7 +119,12 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
 
   const jobsPerTerm: { [term: string]: number } = {};
   let totalSearches = 0;
-  const MAX_SEARCHES_PER_DAY = 150; // Conservative limit to spread across month
+  // LinkedIn API: 10,000/month = ~333/day
+  // With pagination (3 pages × 100 jobs/page = 300 jobs per term)
+  // To hit quota: ~333 jobs/day ÷ 300 jobs/term ≈ 1-2 terms/day minimum
+  // But we want variety, so aim for ~30-40 terms/day
+  // Reduced from 150 to 40 to avoid hitting rate limits (429 errors)
+  const MAX_SEARCHES_PER_DAY = 40;
   
   try {
     // Strategy 1: Broad searches across all terms with high pagination
@@ -135,27 +140,62 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
       try {
         // Use pagination to get more jobs per term
         // LinkedIn API limit=100, so we'll paginate through offsets
-        // Target: Get up to 200-300 jobs per term to maximize monthly quota
+        // Reduced pagination to avoid rate limits (429 errors)
+        // Target: Get up to 100-200 jobs per term (reduced from 300)
         let termJobsFound = 0;
-        for (let offset = 0; offset < 300; offset += 100) { // Get up to 300 jobs per term
+        for (let offset = 0; offset < 200; offset += 100) { // Get up to 200 jobs per term (reduced from 300)
           const encodedTerm = encodeURIComponent(`"${term}"`);
           const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&limit=100&offset=${offset}`;
           
           if (offset > 0) {
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Rate limit between pages
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Rate limit between pages (increased to 2s)
           }
           
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-              'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
-            }
-          });
+          // Retry logic for rate limiting (429 errors)
+          let response: Response | null = null;
+          let retries = 0;
+          const maxRetries = 3;
+          
+          while (retries <= maxRetries) {
+            response = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+                'X-RapidAPI-Host': 'linkedin-job-search-api.p.rapidapi.com'
+              }
+            });
 
-          if (!response.ok) {
+            if (response.ok) {
+              break; // Success, exit retry loop
+            }
+            
+            // Handle 429 (Too Many Requests) with exponential backoff
+            if (response.status === 429) {
+              retries++;
+              if (retries > maxRetries) {
+                console.warn(`    ⚠️  LinkedIn API rate limit exceeded (offset ${offset}): ${response.status} ${response.statusText}`);
+                console.warn(`    ⏸️  Stopping LinkedIn searches to avoid further rate limits`);
+                // Stop all LinkedIn searches if we hit rate limit
+                throw new Error('LinkedIn API rate limit exceeded - stopping searches');
+              }
+              
+              // Exponential backoff: 5s, 10s, 20s
+              const backoffDelay = Math.min(5000 * Math.pow(2, retries - 1), 30000);
+              console.warn(`    ⚠️  LinkedIn API rate limited (429), retrying in ${backoffDelay/1000}s (attempt ${retries}/${maxRetries})...`);
+              await new Promise(resolve => setTimeout(resolve, backoffDelay));
+              continue;
+            }
+            
+            // For other errors, log and break
             const errorText = await response.text();
             console.warn(`    ⚠️  LinkedIn API request failed (offset ${offset}): ${response.status} ${response.statusText}`);
+            if (offset === 0) {
+              break; // If first page fails, skip this term
+            }
+            break; // If later page fails, we got what we could
+          }
+          
+          if (!response || !response.ok) {
             if (offset === 0) {
               break; // If first page fails, skip this term
             }
@@ -225,11 +265,18 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
           console.log(`  ✅ "${term}": ${termJobsFound} total jobs found`);
         }
 
-        // Rate limiting - wait between terms
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Rate limiting - wait between terms (increased to avoid 429 errors)
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds between terms
         
       } catch (error) {
-        console.warn(`  ❌ Failed to search LinkedIn "${term}":`, error instanceof Error ? error.message : String(error));
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn(`  ❌ Failed to search LinkedIn "${term}":`, errorMessage);
+        
+        // If rate limit exceeded, stop all LinkedIn searches
+        if (errorMessage.includes('rate limit exceeded')) {
+          console.warn(`  ⏸️  LinkedIn API rate limit exceeded - stopping all LinkedIn searches`);
+          break; // Exit the search loop
+        }
       }
     }
     

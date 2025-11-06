@@ -207,38 +207,53 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 
       try {
         if (existing?.length) {
-          console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
+          // Only log first few updates to avoid spam
+          if (updatedCount < 5) {
+            console.log(`📝 Updating existing job: ${inJob.title} at ${inJob.company?.name}`);
+          }
           const updated = await strapi.entityService.update('api::job.job', existing[0].id, { data });
           if (updated) {
             count++;
             updatedCount++;
           } else {
-            console.warn(`⚠️  Update returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            if (skippedCount < 5) {
+              console.warn(`⚠️  Update returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            }
             skippedCount++;
           }
         } else {
-          console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
+          // Only log first few creations to avoid spam
+          if (createdCount < 5) {
+            console.log(`✨ Creating new job: ${inJob.title} at ${inJob.company?.name}`);
+          }
           const created = await strapi.entityService.create('api::job.job', { data });
           if (created) {
             count++;
             createdCount++;
-            console.log(`✅ Successfully created job: ${created.id} - ${inJob.title}`);
+            if (createdCount <= 5) {
+              console.log(`✅ Successfully created job: ${created.id} - ${inJob.title}`);
+            }
           } else {
-            console.warn(`⚠️  Create returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            if (skippedCount < 5) {
+              console.warn(`⚠️  Create returned null for: ${inJob.title} at ${inJob.company?.name}`);
+            }
             skippedCount++;
           }
         }
       } catch (error) {
-        console.error(`❌ Error creating/updating job "${inJob.title}" at ${inJob.company?.name}:`, error instanceof Error ? error.message : String(error));
-        if (error instanceof Error && error.message) {
-          console.error(`   Error details: ${error.message}`);
-          if (error.message.includes('unique') || error.message.includes('duplicate')) {
-            console.log(`   → Duplicate detected (hash/slug conflict)`);
-            skippedCount++;
-          } else {
-            skippedCount++;
-          }
+        // Track error types
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (skippedCount < 10) { // Log first 10 errors
+          console.error(`❌ Error creating/updating job "${inJob.title}" at ${inJob.company?.name}:`, errorMessage);
+        }
+        if (errorMessage.includes('unique') || errorMessage.includes('duplicate')) {
+          // This is a duplicate (hash/slug conflict) - expected behavior
+          skippedCount++;
         } else {
+          // Unexpected error - log it
+          if (skippedCount < 10) {
+            console.error(`   Error details: ${errorMessage}`);
+          }
           skippedCount++;
         }
       }
