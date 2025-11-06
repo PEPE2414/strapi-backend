@@ -86,7 +86,7 @@ export async function createUserPromotionCode(
         
         // Retrieve the coupon to ensure it exists
         const coupon = await stripe.coupons.retrieve(couponId);
-        console.log(`✓ Coupon verified: ${coupon.id} (active: ${coupon.active}, percent_off: ${coupon.percent_off}%)`);
+        console.log(`✓ Coupon verified: ${coupon.id} (percent_off: ${coupon.percent_off}%)`);
         
         // Try creating promotion code using the Stripe SDK
         // Log the exact parameters we're sending
@@ -188,13 +188,13 @@ export async function createUserPromotionCode(
               })
             });
             
-            const responseData = await response.json();
+            const responseData: any = await response.json();
             
             if (!response.ok) {
               throw new Error(`HTTP ${response.status}: ${JSON.stringify(responseData)}`);
             }
             
-            promotionCodeId = responseData.id;
+            promotionCodeId = responseData.id as string;
             console.log(`✓ Successfully created promotion code using HTTP API: ${promotionCodeId}`);
             break;
           } catch (httpError: any) {
