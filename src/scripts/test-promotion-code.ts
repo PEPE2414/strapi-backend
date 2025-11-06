@@ -53,32 +53,46 @@ async function testPromotionCodeCreation() {
       throw new Error(`Coupon "${couponId}" not found in Stripe. Please verify it exists in Stripe Dashboard.`);
     }
     
-    // Step 2: Try creating a promotion code
-    console.log('\nStep 2: Creating test promotion code...');
+    // Step 2: Try creating a promotion code using HTTP API first
+    console.log('\nStep 2: Creating test promotion code using HTTP API...');
     const testCode = `TEST-${Date.now()}`;
     
     try {
-      // Use type assertion to bypass TypeScript errors
-      // The 'coupon' parameter is valid in Stripe API but TypeScript types may be outdated
-      const promotionCode = await stripe.promotionCodes.create({
-        coupon: coupon.id,
-        code: testCode,
-        metadata: {
-          test: 'true',
-          type: 'referral_code'
-        }
-      } as any);
+      // First try HTTP API (more reliable)
+      console.log('Attempting HTTP API method...');
+      const formData = new URLSearchParams();
+      formData.append('coupon', coupon.id);
+      formData.append('code', testCode);
+      formData.append('metadata[test]', 'true');
       
-      console.log('✓ Promotion code created successfully!', {
-        id: promotionCode.id,
-        code: promotionCode.code,
-        active: promotionCode.active,
-        coupon: (promotionCode as any).coupon || 'N/A'
+      const response = await fetch('https://api.stripe.com/v1/promotion_codes', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${stripeSecretKey}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
       });
+      
+      const responseData: any = await response.json();
+      
+      if (!response.ok) {
+        console.error('HTTP API failed:', responseData);
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(responseData)}`);
+      }
+      
+      console.log('✓ Promotion code created via HTTP API!', {
+        id: responseData.id,
+        code: responseData.code,
+        active: responseData.active,
+        coupon: responseData.coupon?.id || 'N/A'
+      });
+      
+      const promotionCodeId = responseData.id;
       
       // Step 3: Verify it can be retrieved
       console.log('\nStep 3: Verifying promotion code can be retrieved...');
-      const retrieved = await stripe.promotionCodes.retrieve(promotionCode.id);
+      const retrieved = await stripe.promotionCodes.retrieve(promotionCodeId);
       console.log('✓ Promotion code retrieved:', retrieved.code);
       
       // Step 4: List by code
@@ -92,6 +106,8 @@ async function testPromotionCodeCreation() {
       console.log('\n✅ All tests passed! Promotion code creation is working.');
       console.log(`\nTest code: ${testCode}`);
       console.log('You can use this code in Stripe checkout to test.');
+      console.log(`\nPromotion code ID: ${promotionCodeId}`);
+      console.log('Check Stripe Dashboard → Products → Promotion codes to see it.');
       
     } catch (error: any) {
       console.error('\n✗ Error creating promotion code:', {
@@ -106,7 +122,13 @@ async function testPromotionCodeCreation() {
         console.error('Raw error:', JSON.stringify(error.raw, null, 2));
       }
       
-      console.error('\nThis error needs to be fixed before promotion codes will work.');
+      console.error('\n⚠️  If HTTP API fails, promotion codes cannot be created programmatically.');
+      console.error('Please check:');
+      console.error('1. The coupon ID is correct');
+      console.error('2. The coupon is active');
+      console.error('3. Your Stripe API key has the correct permissions');
+      console.error('4. Try creating a promotion code manually in Stripe Dashboard first');
+      
       process.exit(1);
     }
     
