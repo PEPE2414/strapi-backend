@@ -8,8 +8,10 @@ if (!stripeSecretKey) {
   throw new Error('STRIPE_SECRET_KEY environment variable is required');
 }
 
+// Use the latest API version supported by the Stripe SDK
+// The SDK will use the default version if not specified, which is usually the latest stable
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-09-30.clover', // Required by TypeScript types
+  apiVersion: '2024-11-20.acacia', // Use a known working API version
 });
 
 export { stripe };
@@ -99,25 +101,42 @@ export async function createUserPromotionCode(
         throw new Error('STRIPE_SECRET_KEY not found in environment variables');
       }
       
+      // Verify coupon exists first
+      const coupon = await stripe.coupons.retrieve(couponId);
+      console.log(`[createUserPromotionCode] Coupon verified before HTTP API call:`, {
+        id: coupon.id,
+        name: coupon.name,
+        percent_off: coupon.percent_off
+      });
+      
       // Use fetch to call Stripe API directly
+      // Use the exact format from Stripe's documentation
+      const formData = new URLSearchParams();
+      formData.append('coupon', couponId);
+      formData.append('code', promoCode);
+      formData.append('metadata[userId]', userId);
+      formData.append('metadata[type]', 'referral_code');
+      
+      console.log(`[createUserPromotionCode] Sending HTTP request with body:`, formData.toString());
+      
       const response = await fetch('https://api.stripe.com/v1/promotion_codes', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${stripeSecretKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Stripe-Version': '2025-09-30.clover'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: new URLSearchParams({
-          'coupon': couponId,
-          'code': promoCode,
-          'metadata[userId]': userId,
-          'metadata[type]': 'referral_code'
-        })
+        body: formData
       });
       
       const responseData: any = await response.json();
       
       if (!response.ok) {
+        console.error(`[createUserPromotionCode] HTTP API error response:`, {
+          status: response.status,
+          statusText: response.statusText,
+          error: responseData
+        });
+        
         // If it's a duplicate code error, try to find the existing one
         if (responseData.error?.code === 'resource_already_exists' || responseData.error?.message?.includes('already exists')) {
           console.log(`[createUserPromotionCode] Promotion code "${promoCode}" already exists, looking it up...`);
@@ -135,6 +154,27 @@ export async function createUserPromotionCode(
             }
           } catch (listError: any) {
             console.warn(`[createUserPromotionCode] Error listing existing promotion codes:`, listError.message);
+          }
+        }
+        
+        // If it's a parameter_unknown error for coupon, try verifying the coupon exists and is valid
+        if (responseData.error?.code === 'parameter_unknown' && responseData.error?.param === 'coupon') {
+          console.warn(`[createUserPromotionCode] Stripe rejected 'coupon' parameter. Verifying coupon exists...`);
+          try {
+            const coupon = await stripe.coupons.retrieve(couponId);
+            console.log(`[createUserPromotionCode] Coupon verified:`, {
+              id: coupon.id,
+              name: coupon.name,
+              percent_off: coupon.percent_off,
+              valid: true
+            });
+            
+            // Try using the coupon object ID directly
+            console.log(`[createUserPromotionCode] Retrying with coupon ID: ${coupon.id}`);
+            // This will fall through to the SDK fallback below
+          } catch (couponError: any) {
+            console.error(`[createUserPromotionCode] Error verifying coupon:`, couponError.message);
+            throw new Error(`Coupon ${couponId} not found or invalid: ${couponError.message}`);
           }
         }
         
