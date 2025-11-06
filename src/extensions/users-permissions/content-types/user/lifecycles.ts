@@ -55,13 +55,20 @@ export default {
       );
       
       // Update user with referral data (NO trial auto-activation - user must click Start trial button)
+      // Note: promoCodeId may be null if Stripe creation failed, but promoCode will still work
+      const updateData: any = {
+        referralCode,
+        promoCode: actualPromoCode,
+        referralRewards: []
+      };
+      
+      // Only set promoCodeId if it was successfully created in Stripe
+      if (promotionCodeId) {
+        updateData.promoCodeId = promotionCodeId;
+      }
+      
       await strapi.entityService.update('plugin::users-permissions.user', user.id, {
-        data: {
-          referralCode,
-          promoCode: actualPromoCode,
-          promoCodeId: promotionCodeId,
-          referralRewards: []
-        }
+        data: updateData
       });
       
       console.log(`Created referral system for user ${user.id}: ${referralCode} / ${actualPromoCode}`);

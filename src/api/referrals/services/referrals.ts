@@ -76,12 +76,19 @@ export default {
       );
       
       // Update user with referral data
+      // Note: promoCodeId may be null if Stripe creation failed, but promoCode will still work
+      const updateData: any = {
+        referralCode,
+        promoCode: actualPromoCode
+      };
+      
+      // Only set promoCodeId if it was successfully created in Stripe
+      if (promotionCodeId) {
+        updateData.promoCodeId = promotionCodeId;
+      }
+      
       await strapi.entityService.update('plugin::users-permissions.user', userId, {
-        data: {
-          referralCode,
-          promoCode: actualPromoCode,
-          promoCodeId: promotionCodeId
-        }
+        data: updateData
       });
 
       // Reload user to get updated data

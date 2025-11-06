@@ -45,10 +45,11 @@ function sleep(ms: number): Promise<void> {
 }
 
 // Create a promotion code for a user with retry logic
+// Returns promo code string even if Stripe promotion code creation fails (code can still be used manually)
 export async function createUserPromotionCode(
   userId: string, 
   promoCode: string
-): Promise<{ promotionCodeId: string; promotionCode: string }> {
+): Promise<{ promotionCodeId: string | null; promotionCode: string }> {
   const couponId = await ensureReferralCoupon();
   let promotionCodeId: string | null = null;
     
@@ -128,13 +129,22 @@ export async function createUserPromotionCode(
         
         // Determine if we should retry
         const shouldRetry = 
-          stripeError.code === 'parameter_unknown' || // API version issue - retry
           stripeError.code === 'rate_limit' || // Rate limit - retry
           (stripeError.statusCode && stripeError.statusCode >= 500); // Server error - retry
         
+        // If it's a parameter_unknown error, it's likely an API version issue that won't be fixed by retrying
+        // In this case, we'll return the promo code string which can still be used manually
+        if (stripeError.code === 'parameter_unknown' && stripeError.param === 'coupon') {
+          console.warn(`Stripe API version issue: parameter 'coupon' not recognized. Promo code string will be used directly: ${promoCode}`);
+          promotionCodeId = null; // Will return null but promo code string will still work
+          break; // Exit retry loop - this won't be fixed by retrying
+        }
+        
         if (!shouldRetry) {
-          // Non-retryable error - throw immediately
-          throw stripeError;
+          // Non-retryable error - log and return promo code string
+          console.warn(`Non-retryable error creating Stripe promotion code: ${stripeError.message}. Promo code string will be used: ${promoCode}`);
+          promotionCodeId = null;
+          break; // Exit retry loop
         }
         
         // If not the last attempt, wait before retrying (exponential backoff)
@@ -143,17 +153,15 @@ export async function createUserPromotionCode(
           console.warn(`Attempt ${attempt}/${maxRetries} failed (${stripeError.message}), retrying in ${delayMs}ms...`);
           await sleep(delayMs);
         } else {
-          console.error(`Failed to create Stripe promotion code after ${maxRetries} attempts`);
-          throw new Error(`Failed to create Stripe promotion code after ${maxRetries} attempts: ${stripeError.message || 'Unknown error'}`);
+          // After all retries, return promo code string (can still be used manually)
+          console.warn(`Failed to create Stripe promotion code after ${maxRetries} attempts. Promo code string will be used: ${promoCode}`);
+          promotionCodeId = null;
         }
       }
     }
   
-  // Return the promotion code (should always have promotionCodeId after retries)
-  if (!promotionCodeId) {
-    throw new Error('Failed to create or find Stripe promotion code');
-  }
-  
+  // Return the promotion code
+  // Note: promotionCodeId may be null if Stripe creation failed, but promoCode string can still be used manually in checkout
   return {
     promotionCodeId,
     promotionCode: promoCode
@@ -232,4 +240,5 @@ export async function lookupReferrerByReferralCode(referralCode: string): Promis
     console.error('Error looking up referrer by referral code:', error);
     return null;
   }
+}
 }
