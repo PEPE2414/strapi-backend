@@ -47,6 +47,8 @@ export default {
 
     // If user doesn't have a promo code, create one
     if (!user.promoCode || !user.referralCode) {
+      console.log(`[getReferralSummary] User ${userId} doesn't have promo code, creating one...`);
+      
       // Generate referral code if missing
       let referralCode = user.referralCode || generateReferralCode();
       
@@ -68,12 +70,18 @@ export default {
 
       // Generate promo code
       const promoCode = generatePromoCode(user.username || `USER${userId}`, referralCode);
+      console.log(`[getReferralSummary] Generated promo code: ${promoCode} for user ${userId}`);
       
       // Create Stripe promotion code (non-blocking - will return promo code even if Stripe creation fails)
+      console.log(`[getReferralSummary] Calling createUserPromotionCode for user ${userId}...`);
       const { promotionCodeId, promotionCode: actualPromoCode } = await createUserPromotionCode(
         userId.toString(),
         promoCode
       );
+      console.log(`[getReferralSummary] createUserPromotionCode returned:`, {
+        promotionCodeId,
+        promotionCode: actualPromoCode
+      });
       
       // Update user with referral data
       // Note: promoCodeId may be null if Stripe creation failed, but promoCode will still work
@@ -95,6 +103,8 @@ export default {
       user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         fields: ['promoCode', 'referralCode', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
       });
+    } else {
+      console.log(`[getReferralSummary] User ${userId} already has promo code: ${user.promoCode}`);
     }
 
     const referralLink = `https://effort-free.co.uk/pricing?ref=${user.referralCode}&promo=${user.promoCode}`;

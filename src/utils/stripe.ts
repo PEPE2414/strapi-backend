@@ -40,7 +40,17 @@ export async function createUserPromotionCode(
   userId: string, 
   promoCode: string
 ): Promise<{ promotionCodeId: string | null; promotionCode: string }> {
-  const couponId = await ensureReferralCoupon();
+  console.log(`[createUserPromotionCode] Starting for user ${userId} with promo code "${promoCode}"`);
+  
+  let couponId: string;
+  try {
+    couponId = await ensureReferralCoupon();
+    console.log(`[createUserPromotionCode] Coupon ID retrieved: ${couponId}`);
+  } catch (error: any) {
+    console.error(`[createUserPromotionCode] Failed to get coupon:`, error.message);
+    return { promotionCodeId: null, promotionCode: promoCode };
+  }
+  
   let promotionCodeId: string | null = null;
     
     // Verify the coupon exists
