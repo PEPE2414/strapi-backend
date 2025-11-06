@@ -48,7 +48,7 @@ export default {
       // Generate promo code
       const promoCode = generatePromoCode(user.username, referralCode);
       
-      // Create Stripe promotion code
+      // Create Stripe promotion code (non-blocking - will return promo code even if Stripe creation fails)
       const { promotionCodeId, promotionCode: actualPromoCode } = await createUserPromotionCode(
         user.id.toString(),
         promoCode

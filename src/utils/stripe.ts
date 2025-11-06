@@ -39,75 +39,33 @@ export async function ensureReferralCoupon(): Promise<string> {
   }
 }
 
-// Create a promotion code for a user
+// Helper function to sleep/delay
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Create a promotion code for a user with retry logic
 export async function createUserPromotionCode(
   userId: string, 
   promoCode: string
 ): Promise<{ promotionCodeId: string; promotionCode: string }> {
   const couponId = await ensureReferralCoupon();
-  
-  // Verify the coupon exists before creating the promotion code
-  try {
-    const coupon = await stripe.coupons.retrieve(couponId);
-    if (!coupon) {
-      throw new Error(`Coupon ${couponId} does not exist`);
-    }
-  } catch (error) {
-    console.error('Error verifying coupon before creating promotion code:', error);
-    throw error;
-  }
-  
-  // Check if a promotion code with this code already exists
-  try {
-    const existingCodes = await stripe.promotionCodes.list({
-      code: promoCode,
-      limit: 1
-    });
+  let promotionCodeId: string | null = null;
     
-    if (existingCodes.data.length > 0) {
-      const existingCode = existingCodes.data[0];
-      // Verify it belongs to this user
-      if (existingCode.metadata?.userId === userId) {
-        return {
-          promotionCodeId: existingCode.id,
-          promotionCode: existingCode.code
-        };
+    // Verify the coupon exists
+    try {
+      const coupon = await stripe.coupons.retrieve(couponId);
+      if (!coupon) {
+        console.log('Coupon not found, skipping Stripe promotion code creation');
+        return { promotionCodeId: null, promotionCode: promoCode };
       }
+    } catch (error) {
+      console.log('Error verifying coupon, skipping Stripe promotion code creation:', error);
+      return { promotionCodeId: null, promotionCode: promoCode };
     }
-  } catch (error) {
-    console.log('Error checking for existing promotion code, will create new one:', error);
-  }
-  
-  // Create new promotion code
-  try {
-    // Log the coupon ID to verify it's correct
-    console.log('Creating promotion code with coupon ID:', couponId);
     
-    // Use type assertion to bypass TypeScript error - coupon is valid in Stripe API
-    // The coupon parameter is required for creating promotion codes
-    const promotionCodeParams: any = {
-      coupon: couponId,
-      code: promoCode,
-      // No max_redemptions - allow unlimited uses so the promo code can be shared
-      metadata: {
-        userId,
-        type: 'referral_code'
-      }
-    };
-    
-    console.log('Promotion code params:', JSON.stringify(promotionCodeParams, null, 2));
-    
-    // @ts-ignore - TypeScript types may be outdated for this API version
-    const promotionCode = await stripe.promotionCodes.create(promotionCodeParams);
-
-    return {
-      promotionCodeId: promotionCode.id,
-      promotionCode: promotionCode.code
-    };
-  } catch (error: any) {
-    console.error('Error creating promotion code:', error);
-    // If it's a duplicate code error, try to find the existing one
-    if (error.code === 'resource_already_exists' || error.message?.includes('already exists')) {
+    // Check if a promotion code with this code already exists
+    try {
       const existingCodes = await stripe.promotionCodes.list({
         code: promoCode,
         limit: 1
@@ -115,14 +73,91 @@ export async function createUserPromotionCode(
       
       if (existingCodes.data.length > 0) {
         const existingCode = existingCodes.data[0];
-        return {
-          promotionCodeId: existingCode.id,
-          promotionCode: existingCode.code
-        };
+        // Verify it belongs to this user
+        if (existingCode.metadata?.userId === userId) {
+          return {
+            promotionCodeId: existingCode.id,
+            promotionCode: existingCode.code
+          };
+        }
+      }
+    } catch (error) {
+      console.log('Error checking for existing promotion code:', error);
+    }
+    
+    // Retry logic for creating promotion code
+    const maxRetries = 5;
+    let lastError: any = null;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // Try to create new promotion code in Stripe
+        const promotionCodeResult = await stripe.promotionCodes.create({
+          coupon: couponId,
+          code: promoCode,
+          metadata: {
+            userId,
+            type: 'referral_code'
+          }
+        } as any);
+        
+        promotionCodeId = promotionCodeResult.id;
+        console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
+        break; // Success - exit retry loop
+      } catch (stripeError: any) {
+        lastError = stripeError;
+        
+        // If it's a duplicate code error, try to find the existing one
+        if (stripeError.code === 'resource_already_exists' || stripeError.message?.includes('already exists')) {
+          try {
+            const existingCodes = await stripe.promotionCodes.list({
+              code: promoCode,
+              limit: 1
+            });
+            
+            if (existingCodes.data.length > 0) {
+              const existingCode = existingCodes.data[0];
+              promotionCodeId = existingCode.id;
+              console.log('Found existing promotion code:', existingCode.id);
+              break; // Found existing - exit retry loop
+            }
+          } catch (listError) {
+            console.warn('Error listing existing promotion codes:', listError);
+          }
+        }
+        
+        // Determine if we should retry
+        const shouldRetry = 
+          stripeError.code === 'parameter_unknown' || // API version issue - retry
+          stripeError.code === 'rate_limit' || // Rate limit - retry
+          (stripeError.statusCode && stripeError.statusCode >= 500); // Server error - retry
+        
+        if (!shouldRetry) {
+          // Non-retryable error - throw immediately
+          throw stripeError;
+        }
+        
+        // If not the last attempt, wait before retrying (exponential backoff)
+        if (attempt < maxRetries) {
+          const delayMs = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Max 10 seconds
+          console.warn(`Attempt ${attempt}/${maxRetries} failed (${stripeError.message}), retrying in ${delayMs}ms...`);
+          await sleep(delayMs);
+        } else {
+          console.error(`Failed to create Stripe promotion code after ${maxRetries} attempts`);
+          throw new Error(`Failed to create Stripe promotion code after ${maxRetries} attempts: ${stripeError.message || 'Unknown error'}`);
+        }
       }
     }
-    throw error;
+  
+  // Return the promotion code (should always have promotionCodeId after retries)
+  if (!promotionCodeId) {
+    throw new Error('Failed to create or find Stripe promotion code');
   }
+  
+  return {
+    promotionCodeId,
+    promotionCode: promoCode
+  };
 }
 
 // Look up referrer by promotion code ID
