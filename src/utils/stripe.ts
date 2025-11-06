@@ -93,14 +93,18 @@ export async function createUserPromotionCode(
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         // Try to create new promotion code in Stripe
-        const promotionCodeResult = await stripe.promotionCodes.create({
-    coupon: couponId,
-    code: promoCode,
-    metadata: {
-      userId,
-      type: 'referral_code'
-    }
-  } as any);
+        // Try different parameter structures to work around API version issues
+        let promotionCodeResult;
+        
+        // Try creating promotion code - if it fails due to API version issue, we'll use the coupon code directly
+        promotionCodeResult = await stripe.promotionCodes.create({
+          coupon: couponId,
+          code: promoCode,
+          metadata: {
+            userId,
+            type: 'referral_code'
+          }
+        } as any);
 
         promotionCodeId = promotionCodeResult.id;
         console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);

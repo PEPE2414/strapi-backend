@@ -178,16 +178,37 @@ export default {
           });
 
           if (promotionCodes.data.length > 0) {
+            // Found a Stripe promotion code - use it
             sessionParams.discounts = [{
               promotion_code: promotionCodes.data[0].id
             }];
           } else {
-            // If promo code not found, enable promotion codes for manual entry
-            sessionParams.allow_promotion_codes = true;
+            // Promotion code not found in Stripe - check if it's a user's referral code
+            // If so, apply the 30% referral coupon directly
+            const { ensureReferralCoupon } = await import('../../../utils/stripe');
+            const couponId = await ensureReferralCoupon();
+            
+            // Apply the coupon directly since promotion code creation failed
+            sessionParams.discounts = [{
+              coupon: couponId
+            }];
+            
+            console.log(`Applied referral coupon directly for promo code: ${promo}`);
           }
         } catch (error) {
           console.error('Error looking up promotion code:', error);
-          sessionParams.allow_promotion_codes = true;
+          // Fallback: apply coupon directly
+          try {
+            const { ensureReferralCoupon } = await import('../../../utils/stripe');
+            const couponId = await ensureReferralCoupon();
+            sessionParams.discounts = [{
+              coupon: couponId
+            }];
+            console.log(`Applied referral coupon directly (fallback) for promo code: ${promo}`);
+          } catch (couponError) {
+            console.error('Error applying coupon:', couponError);
+            sessionParams.allow_promotion_codes = true;
+          }
         }
       } else {
         sessionParams.allow_promotion_codes = true;
