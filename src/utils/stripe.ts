@@ -8,10 +8,10 @@ if (!stripeSecretKey) {
   throw new Error('STRIPE_SECRET_KEY environment variable is required');
 }
 
-// Use the latest API version supported by the Stripe SDK
-// The SDK will use the default version if not specified, which is usually the latest stable
+// Use the API version required by TypeScript types
+// Note: For HTTP API calls, we don't specify the version header to let Stripe use the default
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia', // Use a known working API version
+  apiVersion: '2025-09-30.clover', // Required by TypeScript types
 });
 
 export { stripe };
