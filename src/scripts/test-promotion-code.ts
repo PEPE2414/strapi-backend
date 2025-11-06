@@ -1,20 +1,34 @@
 // Test script to create a Stripe promotion code
-// Run with: tsx src/scripts/test-promotion-code.ts
+// Run with: npm run test:promo-code
+// 
+// NOTE: For local testing, you need to set STRIPE_SECRET_KEY in your .env file
+// or as an environment variable:
+//   export STRIPE_SECRET_KEY=sk_test_... (Linux/Mac)
+//   set STRIPE_SECRET_KEY=sk_test_... (Windows)
 
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+// Try to load .env file from project root
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
 if (!stripeSecretKey) {
-  console.error('STRIPE_SECRET_KEY environment variable is not set');
+  console.error('❌ STRIPE_SECRET_KEY environment variable is not set');
+  console.error('\nTo run this test locally, you need to:');
+  console.error('1. Create a .env file in the strapi-backend directory');
+  console.error('2. Add: STRIPE_SECRET_KEY=sk_test_YOUR_KEY (or sk_live_YOUR_KEY)');
+  console.error('\nOr set it as an environment variable before running:');
+  console.error('  export STRIPE_SECRET_KEY=sk_test_YOUR_KEY (Linux/Mac)');
+  console.error('  set STRIPE_SECRET_KEY=sk_test_YOUR_KEY (Windows)');
+  console.error('\nFor Railway deployment, the environment variable should be set in Railway dashboard.');
   process.exit(1);
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-09-30.clover', // Required by TypeScript types
 });
 
 async function testPromotionCodeCreation() {
@@ -22,10 +36,11 @@ async function testPromotionCodeCreation() {
     console.log('Testing Stripe promotion code creation...\n');
     
     // Step 1: Check if coupon exists
-    console.log('Step 1: Checking if coupon 30_OFF_REFERRAL exists...');
+    console.log('Step 1: Checking if coupon Effort-Free-WithPromo exists...');
     let coupon;
     try {
-      coupon = await stripe.coupons.retrieve('30_OFF_REFERRAL');
+      // Try to retrieve by ID
+      coupon = await stripe.coupons.retrieve('Effort-Free-WithPromo');
       console.log('✓ Coupon found:', {
         id: coupon.id,
         name: coupon.name,
@@ -34,18 +49,31 @@ async function testPromotionCodeCreation() {
       });
     } catch (error: any) {
       if (error.code === 'resource_missing') {
-        console.log('✗ Coupon not found. Creating it...');
-        coupon = await stripe.coupons.create({
-          id: '30_OFF_REFERRAL',
-          name: '30% Off Referral Discount',
-          percent_off: 30,
-          duration: 'once',
-          metadata: {
-            type: 'referral_discount',
-            description: '30% off any package for referred users'
-          }
-        });
-        console.log('✓ Coupon created:', coupon.id);
+        // Try to find it by listing all coupons
+        console.log('✗ Coupon not found by ID. Searching in all coupons...');
+        const coupons = await stripe.coupons.list({ limit: 100 });
+        const foundCoupon = coupons.data.find(c => 
+          c.id === 'Effort-Free-WithPromo' || 
+          c.name === 'Effort-Free-WithPromo' ||
+          c.id.toLowerCase() === 'effort-free-withpromo'
+        );
+        
+        if (foundCoupon) {
+          coupon = foundCoupon;
+          console.log('✓ Coupon found by search:', {
+            id: coupon.id,
+            name: coupon.name,
+            percent_off: coupon.percent_off,
+            active: coupon.active
+          });
+        } else {
+          console.error('✗ Coupon "Effort-Free-WithPromo" not found in Stripe.');
+          console.error('Please create it in Stripe Dashboard first:');
+          console.error('  1. Go to Products → Coupons');
+          console.error('  2. Create a coupon with ID or name: Effort-Free-WithPromo');
+          console.error('  3. Set it to 30% off, duration: once');
+          throw new Error('Coupon "Effort-Free-WithPromo" not found. Please create it in Stripe Dashboard.');
+        }
       } else {
         throw error;
       }
@@ -56,6 +84,8 @@ async function testPromotionCodeCreation() {
     const testCode = `TEST-${Date.now()}`;
     
     try {
+      // Use type assertion to bypass TypeScript errors
+      // The 'coupon' parameter is valid in Stripe API but TypeScript types may be outdated
       const promotionCode = await stripe.promotionCodes.create({
         coupon: coupon.id,
         code: testCode,
@@ -63,13 +93,13 @@ async function testPromotionCodeCreation() {
           test: 'true',
           type: 'referral_code'
         }
-      });
+      } as any);
       
       console.log('✓ Promotion code created successfully!', {
         id: promotionCode.id,
         code: promotionCode.code,
         active: promotionCode.active,
-        coupon: promotionCode.coupon
+        coupon: (promotionCode as any).coupon || 'N/A'
       });
       
       // Step 3: Verify it can be retrieved

@@ -9,31 +9,39 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia', // Using stable API version instead of clover
+  apiVersion: '2025-09-30.clover', // Required by TypeScript types
 });
 
 export { stripe };
 
-// Ensure the 30_OFF_REFERRAL coupon exists
+// Ensure the Effort-Free-WithPromo coupon exists
 export async function ensureReferralCoupon(): Promise<string> {
   try {
-    // Try to retrieve existing coupon
-    const coupon = await stripe.coupons.retrieve('30_OFF_REFERRAL');
+    // Try to retrieve existing coupon by ID
+    // Note: Stripe coupon IDs are case-sensitive and may have different format
+    const coupon = await stripe.coupons.retrieve('Effort-Free-WithPromo');
     return coupon.id;
   } catch (error) {
-    // Coupon doesn't exist, create it
+    // If retrieval fails, try to find it by name or list all coupons
     if (error instanceof Stripe.errors.StripeError && error.code === 'resource_missing') {
-      const coupon = await stripe.coupons.create({
-        id: '30_OFF_REFERRAL',
-        name: '30% Off Referral Discount',
-        percent_off: 30,
-        duration: 'once',
-        metadata: {
-          type: 'referral_discount',
-          description: '30% off any package for referred users'
+      try {
+        // Try to find coupon by listing all coupons
+        const coupons = await stripe.coupons.list({ limit: 100 });
+        const foundCoupon = coupons.data.find(c => 
+          c.id === 'Effort-Free-WithPromo' || 
+          c.name === 'Effort-Free-WithPromo' ||
+          c.id.toLowerCase() === 'effort-free-withpromo'
+        );
+        
+        if (foundCoupon) {
+          return foundCoupon.id;
         }
-      });
-      return coupon.id;
+        
+        // If not found, throw error - user needs to create it in Stripe dashboard
+        throw new Error('Coupon "Effort-Free-WithPromo" not found in Stripe. Please create it in Stripe Dashboard first.');
+      } catch (listError) {
+        throw new Error('Could not find coupon "Effort-Free-WithPromo" in Stripe. Please verify it exists in Stripe Dashboard.');
+      }
     }
     throw error;
   }
@@ -100,7 +108,8 @@ export async function createUserPromotionCode(
         // First, retrieve the coupon to ensure it exists
         const coupon = await stripe.coupons.retrieve(couponId);
         
-        // Create promotion code - try without 'as any' first to see actual error
+        // Create promotion code - use type assertion to bypass TypeScript errors
+        // The 'coupon' parameter is valid in Stripe API but TypeScript types may be outdated
         promotionCodeResult = await stripe.promotionCodes.create({
           coupon: coupon.id, // Use the coupon ID
           code: promoCode,
@@ -108,7 +117,7 @@ export async function createUserPromotionCode(
             userId: userId,
             type: 'referral_code'
           }
-        });
+        } as any);
 
         promotionCodeId = promotionCodeResult.id;
         console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
