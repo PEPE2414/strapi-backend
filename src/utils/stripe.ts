@@ -87,21 +87,93 @@ export async function createUserPromotionCode(
     }
     
     // Retry logic for creating promotion code
+    // Try HTTP API first as it's more reliable than the SDK for this use case
     const maxRetries = 5;
     let lastError: any = null;
     
+    // First, try HTTP API directly (more reliable for promotion codes)
+    console.log(`[createUserPromotionCode] Attempting to create promotion code using HTTP API...`);
+    try {
+      const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+      if (!stripeSecretKey) {
+        throw new Error('STRIPE_SECRET_KEY not found in environment variables');
+      }
+      
+      // Use fetch to call Stripe API directly
+      const response = await fetch('https://api.stripe.com/v1/promotion_codes', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${stripeSecretKey}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Stripe-Version': '2025-09-30.clover'
+        },
+        body: new URLSearchParams({
+          'coupon': couponId,
+          'code': promoCode,
+          'metadata[userId]': userId,
+          'metadata[type]': 'referral_code'
+        })
+      });
+      
+      const responseData: any = await response.json();
+      
+      if (!response.ok) {
+        // If it's a duplicate code error, try to find the existing one
+        if (responseData.error?.code === 'resource_already_exists' || responseData.error?.message?.includes('already exists')) {
+          console.log(`[createUserPromotionCode] Promotion code "${promoCode}" already exists, looking it up...`);
+          try {
+            const existingCodes = await stripe.promotionCodes.list({
+              code: promoCode,
+              limit: 1
+            });
+            
+            if (existingCodes.data.length > 0) {
+              const existingCode = existingCodes.data[0];
+              promotionCodeId = existingCode.id;
+              console.log(`✓ Found existing promotion code: ${existingCode.id} (active: ${existingCode.active})`);
+              return { promotionCodeId, promotionCode: existingCode.code };
+            }
+          } catch (listError: any) {
+            console.warn(`[createUserPromotionCode] Error listing existing promotion codes:`, listError.message);
+          }
+        }
+        
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(responseData)}`);
+      }
+      
+      promotionCodeId = responseData.id as string;
+      console.log(`✓ Successfully created promotion code using HTTP API: ${promotionCodeId}`);
+      
+      // Verify the promotion code actually exists and is active
+      try {
+        const verified = await stripe.promotionCodes.retrieve(promotionCodeId);
+        if (!verified.active) {
+          console.warn(`⚠ Warning: Promotion code ${promotionCodeId} was created but is not active`);
+        }
+        console.log(`✓ Verified promotion code exists: ${verified.code} (ID: ${promotionCodeId}, Active: ${verified.active})`);
+      } catch (verifyError: any) {
+        console.error(`❌ Error verifying promotion code after creation:`, verifyError.message);
+      }
+      
+      return { promotionCodeId, promotionCode: responseData.code || promoCode };
+    } catch (httpError: any) {
+      console.warn(`[createUserPromotionCode] HTTP API method failed: ${httpError.message}`);
+      console.log(`[createUserPromotionCode] Falling back to Stripe SDK...`);
+      lastError = httpError;
+    }
+    
+    // Fallback to Stripe SDK if HTTP API failed
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`[Attempt ${attempt}/${maxRetries}] Creating promotion code "${promoCode}" for coupon "${couponId}"...`);
+        console.log(`[Attempt ${attempt}/${maxRetries}] Creating promotion code "${promoCode}" for coupon "${couponId}" using SDK...`);
         
         // Retrieve the coupon to ensure it exists
         const coupon = await stripe.coupons.retrieve(couponId);
         console.log(`✓ Coupon verified: ${coupon.id} (percent_off: ${coupon.percent_off}%)`);
         
         // Try creating promotion code using the Stripe SDK
-        // Log the exact parameters we're sending
         const createParams = {
-          coupon: couponId, // Use coupon ID directly
+          coupon: couponId,
           code: promoCode,
           metadata: {
             userId: userId,
@@ -142,8 +214,7 @@ export async function createUserPromotionCode(
           type: stripeError.type,
           param: stripeError.param,
           statusCode: stripeError.statusCode,
-          requestId: stripeError.requestId,
-          raw: stripeError.raw
+          requestId: stripeError.requestId
         });
         
         // If it's a duplicate code error, try to find the existing one
@@ -170,48 +241,6 @@ export async function createUserPromotionCode(
         const shouldRetry = 
           stripeError.code === 'rate_limit' || // Rate limit - retry
           (stripeError.statusCode && stripeError.statusCode >= 500); // Server error - retry
-        
-        // If it's a parameter_unknown error for 'coupon', try using HTTP API directly
-        if (stripeError.code === 'parameter_unknown' && stripeError.param === 'coupon') {
-          console.warn(`⚠ Stripe API rejected 'coupon' parameter. This is unusual. Trying direct HTTP API call...`);
-          
-          // Try using the Stripe API directly via HTTP as a workaround
-          try {
-            const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-            if (!stripeSecretKey) {
-              throw new Error('STRIPE_SECRET_KEY not found');
-            }
-            
-            // Use fetch to call Stripe API directly
-            const response = await fetch('https://api.stripe.com/v1/promotion_codes', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${stripeSecretKey}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Stripe-Version': '2025-09-30.clover'
-              },
-              body: new URLSearchParams({
-                'coupon': couponId,
-                'code': promoCode,
-                'metadata[userId]': userId,
-                'metadata[type]': 'referral_code'
-              })
-            });
-            
-            const responseData: any = await response.json();
-            
-            if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${JSON.stringify(responseData)}`);
-            }
-            
-            promotionCodeId = responseData.id as string;
-            console.log(`✓ Successfully created promotion code using HTTP API: ${promotionCodeId}`);
-            break;
-          } catch (httpError: any) {
-            console.error(`❌ HTTP API method also failed:`, httpError.message);
-            // Continue to retry logic below
-          }
-        }
         
         if (!shouldRetry) {
           // Non-retryable error - log and return promo code string
