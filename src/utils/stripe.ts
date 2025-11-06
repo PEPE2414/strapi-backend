@@ -94,14 +94,14 @@ export async function createUserPromotionCode(
       try {
         // Try to create new promotion code in Stripe
         const promotionCodeResult = await stripe.promotionCodes.create({
-          coupon: couponId,
-          code: promoCode,
-          metadata: {
-            userId,
-            type: 'referral_code'
-          }
-        } as any);
-        
+    coupon: couponId,
+    code: promoCode,
+    metadata: {
+      userId,
+      type: 'referral_code'
+    }
+  } as any);
+
         promotionCodeId = promotionCodeResult.id;
         console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
         break; // Success - exit retry loop
@@ -240,5 +240,4 @@ export async function lookupReferrerByReferralCode(referralCode: string): Promis
     console.error('Error looking up referrer by referral code:', error);
     return null;
   }
-}
 }
