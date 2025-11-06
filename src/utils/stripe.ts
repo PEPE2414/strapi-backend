@@ -9,7 +9,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-09-30.clover',
+  apiVersion: '2024-11-20.acacia', // Using stable API version instead of clover
 });
 
 export { stripe };
@@ -96,15 +96,19 @@ export async function createUserPromotionCode(
         // Try different parameter structures to work around API version issues
         let promotionCodeResult;
         
-        // Try creating promotion code - if it fails due to API version issue, we'll use the coupon code directly
+        // Try creating promotion code with proper structure
+        // First, retrieve the coupon to ensure it exists
+        const coupon = await stripe.coupons.retrieve(couponId);
+        
+        // Create promotion code - try without 'as any' first to see actual error
         promotionCodeResult = await stripe.promotionCodes.create({
-          coupon: couponId,
+          coupon: coupon.id, // Use the coupon ID
           code: promoCode,
           metadata: {
-            userId,
+            userId: userId,
             type: 'referral_code'
           }
-        } as any);
+        });
 
         promotionCodeId = promotionCodeResult.id;
         console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
