@@ -82,45 +82,63 @@ export async function createUserPromotionCode(
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        // Try to create new promotion code in Stripe
-        // Try different parameter structures to work around API version issues
-        let promotionCodeResult;
+        console.log(`[Attempt ${attempt}/${maxRetries}] Creating promotion code "${promoCode}" for coupon "${couponId}"...`);
         
-        // Try creating promotion code with proper structure
-        // First, retrieve the coupon to ensure it exists
+        // Retrieve the coupon to ensure it exists
         const coupon = await stripe.coupons.retrieve(couponId);
+        console.log(`✓ Coupon verified: ${coupon.id} (active: ${coupon.active}, percent_off: ${coupon.percent_off}%)`);
         
-        // Create promotion code - use type assertion to bypass TypeScript errors
-        // The 'coupon' parameter is valid in Stripe API but TypeScript types may be outdated
-        promotionCodeResult = await stripe.promotionCodes.create({
-          coupon: coupon.id, // Use the coupon ID
+        // Try creating promotion code using the Stripe SDK
+        // Log the exact parameters we're sending
+        const createParams = {
+          coupon: couponId, // Use coupon ID directly
           code: promoCode,
           metadata: {
             userId: userId,
             type: 'referral_code'
           }
-        } as any);
-
+        };
+        
+        console.log(`Creating promotion code with params:`, JSON.stringify(createParams, null, 2));
+        
+        const promotionCodeResult = await stripe.promotionCodes.create(createParams as any);
+        
         promotionCodeId = promotionCodeResult.id;
-        console.log(`Successfully created Stripe promotion code on attempt ${attempt}:`, promotionCodeId);
+        console.log(`✓ Successfully created Stripe promotion code on attempt ${attempt}:`, {
+          id: promotionCodeId,
+          code: promotionCodeResult.code,
+          active: promotionCodeResult.active
+        });
         
         // Verify the promotion code actually exists and is active
         try {
           const verified = await stripe.promotionCodes.retrieve(promotionCodeId);
           if (!verified.active) {
-            console.warn(`Warning: Promotion code ${promotionCodeId} was created but is not active`);
+            console.warn(`⚠ Warning: Promotion code ${promotionCodeId} was created but is not active`);
           }
-          console.log(`✓ Verified promotion code exists: ${verified.code} (ID: ${promotionCodeId})`);
-        } catch (verifyError) {
-          console.error(`Error verifying promotion code after creation:`, verifyError);
+          console.log(`✓ Verified promotion code exists: ${verified.code} (ID: ${promotionCodeId}, Active: ${verified.active})`);
+        } catch (verifyError: any) {
+          console.error(`❌ Error verifying promotion code after creation:`, verifyError.message);
         }
         
         break; // Success - exit retry loop
       } catch (stripeError: any) {
         lastError = stripeError;
         
+        // Log the full error details for debugging
+        console.error(`❌ [Attempt ${attempt}/${maxRetries}] Error creating promotion code:`, {
+          message: stripeError.message,
+          code: stripeError.code,
+          type: stripeError.type,
+          param: stripeError.param,
+          statusCode: stripeError.statusCode,
+          requestId: stripeError.requestId,
+          raw: stripeError.raw
+        });
+        
         // If it's a duplicate code error, try to find the existing one
         if (stripeError.code === 'resource_already_exists' || stripeError.message?.includes('already exists')) {
+          console.log(`Promotion code "${promoCode}" already exists, looking it up...`);
           try {
             const existingCodes = await stripe.promotionCodes.list({
               code: promoCode,
@@ -130,11 +148,11 @@ export async function createUserPromotionCode(
             if (existingCodes.data.length > 0) {
               const existingCode = existingCodes.data[0];
               promotionCodeId = existingCode.id;
-              console.log('Found existing promotion code:', existingCode.id);
+              console.log(`✓ Found existing promotion code: ${existingCode.id} (active: ${existingCode.active})`);
               break; // Found existing - exit retry loop
             }
-          } catch (listError) {
-            console.warn('Error listing existing promotion codes:', listError);
+          } catch (listError: any) {
+            console.warn(`Error listing existing promotion codes:`, listError.message);
           }
         }
         
@@ -143,42 +161,53 @@ export async function createUserPromotionCode(
           stripeError.code === 'rate_limit' || // Rate limit - retry
           (stripeError.statusCode && stripeError.statusCode >= 500); // Server error - retry
         
-        // If it's a parameter_unknown error, it's likely an API version issue
-        // Try alternative approach: create promotion code using different method
+        // If it's a parameter_unknown error for 'coupon', try using HTTP API directly
         if (stripeError.code === 'parameter_unknown' && stripeError.param === 'coupon') {
-          console.warn(`Attempt ${attempt}: Stripe API rejected 'coupon' parameter. Trying alternative approach...`);
+          console.warn(`⚠ Stripe API rejected 'coupon' parameter. This is unusual. Trying direct HTTP API call...`);
           
-          // Try using the coupon object directly or different parameter structure
+          // Try using the Stripe API directly via HTTP as a workaround
           try {
-            // Alternative: Try creating with just the coupon ID as a string
-            const altResult = await (stripe.promotionCodes as any).create({
-              coupon: couponId,
-              code: promoCode,
-              metadata: {
-                userId: userId,
-                type: 'referral_code'
-              }
+            const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+            if (!stripeSecretKey) {
+              throw new Error('STRIPE_SECRET_KEY not found');
+            }
+            
+            // Use fetch to call Stripe API directly
+            const response = await fetch('https://api.stripe.com/v1/promotion_codes', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${stripeSecretKey}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Stripe-Version': '2025-09-30.clover'
+              },
+              body: new URLSearchParams({
+                'coupon': couponId,
+                'code': promoCode,
+                'metadata[userId]': userId,
+                'metadata[type]': 'referral_code'
+              })
             });
             
-            promotionCodeId = altResult.id;
-            console.log(`✓ Successfully created promotion code using alternative method: ${promotionCodeId}`);
+            const responseData = await response.json();
+            
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${JSON.stringify(responseData)}`);
+            }
+            
+            promotionCodeId = responseData.id;
+            console.log(`✓ Successfully created promotion code using HTTP API: ${promotionCodeId}`);
             break;
-          } catch (altError: any) {
-            console.warn(`Alternative method also failed: ${altError.message}`);
+          } catch (httpError: any) {
+            console.error(`❌ HTTP API method also failed:`, httpError.message);
             // Continue to retry logic below
-          }
-          
-          // If still failing after all retries, we'll return null
-          if (attempt >= maxRetries) {
-            console.error(`Failed to create Stripe promotion code after ${maxRetries} attempts. The promo code string will be stored but won't work in Stripe checkout.`);
-            promotionCodeId = null;
-            break;
           }
         }
         
         if (!shouldRetry) {
           // Non-retryable error - log and return promo code string
-          console.warn(`Non-retryable error creating Stripe promotion code: ${stripeError.message}. Promo code string will be used: ${promoCode}`);
+          console.error(`❌ Non-retryable error creating Stripe promotion code: ${stripeError.message}`);
+          console.error(`   Error code: ${stripeError.code}, Param: ${stripeError.param}`);
+          console.error(`   Promo code string "${promoCode}" will be stored but won't work in Stripe checkout.`);
           promotionCodeId = null;
           break; // Exit retry loop
         }
@@ -186,11 +215,13 @@ export async function createUserPromotionCode(
         // If not the last attempt, wait before retrying (exponential backoff)
         if (attempt < maxRetries) {
           const delayMs = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Max 10 seconds
-          console.warn(`Attempt ${attempt}/${maxRetries} failed (${stripeError.message}), retrying in ${delayMs}ms...`);
+          console.warn(`⏳ Attempt ${attempt}/${maxRetries} failed, retrying in ${delayMs}ms...`);
           await sleep(delayMs);
         } else {
           // After all retries, return promo code string (can still be used manually)
-          console.warn(`Failed to create Stripe promotion code after ${maxRetries} attempts. Promo code string will be used: ${promoCode}`);
+          console.error(`❌ Failed to create Stripe promotion code after ${maxRetries} attempts.`);
+          console.error(`   Last error: ${lastError?.message || 'Unknown error'}`);
+          console.error(`   Promo code string "${promoCode}" will be stored but won't work in Stripe checkout.`);
           promotionCodeId = null;
         }
       }
