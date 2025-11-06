@@ -14,54 +14,18 @@ const stripe = new Stripe(stripeSecretKey, {
 
 export { stripe };
 
-// Ensure the Effort-Free-WithPromo coupon exists
+// Ensure the referral coupon exists (using the actual coupon ID from Stripe)
 export async function ensureReferralCoupon(): Promise<string> {
+  const couponId = 'zcSkjKMc'; // The actual coupon ID from Stripe Dashboard
+  
   try {
-    // Try to retrieve existing coupon by ID (try different possible formats)
-    const possibleIds = [
-      'Effort-Free-WithPromo',
-      'effort-free-withpromo',
-      'EFFORT-FREE-WITHPROMO',
-      'EffortFreeWithPromo'
-    ];
-    
-    for (const couponId of possibleIds) {
-      try {
-        const coupon = await stripe.coupons.retrieve(couponId);
-        console.log(`✓ Found coupon by ID: ${coupon.id} (name: ${coupon.name})`);
-        return coupon.id;
-      } catch (err: any) {
-        if (err.code !== 'resource_missing') {
-          throw err; // Re-throw if it's not a "not found" error
-        }
-      }
-    }
-    
-    // If not found by ID, try to find it by name
-    console.log('Coupon not found by ID, searching by name...');
-    const coupons = await stripe.coupons.list({ limit: 100 });
-    const foundCoupon = coupons.data.find(c => 
-      c.name === 'Effort-Free-WithPromo' ||
-      c.name?.toLowerCase() === 'effort-free-withpromo' ||
-      c.id === 'Effort-Free-WithPromo' ||
-      c.id.toLowerCase() === 'effort-free-withpromo'
-    );
-    
-    if (foundCoupon) {
-      console.log(`✓ Found coupon by name: ${foundCoupon.id} (name: ${foundCoupon.name})`);
-      return foundCoupon.id;
-    }
-    
-    // If still not found, list all coupons for debugging
-    console.error('Available coupons in Stripe:');
-    coupons.data.forEach(c => {
-      console.error(`  - ID: ${c.id}, Name: ${c.name || 'N/A'}`);
-    });
-    
-    throw new Error('Coupon "Effort-Free-WithPromo" not found in Stripe. Please verify it exists in Stripe Dashboard.');
+    // Retrieve the coupon to verify it exists
+    const coupon = await stripe.coupons.retrieve(couponId);
+    console.log(`✓ Found referral coupon: ${coupon.id} (name: ${coupon.name || 'N/A'}, percent_off: ${coupon.percent_off}%)`);
+    return coupon.id;
   } catch (error) {
-    console.error('Error finding coupon:', error);
-    throw error;
+    console.error(`Error retrieving coupon ${couponId}:`, error);
+    throw new Error(`Coupon "${couponId}" not found in Stripe. Please verify it exists in Stripe Dashboard.`);
   }
 }
 

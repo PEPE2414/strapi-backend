@@ -36,47 +36,21 @@ async function testPromotionCodeCreation() {
     console.log('Testing Stripe promotion code creation...\n');
     
     // Step 1: Check if coupon exists
-    console.log('Step 1: Checking if coupon Effort-Free-WithPromo exists...');
+    console.log('Step 1: Checking if coupon zcSkjKMc exists...');
+    const couponId = 'zcSkjKMc'; // The actual coupon ID from Stripe Dashboard
     let coupon;
     try {
-      // Try to retrieve by ID
-      coupon = await stripe.coupons.retrieve('Effort-Free-WithPromo');
+      // Retrieve the coupon by ID
+      coupon = await stripe.coupons.retrieve(couponId);
       console.log('✓ Coupon found:', {
         id: coupon.id,
-        name: coupon.name,
+        name: coupon.name || 'N/A',
         percent_off: coupon.percent_off,
         active: coupon.active
       });
     } catch (error: any) {
-      if (error.code === 'resource_missing') {
-        // Try to find it by listing all coupons
-        console.log('✗ Coupon not found by ID. Searching in all coupons...');
-        const coupons = await stripe.coupons.list({ limit: 100 });
-        const foundCoupon = coupons.data.find(c => 
-          c.id === 'Effort-Free-WithPromo' || 
-          c.name === 'Effort-Free-WithPromo' ||
-          c.id.toLowerCase() === 'effort-free-withpromo'
-        );
-        
-        if (foundCoupon) {
-          coupon = foundCoupon;
-          console.log('✓ Coupon found by search:', {
-            id: coupon.id,
-            name: coupon.name,
-            percent_off: coupon.percent_off,
-            active: coupon.active
-          });
-        } else {
-          console.error('✗ Coupon "Effort-Free-WithPromo" not found in Stripe.');
-          console.error('Please create it in Stripe Dashboard first:');
-          console.error('  1. Go to Products → Coupons');
-          console.error('  2. Create a coupon with ID or name: Effort-Free-WithPromo');
-          console.error('  3. Set it to 30% off, duration: once');
-          throw new Error('Coupon "Effort-Free-WithPromo" not found. Please create it in Stripe Dashboard.');
-        }
-      } else {
-        throw error;
-      }
+      console.error('✗ Coupon not found:', error.message);
+      throw new Error(`Coupon "${couponId}" not found in Stripe. Please verify it exists in Stripe Dashboard.`);
     }
     
     // Step 2: Try creating a promotion code
