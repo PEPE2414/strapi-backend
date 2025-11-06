@@ -38,7 +38,7 @@ function generatePromoCode(username: string, referralCode: string): string {
 export default {
   async getReferralSummary(userId: string): Promise<ReferralSummary> {
     let user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-      fields: ['promoCode', 'referralCode', 'username', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
+      fields: ['promoCode', 'referralCode', 'promoCodeId', 'username', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
     });
 
     if (!user) {
@@ -101,10 +101,51 @@ export default {
 
       // Reload user to get updated data
       user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-        fields: ['promoCode', 'referralCode', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
+        fields: ['promoCode', 'referralCode', 'promoCodeId', 'qualifiedReferrals', 'fastTrackUntil', 'guaranteeActive']
       });
     } else {
       console.log(`[getReferralSummary] User ${userId} already has promo code: ${user.promoCode}`);
+      
+      // Check if the promo code exists in Stripe
+      // If user doesn't have a promoCodeId, or if the promoCodeId is invalid, create it in Stripe
+      let needsStripePromoCode = false;
+      
+      if (!user.promoCodeId) {
+        console.log(`[getReferralSummary] User ${userId} has promo code "${user.promoCode}" but no promoCodeId. Creating in Stripe...`);
+        needsStripePromoCode = true;
+      } else {
+        // Verify the promoCodeId exists in Stripe
+        try {
+          const { stripe } = await import('../../../utils/stripe');
+          const promotionCode = await stripe.promotionCodes.retrieve(user.promoCodeId);
+          console.log(`[getReferralSummary] Verified promoCodeId ${user.promoCodeId} exists in Stripe: ${promotionCode.code}`);
+        } catch (error: any) {
+          console.log(`[getReferralSummary] promoCodeId ${user.promoCodeId} not found in Stripe (${error.message}). Creating new one...`);
+          needsStripePromoCode = true;
+        }
+      }
+      
+      if (needsStripePromoCode) {
+        console.log(`[getReferralSummary] Creating Stripe promotion code for existing promo code "${user.promoCode}"...`);
+        const { promotionCodeId, promotionCode: actualPromoCode } = await createUserPromotionCode(
+          userId.toString(),
+          user.promoCode
+        );
+        console.log(`[getReferralSummary] createUserPromotionCode returned:`, {
+          promotionCodeId,
+          promotionCode: actualPromoCode
+        });
+        
+        // Update user with promoCodeId if it was successfully created
+        if (promotionCodeId) {
+          await strapi.entityService.update('plugin::users-permissions.user', userId, {
+            data: { promoCodeId: promotionCodeId }
+          });
+          console.log(`[getReferralSummary] Updated user ${userId} with promoCodeId: ${promotionCodeId}`);
+        } else {
+          console.warn(`[getReferralSummary] Failed to create Stripe promotion code for user ${userId}. Promo code "${user.promoCode}" will still work but won't be in Stripe.`);
+        }
+      }
     }
 
     const referralLink = `https://effort-free.co.uk/pricing?ref=${user.referralCode}&promo=${user.promoCode}`;
