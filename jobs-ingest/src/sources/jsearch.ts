@@ -3,9 +3,11 @@ import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 
 /**
- * Scraper for RapidAPI JSearch
+ * Scraper for RapidAPI JSearch (Mega Plan)
  * Searches for graduate jobs, internships, and placements in UK
- * Target: 50,000 jobs/month = ~1,667 jobs/day
+ * Target: 200,000 jobs/month = ~6,667 jobs/day
+ * Rate Limit: 20 requests/second
+ * Runs multiple times per day to maximize quota usage
  */
 export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
@@ -55,32 +57,57 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     console.log(`🧪 Broad test error:`, error instanceof Error ? error.message : String(error));
   }
 
-  // Popular industries (priority - more searches)
+  // Popular industries (priority - MANY searches for these)
   const popularIndustries = [
     'business', 'finance', 'engineering', 'accounting', 'marketing', 
     'consulting', 'it', 'technology', 'law', 'sales', 'data', 'analytics'
   ];
 
-  // Other industries (lower priority - fewer searches)
+  // Engineering types (popular - many searches)
+  const engineeringTypes = [
+    'civil engineering', 'mechanical engineering', 'electrical engineering',
+    'software engineering', 'chemical engineering', 'aerospace engineering',
+    'automotive engineering', 'biomedical engineering', 'environmental engineering',
+    'structural engineering', 'industrial engineering', 'materials engineering'
+  ];
+
+  // Other industries (comprehensive coverage)
   const otherIndustries = [
     'hr', 'human resources', 'operations', 'project management', 'supply chain',
     'pharmaceutical', 'healthcare', 'media', 'advertising', 'retail',
     'hospitality', 'tourism', 'education', 'research', 'science',
     'chemistry', 'physics', 'biology', 'mathematics', 'statistics',
-    'architecture', 'design', 'civil engineering', 'mechanical engineering',
-    'electrical engineering', 'software engineering', 'chemical engineering',
+    'architecture', 'design', 'urban planning', 'landscape architecture',
     'aerospace', 'automotive', 'energy', 'renewable energy', 'sustainability',
-    'environmental', 'agriculture', 'food', 'manufacturing', 'logistics'
+    'environmental', 'agriculture', 'food', 'manufacturing', 'logistics',
+    'psychology', 'sociology', 'economics', 'politics', 'international relations',
+    'journalism', 'communications', 'public relations', 'event management',
+    'fashion', 'graphic design', 'product design', 'industrial design',
+    'pharmacy', 'medicine', 'dentistry', 'veterinary', 'nursing',
+    'teaching', 'social work', 'counseling', 'therapy', 'occupational therapy',
+    'physiotherapy', 'sports science', 'nutrition', 'dietetics', 'food science',
+    'geology', 'geography', 'archaeology', 'history', 'languages',
+    'translation', 'interpretation', 'linguistics', 'literature', 'creative writing',
+    'film', 'television', 'radio', 'theatre', 'music', 'art', 'fine art',
+    'banking', 'investment', 'insurance', 'actuarial', 'risk management',
+    'audit', 'tax', 'forensic accounting', 'management accounting', 'financial planning',
+    'real estate', 'property', 'construction', 'quantity surveying', 'building surveying',
+    'planning', 'development', 'regeneration', 'conservation', 'heritage'
   ];
 
   // Job type prefixes
-  const graduatePrefixes = ['graduate', 'graduate scheme', 'graduate program', 'graduate trainee', 'graduate entry'];
+  const graduatePrefixes = ['graduate', 'graduate scheme', 'graduate program', 'graduate trainee', 'graduate entry', 'graduate role', 'graduate position'];
   const placementPrefixes = [
     'placement', 'industrial placement', 'placement year', 'year in industry',
     'industrial experience', 'sandwich placement', 'sandwich course', 'sandwich degree',
-    'year placement', '12 month placement', 'co-op', 'cooperative placement'
+    'year placement', '12 month placement', 'co-op', 'cooperative placement',
+    'work placement', 'student placement', 'professional placement', 'industry placement',
+    'year long placement', 'industrial year', 'placement programme', 'placement program',
+    'year in industry placement', 'industrial year placement', 'sandwich year placement',
+    'cooperative education', 'cooperative work experience', 'internship year',
+    'gap year placement', 'year out placement', 'industrial training year'
   ];
-  const internshipPrefixes = ['internship', 'summer internship', 'paid internship', 'graduate internship'];
+  const internshipPrefixes = ['internship', 'summer internship', 'paid internship', 'graduate internship', 'work experience', 'industrial internship'];
 
   // Build comprehensive search terms
   // Priority industries get all combinations, others get core terms only
@@ -97,39 +124,72 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     'industrial placement uk',
     'year in industry uk',
     'internship uk',
-    'summer internship uk'
+    'summer internship uk',
+    'placement year uk',
+    'sandwich placement uk',
+    'sandwich degree uk',
+    'co-op uk',
+    'cooperative placement uk'
   );
 
-  // Popular industries: graduate + placement + internship for each
+  // Popular industries: MANY combinations (graduate + placement + internship)
   for (const industry of popularIndustries) {
-    // Graduate terms
-    for (const prefix of graduatePrefixes.slice(0, 3)) { // Top 3 graduate prefixes
+    // Graduate terms (all prefixes)
+    for (const prefix of graduatePrefixes) {
       searchTerms.push(`${prefix} ${industry} uk`);
+      searchTerms.push(`${industry} ${prefix} uk`);
       searchTerms.push(`${prefix} ${industry} jobs uk`);
     }
     
-    // Placement terms (comprehensive)
-    for (const prefix of placementPrefixes.slice(0, 6)) { // Top 6 placement prefixes
+    // Placement terms (ALL prefixes - PRIORITY for placement jobs!)
+    for (const prefix of placementPrefixes) {
       searchTerms.push(`${prefix} ${industry} uk`);
       searchTerms.push(`${industry} ${prefix} uk`);
+      searchTerms.push(`${prefix} ${industry} jobs uk`);
+      searchTerms.push(`${industry} ${prefix} jobs uk`);
+    }
+    
+    // Internship terms (all prefixes)
+    for (const prefix of internshipPrefixes) {
+      searchTerms.push(`${prefix} ${industry} uk`);
+      searchTerms.push(`${industry} ${prefix} uk`);
+      searchTerms.push(`${prefix} ${industry} jobs uk`);
+    }
+  }
+
+  // Engineering types: MANY searches (popular field)
+  for (const engType of engineeringTypes) {
+    // Graduate terms
+    for (const prefix of graduatePrefixes.slice(0, 4)) {
+      searchTerms.push(`${prefix} ${engType} uk`);
+      searchTerms.push(`${engType} ${prefix} uk`);
+    }
+    
+    // Placement terms (ALL - PRIORITY!)
+    for (const prefix of placementPrefixes) {
+      searchTerms.push(`${prefix} ${engType} uk`);
+      searchTerms.push(`${engType} ${prefix} uk`);
+      searchTerms.push(`${prefix} ${engType} jobs uk`);
     }
     
     // Internship terms
-    for (const prefix of internshipPrefixes.slice(0, 2)) { // Top 2 internship prefixes
-      searchTerms.push(`${prefix} ${industry} uk`);
-      searchTerms.push(`${industry} ${prefix} uk`);
+    for (const prefix of internshipPrefixes) {
+      searchTerms.push(`${prefix} ${engType} uk`);
+      searchTerms.push(`${engType} ${prefix} uk`);
     }
   }
 
-  // Other industries: core terms only (graduate, placement, internship)
+  // Other industries: comprehensive coverage (graduate, placement, internship)
   for (const industry of otherIndustries) {
     searchTerms.push(`graduate ${industry} uk`);
+    searchTerms.push(`${industry} graduate uk`);
     searchTerms.push(`placement ${industry} uk`);
     searchTerms.push(`${industry} placement uk`);
     searchTerms.push(`internship ${industry} uk`);
+    searchTerms.push(`${industry} internship uk`);
   }
 
-  // Additional placement synonyms (standalone)
+  // Additional placement synonyms (standalone - PRIORITY!)
   const placementTerms = [
     'placement year in uk',
     'year in industry uk',
@@ -147,15 +207,36 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     'year long placement uk',
     'industrial year uk',
     'placement programme uk',
-    'placement program uk'
+    'placement program uk',
+    'year in industry placement uk',
+    'industrial year placement uk',
+    'sandwich year placement uk',
+    'cooperative education uk',
+    'cooperative work experience uk',
+    'internship year uk',
+    'gap year placement uk',
+    'year out placement uk',
+    'industrial training year uk'
   ];
   searchTerms.push(...placementTerms);
 
   // Location-specific searches for major UK cities (graduate, placement, internship)
-  const majorCities = ['london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool'];
+  // Format: "internship finance london", "placement engineering manchester", etc.
+  const majorCities = ['london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool', 'cambridge', 'oxford', 'cardiff', 'belfast'];
   const cityJobTypes = ['graduate', 'placement', 'internship'];
+  const cityIndustries = ['business', 'finance', 'engineering', 'accounting', 'marketing', 'consulting', 'it', 'technology', 'law', 'data', 'analytics'];
   
+  // Location + Industry + Job Type combinations (e.g., "internship finance london")
   for (const city of majorCities) {
+    for (const industry of cityIndustries) {
+      for (const jobType of cityJobTypes) {
+        searchTerms.push(`${jobType} ${industry} ${city} uk`);
+        searchTerms.push(`${industry} ${jobType} ${city} uk`);
+        searchTerms.push(`${jobType} ${industry} jobs ${city} uk`);
+      }
+    }
+    
+    // General location searches
     for (const jobType of cityJobTypes) {
       searchTerms.push(`${jobType} jobs ${city} uk`);
       searchTerms.push(`${jobType} ${city} uk`);
@@ -175,19 +256,21 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   const jobsPerTerm: { [term: string]: number } = {};
   
-  // Calculate daily limit: 50,000/month ≈ 1,667/day
+  // Calculate daily limit: 200,000/month ≈ 6,667/day
   // Each search with num_pages=5 can return up to 50 jobs (5 pages × 10 jobs/page)
-  // To hit quota: ~1,667 jobs/day ÷ 50 jobs/search ≈ 33 searches/day minimum
-  // But we want more variety, so aim for ~200-250 searches/day to maximize quota usage
-  // With pagination multiplier (2x for 2-10 pages), we can do more searches
-  // Increased from 150 to 250 to better utilize the 50,000/month quota
-  const MAX_SEARCHES_PER_DAY = 250;
+  // To hit quota: ~6,667 jobs/day ÷ 50 jobs/search ≈ 133 searches/day minimum
+  // But we want variety and multiple runs per day, so aim for 500-1000 searches/day
+  // Rate limit: 20 requests/second = 1,200 requests/minute = 72,000 requests/hour
+  // We'll run multiple times per day, so each run can do 200-500 searches
+  // This run will do up to 500 searches (can be split across multiple daily runs)
+  const MAX_SEARCHES_PER_RUN = 500;
   let totalSearches = 0;
   
   try {
     for (const term of searchTerms) {
-      if (totalSearches >= MAX_SEARCHES_PER_DAY) {
-        console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping early`);
+      if (totalSearches >= MAX_SEARCHES_PER_RUN) {
+        console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping early`);
+        console.log(`  📊 Total searches this run: ${totalSearches}/${searchTerms.length} terms`);
         break;
       }
       
@@ -332,8 +415,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     
     for (const site of sites) {
       for (const term of siteSearchTerms) {
-        if (totalSearches >= MAX_SEARCHES_PER_DAY) {
-          console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping site searches`);
+        if (totalSearches >= MAX_SEARCHES_PER_RUN) {
+          console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping site searches`);
           break;
         }
         

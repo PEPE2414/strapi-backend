@@ -146,20 +146,40 @@ export function getBucketsForToday(): CrawlBucket[] {
   const buckets: CrawlBucket[] = [];
   
   // PRIORITY 1: API-based job boards (most reliable, highest volume, no blocking)
-  // Target: LinkedIn (10K/month) + JSearch (50K/month) = 60K jobs/month
-  // These run DAILY to maximize monthly quota usage
+  // Target: LinkedIn (10K/month) + JSearch (200K/month MEGA PLAN) = 210K jobs/month
+  // JSearch runs MULTIPLE TIMES PER DAY to maximize 200K/month quota
+  // Rate limit: 20 requests/second = 72,000 requests/hour
+  // Target: 200,000 jobs/month = ~6,667 jobs/day = ~278 jobs/hour
+  // We'll run JSearch 3-4 times per day (morning, afternoon, evening, night)
   buckets.push({
     id: 'api-job-boards',
-    name: 'API Job Boards (Highest Priority - Daily)',
+    name: 'API Job Boards (Highest Priority - Multiple Daily Runs)',
     sources: [
-      // API-based scrapers - these should yield 2000+ jobs/day
+      // API-based scrapers - these should yield 6000+ jobs/day
       // LinkedIn API: 10,000/month = ~333/day (with pagination: up to 1000/day)
-      // JSearch API: 50,000/month = ~1,667/day (with pagination: up to 2000/day)
+      // JSearch API: 200,000/month = ~6,667/day (with pagination: up to 8000/day)
       'rapidapi-linkedin-jobs', // RapidAPI + LinkedIn Jobs APIs (runs first)
       'api-job-boards' // Other API boards
     ],
     priority: 'high'
   });
+  
+  // PRIORITY 1B: JSearch additional runs (runs multiple times per day)
+  // Run JSearch 3-4 times per day to maximize 200K/month quota
+  // Each run does 500 searches = 25,000 jobs potential (with 5 pages × 10 jobs/page)
+  // 4 runs/day × 500 searches = 2,000 searches/day = 100,000 jobs/day potential
+  // This ensures we hit the 200K/month quota
+  const hourOfDay = new Date().getHours();
+  // Run JSearch at: 6am, 12pm, 6pm, 12am (4 times per day)
+  const jsearchRunTimes = [6, 12, 18, 0];
+  if (jsearchRunTimes.includes(hourOfDay) || hourOfDay % 6 === 0) {
+    buckets.push({
+      id: 'jsearch-additional-runs',
+      name: 'JSearch Additional Run (Multiple Daily - Mega Plan)',
+      sources: ['rapidapi-linkedin-jobs'], // JSearch is part of rapidapi-linkedin-jobs
+      priority: 'high'
+    });
+  }
   
   // PRIORITY 2: Graduate-focused job boards (using hybrid multi-strategy approach)
   buckets.push({
