@@ -32,6 +32,7 @@ import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
+import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday } from './lib/seenTodayCache';
 import { CanonicalJob } from './types';
 import { 
   GREENHOUSE_BOARDS, 
@@ -59,7 +60,9 @@ const limiter = new Bottleneck({
 
 async function runAll() {
   const startTime = new Date();
-  const batches = [];
+  const batches: CanonicalJob[][] = [];
+  const seenTodayCache = await loadSeenTodayCache();
+  let seenTodaySkippedTotal = 0;
   let totalJobsFound = 0;
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
@@ -322,7 +325,22 @@ async function runAll() {
 
         // Add to batches for processing
         if (validJobs.length > 0) {
-          batches.push(validJobs);
+          const freshJobs = validJobs.filter(job => {
+            if (isJobNewToday(job, seenTodayCache)) {
+              return true;
+            }
+            return false;
+          });
+
+          const skippedToday = validJobs.length - freshJobs.length;
+          if (skippedToday > 0) {
+            seenTodaySkippedTotal += skippedToday;
+            console.log(`  🚫 Already ingested today: ${skippedToday} jobs (keeping ${freshJobs.length})`);
+          }
+
+          if (freshJobs.length > 0) {
+            batches.push(freshJobs);
+          }
         }
 
       } catch (error) {
@@ -408,6 +426,10 @@ async function runAll() {
     } catch (error) {
       console.error(`❌ Failed to ingest batch ${Math.floor(i/BATCH_SIZE) + 1}:`, error);
     }
+  }
+
+  if (seenTodaySkippedTotal > 0) {
+    console.log(`🚫 Seen-today cache skipped ${seenTodaySkippedTotal} jobs in this run`);
   }
 
   const duration = Math.round((Date.now() - startTime.getTime()) / 1000);
@@ -501,6 +523,8 @@ async function runAll() {
     console.log(`   Make sure to set API keys: ADZUNA_APP_ID, ADZUNA_APP_KEY, REED_API_KEY`);
     console.log(`   See: https://developer.adzuna.com/ and https://www.reed.co.uk/developers`);
   }
+
+  await saveSeenTodayCache(seenTodayCache);
 }
 
 function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {

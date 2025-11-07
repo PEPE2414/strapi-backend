@@ -1,6 +1,8 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
+import { SLOT_DEFINITIONS, getCurrentRunSlot } from '../lib/runSlots';
+import type { SlotDefinition } from '../lib/runSlots';
 import { generateJobHash } from '../lib/jobHash';
 
 /**
@@ -223,29 +225,6 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   ];
   searchTerms.push(...placementTerms);
 
-  // Location-specific searches for major UK cities (graduate, placement, internship)
-  // Format: "internship finance london", "placement engineering manchester", etc.
-  const majorCities = ['london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool', 'cambridge', 'oxford', 'cardiff', 'belfast'];
-  const cityJobTypes = ['graduate', 'placement', 'internship'];
-  const cityIndustries = ['business', 'finance', 'engineering', 'accounting', 'marketing', 'consulting', 'it', 'technology', 'law', 'data', 'analytics'];
-  
-  // Location + Industry + Job Type combinations (e.g., "internship finance london")
-  for (const city of majorCities) {
-    for (const industry of cityIndustries) {
-      for (const jobType of cityJobTypes) {
-        searchTerms.push(`${jobType} ${industry} ${city} uk`);
-        searchTerms.push(`${industry} ${jobType} ${city} uk`);
-        searchTerms.push(`${jobType} ${industry} jobs ${city} uk`);
-      }
-    }
-    
-    // General location searches
-    for (const jobType of cityJobTypes) {
-      searchTerms.push(`${jobType} jobs ${city} uk`);
-      searchTerms.push(`${jobType} ${city} uk`);
-    }
-  }
-
   // Site-constrained targets (UK graduate boards)
   const sites = [
     { key: 'gradcracker', domain: 'gradcracker.com' },
@@ -257,16 +236,44 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     { key: 'trackr', domain: 'the-trackr.com' }
   ];
 
+  const siteSearchTerms = [
+    'graduate', 'graduate scheme', 'placement', 'industrial placement', 
+    'year in industry', 'internship', 'summer internship'
+  ];
+
+  const siteTermsForRun = buildSlotSiteTerms(slotDefinition, siteSearchTerms);
+  console.log(`  🌐 Site search term combos: ${siteTermsForRun.length}`);
+
   const jobsPerTerm: { [term: string]: number } = {};
   const uniqueJobsPerTerm: { [term: string]: number } = {};
-  
-  // Rotate keyword sets across multiple daily runs (4 slots: 0-5,6-11,12-17,18-23)
-  const RUN_SLOTS = 4;
-  const hoursPerSlot = Math.floor(24 / RUN_SLOTS);
-  const currentHour = new Date().getHours();
-  const runSlot = Math.floor(currentHour / hoursPerSlot) % RUN_SLOTS;
-  const termsForRun = filterTermsBySlot(searchTerms, RUN_SLOTS, runSlot);
-  console.log(`  🕒 JSearch run slot: ${runSlot + 1}/${RUN_SLOTS} (${termsForRun.length} terms this run out of ${searchTerms.length})`);
+
+  const totalSlots = SLOT_DEFINITIONS.length;
+  const { slotIndex } = getCurrentRunSlot(totalSlots);
+  const runSlot = slotIndex;
+  const slotDefinition = SLOT_DEFINITIONS[runSlot];
+  const dateWindow = slotDefinition.useBacklogWindow ? 'week' : '3days';
+
+  const baseTermsForRun = filterTermsBySlot(searchTerms, totalSlots, runSlot);
+  const slotSpecificTerms = buildSlotSpecificTerms(
+    slotDefinition,
+    graduatePrefixes,
+    placementPrefixes,
+    internshipPrefixes
+  );
+
+  const combinedTerms = new Set<string>();
+  baseTermsForRun.forEach(term => combinedTerms.add(term.trim()));
+  slotSpecificTerms.forEach(term => combinedTerms.add(term.trim()));
+
+  // Limit to avoid overwhelming the API per run
+  const termsForRun = Array.from(combinedTerms)
+    .map(term => term.toLowerCase())
+    .filter(Boolean)
+    .slice(0, 600);
+
+  console.log(`  🕒 JSearch run slot: ${runSlot + 1}/${totalSlots} (${slotDefinition.name})`);
+  console.log(`  📅 Date window: ${dateWindow}`);
+  console.log(`  🔢 Terms this run: ${termsForRun.length} (from ${combinedTerms.size} candidates)`);
 
   // Calculate daily limit: 200,000/month ≈ 6,667/day
   // Each search with num_pages=5 can return up to 50 jobs (5 pages × 10 jobs/page)
@@ -282,7 +289,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     for (const term of termsForRun) {
       if (totalSearches >= MAX_SEARCHES_PER_RUN) {
         console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping early`);
-        console.log(`  📊 Total searches this run: ${totalSearches}/${searchTerms.length} terms`);
+        console.log(`  📊 Total searches this run: ${totalSearches}/${combinedTerms.size} candidate terms`);
         break;
       }
       
@@ -303,7 +310,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           country: 'uk',
           page: '1',
           num_pages: '5', // 5 pages = 50 jobs max, charged 2x (worth it for coverage)
-          date_posted: '3days', // Focus on fresh jobs to reduce duplicates
+          date_posted: dateWindow,
           employment_types: 'FULLTIME,INTERN', // Graduate roles and internships
           job_requirements: 'no_experience,under_3_years_experience' // Entry-level focus
         });
@@ -431,15 +438,10 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   // Site-constrained queries to focus on specific UK boards
   // Use fewer searches per site to stay within daily limit
   try {
-    const siteSearchTerms = [
-      'graduate', 'graduate scheme', 'placement', 'industrial placement', 
-      'year in industry', 'internship', 'summer internship'
-    ];
-    
-    const siteTermsForRun = filterTermsBySlot(siteSearchTerms, RUN_SLOTS, runSlot);
+    const effectiveSiteTerms = siteTermsForRun.length > 0 ? siteTermsForRun : siteSearchTerms;
 
     for (const site of sites) {
-      for (const term of siteTermsForRun) {
+      for (const term of effectiveSiteTerms) {
         if (totalSearches >= MAX_SEARCHES_PER_RUN) {
           console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping site searches`);
           break;
@@ -452,11 +454,11 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         try {
           // Site-constrained search with same filters
           const urlParams = new URLSearchParams({
-            query: query, // Already includes site:domain
+            query,
             country: 'uk',
             page: '1',
-            num_pages: '4', // 4 pages = 40 jobs max, charged 2x
-            date_posted: '3days',
+            num_pages: '4',
+            date_posted: dateWindow,
             employment_types: 'FULLTIME,INTERN',
             job_requirements: 'no_experience,under_3_years_experience'
           });
@@ -579,6 +581,10 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     console.log(`  📈 Total jobs from API: ${totalJobsFromAPI}`);
     console.log(`  📉 After filtering: ${jobs.length} relevant jobs`);
     console.log(`  🔁 Intra-run duplicates removed: ${duplicateCount}`);
+    const totalUniqueJobs = Object.values(uniqueJobsPerTerm).reduce((sum, count) => sum + count, 0);
+    if (totalUniqueJobs > 0) {
+      console.log(`  ✅ Unique jobs captured this run: ${totalUniqueJobs}`);
+    }
     if (Object.keys(uniqueJobsPerTerm).length > 0) {
       console.log(`  🔍 Unique jobs per term (top 15):`);
       Object.entries(uniqueJobsPerTerm)
@@ -663,6 +669,90 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
+}
+
+function buildSlotSpecificTerms(
+  slot: SlotDefinition,
+  graduatePrefixes: string[],
+  placementPrefixes: string[],
+  internshipPrefixes: string[]
+): string[] {
+  const terms = new Set<string>();
+  const MAX_TERMS = 800;
+
+  const add = (value: string) => {
+    const cleaned = value.trim().toLowerCase();
+    if (!cleaned) return;
+    if (terms.has(cleaned)) return;
+    if (terms.size >= MAX_TERMS) return;
+    terms.add(cleaned);
+  };
+
+  const jobTypeConfigs = [
+    { label: 'graduate', prefixes: graduatePrefixes.slice(0, 6) },
+    { label: 'placement', prefixes: placementPrefixes.slice(0, 10) },
+    { label: 'internship', prefixes: internshipPrefixes.slice(0, 6) }
+  ];
+
+  const cities = slot.cities;
+  const industries = slot.industries;
+
+  industries.forEach(industry => {
+    jobTypeConfigs.forEach(({ label, prefixes }) => {
+      add(`${label} ${industry} uk`);
+      add(`${industry} ${label} uk`);
+      prefixes.slice(0, 3).forEach(prefix => {
+        add(`${prefix} ${industry} uk`);
+      });
+    });
+  });
+
+  cities.forEach(city => {
+    jobTypeConfigs.forEach(({ label, prefixes }) => {
+      add(`${label} jobs ${city}`);
+      add(`${label} ${city} uk`);
+      prefixes.forEach(prefix => {
+        add(`${prefix} ${city}`);
+      });
+      industries.forEach(industry => {
+        prefixes.forEach(prefix => {
+          add(`${prefix} ${industry} ${city}`);
+          add(`${prefix} ${industry} in ${city}`);
+        });
+        add(`${label} ${industry} ${city}`);
+        add(`${industry} ${label} ${city}`);
+      });
+    });
+  });
+
+  return Array.from(terms);
+}
+
+function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[] {
+  const terms = new Set<string>();
+  const MAX_TERMS = 24;
+
+  const cities = slot.cities.slice(0, Math.min(4, slot.cities.length));
+  const industries = slot.industries.slice(0, Math.min(6, slot.industries.length));
+
+  const add = (value: string) => {
+    const cleaned = value.trim().toLowerCase();
+    if (!cleaned) return;
+    if (terms.has(cleaned)) return;
+    if (terms.size >= MAX_TERMS) return;
+    terms.add(cleaned);
+  };
+
+  baseTerms.forEach(term => {
+    cities.forEach(city => {
+      add(`${term} ${city}`);
+    });
+    industries.forEach(industry => {
+      add(`${term} ${industry}`);
+    });
+  });
+
+  return Array.from(terms);
 }
 
 function buildJSearchDedupKey(job: any): string {

@@ -1,5 +1,7 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
+import { SLOT_DEFINITIONS, getCurrentRunSlot } from '../lib/runSlots';
+import type { SlotDefinition } from '../lib/runSlots';
 import { generateJobHash } from '../lib/jobHash';
 
 /**
@@ -120,22 +122,27 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     'Sheffield'
   ];
 
-  const RUN_SLOTS = 4;
-  const hoursPerSlot = Math.floor(24 / RUN_SLOTS);
-  const currentHour = new Date().getHours();
-  const runSlot = Math.floor(currentHour / hoursPerSlot) % RUN_SLOTS;
-  const termsForRun = filterLinkedInTermsBySlot(searchTerms, RUN_SLOTS, runSlot);
-  console.log(`  🕒 LinkedIn run slot: ${runSlot + 1}/${RUN_SLOTS} (${termsForRun.length} terms this run out of ${searchTerms.length})`);
+  const totalSlots = SLOT_DEFINITIONS.length;
+  const { slotIndex } = getCurrentRunSlot(totalSlots);
+  const slotDefinition = SLOT_DEFINITIONS[slotIndex];
+  const dateWindow = slotDefinition.useBacklogWindow ? 'week' : '3days';
+
+  const baseTermsForRun = filterLinkedInTermsBySlot(searchTerms, totalSlots, slotIndex);
+  const slotTerms = buildLinkedInSlotTerms(slotDefinition);
+  const combinedTerms = new Set<string>();
+  baseTermsForRun.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
+  slotTerms.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
+
+  const MAX_SEARCHES_PER_RUN = 40;
+  const termsForRun = Array.from(combinedTerms).slice(0, MAX_SEARCHES_PER_RUN);
+
+  console.log(`  🕒 LinkedIn run slot: ${slotIndex + 1}/${totalSlots} (${slotDefinition.name})`);
+  console.log(`  📅 Date window: ${dateWindow}`);
+  console.log(`  🔢 Terms this run: ${termsForRun.length} (from ${combinedTerms.size} candidates)`);
 
   const jobsPerTerm: { [term: string]: number } = {};
   const uniqueJobsPerTerm: { [term: string]: number } = {};
   let totalSearches = 0;
-  // LinkedIn API: 10,000/month = ~333/day
-  // With pagination (3 pages × 100 jobs/page = 300 jobs per term)
-  // To hit quota: ~333 jobs/day ÷ 300 jobs/term ≈ 1-2 terms/day minimum
-  // But we want variety, so aim for ~30-40 terms/day
-  // Reduced from 150 to 40 to avoid hitting rate limits (429 errors)
-  const MAX_SEARCHES_PER_RUN = 40;
   
   try {
     // Strategy 1: Broad searches across all terms with high pagination
@@ -156,7 +163,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         let termJobsFound = 0;
         for (let offset = 0; offset < 200; offset += 100) { // Get up to 200 jobs per term (reduced from 300)
           const encodedTerm = encodeURIComponent(`"${term}"`);
-          const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&date_posted=3days&limit=100&offset=${offset}`;
+          const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&date_posted=${dateWindow}&limit=100&offset=${offset}`;
           
           if (offset > 0) {
             await new Promise(resolve => setTimeout(resolve, 2000)); // Rate limit between pages (increased to 2s)
@@ -309,6 +316,10 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
       Object.entries(jobsPerTerm).forEach(([term, count]) => {
         console.log(`  "${term}": ${count} jobs`);
       });
+      const totalUniqueJobs = Object.values(uniqueJobsPerTerm).reduce((sum, count) => sum + count, 0);
+      if (totalUniqueJobs > 0) {
+        console.log(`  ✅ Unique jobs captured this run: ${totalUniqueJobs}`);
+      }
       if (Object.keys(uniqueJobsPerTerm).length > 0) {
         console.log(`  🔍 Unique jobs per term (top 10):`);
         Object.entries(uniqueJobsPerTerm)
@@ -380,6 +391,40 @@ function buildLinkedInDedupKey(job: any): string {
   const title = (job.title || '').trim().toLowerCase();
   const company = (job.organization || job.company_name || '').trim().toLowerCase();
   return [id, apply, title, company].filter(Boolean).join('|');
+}
+
+function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
+  const terms = new Set<string>();
+  const MAX_TERMS = 120;
+  const jobTypes = ['graduate', 'placement', 'internship'];
+
+  const add = (value: string) => {
+    const cleaned = value.trim().toLowerCase();
+    if (!cleaned) return;
+    if (terms.has(cleaned)) return;
+    if (terms.size >= MAX_TERMS) return;
+    terms.add(cleaned);
+  };
+
+  slot.industries.forEach(industry => {
+    jobTypes.forEach(type => {
+      add(`${type} ${industry} uk`);
+      add(`${industry} ${type} uk`);
+    });
+  });
+
+  slot.cities.forEach(city => {
+    jobTypes.forEach(type => {
+      add(`${type} jobs ${city}`);
+      add(`${type} ${city} uk`);
+      slot.industries.forEach(industry => {
+        add(`${type} ${industry} ${city}`);
+        add(`${industry} ${type} ${city}`);
+      });
+    });
+  });
+
+  return Array.from(terms);
 }
 
 function filterLinkedInTermsBySlot(terms: string[], slots: number, slot: number): string[] {
