@@ -31,6 +31,7 @@ import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
+import { getCurrentRunSlot, isBacklogSlot } from './lib/runSlots';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
 import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday } from './lib/seenTodayCache';
 import { CanonicalJob } from './types';
