@@ -1,5 +1,6 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
+import { generateJobHash } from '../lib/jobHash';
 
 /**
  * Scraper for RapidAPI Active Jobs DB
@@ -114,7 +115,14 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                 salary: undefined, // Not provided by this API
                 applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
                 slug: generateSlug(job.title, job.company_name),
-                hash: generateHash(job.title, job.company_name, job.id)
+                hash: generateJobHash({
+                  title: job.title,
+                  company: job.company_name,
+                  id: job.id,
+                  applyUrl: job.apply_url || job.details_url,
+                  location: job.location,
+                  postedAt: job.posted_at
+                })
               };
 
               // Filter for relevant job types (placement, graduate, or internship)
@@ -196,9 +204,4 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
-}
-
-function generateHash(title: string, company: string, id?: string): string {
-  const content = `${title}-${company}-${id || Date.now()}`;
-  return Buffer.from(content).toString('base64').slice(0, 16);
 }

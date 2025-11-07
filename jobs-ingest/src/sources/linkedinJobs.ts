@@ -1,5 +1,6 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
+import { generateJobHash } from '../lib/jobHash';
 
 /**
  * Scraper for LinkedIn Jobs API
@@ -234,12 +235,14 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                 salary: undefined, // Not provided by this API
                 applyDeadline: job.date_posted || job.posted_at ? toISO(job.date_posted || job.posted_at) : undefined,
                 slug: generateSlug(job.title, job.organization || job.company_name),
-                hash: generateHash(
-                  job.title, 
-                  job.organization || job.company_name, 
-                  job.id || job.id?.toString(), 
-                  job.apply_url || job.applyUrl || job.url
-                )
+                hash: generateJobHash({
+                  title: job.title,
+                  company: job.organization || job.company_name,
+                  id: job.id || job.id?.toString(),
+                  applyUrl: job.apply_url || job.external_apply_url || job.organization_url || job.url,
+                  location: job.location || job.location_name,
+                  postedAt: job.date_posted || job.posted_at
+                })
               };
 
               // Filter for relevant job types (placement, graduate, or internship)
@@ -340,13 +343,5 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
-}
-
-function generateHash(title: string, company: string, id?: string, applyUrl?: string): string {
-  // Include applyUrl in hash to make it more unique (same job might have different IDs from different sources)
-  const urlPart = applyUrl ? applyUrl.split('?')[0] : ''; // Remove query params for consistency
-  const content = `${title}-${company}-${id || 'no-id'}-${urlPart}`;
-  // Use longer hash (32 chars) to reduce collisions
-  return Buffer.from(content).toString('base64').slice(0, 32);
 }
 

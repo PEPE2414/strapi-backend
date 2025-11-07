@@ -1,6 +1,7 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
+import { generateJobHash } from '../lib/jobHash';
 
 /**
  * Scraper for RapidAPI JSearch (Mega Plan)
@@ -365,12 +366,14 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 applyDeadline: job.job_posted_at_datetime_utc ? 
                   toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
-                hash: generateHash(
-                  job.job_title || job.title, 
-                  job.employer_name || job.company_name, 
-                  job.job_id || job.id, 
-                  bestApplyUrl
-                )
+                hash: generateJobHash({
+                  title: job.job_title || job.title,
+                  company: job.employer_name || job.company_name,
+                  id: job.job_id || job.id,
+                  applyUrl: bestApplyUrl,
+                  location: job.job_city || job.job_location || job.location || job.job_state,
+                  postedAt: job.job_posted_at_datetime_utc || job.job_posted_at
+                })
               };
 
               // Filter for relevant job types (placement, graduate, or internship)
@@ -497,12 +500,14 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 applyDeadline: job.job_posted_at_datetime_utc ? 
                   toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
-                hash: generateHash(
-                  job.job_title || job.title, 
-                  job.employer_name || job.company_name, 
-                  job.job_id || job.id, 
-                  bestApplyUrl
-                )
+                hash: generateJobHash({
+                  title: job.job_title || job.title,
+                  company: job.employer_name || job.company_name,
+                  id: job.job_id || job.id,
+                  applyUrl: bestApplyUrl,
+                  location: job.job_city || job.job_location || job.location || job.job_state,
+                  postedAt: job.job_posted_at_datetime_utc || job.job_posted_at
+                })
               };
 
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
@@ -617,12 +622,4 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
-}
-
-function generateHash(title: string, company: string, id?: string, applyUrl?: string): string {
-  // Include applyUrl in hash to make it more unique (same job might have different IDs from different sources)
-  const urlPart = applyUrl ? applyUrl.split('?')[0] : ''; // Remove query params for consistency
-  const content = `${title}-${company}-${id || 'no-id'}-${urlPart}`;
-  // Use longer hash (32 chars) to reduce collisions
-  return Buffer.from(content).toString('base64').slice(0, 32);
 }
