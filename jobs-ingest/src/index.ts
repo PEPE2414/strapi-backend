@@ -63,6 +63,7 @@ async function runAll() {
   const batches: CanonicalJob[][] = [];
   const seenTodayCache = await loadSeenTodayCache();
   let seenTodaySkippedTotal = 0;
+  const backlogRun = isBacklogSlot(getCurrentRunSlot().slotIndex);
   let totalJobsFound = 0;
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
@@ -264,11 +265,12 @@ async function runAll() {
         let jobTypeRejected = 0;
         
         const validJobs = sourceJobs.filter(job => {
-          // Check if job is fresh (relaxed to 90 days)
-          if (!isJobFresh(job, 90)) {
-            freshnessRejected++;
-            sourceStats[source].invalid++;
-            return false;
+          if (!backlogRun) {
+            if (!isJobFresh(job, 180)) {
+              freshnessRejected++;
+              sourceStats[source].invalid++;
+              return false;
+            }
           }
 
           // Basic validation only
@@ -325,21 +327,25 @@ async function runAll() {
 
         // Add to batches for processing
         if (validJobs.length > 0) {
-          const freshJobs = validJobs.filter(job => {
-            if (isJobNewToday(job, seenTodayCache)) {
-              return true;
+          if (backlogRun) {
+            batches.push(validJobs);
+          } else {
+            const freshJobs = validJobs.filter(job => {
+              if (isJobNewToday(job, seenTodayCache)) {
+                return true;
+              }
+              return false;
+            });
+
+            const skippedToday = validJobs.length - freshJobs.length;
+            if (skippedToday > 0) {
+              seenTodaySkippedTotal += skippedToday;
+              console.log(`  🚫 Already ingested today: ${skippedToday} jobs (keeping ${freshJobs.length})`);
             }
-            return false;
-          });
 
-          const skippedToday = validJobs.length - freshJobs.length;
-          if (skippedToday > 0) {
-            seenTodaySkippedTotal += skippedToday;
-            console.log(`  🚫 Already ingested today: ${skippedToday} jobs (keeping ${freshJobs.length})`);
-          }
-
-          if (freshJobs.length > 0) {
-            batches.push(freshJobs);
+            if (freshJobs.length > 0) {
+              batches.push(freshJobs);
+            }
           }
         }
 

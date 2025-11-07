@@ -47,3 +47,7 @@ export function getCurrentRunSlot(totalSlots: number = SLOT_DEFINITIONS.length):
   return { slotIndex, hoursPerSlot };
 }
 
+export function isBacklogSlot(slotIndex: number): boolean {
+  return SLOT_DEFINITIONS[slotIndex]?.useBacklogWindow === true;
+}
+

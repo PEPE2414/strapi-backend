@@ -1,7 +1,7 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
-import { SLOT_DEFINITIONS, getCurrentRunSlot } from '../lib/runSlots';
+import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
 import { generateJobHash } from '../lib/jobHash';
 
@@ -240,7 +240,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const { slotIndex } = getCurrentRunSlot(totalSlots);
   const runSlot = slotIndex;
   const slotDefinition = SLOT_DEFINITIONS[runSlot];
-  const dateWindow = slotDefinition.useBacklogWindow ? 'week' : '3days';
+  const dateWindow = isBacklogSlot(runSlot) ? 'week' : '3days';
 
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement', 
