@@ -8,6 +8,8 @@ import { generateJobHash } from '../lib/jobHash';
  */
 export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
+  const seenKeys = new Set<string>();
+  let duplicateCount = 0;
   
   if (!process.env.RAPIDAPI_KEY) {
     console.warn('⚠️  RAPIDAPI_KEY is not set. Skipping LinkedIn Jobs API.');
@@ -118,20 +120,28 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     'Sheffield'
   ];
 
+  const RUN_SLOTS = 4;
+  const hoursPerSlot = Math.floor(24 / RUN_SLOTS);
+  const currentHour = new Date().getHours();
+  const runSlot = Math.floor(currentHour / hoursPerSlot) % RUN_SLOTS;
+  const termsForRun = filterLinkedInTermsBySlot(searchTerms, RUN_SLOTS, runSlot);
+  console.log(`  🕒 LinkedIn run slot: ${runSlot + 1}/${RUN_SLOTS} (${termsForRun.length} terms this run out of ${searchTerms.length})`);
+
   const jobsPerTerm: { [term: string]: number } = {};
+  const uniqueJobsPerTerm: { [term: string]: number } = {};
   let totalSearches = 0;
   // LinkedIn API: 10,000/month = ~333/day
   // With pagination (3 pages × 100 jobs/page = 300 jobs per term)
   // To hit quota: ~333 jobs/day ÷ 300 jobs/term ≈ 1-2 terms/day minimum
   // But we want variety, so aim for ~30-40 terms/day
   // Reduced from 150 to 40 to avoid hitting rate limits (429 errors)
-  const MAX_SEARCHES_PER_DAY = 40;
+  const MAX_SEARCHES_PER_RUN = 40;
   
   try {
     // Strategy 1: Broad searches across all terms with high pagination
-    for (const term of searchTerms) {
-      if (totalSearches >= MAX_SEARCHES_PER_DAY) {
-        console.log(`  ⏸️  Reached daily search limit (${MAX_SEARCHES_PER_DAY}), stopping early`);
+    for (const term of termsForRun) {
+      if (totalSearches >= MAX_SEARCHES_PER_RUN) {
+        console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping early`);
         break;
       }
       
@@ -146,7 +156,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         let termJobsFound = 0;
         for (let offset = 0; offset < 200; offset += 100) { // Get up to 200 jobs per term (reduced from 300)
           const encodedTerm = encodeURIComponent(`"${term}"`);
-          const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&limit=100&offset=${offset}`;
+          const url = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&date_posted=3days&limit=100&offset=${offset}`;
           
           if (offset > 0) {
             await new Promise(resolve => setTimeout(resolve, 2000)); // Rate limit between pages (increased to 2s)
@@ -222,6 +232,13 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
           
           for (const job of jobArray) {
             try {
+              const dedupKey = buildLinkedInDedupKey(job);
+              if (seenKeys.has(dedupKey)) {
+                duplicateCount++;
+                continue;
+              }
+              seenKeys.add(dedupKey);
+
               const canonicalJob: CanonicalJob = {
                 title: job.title || 'Unknown Title',
                 company: { name: job.organization || job.company_name || 'Unknown Company' },
@@ -233,6 +250,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                 sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/linkedin-job-search-api',
                 jobType: classifyJobType(job.title + ' ' + (job.description_text || job.description || '')),
                 salary: undefined, // Not provided by this API
+                postedAt: job.date_posted || job.posted_at ? toISO(job.date_posted || job.posted_at) : undefined,
                 applyDeadline: job.date_posted || job.posted_at ? toISO(job.date_posted || job.posted_at) : undefined,
                 slug: generateSlug(job.title, job.organization || job.company_name),
                 hash: generateJobHash({
@@ -251,6 +269,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
                 jobs.push(canonicalJob);
+                uniqueJobsPerTerm[term] = (uniqueJobsPerTerm[term] || 0) + 1;
               }
             } catch (error) {
               console.warn(`    ⚠️  Error processing LinkedIn job:`, error instanceof Error ? error.message : String(error));
@@ -286,9 +305,19 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     // Summary: Show jobs per term
     if (Object.keys(jobsPerTerm).length > 0) {
       console.log(`\n📊 LinkedIn Search Summary:`);
+      console.log(`  🔁 Intra-run duplicates removed: ${duplicateCount}`);
       Object.entries(jobsPerTerm).forEach(([term, count]) => {
         console.log(`  "${term}": ${count} jobs`);
       });
+      if (Object.keys(uniqueJobsPerTerm).length > 0) {
+        console.log(`  🔍 Unique jobs per term (top 10):`);
+        Object.entries(uniqueJobsPerTerm)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10)
+          .forEach(([term, count]) => {
+            console.log(`    • ${term}: ${count} unique jobs`);
+          });
+      }
     }
 
   } catch (error) {
@@ -343,5 +372,21 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
+}
+
+function buildLinkedInDedupKey(job: any): string {
+  const id = (job.id || job.job_id || job.jobId || '').toString().trim().toLowerCase();
+  const apply = (job.apply_url || job.external_apply_url || job.organization_url || job.url || '').split('?')[0].trim().toLowerCase();
+  const title = (job.title || '').trim().toLowerCase();
+  const company = (job.organization || job.company_name || '').trim().toLowerCase();
+  return [id, apply, title, company].filter(Boolean).join('|');
+}
+
+function filterLinkedInTermsBySlot(terms: string[], slots: number, slot: number): string[] {
+  if (slots <= 1) {
+    return [...terms];
+  }
+  const filtered = terms.filter((_, index) => index % slots === slot);
+  return filtered.length > 0 ? filtered : [...terms];
 }
 

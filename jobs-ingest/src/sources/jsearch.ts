@@ -12,6 +12,8 @@ import { generateJobHash } from '../lib/jobHash';
  */
 export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
+  const seenKeys = new Set<string>();
+  let duplicateCount = 0;
   
   if (!process.env.RAPIDAPI_KEY) {
     console.warn('⚠️  RAPIDAPI_KEY is not set. Skipping JSearch API.');
@@ -256,7 +258,16 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   ];
 
   const jobsPerTerm: { [term: string]: number } = {};
+  const uniqueJobsPerTerm: { [term: string]: number } = {};
   
+  // Rotate keyword sets across multiple daily runs (4 slots: 0-5,6-11,12-17,18-23)
+  const RUN_SLOTS = 4;
+  const hoursPerSlot = Math.floor(24 / RUN_SLOTS);
+  const currentHour = new Date().getHours();
+  const runSlot = Math.floor(currentHour / hoursPerSlot) % RUN_SLOTS;
+  const termsForRun = filterTermsBySlot(searchTerms, RUN_SLOTS, runSlot);
+  console.log(`  🕒 JSearch run slot: ${runSlot + 1}/${RUN_SLOTS} (${termsForRun.length} terms this run out of ${searchTerms.length})`);
+
   // Calculate daily limit: 200,000/month ≈ 6,667/day
   // Each search with num_pages=5 can return up to 50 jobs (5 pages × 10 jobs/page)
   // To hit quota: ~6,667 jobs/day ÷ 50 jobs/search ≈ 133 searches/day minimum
@@ -268,7 +279,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   let totalSearches = 0;
   
   try {
-    for (const term of searchTerms) {
+    for (const term of termsForRun) {
       if (totalSearches >= MAX_SEARCHES_PER_RUN) {
         console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping early`);
         console.log(`  📊 Total searches this run: ${totalSearches}/${searchTerms.length} terms`);
@@ -292,7 +303,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           country: 'uk',
           page: '1',
           num_pages: '5', // 5 pages = 50 jobs max, charged 2x (worth it for coverage)
-          date_posted: 'month', // Last 30 days
+          date_posted: '3days', // Focus on fresh jobs to reduce duplicates
           employment_types: 'FULLTIME,INTERN', // Graduate roles and internships
           job_requirements: 'no_experience,under_3_years_experience' // Entry-level focus
         });
@@ -333,6 +344,13 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           
           for (const job of jobArray) {
             try {
+              const dedupKey = buildJSearchDedupKey(job);
+              if (seenKeys.has(dedupKey)) {
+                duplicateCount++;
+                continue;
+              }
+              seenKeys.add(dedupKey);
+
               // Get best apply URL from apply_options array (prefer direct links)
               let bestApplyUrl = job.job_apply_link || '';
               if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
@@ -363,6 +381,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                   max: job.job_max_salary,
                   currency: job.job_salary_currency || 'GBP'
                 } : undefined,
+                postedAt: job.job_posted_at_datetime_utc ? toISO(job.job_posted_at_datetime_utc) : undefined,
                 applyDeadline: job.job_posted_at_datetime_utc ? 
                   toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
@@ -387,6 +406,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                   await enhanceJobDescription(canonicalJob);
                 }
                 jobs.push(canonicalJob);
+                uniqueJobsPerTerm[term] = (uniqueJobsPerTerm[term] || 0) + 1;
               }
             } catch (error) {
               console.warn(`  ⚠️  Error processing job:`, error instanceof Error ? error.message : String(error));
@@ -416,8 +436,10 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
       'year in industry', 'internship', 'summer internship'
     ];
     
+    const siteTermsForRun = filterTermsBySlot(siteSearchTerms, RUN_SLOTS, runSlot);
+
     for (const site of sites) {
-      for (const term of siteSearchTerms) {
+      for (const term of siteTermsForRun) {
         if (totalSearches >= MAX_SEARCHES_PER_RUN) {
           console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping site searches`);
           break;
@@ -434,7 +456,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
             country: 'uk',
             page: '1',
             num_pages: '4', // 4 pages = 40 jobs max, charged 2x
-            date_posted: 'month',
+            date_posted: '3days',
             employment_types: 'FULLTIME,INTERN',
             job_requirements: 'no_experience,under_3_years_experience'
           });
@@ -465,8 +487,15 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
             jobsPerTerm[siteTermKey] = (jobsPerTerm[siteTermKey] || 0) + siteTermJobs;
           }
 
-          for (const job of jobArray) {
+        for (const job of jobArray) {
             try {
+            const dedupKey = buildJSearchDedupKey(job);
+            if (seenKeys.has(dedupKey)) {
+              duplicateCount++;
+              continue;
+            }
+            seenKeys.add(dedupKey);
+
               // Get best apply URL from apply_options array (prefer direct links)
               let bestApplyUrl = job.job_apply_link || '';
               if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
@@ -497,6 +526,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                   max: job.job_max_salary,
                   currency: job.job_salary_currency || 'GBP'
                 } : undefined,
+                postedAt: job.job_posted_at_datetime_utc ? toISO(job.job_posted_at_datetime_utc) : undefined,
                 applyDeadline: job.job_posted_at_datetime_utc ? 
                   toISO(job.job_posted_at_datetime_utc) : undefined,
                 slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
@@ -519,6 +549,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                   await enhanceJobDescription(canonicalJob);
                 }
                 jobs.push(canonicalJob);
+                uniqueJobsPerTerm[siteTermKey] = (uniqueJobsPerTerm[siteTermKey] || 0) + 1;
               }
             } catch (error) {
               console.warn(`    ⚠️  Error processing site job:`, error instanceof Error ? error.message : String(error));
@@ -547,6 +578,16 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     const totalJobsFromAPI = Object.values(jobsPerTerm).reduce((sum, count) => sum + count, 0);
     console.log(`  📈 Total jobs from API: ${totalJobsFromAPI}`);
     console.log(`  📉 After filtering: ${jobs.length} relevant jobs`);
+    console.log(`  🔁 Intra-run duplicates removed: ${duplicateCount}`);
+    if (Object.keys(uniqueJobsPerTerm).length > 0) {
+      console.log(`  🔍 Unique jobs per term (top 15):`);
+      Object.entries(uniqueJobsPerTerm)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 15)
+        .forEach(([term, count]) => {
+          console.log(`    • ${term}: ${count} unique jobs`);
+        });
+    }
     console.log(`  🔢 Total searches performed: ${totalSearches}`);
   }
 
@@ -622,4 +663,20 @@ function generateSlug(title: string, company: string): string {
     .slice(0, 80);
   
   return `${slug}-${Date.now()}`;
+}
+
+function buildJSearchDedupKey(job: any): string {
+  const id = (job.job_id || job.id || '').toString().trim().toLowerCase();
+  const apply = (job.job_apply_link || job.apply_link || job.url || '').split('?')[0].trim().toLowerCase();
+  const title = (job.job_title || job.title || '').trim().toLowerCase();
+  const company = (job.employer_name || job.company_name || '').trim().toLowerCase();
+  return [id, apply, title, company].filter(Boolean).join('|');
+}
+
+function filterTermsBySlot(terms: string[], slots: number, slot: number): string[] {
+  if (slots <= 1) {
+    return [...terms];
+  }
+  const filtered = terms.filter((_, index) => index % slots === slot);
+  return filtered.length > 0 ? filtered : [...terms];
 }

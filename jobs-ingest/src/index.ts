@@ -32,6 +32,7 @@ import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
+import { CanonicalJob } from './types';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
@@ -480,6 +481,11 @@ async function runAll() {
     }
   }
   
+  // Weekly coverage report (runs on Sundays)
+  if (new Date().getDay() === 0) {
+    logWeeklyCoverageGaps(results);
+  }
+
   console.log(`${'='.repeat(80)}`);
   
   // Check if we met the target (based on NEW jobs created)
@@ -494,6 +500,80 @@ async function runAll() {
     console.log(`   Note: ${totalUpdated} jobs were duplicates (updated), ${totalSkipped} were skipped`);
     console.log(`   Make sure to set API keys: ADZUNA_APP_ID, ADZUNA_APP_KEY, REED_API_KEY`);
     console.log(`   See: https://developer.adzuna.com/ and https://www.reed.co.uk/developers`);
+  }
+}
+
+function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {
+  if (!jobs.length) {
+    console.log(`\n📉 Weekly Coverage Report: No jobs to analyze.`);
+    return;
+  }
+
+  const trackedIndustries = [
+    'business', 'finance', 'engineering', 'technology', 'consulting',
+    'marketing', 'sales', 'law', 'data', 'analytics', 'healthcare',
+    'education', 'creative', 'science'
+  ];
+
+  const trackedCities = [
+    'london', 'manchester', 'birmingham', 'leeds', 'glasgow',
+    'edinburgh', 'bristol', 'liverpool', 'oxford', 'cambridge',
+    'cardiff', 'belfast'
+  ];
+
+  const industryCounts: Record<string, number> = Object.fromEntries(trackedIndustries.map(i => [i, 0]));
+  const cityCounts: Record<string, number> = Object.fromEntries(trackedCities.map(c => [c, 0]));
+
+  for (const job of jobs) {
+    const text = `${job.title} ${job.descriptionText || ''}`.toLowerCase();
+    const location = (job.location || '').toLowerCase();
+
+    trackedIndustries.forEach(industry => {
+      if (text.includes(industry)) {
+        industryCounts[industry] += 1;
+      }
+    });
+
+    trackedCities.forEach(city => {
+      if (location.includes(city) || text.includes(city)) {
+        cityCounts[city] += 1;
+      }
+    });
+  }
+
+  const industryThreshold = Math.max(10, Math.round(jobs.length * 0.01));
+  const cityThreshold = Math.max(5, Math.round(jobs.length * 0.005));
+
+  const lowIndustries = trackedIndustries
+    .map(industry => ({ industry, count: industryCounts[industry] }))
+    .filter(item => item.count < industryThreshold)
+    .sort((a, b) => a.count - b.count);
+
+  const lowCities = trackedCities
+    .map(city => ({ city, count: cityCounts[city] }))
+    .filter(item => item.count < cityThreshold)
+    .sort((a, b) => a.count - b.count);
+
+  console.log(`\n📉 Weekly Coverage Report`);
+  console.log(`  • Jobs analyzed: ${jobs.length}`);
+  console.log(`  • Industry threshold: ${industryThreshold} jobs`);
+  if (lowIndustries.length > 0) {
+    console.log(`  ⚠️  Under-covered industries:`);
+    lowIndustries.forEach(({ industry, count }) => {
+      console.log(`    - ${industry}: ${count} jobs`);
+    });
+  } else {
+    console.log(`  ✅ Industry coverage meets the threshold for all tracked categories.`);
+  }
+
+  console.log(`  • City threshold: ${cityThreshold} jobs`);
+  if (lowCities.length > 0) {
+    console.log(`  ⚠️  Under-covered cities:`);
+    lowCities.forEach(({ city, count }) => {
+      console.log(`    - ${city}: ${count} jobs`);
+    });
+  } else {
+    console.log(`  ✅ City coverage meets the threshold for all tracked locations.`);
   }
 }
 

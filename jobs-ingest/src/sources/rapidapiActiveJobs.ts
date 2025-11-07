@@ -113,6 +113,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                 sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/active-jobs-db',
                 jobType: classifyJobType(job.title + ' ' + (job.description_text || '')),
                 salary: undefined, // Not provided by this API
+                postedAt: job.posted_at ? toISO(job.posted_at) : undefined,
                 applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
                 slug: generateSlug(job.title, job.company_name),
                 hash: generateJobHash({
