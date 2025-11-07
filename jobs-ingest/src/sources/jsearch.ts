@@ -236,6 +236,12 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     { key: 'trackr', domain: 'the-trackr.com' }
   ];
 
+  const totalSlots = SLOT_DEFINITIONS.length;
+  const { slotIndex } = getCurrentRunSlot(totalSlots);
+  const runSlot = slotIndex;
+  const slotDefinition = SLOT_DEFINITIONS[runSlot];
+  const dateWindow = slotDefinition.useBacklogWindow ? 'week' : '3days';
+
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement', 
     'year in industry', 'internship', 'summer internship'
@@ -246,12 +252,6 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   const jobsPerTerm: { [term: string]: number } = {};
   const uniqueJobsPerTerm: { [term: string]: number } = {};
-
-  const totalSlots = SLOT_DEFINITIONS.length;
-  const { slotIndex } = getCurrentRunSlot(totalSlots);
-  const runSlot = slotIndex;
-  const slotDefinition = SLOT_DEFINITIONS[runSlot];
-  const dateWindow = slotDefinition.useBacklogWindow ? 'week' : '3days';
 
   const baseTermsForRun = filterTermsBySlot(searchTerms, totalSlots, runSlot);
   const slotSpecificTerms = buildSlotSpecificTerms(
@@ -481,27 +481,25 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
           const data = await response.json() as any;
           const jobArray = (data.data && Array.isArray(data.data)) ? data.data : [];
+          const siteTermKey = `${site.key}:${term}`;
 
-          const siteTermJobs = jobArray.length;
-          if (siteTermJobs > 0) {
-            console.log(`    📦 ${site.key}: ${siteTermJobs} jobs for "${term}"`);
-            const siteTermKey = `${site.key}:${term}`;
-            jobsPerTerm[siteTermKey] = (jobsPerTerm[siteTermKey] || 0) + siteTermJobs;
+          if (jobArray.length > 0) {
+            console.log(`    📦 ${site.key}: ${jobArray.length} jobs for "${term}"`);
+            jobsPerTerm[siteTermKey] = (jobsPerTerm[siteTermKey] || 0) + jobArray.length;
           }
 
-        for (const job of jobArray) {
+          for (const job of jobArray) {
             try {
-            const dedupKey = buildJSearchDedupKey(job);
-            if (seenKeys.has(dedupKey)) {
-              duplicateCount++;
-              continue;
-            }
-            seenKeys.add(dedupKey);
+              const dedupKey = buildJSearchDedupKey(job);
+              if (seenKeys.has(dedupKey)) {
+                duplicateCount++;
+                continue;
+              }
+              seenKeys.add(dedupKey);
 
               // Get best apply URL from apply_options array (prefer direct links)
               let bestApplyUrl = job.job_apply_link || '';
               if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
-                // Prefer direct apply links
                 const directLink = job.apply_options.find((opt: any) => opt.is_direct === true);
                 if (directLink && directLink.apply_link) {
                   bestApplyUrl = directLink.apply_link;
@@ -509,10 +507,9 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                   bestApplyUrl = job.apply_options[0].apply_link;
                 }
               }
-              
-              // Get job description (may be missing for some jobs)
+
               const jobDescription = job.job_description || job.description || '';
-              
+
               const canonicalJob: CanonicalJob = {
                 title: job.job_title || job.title || 'Unknown Title',
                 company: { name: job.employer_name || job.company_name || job.employer || 'Unknown Company' },
@@ -545,7 +542,6 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
-                // If description is missing or too short, enhance it from apply URL
                 if (!canonicalJob.descriptionText || canonicalJob.descriptionText.length < 200) {
                   console.log(`    🔍 Enhancing description for: ${canonicalJob.title}`);
                   await enhanceJobDescription(canonicalJob);
