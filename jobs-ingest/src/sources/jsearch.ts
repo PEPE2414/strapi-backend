@@ -120,21 +120,25 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   // Core general terms (high priority)
   searchTerms.push(
-    'graduate jobs in uk',
-    'graduate scheme uk',
-    'graduate program uk',
-    'entry level jobs uk',
-    'junior jobs uk',
-    'placement uk',
-    'industrial placement uk',
-    'year in industry uk',
-    'internship uk',
-    'summer internship uk',
-    'placement year uk',
-    'sandwich placement uk',
-    'sandwich degree uk',
-    'co-op uk',
-    'cooperative placement uk'
+    'graduate',
+    'graduate scheme',
+    'graduate program',
+    'graduate role',
+    'graduate position',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate developer',
+    'graduate accountant',
+    'graduate marketing',
+    'graduate sales',
+    'graduate finance',
+    'graduate hr',
+    'graduate it',
+    'graduate business',
+    'graduate management',
+    'graduate operations',
   );
 
   // Popular industries: MANY combinations (graduate + placement + internship)
@@ -244,7 +248,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement', 
-    'year in industry', 'internship', 'summer internship'
+    'year in industry', 'internship', 'summer internship', 'finance'
   ];
 
   const siteTermsForRun = buildSlotSiteTerms(slotDefinition, siteSearchTerms);

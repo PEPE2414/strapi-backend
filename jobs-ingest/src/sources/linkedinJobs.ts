@@ -71,12 +71,6 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     'graduate management',
     'graduate operations',
     
-    // Entry level and junior
-    'entry level',
-    'junior',
-    'trainee',
-    'apprentice',
-    
     // Placement terms
     'placement',
     'industrial placement',
