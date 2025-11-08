@@ -102,6 +102,7 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     // Process referral if referral code or promotion code was used
     const referralCode = session.metadata?.refCode || '';
+    const promoCode = session.metadata?.promoCode || '';
     let referrerId: string | null = null;
 
     // Try to look up referrer by promotion code ID first (Stripe promotion codes)
@@ -112,6 +113,23 @@ async function handleCheckoutSessionCompleted(session: any) {
     // If not found and referral code provided, try referral code lookup (EF-REF-{userId} format)
     if (!referrerId && referralCode) {
       referrerId = await lookupReferrerByReferralCode(referralCode);
+    }
+
+    // If still not found, try to resolve by the stored promo code string
+    if (!referrerId && promoCode) {
+      try {
+        const promoUsers = await strapi.entityService.findMany('plugin::users-permissions.user', {
+          filters: { promoCode },
+          fields: ['id'],
+          limit: 1
+        });
+
+        if (promoUsers.length > 0) {
+          referrerId = promoUsers[0].id.toString();
+        }
+      } catch (lookupError) {
+        console.error('Error looking up user by promo code:', lookupError);
+      }
     }
 
     // Process referral if referrer found
