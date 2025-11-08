@@ -2,7 +2,7 @@
 export const SCALE_CONFIG = {
   // Batch processing
   URL_BATCH_SIZE: 15,        // URLs per batch for generic scraping (increased from 10)
-  INGEST_BATCH_SIZE: 150,    // Jobs per batch for Strapi ingestion (increased from 100)
+  INGEST_BATCH_SIZE: 60,     // Jobs per batch for Strapi ingestion (reduced to avoid Strapi payload limits)
   LLM_BATCH_SIZE: 75,        // Jobs per batch for LLM processing (increased from 50)
   
   // Rate limiting - more aggressive for faster scraping
