@@ -29,7 +29,7 @@ import { scrapeGraduateBoardsHybrid } from './lib/hybridGraduateScraper';
 import { scrapeFinanceBankCareers } from './sources/financeBankCareers';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
-import { validateJobRequirements, cleanJobDescription, isJobFresh, isUKJob, isRelevantJobType } from './lib/normalize';
+import { validateJobRequirements, cleanJobDescription, isUKJob, isRelevantJobType } from './lib/normalize';
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { getCurrentRunSlot, isBacklogSlot } from './lib/runSlots';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
@@ -266,14 +266,6 @@ async function runAll() {
         let jobTypeRejected = 0;
         
         const validJobs = sourceJobs.filter(job => {
-          if (!backlogRun) {
-            if (!isJobFresh(job, 180)) {
-              freshnessRejected++;
-              sourceStats[source].invalid++;
-              return false;
-            }
-          }
-
           // Basic validation only
           if (!job.title || !job.company?.name || !job.applyUrl) {
             missingFieldsRejected++;

@@ -244,7 +244,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const { slotIndex } = getCurrentRunSlot(totalSlots);
   const runSlot = slotIndex;
   const slotDefinition = SLOT_DEFINITIONS[runSlot];
-  const dateWindow = isBacklogSlot(runSlot) ? 'week' : '3days';
+  const dateWindow = isBacklogSlot(runSlot) ? 'all' : 'month';
 
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement', 
