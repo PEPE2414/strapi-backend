@@ -162,6 +162,26 @@ async function handleCheckoutSessionCompleted(session: any) {
     // Try to look up referrer by promotion code ID first (Stripe promotion codes)
     if (promotionCodeId) {
       referrerId = await strapi.service('api::referrals.referrals').lookupReferrerByPromotionCodeId(promotionCodeId);
+
+      if (!referrerId) {
+        try {
+          const promoUsers = await strapi.entityService.findMany('plugin::users-permissions.user', {
+            filters: { promoCodeId: promotionCodeId },
+            fields: ['id'],
+            limit: 1,
+          });
+
+          if (promoUsers.length > 0) {
+            referrerId = promoUsers[0].id.toString();
+            console.log('Referral fallback matched by promoCodeId', {
+              referrerId,
+              promotionCodeId,
+            });
+          }
+        } catch (promoLookupError) {
+          console.error('Error looking up user by promoCodeId:', promoLookupError);
+        }
+      }
     }
 
     // If not found and referral code provided, try referral code lookup (EF-REF-{userId} format)
