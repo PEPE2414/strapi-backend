@@ -164,20 +164,7 @@ export default {
       const user = await (strapi as any).entityService.findOne(
         'plugin::users-permissions.user',
         userId,
-        {
-          fields: [
-            'id',
-            'email',
-            'plan',
-            'packages',
-            'stripeCustomerId',
-            'stripeSubscriptionId',
-            'trialActive',
-            'trialEndsAt',
-            'fullName',
-            'preferredName',
-          ],
-        }
+        {}
       );
 
       if (!user) {
