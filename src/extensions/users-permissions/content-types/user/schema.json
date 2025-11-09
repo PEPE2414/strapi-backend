@@ -188,6 +188,16 @@
         "recruiterLookups": 10,
         "savedJobs": 20
       }
+    },
+    "stripeCustomerId": {
+      "type": "string",
+      "default": null,
+      "private": true
+    },
+    "stripeSubscriptionId": {
+      "type": "string",
+      "default": null,
+      "private": true
     }
   }
 }

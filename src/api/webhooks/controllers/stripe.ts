@@ -3,6 +3,23 @@ import { stripe, getPackageSlugFromPrice, lookupReferrerByReferralCode, is4Month
 
 const UNPARSED_BODY = Symbol.for('unparsedBody');
 
+function getStripeRawBody(ctx: any): Buffer | string | undefined {
+  const body = ctx.request.body;
+
+  if (body && typeof body === 'object' && UNPARSED_BODY in body) {
+    const raw = body[UNPARSED_BODY];
+    if (raw != null) {
+      return raw;
+    }
+  }
+
+  if (typeof ctx.request.rawBody === 'string' || Buffer.isBuffer(ctx.request.rawBody)) {
+    return ctx.request.rawBody;
+  }
+
+  return undefined;
+}
+
 export default {
   async handleWebhook(ctx) {
     const sig = ctx.request.headers['stripe-signature'];
@@ -20,15 +37,14 @@ export default {
     let event;
 
     try {
-      const rawBody = ctx.request.body?.[UNPARSED_BODY];
+      const rawBody = getStripeRawBody(ctx);
 
-      if (typeof rawBody === 'string' || Buffer.isBuffer(rawBody)) {
-        event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
-      } else {
-        console.warn('Stripe webhook received without raw body; falling back to JSON stringified payload.');
-        const fallbackPayload = JSON.stringify(ctx.request.body ?? {});
-        event = stripe.webhooks.constructEvent(fallbackPayload, sig, endpointSecret);
+      if (rawBody == null) {
+        console.error('Stripe webhook received without raw body. Ensure body parser includeUnparsed=true.');
+        return ctx.badRequest('Invalid signature');
       }
+
+      event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
       return ctx.badRequest('Invalid signature');
