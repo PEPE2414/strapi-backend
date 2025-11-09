@@ -182,7 +182,8 @@ export default {
       packageSlug
     };
 
-    const updatedRewards = [...(user.referralRewards || []), newReward];
+    const currentRewards = Array.isArray(user.referralRewards) ? user.referralRewards : [];
+    const updatedRewards = [...currentRewards, newReward];
 
     await strapi.entityService.update('plugin::users-permissions.user', userId, {
       data: {
@@ -212,7 +213,8 @@ export default {
       amount: months
     };
 
-    const updatedRewards = [...(user.referralRewards || []), newReward];
+    const currentRewards = Array.isArray(user.referralRewards) ? user.referralRewards : [];
+    const updatedRewards = [...currentRewards, newReward];
 
     await strapi.entityService.update('plugin::users-permissions.user', userId, {
       data: {
