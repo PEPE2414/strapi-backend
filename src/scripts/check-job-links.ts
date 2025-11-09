@@ -1,21 +1,21 @@
 import 'dotenv/config';
 import Bottleneck from 'bottleneck';
-import { fetch } from 'undici';
+import { checkJobApplyLink } from '../utils/jobLinkCheck';
 
-type StrapiJobAttributes = {
+interface StrapiJobAttributes {
   title?: string | null;
   applyUrl?: string | null;
   location?: string | null;
   isExpired?: boolean | null;
   lastCheckedAt?: string | null;
-};
+}
 
-type StrapiJobRecord = {
+interface StrapiJobRecord {
   id: number;
   attributes: StrapiJobAttributes;
-};
+}
 
-type StrapiJobResponse = {
+interface StrapiJobResponse {
   data: StrapiJobRecord[];
   meta?: {
     pagination?: {
@@ -25,7 +25,7 @@ type StrapiJobResponse = {
       total: number;
     };
   };
-};
+}
 
 const STRAPI_BASE_URL = (process.env.STRAPI_BASE_URL || process.env.STRAPI_URL || '').replace(/\/$/, '');
 const STRAPI_TOKEN = process.env.STRAPI_ADMIN_TOKEN || process.env.STRAPI_TOKEN;
@@ -43,20 +43,6 @@ const MAX_JOBS = Number(process.env.JOB_LINK_CHECK_LIMIT || 500);
 const MAX_CONCURRENT = Number(process.env.JOB_LINK_CHECK_CONCURRENCY || 8);
 const TIMEOUT_MS = Number(process.env.JOB_LINK_CHECK_TIMEOUT_MS || 10000);
 const RECHECK_HOURS = Number(process.env.JOB_LINK_CHECK_INTERVAL_HOURS || 24);
-
-const STATUS_EXPIRED = new Set([404, 410, 451]);
-const PHRASES_EXPIRED = [
-  'job is no longer available',
-  'this job is no longer available',
-  'position has been filled',
-  'job has expired',
-  'posting has expired',
-  'job posting has expired',
-  'job closed',
-  'no longer accepting applications',
-  'no longer accepting candidates',
-  'job not found'
-];
 
 const httpLimiter = new Bottleneck({
   maxConcurrent: MAX_CONCURRENT,
@@ -132,42 +118,11 @@ async function verifyJob(job: StrapiJobRecord): Promise<{ expired: boolean; reas
     return { expired: true, reason: 'missing-url' };
   }
 
-  try {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    const response = await fetch(applyUrl, {
-      method: 'GET',
-      redirect: 'follow',
-      headers: {
-        'User-Agent':
-          process.env.JOB_LINK_CHECK_USER_AGENT ||
-          'EffortFreeJobLinkChecker/1.0 (+https://effortfree.co.uk)'
-      },
-      signal: controller.signal
-    }).finally(() => clearTimeout(id));
-
-    if (STATUS_EXPIRED.has(response.status)) {
-      return { expired: true, reason: `status-${response.status}` };
-    }
-
-    if (response.status >= 500) {
-      return { expired: true, reason: `status-${response.status}` };
-    }
-
-    if (response.status >= 400) {
-      return { expired: false, reason: `status-${response.status}` };
-    }
-
-    const text = (await response.text()).slice(0, 4000).toLowerCase();
-    if (PHRASES_EXPIRED.some(phrase => text.includes(phrase))) {
-      return { expired: true, reason: 'phrase-match' };
-    }
-
-    return { expired: false };
-  } catch (error) {
-    console.warn(`    ⚠️  Failed to verify ${applyUrl}:`, error instanceof Error ? error.message : String(error));
-    return { expired: false, reason: 'request-error' };
+  const result = await checkJobApplyLink(applyUrl, { timeoutMs: TIMEOUT_MS });
+  if (result.reason?.startsWith('request-error')) {
+    console.warn(`    ⚠️  Request issue for ${applyUrl}: ${result.reason}`);
   }
+  return result;
 }
 
 async function updateJobStatus(job: StrapiJobRecord, expired: boolean) {

@@ -301,7 +301,7 @@ async function fetchAllCompanyAssets(): Promise<CompanyAssetRecord[]> {
     const params = new URLSearchParams();
     params.set('pagination[page]', String(page));
     params.set('pagination[pageSize]', '200');
-    params.set('populate[logo]', '*');
+    params.set('populate[logo]', 'true');
 
     const json = (await strapiRequest(`/api/company-brand-assets?${params.toString()}`)) as CompanyAssetResponse;
     const data = json.data || [];

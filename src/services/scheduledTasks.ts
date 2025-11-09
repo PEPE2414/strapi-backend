@@ -7,11 +7,14 @@
 
 import { jobCleanupService } from './jobCleanup';
 import { jobDeduplicationService } from './jobDeduplication';
+import { jobLinkCheckerService } from './jobLinkChecker';
 
 interface ScheduledTaskConfig {
   name: string;
   interval: number; // in milliseconds
   enabled: boolean;
+  targetHour: number;
+  targetMinute: number;
   lastRun?: Date;
   nextRun?: Date;
 }
@@ -26,18 +29,31 @@ class ScheduledTasksService {
   }
 
   private initializeTasks() {
-    // Job cleanup runs daily at 2 AM
+    // Job cleanup runs daily at 12:00 (Europe/London)
     this.tasks.set('jobCleanup', {
       name: 'Job Cleanup',
-      interval: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      enabled: true
+      interval: 24 * 60 * 60 * 1000,
+      enabled: true,
+      targetHour: 12,
+      targetMinute: 0
     });
 
-    // Job deduplication runs daily at ~2:10 AM
+    // Job deduplication runs daily at 12:10 (Europe/London)
     this.tasks.set('jobDeduplication', {
       name: 'Job Deduplication',
       interval: 24 * 60 * 60 * 1000,
-      enabled: true
+      enabled: true,
+      targetHour: 12,
+      targetMinute: 10
+    });
+
+    // Job link checker runs daily at 23:50 (Europe/London)
+    this.tasks.set('jobLinkCheck', {
+      name: 'Job Link Verification',
+      interval: 24 * 60 * 60 * 1000,
+      enabled: true,
+      targetHour: 23,
+      targetMinute: 50
     });
   }
 
@@ -102,7 +118,6 @@ class ScheduledTasksService {
       }
     };
 
-    // Calculate initial delay to run at 12:00 (UK time) or 12:10 for deduplication
     const computeInitialDelayForLondon = (targetHour: number, targetMinute: number): { delayMs: number; nextRun: Date } => {
       const now = new Date();
       let candidate = new Date(now.getTime() + 1000); // start searching from the next second
@@ -140,11 +155,10 @@ class ScheduledTasksService {
       return { delayMs: 24 * 60 * 60 * 1000, nextRun: new Date(now.getTime() + 24 * 60 * 60 * 1000) };
     };
 
-    const isDeduplication = taskId === 'jobDeduplication';
-    const { delayMs: initialDelay, nextRun } = computeInitialDelayForLondon(12, isDeduplication ? 10 : 0);
+    const { delayMs: initialDelay, nextRun } = computeInitialDelayForLondon(config.targetHour, config.targetMinute);
 
     config.nextRun = nextRun;
-    console.log(`⏰ Task ${config.name} scheduled to run at ${nextRun.toISOString()} (Europe/London 12:${isDeduplication ? '10' : '00'})`);
+    console.log(`⏰ Task ${config.name} scheduled to run at ${nextRun.toISOString()} (Europe/London ${config.targetHour.toString().padStart(2, '0')}:${config.targetMinute.toString().padStart(2, '0')})`);
     
     // Set initial timeout
     const initialTimeout = setTimeout(() => {
@@ -180,7 +194,16 @@ class ScheduledTasksService {
           errors: dStats.errors.length,
         });
         break;
-        
+      case 'jobLinkCheck':
+        const linkStats = await jobLinkCheckerService.run();
+        console.log(`📊 Job link check stats:`, {
+          checked: linkStats.checked,
+          expired: linkStats.expired,
+          active: linkStats.active,
+          errors: linkStats.errors.length
+        });
+        break;
+
       default:
         console.warn(`⚠️  Unknown task: ${taskId}`);
     }
