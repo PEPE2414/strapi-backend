@@ -1,120 +1,21 @@
 import { SalaryNorm } from '../types';
 
 // Enhanced classification for UK university students - ONLY allows internship, placement, graduate
-export function classifyJobType(text: string): 'internship'|'placement'|'graduate'|'other' {
+export function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
   const t = text.toLowerCase();
 
-  // First check for exclusions - these are hard rejects (not suitable for students)
-  const exclusions = [
-    // PhD/Research exclusions
-    'phd', 'ph.d', 'ph.d.', 'doctorate', 'doctoral', 'postdoc', 'post-doc', 'post doc',
-    'research fellow', 'research assistant', 'research associate', 'research scientist',
-    'research engineer', 'research analyst', 'research consultant', 'research manager',
-    'senior research', 'principal research', 'lead research', 'head of research',
-    'research director', 'research coordinator', 'research specialist', 'research technician',
-    'postdoctoral', 'post-doctoral', 'post doctoral', 'academic research', 'university research',
-    'research institute', 'research center', 'research centre', 'research lab', 'research laboratory',
-    
-    // MBA/Senior level exclusions
-    'mba only', 'mba required', 'mba preferred', 'mba essential', 'mba mandatory',
-    'executive mba', 'emba', 'senior mba', 'mba graduate', 'mba level',
-    'senior level', 'principal level', 'lead level', 'head of', 'director level',
-    'vp level', 'vice president', 'executive level', 'c-level', 'c suite',
-    '5+ years', '10+ years', '15+ years', '20+ years', '25+ years',
-    'experienced professional', 'senior professional', 'principal professional',
-    'expert level', 'specialist level', 'consultant level', 'architect level',
-    'mid-level', 'mid level', 'intermediate level', 'advanced level',
-    
-    // Senior job title exclusions (any job with "senior" in title)
-    'senior', 'senior engineer', 'senior developer', 'senior analyst', 'senior consultant',
-    'senior manager', 'senior director', 'senior executive', 'senior specialist',
-    'senior coordinator', 'senior administrator', 'senior technician', 'senior designer',
-    'senior architect', 'senior scientist', 'senior researcher', 'senior advisor',
-    'senior associate', 'senior partner', 'senior officer', 'senior representative',
-    'senior supervisor', 'senior coordinator', 'senior administrator', 'senior technician',
-    
-    // Non-student job types
-    'apprenticeship', 'apprentice', 'trainee', 'traineeship', 'school leaver',
-    'gcse', 'a-level', 'a level', 'btec', 'nvq', 'level 2', 'level 3',
-    'part-time', 'part time', 'casual', 'temporary', 'temp', 'contractor',
-    'freelance', 'self-employed', 'volunteer', 'voluntary', 'unpaid',
-    'retail', 'hospitality', 'customer service', 'sales assistant', 'shop assistant',
-    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner', 'security',
-    'delivery driver', 'taxi driver', 'uber', 'deliveroo', 'just eat',
-    'care worker', 'support worker', 'nursing', 'healthcare assistant',
-    'teaching assistant', 'lunch supervisor', 'playground supervisor',
-    'admin', 'administrative', 'receptionist', 'secretary', 'data entry',
-    'warehouse', 'forklift', 'picking', 'packing', 'stock', 'inventory',
-    'call center', 'call centre', 'telemarketing', 'cold calling',
-    'door to door', 'canvassing', 'leafleting', 'promotional work',
-    'event staff', 'catering', 'bar work', 'nightclub', 'pub',
-    
-    // Driver and transport exclusions
-    'driver', 'driving', 'hgv', 'lgv', 'van driver', 'truck driver', 'lorry driver',
-    'bus driver', 'coach driver', 'taxi', 'uber', 'delivery', 'courier',
-    '7.5 ton', '3.5 ton', '12 ton', '18 ton', '26 ton', '44 ton',
-    'heathrow', 'airport', 'aviation', 'pilot', 'cabin crew', 'flight attendant',
-    'ground crew', 'baggage handler', 'airport security', 'airport staff',
-    
-    // Manual labor exclusions
-    'labourer', 'laborer', 'construction', 'building', 'plumber', 'electrician',
-    'carpenter', 'painter', 'decorator', 'roofer', 'tiler', 'plasterer',
-    'mechanic', 'technician', 'maintenance', 'repair', 'servicing',
-    'gardener', 'landscaper', 'groundskeeper', 'groundsman',
-    
-    // Service industry exclusions
-    'hairdresser', 'barber', 'beautician', 'beauty therapist', 'nail technician',
-    'massage therapist', 'spa therapist', 'fitness instructor', 'personal trainer',
-    'lifeguard', 'swimming instructor', 'dance instructor', 'music teacher',
-    
-    // Sales and marketing exclusions
-    'sales rep', 'sales representative', 'sales executive', 'sales manager',
-    'marketing executive', 'marketing manager', 'marketing coordinator',
-    'business development', 'account manager', 'key account', 'territory manager',
-    
-    // Healthcare exclusions (non-graduate)
-    'care assistant', 'care worker', 'support worker', 'healthcare assistant',
-    'nursing assistant', 'care home', 'residential care', 'domiciliary care',
-    'mental health support', 'learning disability support', 'elderly care',
-    'gym instructor', 'personal trainer', 'fitness', 'sports coach',
-    'beauty therapist', 'hairdresser', 'nail technician', 'massage',
-    'estate agent', 'lettings', 'property', 'mortgage advisor',
-    'insurance', 'financial advisor', 'mortgage broker', 'loan officer',
-    'recruitment consultant', 'headhunter', 'talent acquisition',
-    'marketing manager', 'marketing director', 'brand manager',
-    'account manager', 'business development', 'sales manager',
-    'operations manager', 'project manager', 'team leader',
-    'supervisor', 'foreman', 'manager', 'director', 'ceo', 'cto',
-    'cfo', 'coo', 'founder', 'owner', 'proprietor', 'entrepreneur'
-  ];
-
-  // If any exclusion keywords found, return 'other' (will be filtered out)
-  if (exclusions.some(keyword => t.includes(keyword))) {
-    return 'other';
-  }
-  
-  // Additional check: reject jobs that start with "Senior" (most common pattern)
-  if (t.startsWith('senior ')) {
-    return 'other';
-  }
-  
-  // Additional check: reject jobs with "Senior" anywhere in title (comprehensive)
-  if (/\bsenior\b/.test(t)) {
-    return 'other';
-  }
-
-  // Internship keywords (high priority)
-  if (/\b(intern(ship)?|summer internship|winter internship|spring internship|autumn internship|vacation scheme|vacation work|vacation student|student internship|undergraduate internship|graduate internship)\b/.test(t)) {
+  // Internship keywords
+  if (/\b(internship|intern|summer analyst|summer associate|summer programme|summer program|summer internship|winter internship|spring week|off-cycle|off cycle|insight week|insight programme|insight program|industrial internship)\b/.test(t)) {
     return 'internship';
   }
 
-  // Placement/Year in Industry keywords (UK sandwich courses)
-  if (/\b(placement|year in industry|sandwich|industrial placement|work placement|year out|gap year|year abroad|student placement|undergraduate placement|graduate placement|industrial training|work experience|professional placement)\b/.test(t)) {
+  // Placement keywords
+  if (/\b(placement|year in industry|industrial placement|industrial experience|sandwich placement|sandwich course|sandwich degree|work placement|student placement|professional placement|industry placement|12 month placement|12-month placement|year long placement|year-long placement|industrial year|industry year|co-op|co op|cooperative education|cooperative placement|placement programme|placement program|placement opportunity)\b/.test(t)) {
     return 'placement';
   }
 
-  // Graduate/Early Careers keywords (must be explicit)
-  if (/\b(graduate|early careers|new grad|new graduate|entry level|junior|trainee|traineeship|graduate scheme|graduate program|graduate programme|graduate trainee|graduate engineer|graduate consultant|graduate analyst|graduate developer|graduate designer|graduate marketing|graduate sales|graduate finance|graduate hr|graduate operations|graduate project|graduate scientist|graduate technician|graduate technologist|graduate architect|graduate surveyor|graduate planner|graduate environmental|graduate sustainability|graduate energy|graduate renewable|graduate nuclear|graduate aerospace|graduate automotive|graduate mechanical|graduate electrical|graduate civil|graduate structural|graduate geotechnical|graduate transportation|graduate water|graduate waste|graduate scheme|graduate program|graduate programme|graduate trainee|graduate engineer|graduate consultant|graduate analyst|graduate developer|graduate designer|graduate marketing|graduate sales|graduate finance|graduate hr|graduate operations|graduate project|graduate scientist|graduate technician|graduate technologist|graduate architect|graduate surveyor|graduate planner|graduate environmental|graduate sustainability|graduate energy|graduate renewable|graduate nuclear|graduate aerospace|graduate automotive|graduate mechanical|graduate electrical|graduate civil|graduate structural|graduate geotechnical|graduate transportation|graduate water|graduate waste)\b/.test(t)) {
+  // Graduate keywords (must be explicit)
+  if (/\b(graduate|graduate job|graduate role|graduate position|graduate scheme|graduate program|graduate programme|graduate trainee|graduate analyst|graduate engineer|graduate consultant|graduate intake|graduate opportunity|early careers|early career|new graduate|recent graduate)\b/.test(t)) {
     return 'graduate';
   }
 
@@ -124,91 +25,39 @@ export function classifyJobType(text: string): 'internship'|'placement'|'graduat
 // Check if a job is relevant for university students - STRICT filtering
 export function isRelevantJobType(text: string): boolean {
   const jobType = classifyJobType(text);
-  
+
   // Only allow our three specific job types
   if (jobType !== 'internship' && jobType !== 'placement' && jobType !== 'graduate') {
     return false;
   }
-  
-  // Additional filtering for graduate-specific content
+
   const t = text.toLowerCase();
-  
-  // Must contain graduate-specific keywords
-  const graduateKeywords = [
-    // Graduate job variations
-    'graduate', 'graduate job', 'graduate role', 'graduate position', 'graduate opportunity',
-    'graduate scheme', 'graduate programme', 'graduate program', 'graduate trainee',
-    'graduate analyst', 'graduate engineer', 'graduate consultant', 'graduate manager',
-    'graduate developer', 'graduate coordinator', 'graduate specialist', 'graduate associate',
-    
-    // Internship variations
-    'internship', 'intern', 'intern role', 'intern position', 'intern opportunity',
-    'summer internship', 'winter internship', 'spring internship', 'autumn internship',
-    'paid internship', 'unpaid internship', 'internship programme', 'internship program',
-    'internship scheme', 'internship opportunity', 'internship role', 'internship position',
-    
-    // Placement variations
-    'placement', 'placement year', 'year in industry', 'industrial placement',
-    'work placement', 'student placement', 'university placement', 'college placement',
-    'placement programme', 'placement program', 'placement scheme', 'placement opportunity',
-    'placement role', 'placement position', 'placement trainee', 'placement analyst',
-    'sandwich year', 'gap year', 'year abroad', 'study abroad', 'exchange year',
-    
-    // Entry level variations
-    'entry level', 'entry-level', 'entry level role', 'entry level position',
-    'entry level job', 'entry level opportunity', 'entry level trainee',
-    'entry level analyst', 'entry level engineer', 'entry level consultant',
-    'entry level manager', 'entry level developer', 'entry level coordinator',
-    
-    // Junior variations
-    'junior', 'junior role', 'junior position', 'junior job', 'junior opportunity',
-    'junior analyst', 'junior engineer', 'junior consultant', 'junior manager',
-    'junior developer', 'junior coordinator', 'junior specialist', 'junior associate',
-    
-    // General graduate terms
-    'assistant', 'coordinator', 'analyst', 'developer', 'engineer',
-    'consultant', 'manager', 'director', 'specialist', 'associate',
-    'trainee', 'apprentice', 'scheme', 'programme', 'program',
-    'opportunity', 'role', 'position', 'career', 'job'
+
+  const acceptedKeywords = [
+    'graduate', 'graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee', 'graduate analyst',
+    'graduate engineer', 'graduate consultant', 'graduate intake', 'early careers', 'early career', 'graduate opportunity',
+    'internship', 'intern', 'summer analyst', 'summer internship', 'summer program', 'off-cycle internship', 'spring week',
+    'insight week', 'placement', 'year in industry', 'industrial placement', 'work placement', 'student placement',
+    'professional placement', 'industry placement'
   ];
-  
-  const hasGraduateKeyword = graduateKeywords.some(keyword => t.includes(keyword));
-  if (!hasGraduateKeyword) {
+
+  if (!acceptedKeywords.some(keyword => t.includes(keyword))) {
     return false;
   }
-  
-  // Must NOT contain non-graduate keywords (only the most obvious non-graduate roles)
+
   const nonGraduateKeywords = [
-    // Driver and transport exclusions
+    'apprentice', 'apprenticeship',
     'driver', 'driving', '7.5 ton', '3.5 ton', '12 ton', '18 ton', '26 ton', '44 ton',
     'hgv', 'lgv', 'van driver', 'truck driver', 'lorry driver', 'bus driver', 'coach driver',
-    'taxi', 'uber', 'delivery', 'courier', 'heathrow', 'airport', 'aviation',
-    'pilot', 'cabin crew', 'flight attendant', 'ground crew', 'baggage handler',
-    
-    // Manual labor exclusions
-    'labourer', 'laborer', 'construction', 'building', 'plumber', 'electrician',
-    'carpenter', 'painter', 'decorator', 'roofer', 'tiler', 'plasterer',
-    'mechanic', 'technician', 'maintenance', 'repair', 'servicing',
-    'gardener', 'landscaper', 'groundskeeper', 'groundsman',
-    
-    // Service industry exclusions (non-graduate roles only)
-    'waiter', 'waitress', 'bar staff', 'kitchen staff', 'cleaner', 'security',
-    'warehouse', 'forklift', 'picking', 'packing', 'stock', 'inventory',
-    'call center', 'telemarketing', 'cold calling', 'door to door',
-    'care worker', 'support worker', 'nursing assistant', 'healthcare assistant',
-    'admin', 'administrative', 'receptionist', 'secretary', 'data entry',
-    
-    // Specific non-graduate exclusions
-    'hairdresser', 'barber', 'beautician', 'beauty therapist', 'nail technician',
-    'massage therapist', 'spa therapist', 'fitness instructor', 'personal trainer',
-    'lifeguard', 'swimming instructor', 'dance instructor', 'music teacher'
+    'taxi', 'delivery', 'courier', 'warehouse', 'picker', 'packager', 'cleaner', 'porter',
+    'chef', 'waiter', 'waitress', 'bartender', 'barista', 'cook', 'kitchen assistant',
+    'security guard', 'caretaker', 'cashier', 'sales assistant', 'store associate', 'retail assistant'
   ];
-  
-  const hasNonGraduateKeyword = nonGraduateKeywords.some(keyword => t.includes(keyword));
-  if (hasNonGraduateKeyword) {
+
+  if (nonGraduateKeywords.some(keyword => t.includes(keyword))) {
     return false;
   }
-  
+
   return true;
 }
 

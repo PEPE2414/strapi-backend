@@ -603,8 +603,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
 function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
   const t = text.toLowerCase();
-  
-  // Check for internship first (more specific)
+ 
   const internshipKeywords = [
     'internship',
     'intern',
@@ -615,16 +614,17 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     'winter internship',
     'spring week',
     'off-cycle',
+    'off cycle',
     'insight week',
     'insight programme',
+    'insight program',
     'industrial internship'
   ];
-
+ 
   if (internshipKeywords.some(keyword => t.includes(keyword))) {
     return 'internship';
   }
-  
-  // Comprehensive placement detection (all synonyms)
+ 
   const placementKeywords = [
     'placement',
     'year in industry',
@@ -655,16 +655,31 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     'placement program',
     'placement opportunity'
   ];
-  
+ 
   if (placementKeywords.some(keyword => t.includes(keyword))) {
     return 'placement';
   }
-  
-  // Graduate/entry-level roles
-  if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
+ 
+  const graduateKeywords = [
+    'graduate',
+    'early careers',
+    'early career',
+    'graduate scheme',
+    'graduate program',
+    'graduate programme',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate intake',
+    'new graduate',
+    'recent graduate'
+  ];
+ 
+  if (graduateKeywords.some(keyword => t.includes(keyword))) {
     return 'graduate';
   }
-  
+ 
   return 'other';
 }
 
@@ -698,6 +713,25 @@ function buildSlotSpecificTerms(
   const placementSuffixes = ['placement', 'programme', 'program', 'internship', 'co-op', 'cooperative education', 'scheme'];
   const internshipDurations = ['summer', 'winter', 'spring', 'off-cycle', '12 week', '10 week'];
   const internshipSuffixes = ['internship', 'analyst program', 'associate program', 'insight week'];
+  const graduateSuffixes = [
+    'graduate scheme',
+    'graduate program',
+    'graduate programme',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate intake',
+    'graduate opportunity',
+    'graduate role',
+    'graduate position',
+    'early careers programme',
+    'early careers program',
+    'early talent programme',
+    'new graduate',
+    'recent graduate'
+  ];
+  const graduateYears = ['2024', '2025'];
 
   const jobTypeConfigs = [
     { label: 'graduate', prefixes: graduatePrefixes.slice(0, 6) },
@@ -728,6 +762,15 @@ function buildSlotSpecificTerms(
       internshipSuffixes.forEach(suffix => {
         add(`${duration} ${industry} ${suffix}`);
         add(`${duration} ${suffix} ${industry}`);
+      });
+    });
+
+    graduateSuffixes.forEach(suffix => {
+      add(`${suffix} ${industry}`);
+      add(`${industry} ${suffix}`);
+      graduateYears.forEach(year => {
+        add(`${suffix} ${industry} ${year}`);
+        add(`${industry} ${suffix} ${year}`);
       });
     });
   });
@@ -767,6 +810,17 @@ function buildSlotSpecificTerms(
         });
       });
     });
+
+    graduateSuffixes.forEach(suffix => {
+      add(`${suffix} ${city}`);
+      industries.forEach(industry => {
+        add(`${suffix} ${industry} ${city}`);
+        add(`${industry} ${suffix} ${city}`);
+      });
+      graduateYears.forEach(year => {
+        add(`${suffix} ${city} ${year}`);
+      });
+    });
   });
 
   return Array.from(terms);
@@ -782,6 +836,8 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
   const placementSuffixes = ['placement', 'programme', 'program', 'co-op'];
   const internshipDurations = ['summer', 'winter', 'spring', '12 week'];
   const internshipSuffixes = ['internship', 'analyst program', 'insight week'];
+  const graduateSuffixes = ['graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee', 'graduate analyst'];
+  const graduateYears = ['2024', '2025'];
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -811,6 +867,11 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
       internshipSuffixes.forEach(suffix => {
         add(`${duration} ${industry} ${suffix}`);
       });
+    });
+
+    graduateSuffixes.forEach(suffix => {
+      add(`${suffix} ${industry}`);
+      graduateYears.forEach(year => add(`${suffix} ${industry} ${year}`));
     });
   });
 

@@ -345,37 +345,60 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     'summer associate',
     'summer program',
     'off-cycle',
+    'off cycle',
     'spring week',
     'insight week',
     'insight programme',
+    'insight program',
     'industrial internship'
   ];
 
   if (internshipKeywords.some(keyword => t.includes(keyword))) {
     return 'internship';
   }
-  if (
-    t.includes('placement') ||
-    t.includes('year in industry') ||
-    t.includes('industrial placement') ||
-    t.includes('industrial year') ||
-    t.includes('industry year') ||
-    t.includes('sandwich course') ||
-    t.includes('sandwich degree') ||
-    t.includes('work experience placement') ||
-    t.includes('co-op') ||
-    t.includes('cooperative education') ||
-    t.includes('12 month placement') ||
-    t.includes('12-month placement') ||
-    t.includes('year-long placement') ||
-    t.includes('year long placement')
-  ) {
+
+  const placementKeywords = [
+    'placement',
+    'year in industry',
+    'industrial placement',
+    'industrial year',
+    'industry year',
+    'sandwich course',
+    'sandwich degree',
+    'work experience placement',
+    'co-op',
+    'co op',
+    'cooperative education',
+    '12 month placement',
+    '12-month placement',
+    'year-long placement',
+    'year long placement'
+  ];
+
+  if (placementKeywords.some(keyword => t.includes(keyword))) {
     return 'placement';
   }
-  if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
+
+  const graduateKeywords = [
+    'graduate',
+    'graduate scheme',
+    'graduate program',
+    'graduate programme',
+    'graduate trainee',
+    'graduate analyst',
+    'graduate engineer',
+    'graduate consultant',
+    'graduate intake',
+    'early careers',
+    'early career',
+    'new graduate',
+    'recent graduate'
+  ];
+
+  if (graduateKeywords.some(keyword => t.includes(keyword))) {
     return 'graduate';
   }
-  
+
   return 'other';
 }
 
@@ -390,16 +413,39 @@ function isUKJob(location: string): boolean {
 }
 
 function isRelevantJobType(text: string): boolean {
-  const relevantKeywords = [
-    'graduate', 'internship', 'placement', 'entry level', 'junior',
-    'trainee', 'scheme', 'programme', 'program', 'analyst', 'engineer',
-    'consultant', 'manager', 'developer', 'coordinator', 'specialist',
-    'industrial placement', 'industrial year', 'industry year', 'co-op',
-    'cooperative education', 'year-long placement', '12 month placement'
-  ];
+   const jobType = classifyJobType(text);
  
-  return relevantKeywords.some(keyword => text.toLowerCase().includes(keyword));
-}
+   // Only allow our three specific job types
+   if (jobType !== 'internship' && jobType !== 'placement' && jobType !== 'graduate') {
+     return false;
+   }
+ 
+   const t = text.toLowerCase();
+ 
+   const relevantKeywords = [
+     'graduate', 'graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee', 'graduate analyst',
+     'graduate engineer', 'graduate consultant', 'graduate intake', 'early careers', 'early career', 'graduate opportunity',
+     'internship', 'intern', 'summer internship', 'summer analyst', 'off-cycle', 'spring week', 'insight week',
+     'placement', 'year in industry', 'industrial placement', 'work placement', 'student placement', 'professional placement'
+   ];
+ 
+   if (!relevantKeywords.some(keyword => t.includes(keyword))) {
+     return false;
+   }
+ 
+   const excludedKeywords = [
+     'apprentice', 'apprenticeship',
+     'driver', 'driving', 'hgv', 'lgv', 'courier', 'warehouse', 'picker', 'packager', 'cleaner', 'porter',
+     'chef', 'waiter', 'waitress', 'bartender', 'barista', 'cook', 'kitchen assistant',
+     'security guard', 'caretaker', 'cashier', 'retail assistant', 'store associate', 'delivery driver'
+   ];
+ 
+   if (excludedKeywords.some(keyword => t.includes(keyword))) {
+     return false;
+   }
+ 
+   return true;
+ }
 
 function generateSlug(title: string, company: string): string {
   const slug = `${title}-${company}`.toLowerCase()

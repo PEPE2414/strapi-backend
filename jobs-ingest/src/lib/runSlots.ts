@@ -55,6 +55,19 @@ export const SLOT_DEFINITIONS: SlotDefinition[] = [
       'sheffield', 'oxford', 'cambridge', 'cardiff', 'belfast'
     ],
     useBacklogWindow: true
+  },
+  {
+    name: 'graduate-all-industries',
+    industries: [
+      'finance', 'investment', 'banking', 'consulting', 'technology', 'software engineering', 'data', 'analytics', 'marketing',
+      'product management', 'engineering', 'manufacturing', 'law', 'healthcare', 'biotech', 'pharmaceutical', 'education',
+      'public sector', 'government', 'charity', 'environment', 'media', 'creative', 'human resources', 'supply chain', 'operations'
+    ],
+    cities: [
+      'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool', 'nottingham', 'newcastle',
+      'sheffield', 'oxford', 'cambridge', 'cardiff', 'belfast'
+    ],
+    useBacklogWindow: true
   }
 ];
 
