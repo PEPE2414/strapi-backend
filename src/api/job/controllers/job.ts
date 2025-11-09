@@ -19,11 +19,12 @@ function slugify(input: string) {
 
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
   async find(ctx) {
-    ctx.query = ctx.query || {};
-    ctx.query.filters = ctx.query.filters || {};
-    if (typeof ctx.query.filters.isExpired === 'undefined') {
-      ctx.query.filters.isExpired = { $ne: true };
+    const query = (ctx.query || {}) as Record<string, any>;
+    query.filters = (query.filters || {}) as Record<string, any>;
+    if (typeof query.filters.isExpired === 'undefined') {
+      query.filters.isExpired = { $ne: true };
     }
+    ctx.query = query;
     const response = await super.find(ctx);
     return response;
   },
