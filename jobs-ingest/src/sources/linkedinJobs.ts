@@ -338,7 +338,20 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
 function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
   const t = text.toLowerCase();
   
-  if (t.includes('internship') || t.includes('intern')) {
+  const internshipKeywords = [
+    'internship',
+    'intern',
+    'summer analyst',
+    'summer associate',
+    'summer program',
+    'off-cycle',
+    'spring week',
+    'insight week',
+    'insight programme',
+    'industrial internship'
+  ];
+
+  if (internshipKeywords.some(keyword => t.includes(keyword))) {
     return 'internship';
   }
   if (

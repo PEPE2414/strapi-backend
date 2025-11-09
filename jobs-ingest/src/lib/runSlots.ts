@@ -42,6 +42,19 @@ export const SLOT_DEFINITIONS: SlotDefinition[] = [
       'sheffield', 'nottingham', 'newcastle', 'oxford', 'cambridge'
     ],
     useBacklogWindow: true
+  },
+  {
+    name: 'internship-all-industries',
+    industries: [
+      'finance', 'investment', 'banking', 'consulting', 'technology', 'software engineering', 'data', 'analytics', 'marketing',
+      'product management', 'design', 'engineering', 'manufacturing', 'media', 'journalism', 'communications', 'law',
+      'healthcare', 'biotech', 'pharmaceutical', 'education', 'public sector', 'charity', 'environment', 'sustainability'
+    ],
+    cities: [
+      'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool', 'nottingham', 'newcastle',
+      'sheffield', 'oxford', 'cambridge', 'cardiff', 'belfast'
+    ],
+    useBacklogWindow: true
   }
 ];
 

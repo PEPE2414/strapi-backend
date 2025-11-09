@@ -211,7 +211,7 @@ function jobTypePriority(jobType: CanonicalJob['jobType']): number {
     case 'placement':
       return 3;
     case 'internship':
-      return 2;
+      return 3;
     case 'graduate':
       return 1;
     default:

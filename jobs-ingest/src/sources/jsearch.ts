@@ -248,7 +248,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement', 
-    'year in industry', 'internship', 'summer internship', 'finance'
+    'year in industry', 'internship', 'summer internship', 'summer analyst', 'off-cycle internship', 'finance'
   ];
 
   const siteTermsForRun = buildSlotSiteTerms(slotDefinition, siteSearchTerms);
@@ -605,7 +605,22 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
   const t = text.toLowerCase();
   
   // Check for internship first (more specific)
-  if (t.includes('internship') || t.includes('intern')) {
+  const internshipKeywords = [
+    'internship',
+    'intern',
+    'summer analyst',
+    'summer associate',
+    'summer program',
+    'summer placement',
+    'winter internship',
+    'spring week',
+    'off-cycle',
+    'insight week',
+    'insight programme',
+    'industrial internship'
+  ];
+
+  if (internshipKeywords.some(keyword => t.includes(keyword))) {
     return 'internship';
   }
   
@@ -681,6 +696,8 @@ function buildSlotSpecificTerms(
 
   const placementDurations = ['12 month', '12-month', 'year long', 'year-long', 'industrial year', 'industry year'];
   const placementSuffixes = ['placement', 'programme', 'program', 'internship', 'co-op', 'cooperative education', 'scheme'];
+  const internshipDurations = ['summer', 'winter', 'spring', 'off-cycle', '12 week', '10 week'];
+  const internshipSuffixes = ['internship', 'analyst program', 'associate program', 'insight week'];
 
   const jobTypeConfigs = [
     { label: 'graduate', prefixes: graduatePrefixes.slice(0, 6) },
@@ -702,6 +719,13 @@ function buildSlotSpecificTerms(
 
     placementDurations.forEach(duration => {
       placementSuffixes.forEach(suffix => {
+        add(`${duration} ${industry} ${suffix}`);
+        add(`${duration} ${suffix} ${industry}`);
+      });
+    });
+
+    internshipDurations.forEach(duration => {
+      internshipSuffixes.forEach(suffix => {
         add(`${duration} ${industry} ${suffix}`);
         add(`${duration} ${suffix} ${industry}`);
       });
@@ -734,6 +758,15 @@ function buildSlotSpecificTerms(
         });
       });
     });
+
+    internshipDurations.forEach(duration => {
+      internshipSuffixes.forEach(suffix => {
+        add(`${duration} ${suffix} ${city}`);
+        industries.forEach(industry => {
+          add(`${duration} ${industry} ${suffix} ${city}`);
+        });
+      });
+    });
   });
 
   return Array.from(terms);
@@ -747,6 +780,8 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
   const industries = slot.industries.slice(0, Math.min(6, slot.industries.length));
   const placementDurations = ['12 month', '12-month', 'year long', 'year-long', 'industrial year'];
   const placementSuffixes = ['placement', 'programme', 'program', 'co-op'];
+  const internshipDurations = ['summer', 'winter', 'spring', '12 week'];
+  const internshipSuffixes = ['internship', 'analyst program', 'insight week'];
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -768,6 +803,12 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
   industries.forEach(industry => {
     placementDurations.forEach(duration => {
       placementSuffixes.forEach(suffix => {
+        add(`${duration} ${industry} ${suffix}`);
+      });
+    });
+
+    internshipDurations.forEach(duration => {
+      internshipSuffixes.forEach(suffix => {
         add(`${duration} ${industry} ${suffix}`);
       });
     });
