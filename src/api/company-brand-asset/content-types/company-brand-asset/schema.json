@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "company_brand_assets",
+  "info": {
+    "singularName": "company-brand-asset",
+    "pluralName": "company-brand-assets",
+    "displayName": "Company Brand Asset",
+    "description": "Tracks validated company logos with multi-source verification"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "normalizedName": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true,
+      "unique": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "validated", "needs_manual_review"],
+      "default": "pending"
+    },
+    "canonicalDomain": {
+      "type": "string"
+    },
+    "candidateDomains": {
+      "type": "json"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "logoHash": {
+      "type": "string"
+    },
+    "sourcesChecked": {
+      "type": "json"
+    },
+    "lastAttemptedAt": {
+      "type": "datetime"
+    },
+    "validatedAt": {
+      "type": "datetime"
+    },
+    "lastSeenAt": {
+      "type": "datetime"
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}
+

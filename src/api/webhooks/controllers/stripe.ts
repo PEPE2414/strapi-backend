@@ -121,9 +121,16 @@ async function handleCheckoutSessionCompleted(session: any) {
     // Extract discount information
     const discounts = invoice.discounts || [];
     const discount = discounts.length > 0 ? discounts[0] : null;
-    const promotionCodeId = typeof discount === 'object' && discount !== null && 'promotion_code' in discount 
+    let promotionCodeId = typeof discount === 'object' && discount !== null && 'promotion_code' in discount 
       ? (discount as any).promotion_code 
       : null;
+
+    if (!promotionCodeId && Array.isArray(session.discounts) && session.discounts.length > 0) {
+      const sessionDiscount = session.discounts[0];
+      if (sessionDiscount && typeof sessionDiscount === 'object' && 'promotion_code' in sessionDiscount) {
+        promotionCodeId = (sessionDiscount as any).promotion_code;
+      }
+    }
 
     // Get package slug from the price
     const priceId = subscription.items.data[0]?.price?.id;
@@ -181,6 +188,12 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     // Process referral if referrer found
     if (referrerId) {
+      console.log('Referral detected via promotion code', {
+        referrerId,
+        refereeId: refereeId.toString(),
+        promotionCodeId,
+        packageSlug,
+      });
       await strapi.service('api::referrals.referrals').markQualifiedReferral({
         referrerId,
         refereeId: refereeId.toString(),
@@ -191,7 +204,7 @@ async function handleCheckoutSessionCompleted(session: any) {
 
       console.log(`Referral processed: ${referrerId} -> ${refereeId} (${packageSlug})`);
     } else if (referralCode || promotionCodeId) {
-      console.log(`No referrer found for referral code: ${referralCode || promotionCodeId}`);
+      console.log(`No referrer found for referral code/promotion: ${referralCode || promotionCodeId}`);
     }
 
     // TODO: Add refund clawback logic here when needed
