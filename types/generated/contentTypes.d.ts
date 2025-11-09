@@ -404,6 +404,44 @@ export interface ApiBlogBlog extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCompanyBrandAssetCompanyBrandAsset
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'company_brand_assets';
+  info: {
+    description: 'Tracks validated company logos with multi-source verification';
+    displayName: 'Company Brand Asset';
+    pluralName: 'company-brand-assets';
+    singularName: 'company-brand-asset';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    canonicalDomain: Schema.Attribute.String;
+    candidateDomains: Schema.Attribute.JSON;
+    lastAttemptedAt: Schema.Attribute.DateTime;
+    lastSeenAt: Schema.Attribute.DateTime;
+    logo: Schema.Attribute.Media<'images'>;
+    logoHash: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    normalizedName: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    notes: Schema.Attribute.Text;
+    slug: Schema.Attribute.UID &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    sourcesChecked: Schema.Attribute.JSON;
+    status: Schema.Attribute.Enumeration<[
+      'pending',
+      'validated',
+      'needs_manual_review'
+    ]> &
+      Schema.Attribute.DefaultTo<'pending'>;
+    validatedAt: Schema.Attribute.DateTime;
+  };
+}
+
 export interface ApiJobJob extends Struct.CollectionTypeSchema {
   collectionName: 'jobs';
   info: {
@@ -960,6 +998,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::blog.blog': ApiBlogBlog;
+      'api::company-brand-asset.company-brand-asset': ApiCompanyBrandAssetCompanyBrandAsset;
       'api::job.job': ApiJobJob;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

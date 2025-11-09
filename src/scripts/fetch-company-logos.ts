@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import Bottleneck from 'bottleneck';
 import { fetch, FormData, File } from 'undici';
+import crypto from 'node:crypto';
+import { load as loadHtml } from 'cheerio';
 
 type StrapiMedia = {
   id: number;
   attributes?: {
     url?: string;
-    name?: string;
-    alternativeText?: string | null;
   };
 };
 
@@ -41,27 +41,82 @@ type StrapiJobResponse = {
   };
 };
 
-type CompanyEntry = {
-  displayName: string;
-  key: string;
-  jobs: StrapiJobRecord[];
-  hasLogo: boolean;
-  existingLogoId?: number;
-  existingLogoUrl?: string;
-  possibleDomains: Set<string>;
+type CompanyAssetAttributes = {
+  name: string;
+  normalizedName: string;
+  status: 'pending' | 'validated' | 'needs_manual_review';
+  canonicalDomain?: string | null;
+  candidateDomains?: string[] | null;
+  logo?: { data?: StrapiMedia | null } | StrapiMedia | number | null;
+  logoHash?: string | null;
+  sourcesChecked?: Array<Record<string, unknown>> | null;
+  lastAttemptedAt?: string | null;
+  validatedAt?: string | null;
+  lastSeenAt?: string | null;
+  notes?: string | null;
 };
 
-type UploadResult = {
+type CompanyAssetRecord = {
   id: number;
+  attributes: CompanyAssetAttributes;
+};
+
+type CompanyAssetResponse = {
+  data: CompanyAssetRecord[];
+  meta?: {
+    pagination?: {
+      page: number;
+      pageCount: number;
+      pageSize: number;
+      total: number;
+    };
+  };
+};
+
+type CandidateAttempt = {
+  source: string;
   url: string;
+  domain?: string;
+  status: 'ok' | 'error';
+  contentType?: string;
+  size?: number;
+  hash?: string;
+  message?: string;
+};
+
+type LogoCandidateFetch = {
+  source: string;
+  url: string;
+  domain?: string;
+};
+
+type LogoCandidateResult = {
+  hash: string;
+  buffer: Buffer;
+  contentType: string;
+  size: number;
+  sources: Set<string>;
+  urls: Set<string>;
+};
+
+type CompanyInfo = {
+  name: string;
+  normalizedName: string;
+  jobs: StrapiJobRecord[];
+  candidateDomains: Set<string>;
+  asset?: CompanyAssetRecord;
 };
 
 const STRAPI_BASE_URL = (process.env.STRAPI_BASE_URL || process.env.STRAPI_URL || '').replace(/\/$/, '');
 const STRAPI_TOKEN = process.env.STRAPI_ADMIN_TOKEN || process.env.STRAPI_TOKEN;
 const LOGO_SIZE = Number(process.env.COMPANY_LOGO_SIZE || 256);
-const PAGE_SIZE = Number(process.env.COMPANY_LOGO_PAGE_SIZE || 200);
+const JOB_PAGE_SIZE = Number(process.env.COMPANY_LOGO_PAGE_SIZE || 200);
 const MAX_COMPANIES_PER_RUN = Number(process.env.COMPANY_LOGO_MAX_COMPANIES || 40);
+const MAX_DOMAINS_PER_COMPANY = Number(process.env.COMPANY_LOGO_MAX_DOMAINS || 5);
 const CLEARBIT_AUTOCOMPLETE_ENDPOINT = 'https://autocomplete.clearbit.com/v1/companies/suggest';
+const MIN_VALID_BYTES = Number(process.env.COMPANY_LOGO_MIN_BYTES || 8192);
+const FETCH_TIMEOUT_MS = Number(process.env.COMPANY_LOGO_FETCH_TIMEOUT_MS || 8000);
+const USER_AGENT = process.env.COMPANY_LOGO_USER_AGENT || 'EffortFreeCompanyLogoBot/1.0';
 
 if (!STRAPI_BASE_URL) {
   throw new Error('Missing STRAPI_BASE_URL environment variable');
@@ -73,13 +128,37 @@ if (!STRAPI_TOKEN) {
 
 const httpLimiter = new Bottleneck({
   maxConcurrent: 4,
-  minTime: 150,
+  minTime: 200,
 });
 
 const strapiLimiter = new Bottleneck({
   maxConcurrent: 2,
   minTime: 200,
 });
+
+function nowIso(): string {
+  return new Date().toISOString();
+}
+
+function toArray<T>(value: T | T[] | null | undefined): T[] {
+  if (Array.isArray(value)) return value;
+  if (value == null) return [];
+  return [value];
+}
+
+function extractMedia(media: { data?: StrapiMedia | null } | StrapiMedia | number | null | undefined): StrapiMedia | null {
+  if (!media) return null;
+  if (typeof media === 'number') return null;
+  if (typeof (media as any).data === 'object' && (media as any).data) {
+    return (media as any).data as StrapiMedia;
+  }
+  return media as StrapiMedia;
+}
+
+function extractMediaId(media: { data?: StrapiMedia | null } | StrapiMedia | number | null | undefined): number | undefined {
+  const extracted = extractMedia(media);
+  return extracted?.id;
+}
 
 function slugify(input: string): string {
   return input
@@ -103,22 +182,11 @@ function normaliseCompanyName(name?: string | null): string {
     .toLowerCase();
 }
 
-function extractCompanyName(companyField: CompanyEntry['displayName'] | StrapiJobRecord['attributes']['company']): string {
+function extractCompanyName(companyField: StrapiJobRecord['attributes']['company']): string {
   if (!companyField) return '';
   if (typeof companyField === 'string') return companyField;
   if (typeof companyField.name === 'string') return companyField.name;
   return '';
-}
-
-function extractLogoInfo(companyLogo: StrapiJobRecord['attributes']['companyLogo']): { id?: number; url?: string } {
-  if (!companyLogo) return {};
-
-  const media = (companyLogo as { data?: StrapiMedia | null })?.data ?? (companyLogo as StrapiMedia);
-  if (!media) return {};
-
-  const url = media.attributes?.url;
-  const id = media.id;
-  return { id, url };
 }
 
 function extractDomainFromUrl(rawUrl?: string | null): string | null {
@@ -133,6 +201,63 @@ function extractDomainFromUrl(rawUrl?: string | null): string | null {
   }
 }
 
+function addCandidateDomain(set: Set<string>, ...domains: Array<string | null | undefined>) {
+  for (const domain of domains) {
+    if (!domain) continue;
+    const clean = domain.replace(/^https?:\/\//i, '').replace(/^www\./i, '').toLowerCase();
+    if (!clean || /^[0-9.]+$/.test(clean)) continue;
+    if (clean.includes('linkedin.com') || clean.includes('google.com')) continue;
+    set.add(clean);
+  }
+  while (set.size > MAX_DOMAINS_PER_COMPANY) {
+    const first = set.values().next().value;
+    if (!first) break;
+    set.delete(first);
+  }
+}
+
+async function strapiRequest(path: string, opts: { method?: string; body?: unknown; headers?: Record<string, string> } = {}) {
+  const method = (opts.method || 'GET').toUpperCase();
+  const url = `${STRAPI_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${STRAPI_TOKEN}`,
+    Accept: 'application/json',
+    ...opts.headers,
+  };
+  let body: any;
+
+  if (opts.body && !(opts.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+    body = JSON.stringify(opts.body);
+  } else if (opts.body instanceof FormData) {
+    body = opts.body as FormData;
+  }
+
+  const response = await strapiLimiter.schedule(() =>
+    fetch(url, {
+      method,
+      headers,
+      body,
+    }),
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Strapi ${method} ${path} failed (${response.status}): ${text}`);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  return response.text();
+}
+
 async function fetchAllJobs(): Promise<StrapiJobRecord[]> {
   const all: StrapiJobRecord[] = [];
   let page = 1;
@@ -141,7 +266,7 @@ async function fetchAllJobs(): Promise<StrapiJobRecord[]> {
   while (page <= pageCount) {
     const params = new URLSearchParams();
     params.set('pagination[page]', String(page));
-    params.set('pagination[pageSize]', String(PAGE_SIZE));
+    params.set('pagination[pageSize]', String(JOB_PAGE_SIZE));
     params.set('fields[0]', 'title');
     params.set('fields[1]', 'company');
     params.set('fields[2]', 'companyPageUrl');
@@ -150,31 +275,14 @@ async function fetchAllJobs(): Promise<StrapiJobRecord[]> {
     params.set('fields[5]', 'slug');
     params.set('populate[companyLogo]', '*');
 
-    const url = `${STRAPI_BASE_URL}/api/jobs?${params.toString()}`;
-
-    const response = await strapiLimiter.schedule(() =>
-      fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${STRAPI_TOKEN}`,
-          Accept: 'application/json',
-        },
-      }),
-    );
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Failed to fetch jobs (${response.status}): ${text}`);
-    }
-
-    const json = (await response.json()) as StrapiJobResponse;
+    const json = (await strapiRequest(`/api/jobs?${params.toString()}`)) as StrapiJobResponse;
     const data = json.data || [];
     all.push(...data);
 
     const meta = json.meta?.pagination;
     if (meta?.pageCount) {
       pageCount = meta.pageCount;
-    } else if (data.length < PAGE_SIZE) {
+    } else if (data.length < JOB_PAGE_SIZE) {
       break;
     }
 
@@ -184,293 +292,517 @@ async function fetchAllJobs(): Promise<StrapiJobRecord[]> {
   return all;
 }
 
+async function fetchAllCompanyAssets(): Promise<CompanyAssetRecord[]> {
+  const all: CompanyAssetRecord[] = [];
+  let page = 1;
+  let pageCount = 1;
+
+  while (page <= pageCount) {
+    const params = new URLSearchParams();
+    params.set('pagination[page]', String(page));
+    params.set('pagination[pageSize]', '200');
+    params.set('populate[logo]', '*');
+
+    const json = (await strapiRequest(`/api/company-brand-assets?${params.toString()}`)) as CompanyAssetResponse;
+    const data = json.data || [];
+    all.push(...data);
+
+    const meta = json.meta?.pagination;
+    if (meta?.pageCount) {
+      pageCount = meta.pageCount;
+    } else if (data.length < 200) {
+      break;
+    }
+    page += 1;
+  }
+
+  return all;
+}
+
+async function createCompanyAsset(data: Partial<CompanyAssetAttributes>) {
+  const response = await strapiRequest('/api/company-brand-assets', {
+    method: 'POST',
+    body: { data },
+  });
+  return (response as { data: CompanyAssetRecord }).data;
+}
+
+async function updateCompanyAsset(id: number, data: Partial<CompanyAssetAttributes>) {
+  const response = await strapiRequest(`/api/company-brand-assets/${id}`, {
+    method: 'PUT',
+    body: { data },
+  });
+  return (response as { data: CompanyAssetRecord }).data;
+}
+
+function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
+  const map = new Map<string, CompanyInfo>();
+
+  for (const job of jobs) {
+    const companyName = extractCompanyName(job.attributes.company);
+    const normalizedName = normaliseCompanyName(companyName);
+
+    if (!normalizedName || normalizedName === 'unknown' || normalizedName === 'unknown company') {
+      continue;
+    }
+
+    if (!map.has(normalizedName)) {
+      map.set(normalizedName, {
+        name: companyName || 'Unknown',
+        normalizedName,
+        jobs: [],
+        candidateDomains: new Set<string>(),
+      });
+    }
+
+    const info = map.get(normalizedName)!;
+    info.jobs.push(job);
+
+    addCandidateDomain(
+      info.candidateDomains,
+      extractDomainFromUrl(job.attributes.companyPageUrl),
+      extractDomainFromUrl(job.attributes.applyUrl),
+      extractDomainFromUrl(job.attributes.sourceUrl),
+    );
+  }
+
+  return map;
+}
+
+function mergeCandidateDomains(existing: string[] | null | undefined, incoming: Set<string>): string[] {
+  const merged = new Set<string>();
+  addCandidateDomain(merged, ...(existing || []));
+  addCandidateDomain(merged, ...incoming);
+  return Array.from(merged);
+}
+
+async function ensureCompanyAssets(map: Map<string, CompanyInfo>, existingAssets: CompanyAssetRecord[]) {
+  const existingByNormalized = new Map<string, CompanyAssetRecord>();
+  for (const asset of existingAssets) {
+    existingByNormalized.set(asset.attributes.normalizedName, asset);
+  }
+
+  for (const info of map.values()) {
+    const now = nowIso();
+    const asset = existingByNormalized.get(info.normalizedName);
+
+    if (!asset) {
+      const candidateDomains = mergeCandidateDomains([], info.candidateDomains);
+      const created = await createCompanyAsset({
+        name: info.name,
+        normalizedName: info.normalizedName,
+        status: 'pending',
+        candidateDomains,
+        lastSeenAt: now,
+        sourcesChecked: [],
+      });
+      info.asset = created;
+      existingByNormalized.set(info.normalizedName, created);
+      console.log(`🆕 Created brand asset record for ${info.name}`);
+    } else {
+      const candidateDomains = mergeCandidateDomains(asset.attributes.candidateDomains, info.candidateDomains);
+      const updates: Partial<CompanyAssetAttributes> = {};
+      if (asset.attributes.name !== info.name) {
+        updates.name = info.name;
+      }
+      if (JSON.stringify((asset.attributes.candidateDomains || []).sort()) !== JSON.stringify(candidateDomains.slice().sort())) {
+        updates.candidateDomains = candidateDomains;
+      }
+      updates.lastSeenAt = now;
+
+      if (Object.keys(updates).length > 0) {
+        const updated = await updateCompanyAsset(asset.id, updates);
+        existingByNormalized.set(info.normalizedName, updated);
+        info.asset = updated;
+      } else {
+        info.asset = asset;
+      }
+    }
+  }
+}
+
 async function lookupDomain(companyName: string): Promise<{ domain: string; logoUrl?: string } | null> {
   if (!companyName) return null;
 
   const query = encodeURIComponent(companyName);
   const apiUrl = `${CLEARBIT_AUTOCOMPLETE_ENDPOINT}?query=${query}`;
 
-  const response = await httpLimiter.schedule(() =>
-    fetch(apiUrl, {
-      headers: { Accept: 'application/json' },
-    }),
-  );
+  try {
+    const response = await httpLimiter.schedule(() =>
+      fetch(apiUrl, {
+        headers: { Accept: 'application/json' },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      }),
+    );
 
-  if (!response.ok) {
-    console.warn(`⚠️  Clearbit autocomplete failed for "${companyName}" (${response.status})`);
+    if (!response.ok) {
+      console.warn(`⚠️  Clearbit autocomplete failed for "${companyName}" (${response.status})`);
+      return null;
+    }
+
+    const suggestions = (await response.json()) as Array<{ domain?: string; name?: string; logo?: string }>;
+    if (!Array.isArray(suggestions) || suggestions.length === 0) return null;
+
+    const normalisedTarget = companyName.trim().toLowerCase();
+    const exact = suggestions.find((s) => (s.name ?? '').trim().toLowerCase() === normalisedTarget);
+    const chosen = exact ?? suggestions[0];
+
+    if (!chosen?.domain) return null;
+
+    return {
+      domain: chosen.domain.toLowerCase(),
+      logoUrl: chosen.logo,
+    };
+  } catch (error) {
+    console.warn(`⚠️  Failed to lookup domain for "${companyName}":`, error instanceof Error ? error.message : String(error));
     return null;
   }
-
-  const suggestions = (await response.json()) as Array<{ domain?: string; name?: string; logo?: string }>;
-  if (!Array.isArray(suggestions) || suggestions.length === 0) return null;
-
-  const normalisedTarget = companyName.trim().toLowerCase();
-  const exact = suggestions.find((s) => (s.name ?? '').trim().toLowerCase() === normalisedTarget);
-  const chosen = exact ?? suggestions[0];
-
-  if (!chosen?.domain) return null;
-
-  return {
-    domain: chosen.domain.toLowerCase(),
-    logoUrl: chosen.logo,
-  };
 }
 
-async function downloadLogo(domain: string, providedUrl?: string): Promise<{ buffer: Buffer; contentType: string } | null> {
-  const targetUrl =
-    providedUrl ||
-    `https://logo.clearbit.com/${encodeURIComponent(domain)}?size=${Number.isFinite(LOGO_SIZE) ? LOGO_SIZE : 256}&format=png`;
+async function downloadCandidate(candidate: LogoCandidateFetch): Promise<{ buffer: Buffer; contentType: string; size: number; hash: string } | null> {
+  try {
+    const response = await httpLimiter.schedule(() =>
+      fetch(candidate.url, {
+        headers: {
+          Accept: 'image/*',
+          'User-Agent': USER_AGENT,
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      }),
+    );
 
-  const response = await httpLimiter.schedule(() =>
-    fetch(targetUrl, {
-      headers: {
-        Accept: 'image/*',
-        'User-Agent': 'EffortFreeLogoBot/1.0',
-      },
-    }),
-  );
+    if (!response.ok) {
+      return null;
+    }
 
-  if (!response.ok) {
-    console.warn(`⚠️  Logo download failed for ${domain} (${response.status})`);
+    const contentType = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+    if (!contentType.startsWith('image/')) {
+      return null;
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+      return null;
+    }
+
+    const buffer = Buffer.from(arrayBuffer);
+    const hash = crypto.createHash('sha256').update(buffer).digest('hex');
+    return {
+      buffer,
+      contentType,
+      size: buffer.length,
+      hash,
+    };
+  } catch {
     return null;
   }
-
-  const arrayBuffer = await response.arrayBuffer();
-  if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-    console.warn(`⚠️  Empty logo response for ${domain}`);
-    return null;
-  }
-
-  const contentType = response.headers.get('content-type') || 'image/png';
-  return { buffer: Buffer.from(arrayBuffer), contentType };
 }
 
-async function uploadLogo(companyName: string, payload: { buffer: Buffer; contentType: string }): Promise<UploadResult> {
-  const fileName = `${slugify(companyName) || 'company'}-logo.png`;
-  const file = new File([payload.buffer], fileName, { type: payload.contentType || 'image/png' });
-  const body = new FormData();
-  body.append('files', file);
+async function discoverHtmlIcons(domain: string): Promise<string[]> {
+  const urls = new Set<string>();
+  try {
+    const baseUrl = `https://${domain}`;
+    const response = await httpLimiter.schedule(() =>
+      fetch(baseUrl, {
+        headers: { 'User-Agent': USER_AGENT },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      }),
+    );
 
-  const response = await strapiLimiter.schedule(() =>
-    fetch(`${STRAPI_BASE_URL}/api/upload`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${STRAPI_TOKEN}`,
-      },
-      body,
-    }),
-  );
+    if (!response.ok) return [];
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('text/html')) return [];
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Logo upload failed for "${companyName}" (${response.status}): ${errorText}`);
+    const html = await response.text();
+    const $ = loadHtml(html);
+
+    $('link[rel*=icon], link[rel*=apple-touch-icon], link[rel*=mask-icon]').each((_, el) => {
+      const href = ($(el).attr('href') || '').trim();
+      if (!href) return;
+      try {
+        const absolute = new URL(href, baseUrl).toString();
+        urls.add(absolute);
+      } catch {
+        // ignore bad URLs
+      }
+    });
+  } catch {
+    // ignore
+  }
+  return Array.from(urls);
+}
+
+function buildDomainCandidates(domain: string, hintLogoUrl?: string): LogoCandidateFetch[] {
+  const out: LogoCandidateFetch[] = [];
+  out.push({
+    source: 'clearbit-direct',
+    url: `https://logo.clearbit.com/${encodeURIComponent(domain)}?size=${Math.min(Math.max(LOGO_SIZE, 64), 512)}&format=png`,
+    domain,
+  });
+  out.push({
+    source: 'logo.dev',
+    url: `https://img.logo.dev/${encodeURIComponent(domain)}?size=${Math.min(Math.max(LOGO_SIZE, 64), 512)}`,
+    domain,
+  });
+  out.push({
+    source: 'google-s2',
+    url: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=256`,
+    domain,
+  });
+  out.push({
+    source: 'domain-favicon',
+    url: `https://${domain}/favicon.ico`,
+    domain,
+  });
+  out.push({
+    source: 'domain-touch-icon',
+    url: `https://${domain}/apple-touch-icon.png`,
+    domain,
+  });
+
+  if (hintLogoUrl && hintLogoUrl.startsWith('http')) {
+    out.push({
+      source: 'clearbit-autocomplete',
+      url: hintLogoUrl,
+      domain,
+    });
   }
 
-  const json = (await response.json()) as Array<{ id: number; url?: string }>;
-  const uploaded = json?.[0];
+  return out;
+}
 
+async function collectCandidatesForDomains(domains: string[], hintLogoUrl?: string): Promise<LogoCandidateFetch[]> {
+  const candidates: LogoCandidateFetch[] = [];
+  for (const domain of domains.slice(0, MAX_DOMAINS_PER_COMPANY)) {
+    candidates.push(...buildDomainCandidates(domain, hintLogoUrl));
+    const htmlIcons = await discoverHtmlIcons(domain);
+    for (const iconUrl of htmlIcons) {
+      candidates.push({ source: 'html-icon', url: iconUrl, domain });
+    }
+  }
+  return candidates;
+}
+
+async function uploadLogo(companyName: string, buffer: Buffer, contentType: string) {
+  const extension = contentType.includes('svg') ? 'svg' : contentType.includes('webp') ? 'webp' : 'png';
+  const fileName = `${slugify(companyName) || 'company'}-logo.${extension}`;
+  const file = new File([buffer], fileName, { type: contentType });
+  const form = new FormData();
+  form.append('files', file);
+
+  const response = (await strapiRequest('/api/upload', { method: 'POST', body: form })) as Array<{ id: number; url?: string }>;
+  const uploaded = response?.[0];
   if (!uploaded?.id) {
     throw new Error(`Strapi upload response missing file id for "${companyName}"`);
   }
-
-  return {
-    id: uploaded.id,
-    url: uploaded.url || '',
-  };
+  return uploaded;
 }
 
 async function assignLogoToJob(jobId: number, fileId: number): Promise<void> {
-  const response = await strapiLimiter.schedule(() =>
-    fetch(`${STRAPI_BASE_URL}/api/jobs/${jobId}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${STRAPI_TOKEN}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+  await strapiRequest(`/api/jobs/${jobId}`, {
+    method: 'PUT',
+    body: {
+      data: {
+        companyLogo: fileId,
       },
-      body: JSON.stringify({
-        data: {
-          companyLogo: fileId,
-        },
-      }),
-    }),
-  );
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Failed to assign logo to job ${jobId} (${response.status}): ${text}`);
-  }
+    },
+  });
 }
 
-function buildCompanyMap(jobs: StrapiJobRecord[]): Map<string, CompanyEntry> {
-  const map = new Map<string, CompanyEntry>();
+function validateGroup(group: LogoCandidateResult): boolean {
+  if (group.sources.size < 2) return false;
+  if (group.contentType.includes('svg')) {
+    return group.size > 1024;
+  }
+  return group.size >= MIN_VALID_BYTES;
+}
 
-  for (const job of jobs) {
-    const companyName = extractCompanyName(job.attributes.company);
-    const displayName = companyName || 'Unknown';
-    const key = normaliseCompanyName(displayName);
+async function processCompany(info: CompanyInfo): Promise<void> {
+  const asset = info.asset;
+  if (!asset) {
+    console.warn(`⚠️  No asset record linked for company "${info.name}" – skipping`);
+    return;
+  }
 
-    if (!key || key === 'unknown' || key === 'unknown company') {
+  if (asset.attributes.status === 'validated') {
+    console.log(`✅ Already validated: ${info.name}`);
+    return;
+  }
+
+  const sourcesChecked: CandidateAttempt[] = [];
+  const domains = mergeCandidateDomains(asset.attributes.candidateDomains, info.candidateDomains);
+  let canonicalDomain = asset.attributes.canonicalDomain || null;
+
+  if (!canonicalDomain && domains.length === 1) {
+    canonicalDomain = domains[0];
+  }
+
+  const suggestion = await lookupDomain(info.name);
+  if (suggestion?.domain) {
+    domains.unshift(suggestion.domain);
+    addCandidateDomain(info.candidateDomains, suggestion.domain);
+    if (!canonicalDomain) canonicalDomain = suggestion.domain;
+  }
+
+  const uniqueDomains = Array.from(new Set(domains)).filter(Boolean);
+  if (uniqueDomains.length === 0) {
+    info.asset = await updateCompanyAsset(asset.id, {
+      status: 'needs_manual_review',
+      lastAttemptedAt: nowIso(),
+      candidateDomains: [],
+      canonicalDomain: canonicalDomain,
+      notes: 'No usable domains discovered for this company.',
+    });
+    console.warn(`⚠️  No domains to try for "${info.name}", marked for manual review.`);
+    return;
+  }
+
+  const candidateDescriptors = await collectCandidatesForDomains(uniqueDomains, suggestion?.logoUrl);
+  const seenUrls = new Set<string>();
+  const groups = new Map<string, LogoCandidateResult>();
+
+  for (const descriptor of candidateDescriptors) {
+    if (seenUrls.has(descriptor.url)) {
       continue;
     }
+    seenUrls.add(descriptor.url);
 
-    const { id: logoId, url: logoUrl } = extractLogoInfo(job.attributes.companyLogo);
-
-    if (!map.has(key)) {
-      map.set(key, {
-        displayName,
-        key,
-        jobs: [],
-        hasLogo: Boolean(logoId),
-        existingLogoId: logoId,
-        existingLogoUrl: logoUrl,
-        possibleDomains: new Set<string>(),
+    const result = await downloadCandidate(descriptor);
+    if (result) {
+      const existing = groups.get(result.hash);
+      if (existing) {
+        existing.sources.add(descriptor.source);
+        existing.urls.add(descriptor.url);
+        if (result.size > existing.size) {
+          existing.size = result.size;
+          existing.buffer = result.buffer;
+          existing.contentType = result.contentType;
+        }
+      } else {
+        groups.set(result.hash, {
+          hash: result.hash,
+          buffer: result.buffer,
+          contentType: result.contentType,
+          size: result.size,
+          sources: new Set([descriptor.source]),
+          urls: new Set([descriptor.url]),
+        });
+      }
+      sourcesChecked.push({
+        source: descriptor.source,
+        url: descriptor.url,
+        domain: descriptor.domain,
+        status: 'ok',
+        size: result.size,
+        contentType: result.contentType,
+        hash: result.hash,
+      });
+    } else {
+      sourcesChecked.push({
+        source: descriptor.source,
+        url: descriptor.url,
+        domain: descriptor.domain,
+        status: 'error',
       });
     }
-
-    const entry = map.get(key)!;
-    entry.jobs.push(job);
-
-    if (logoId && !entry.hasLogo) {
-      entry.hasLogo = true;
-      entry.existingLogoId = logoId;
-      entry.existingLogoUrl = logoUrl;
-    }
-
-    const pageDomain = extractDomainFromUrl(job.attributes.companyPageUrl);
-    if (pageDomain) entry.possibleDomains.add(pageDomain);
-
-    const applyDomain = extractDomainFromUrl(job.attributes.applyUrl);
-    if (applyDomain) entry.possibleDomains.add(applyDomain);
-
-    const sourceDomain = extractDomainFromUrl(job.attributes.sourceUrl);
-    if (sourceDomain) entry.possibleDomains.add(sourceDomain);
   }
 
-  return map;
-}
+  const validGroups = Array.from(groups.values()).filter(validateGroup);
 
-async function propagateExistingLogo(entry: CompanyEntry): Promise<number> {
-  if (!entry.existingLogoId) return 0;
+  if (validGroups.length === 0) {
+    info.asset = await updateCompanyAsset(asset.id, {
+      candidateDomains: uniqueDomains,
+      canonicalDomain: canonicalDomain,
+      status: 'needs_manual_review',
+      sourcesChecked,
+      lastAttemptedAt: nowIso(),
+      notes: 'No candidate logo confirmed by multiple sources. Manual review required.',
+    });
+    console.warn(`⚠️  No validated logo for "${info.name}". Marked for manual review.`);
+    return;
+  }
+
+  const bestGroup = validGroups.sort((a, b) => b.size - a.size)[0];
+  const newHash = bestGroup.hash;
+  let logoFileId = extractMediaId(asset.attributes.logo);
+
+  if (asset.attributes.logoHash !== newHash || !logoFileId) {
+    const upload = await uploadLogo(info.name, bestGroup.buffer, bestGroup.contentType);
+    logoFileId = upload.id;
+    console.log(`⬆️  Uploaded logo for "${info.name}" (${bestGroup.contentType}, ${(bestGroup.size / 1024).toFixed(1)} KB)`);
+  } else {
+    console.log(`ℹ️  Logo already up-to-date for "${info.name}"`);
+  }
+
+  info.asset = await updateCompanyAsset(asset.id, {
+    status: 'validated',
+    validatedAt: nowIso(),
+    lastAttemptedAt: nowIso(),
+    candidateDomains: uniqueDomains,
+    canonicalDomain,
+    logo: logoFileId,
+    logoHash: newHash,
+    sourcesChecked,
+    notes: null,
+  });
+
   let updates = 0;
-
-  for (const job of entry.jobs) {
-    const { id: currentLogoId } = extractLogoInfo(job.attributes.companyLogo);
-    if (currentLogoId) continue;
-
-    await assignLogoToJob(job.id, entry.existingLogoId);
+  for (const job of info.jobs) {
+    const currentLogoId = extractMediaId(job.attributes.companyLogo);
+    if (currentLogoId === logoFileId) continue;
+    await assignLogoToJob(job.id, logoFileId);
     updates += 1;
   }
 
-  return updates;
-}
-
-async function processCompany(entry: CompanyEntry): Promise<{ assigned: number; uploaded?: number }> {
-  if (entry.hasLogo && entry.existingLogoId) {
-    const propagated = await propagateExistingLogo(entry);
-    return { assigned: propagated };
-  }
-
-  let domain: string | null = null;
-  let logoFromSuggestion: string | undefined;
-
-  for (const candidate of entry.possibleDomains) {
-    domain = candidate;
-    break;
-  }
-
-  if (!domain) {
-    const suggestion = await lookupDomain(entry.displayName);
-    if (suggestion?.domain) {
-      domain = suggestion.domain;
-      logoFromSuggestion = suggestion.logoUrl;
-    }
-  }
-
-  if (!domain) {
-    console.warn(`⚠️  No domain found for company "${entry.displayName}", skipping`);
-    return { assigned: 0 };
-  }
-
-  const logoData = await downloadLogo(domain, logoFromSuggestion);
-  if (!logoData) {
-    console.warn(`⚠️  Unable to download logo for ${domain} (${entry.displayName})`);
-    return { assigned: 0 };
-  }
-
-  const upload = await uploadLogo(entry.displayName, logoData);
-
-  let updated = 0;
-  for (const job of entry.jobs) {
-    const { id: currentLogoId } = extractLogoInfo(job.attributes.companyLogo);
-    if (currentLogoId) continue;
-    await assignLogoToJob(job.id, upload.id);
-    updated += 1;
-  }
-
-  return { assigned: updated, uploaded: 1 };
+  console.log(`✅ Validated logo for "${info.name}" (assigned to ${updates} jobs)`);
 }
 
 async function main() {
-  console.log('🚀 Starting company logo sync');
-  console.log(`Strapi base URL: ${STRAPI_BASE_URL}`);
+  console.log('🚀 Starting company logo validation run');
 
   const jobs = await fetchAllJobs();
   console.log(`📦 Retrieved ${jobs.length} jobs from Strapi`);
 
-  const companyMap = buildCompanyMap(jobs);
-  const companies = Array.from(companyMap.values());
+  const companyMap = gatherCompanyInfo(jobs);
+  console.log(`🏢 Unique companies detected: ${companyMap.size}`);
 
-  const missingCompanies = companies.filter((company) => !company.hasLogo);
-  const alreadyCovered = companies.length - missingCompanies.length;
+  const existingAssets = await fetchAllCompanyAssets();
+  await ensureCompanyAssets(companyMap, existingAssets);
 
-  console.log(`🏢 Unique companies: ${companies.length}`);
-  console.log(`✅ Companies already with logos: ${alreadyCovered}`);
-  console.log(`❔ Companies missing logos: ${missingCompanies.length}`);
+  const pendingCompanies = Array.from(companyMap.values())
+    .filter((info) => info.asset?.attributes.status === 'pending')
+    .slice(0, MAX_COMPANIES_PER_RUN);
 
-  const targets = missingCompanies.slice(0, MAX_COMPANIES_PER_RUN);
-  if (targets.length === 0) {
-    console.log('🎉 No companies without logos found. All done!');
+  if (pendingCompanies.length === 0) {
+    console.log('🎉 No pending companies found. All done!');
     return;
   }
 
-  console.log(`🛠️  Processing ${targets.length} companies (of max ${MAX_COMPANIES_PER_RUN})`);
+  console.log(`🛠️  Processing ${pendingCompanies.length} companies (max ${MAX_COMPANIES_PER_RUN})`);
 
-  let uploadedCount = 0;
-  let assignedCount = 0;
-  let processedCount = 0;
+  let processed = 0;
   let failures = 0;
 
-  for (const entry of targets) {
-    processedCount += 1;
+  for (const info of pendingCompanies) {
+    processed += 1;
+    console.log(`→ [${processed}/${pendingCompanies.length}] ${info.name}`);
     try {
-      console.log(`→ [${processedCount}/${targets.length}] ${entry.displayName}`);
-      const result = await processCompany(entry);
-      assignedCount += result.assigned;
-      if (result.uploaded) {
-        uploadedCount += result.uploaded;
-      }
-      console.log(`   Assigned to ${result.assigned} jobs${result.uploaded ? ' (uploaded new asset)' : ''}`);
+      await processCompany(info);
     } catch (error) {
       failures += 1;
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Failed to process "${entry.displayName}": ${message}`);
+      console.error(`❌ Error processing "${info.name}":`, error instanceof Error ? error.stack || error.message : String(error));
     }
   }
 
-  console.log('📊 Summary');
-  console.log(`   Companies processed: ${processedCount}`);
-  console.log(`   Logos uploaded: ${uploadedCount}`);
-  console.log(`   Jobs updated: ${assignedCount}`);
+  console.log('📊 Run summary');
+  console.log(`   Companies processed: ${processed}`);
   console.log(`   Failures: ${failures}`);
-
-  if (failures > 0) {
-    console.warn('⚠️  Some companies failed to process. Check logs for details.');
-  }
+  console.log('Done.');
 }
 
 main().catch((error) => {
   console.error('❌ Fatal error in company logo sync script:', error);
   process.exitCode = 1;
 });
-
