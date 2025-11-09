@@ -34,7 +34,7 @@ export default {
     try {
       // Get or create usage log entry
       const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-        fields: ['id', 'usageLogs']
+        fields: ['id']
       });
 
       if (!user) {
@@ -112,8 +112,12 @@ export default {
   async getUserUsageMetrics(userId: string): Promise<UsageMetrics> {
     try {
       const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
-        fields: ['id', 'featureUsageCount', 'usageLogs'],
-        populate: ['usageLogs']
+        fields: ['id', 'featureUsageCount'],
+        populate: {
+          usageLogs: {
+            fields: ['id', 'meta', 'createdAt', 'timestamp'],
+          },
+        },
       });
 
       if (!user) {
@@ -246,7 +250,11 @@ export default {
     try {
       const user = await strapi.entityService.findOne('plugin::users-permissions.user', userId, {
         fields: ['id', 'createdAt', 'packages', 'plan', 'trialActive', 'trialEndsAt'],
-        populate: ['usageLogs']
+        populate: {
+          usageLogs: {
+            fields: ['id', 'meta', 'createdAt', 'timestamp'],
+          },
+        },
       });
 
       if (!user) {
