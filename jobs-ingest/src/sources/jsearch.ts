@@ -3,6 +3,7 @@ import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
+import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
 
 /**
@@ -749,6 +750,14 @@ function buildSlotSpecificTerms(
       prefixes.slice(0, 3).forEach(prefix => {
         add(`${prefix} ${industry} uk`);
       });
+
+      const popularTitles = getPopularTitles(industry, label as JobTypeKey).slice(0, 6);
+      popularTitles.forEach(title => {
+        add(`${title}`);
+        add(`${title} uk`);
+        add(`${title} ${industry}`);
+        add(`${title} in ${industry}`);
+      });
     });
 
     placementDurations.forEach(duration => {
@@ -789,6 +798,12 @@ function buildSlotSpecificTerms(
         });
         add(`${label} ${industry} ${city}`);
         add(`${industry} ${label} ${city}`);
+      });
+
+      const popularTitles = getPopularTitles(city, label as JobTypeKey).slice(0, 4);
+      popularTitles.forEach(title => {
+        add(`${title} ${city}`);
+        add(`${title} in ${city}`);
       });
     });
 
@@ -872,6 +887,12 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
     graduateSuffixes.forEach(suffix => {
       add(`${suffix} ${industry}`);
       graduateYears.forEach(year => add(`${suffix} ${industry} ${year}`));
+    });
+
+    (['graduate', 'placement', 'internship'] as JobTypeKey[]).forEach(jobType => {
+      getPopularTitles(industry, jobType)
+        .slice(0, 3)
+        .forEach(title => add(`${title}`));
     });
   });
 

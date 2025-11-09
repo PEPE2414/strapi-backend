@@ -466,10 +466,13 @@ function buildLinkedInDedupKey(job: any): string {
 
 function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
   const terms = new Set<string>();
-  const MAX_TERMS = 200;
-  const jobTypes = ['graduate', 'placement', 'internship'];
+  const MAX_TERMS = 240;
+  const jobTypes: JobTypeKey[] = ['graduate', 'placement', 'internship'];
   const placementDurations = ['12 month', '12-month', 'year-long', 'year long', 'industrial year', 'industry year'];
   const placementSuffixes = ['placement', 'programme', 'program', 'co-op', 'cooperative education'];
+  const internshipDurations = ['summer', 'winter', 'spring', 'off-cycle', '12 week', '10 week'];
+  const internshipSuffixes = ['internship', 'analyst program', 'associate program', 'insight week'];
+  const graduateSuffixes = ['graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee'];
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -483,6 +486,13 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
     jobTypes.forEach(type => {
       add(`${type} ${industry} uk`);
       add(`${industry} ${type} uk`);
+      getPopularTitles(industry, type)
+        .slice(0, 6)
+        .forEach(title => {
+          add(`${title}`);
+          add(`${title} uk`);
+          add(`${title} ${industry}`);
+        });
     });
 
     placementDurations.forEach(duration => {
@@ -500,6 +510,12 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
       slot.industries.forEach(industry => {
         add(`${type} ${industry} ${city}`);
         add(`${industry} ${type} ${city}`);
+        getPopularTitles(industry, type)
+          .slice(0, 4)
+          .forEach(title => {
+            add(`${title} ${city}`);
+            add(`${title} in ${city}`);
+          });
       });
     });
 
@@ -509,6 +525,19 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
         slot.industries.forEach(industry => {
           add(`${duration} ${industry} ${suffix} ${city}`);
         });
+      });
+    });
+
+    graduateSuffixes.forEach(suffix => {
+      add(`${suffix} ${city}`);
+      slot.industries.forEach(industry => {
+        add(`${suffix} ${industry} ${city}`);
+      });
+    });
+
+    internshipDurations.forEach(duration => {
+      internshipSuffixes.forEach(suffix => {
+        add(`${duration} ${suffix} ${city}`);
       });
     });
   });
