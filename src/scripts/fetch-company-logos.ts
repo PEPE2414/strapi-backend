@@ -339,6 +339,8 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
   const map = new Map<string, CompanyInfo>();
 
   for (const job of jobs) {
+    if (!job?.attributes) continue;
+
     const companyName = extractCompanyName(job.attributes.company);
     const normalizedName = normaliseCompanyName(companyName);
 
