@@ -165,45 +165,58 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
 
 // Enhanced deduplication logic
 function deduplicateJobs(jobs: CanonicalJob[]): CanonicalJob[] {
-  const seen = new Map<string, CanonicalJob>();
-  const seenHashes = new Set<string>();
-  const seenSecondary = new Set<string>();
-  const duplicates: string[] = [];
-  let hashDuplicates = 0;
-  let secondaryDuplicates = 0;
-  
+  const secondaryMap = new Map<string, CanonicalJob>();
+
   for (const job of jobs) {
-    // Primary key: hash (most reliable)
-    if (seenHashes.has(job.hash)) {
-      hashDuplicates++;
-      duplicates.push(`Hash: ${job.hash.substring(0, 8)}...`);
-      continue;
-    }
-    
-    // Secondary key: applyUrl + company + title (fallback)
     const secondaryKey = `${job.applyUrl}|${job.company.name}|${job.title}`;
-    if (seenSecondary.has(secondaryKey)) {
-      secondaryDuplicates++;
-      duplicates.push(`Secondary: ${job.title.substring(0, 30)}...`);
+    const existing = secondaryMap.get(secondaryKey);
+    if (!existing) {
+      secondaryMap.set(secondaryKey, job);
       continue;
     }
-    
-    // Store the job and mark both keys as seen
-    seen.set(job.hash, job);
-    seenHashes.add(job.hash);
-    seenSecondary.add(secondaryKey);
-  }
-  
-  if (duplicates.length > 0) {
-    console.log(`🔄 Removed ${duplicates.length} duplicate jobs (${hashDuplicates} by hash, ${secondaryDuplicates} by secondary key)`);
-    
-    // Warn if too many hash duplicates (might indicate hash generation issues)
-    if (hashDuplicates > duplicates.length * 0.8) {
-      console.warn(`⚠️  High hash collision rate (${hashDuplicates}/${duplicates.length}) - hash generation might need improvement`);
+
+    if (jobTypePriority(job.jobType) > jobTypePriority(existing.jobType)) {
+      secondaryMap.set(secondaryKey, job);
     }
   }
-  
-  return Array.from(seen.values()).filter(job => job.hash);
+
+  const afterSecondary = Array.from(secondaryMap.values());
+
+  const hashMap = new Map<string, CanonicalJob>();
+  for (const job of afterSecondary) {
+    const existing = hashMap.get(job.hash);
+    if (!existing) {
+      hashMap.set(job.hash, job);
+      continue;
+    }
+
+    if (jobTypePriority(job.jobType) > jobTypePriority(existing.jobType)) {
+      hashMap.set(job.hash, job);
+    }
+  }
+
+  const uniqueJobs = Array.from(hashMap.values()).filter(job => job.hash);
+  const removed = jobs.length - uniqueJobs.length;
+  if (removed > 0) {
+    console.log(`🔄 Deduplication: Removed ${removed} duplicate jobs (${jobs.length} → ${uniqueJobs.length})`);
+  } else {
+    console.log(`📊 Deduplicated ${jobs.length} jobs to ${uniqueJobs.length} unique jobs`);
+  }
+
+  return uniqueJobs;
+}
+
+function jobTypePriority(jobType: CanonicalJob['jobType']): number {
+  switch (jobType) {
+    case 'placement':
+      return 3;
+    case 'internship':
+      return 2;
+    case 'graduate':
+      return 1;
+    default:
+      return 0;
+  }
 }
 
 // Enhanced job validation before upsert

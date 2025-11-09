@@ -615,39 +615,30 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     'year in industry',
     'industrial placement',
     'industrial experience',
+    'sandwich placement',
     'sandwich course',
     'sandwich degree',
-    'sandwich year',
-    'sandwich placement',
-    'thick sandwich',
-    'thin sandwich',
-    'work experience placement',
     'work placement',
-    'industry placement',
-    'professional placement',
     'student placement',
-    'placement year',
-    'year placement',
+    'professional placement',
+    'industry placement',
     '12 month placement',
+    '12-month placement',
+    '12 month program',
+    '12-month program',
     'year long placement',
-    'co-op',
-    'coop',
-    'cooperative placement',
-    'co-operative education',
-    'practicum',
+    'year-long placement',
+    'year long internship',
+    'year-long internship',
     'industrial year',
-    'placement opportunity',
-    'work-based learning',
-    'work integrated learning',
-    'professional year',
     'industry year',
+    'co-op',
+    'co op',
+    'cooperative education',
+    'cooperative placement',
     'placement programme',
     'placement program',
-    'industrial year out',
-    'year out placement',
-    'work experience year',
-    'industrial training',
-    'professional training year'
+    'placement opportunity'
   ];
   
   if (placementKeywords.some(keyword => t.includes(keyword))) {
@@ -678,7 +669,7 @@ function buildSlotSpecificTerms(
   internshipPrefixes: string[]
 ): string[] {
   const terms = new Set<string>();
-  const MAX_TERMS = 800;
+  const MAX_TERMS = 1600;
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -687,6 +678,9 @@ function buildSlotSpecificTerms(
     if (terms.size >= MAX_TERMS) return;
     terms.add(cleaned);
   };
+
+  const placementDurations = ['12 month', '12-month', 'year long', 'year-long', 'industrial year', 'industry year'];
+  const placementSuffixes = ['placement', 'programme', 'program', 'internship', 'co-op', 'cooperative education', 'scheme'];
 
   const jobTypeConfigs = [
     { label: 'graduate', prefixes: graduatePrefixes.slice(0, 6) },
@@ -703,6 +697,13 @@ function buildSlotSpecificTerms(
       add(`${industry} ${label} uk`);
       prefixes.slice(0, 3).forEach(prefix => {
         add(`${prefix} ${industry} uk`);
+      });
+    });
+
+    placementDurations.forEach(duration => {
+      placementSuffixes.forEach(suffix => {
+        add(`${duration} ${industry} ${suffix}`);
+        add(`${duration} ${suffix} ${industry}`);
       });
     });
   });
@@ -723,6 +724,16 @@ function buildSlotSpecificTerms(
         add(`${industry} ${label} ${city}`);
       });
     });
+
+    placementDurations.forEach(duration => {
+      placementSuffixes.forEach(suffix => {
+        add(`${duration} ${suffix} ${city}`);
+        industries.forEach(industry => {
+          add(`${duration} ${industry} ${suffix} ${city}`);
+          add(`${suffix} ${industry} ${duration} ${city}`);
+        });
+      });
+    });
   });
 
   return Array.from(terms);
@@ -734,6 +745,8 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
 
   const cities = slot.cities.slice(0, Math.min(4, slot.cities.length));
   const industries = slot.industries.slice(0, Math.min(6, slot.industries.length));
+  const placementDurations = ['12 month', '12-month', 'year long', 'year-long', 'industrial year'];
+  const placementSuffixes = ['placement', 'programme', 'program', 'co-op'];
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -749,6 +762,14 @@ function buildSlotSiteTerms(slot: SlotDefinition, baseTerms: string[]): string[]
     });
     industries.forEach(industry => {
       add(`${term} ${industry}`);
+    });
+  });
+
+  industries.forEach(industry => {
+    placementDurations.forEach(duration => {
+      placementSuffixes.forEach(suffix => {
+        add(`${duration} ${industry} ${suffix}`);
+      });
     });
   });
 

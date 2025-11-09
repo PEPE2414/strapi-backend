@@ -341,8 +341,22 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
   if (t.includes('internship') || t.includes('intern')) {
     return 'internship';
   }
-  if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement') || 
-      t.includes('sandwich course') || t.includes('sandwich degree') || t.includes('work experience placement')) {
+  if (
+    t.includes('placement') ||
+    t.includes('year in industry') ||
+    t.includes('industrial placement') ||
+    t.includes('industrial year') ||
+    t.includes('industry year') ||
+    t.includes('sandwich course') ||
+    t.includes('sandwich degree') ||
+    t.includes('work experience placement') ||
+    t.includes('co-op') ||
+    t.includes('cooperative education') ||
+    t.includes('12 month placement') ||
+    t.includes('12-month placement') ||
+    t.includes('year-long placement') ||
+    t.includes('year long placement')
+  ) {
     return 'placement';
   }
   if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
@@ -366,9 +380,11 @@ function isRelevantJobType(text: string): boolean {
   const relevantKeywords = [
     'graduate', 'internship', 'placement', 'entry level', 'junior',
     'trainee', 'scheme', 'programme', 'program', 'analyst', 'engineer',
-    'consultant', 'manager', 'developer', 'coordinator', 'specialist'
+    'consultant', 'manager', 'developer', 'coordinator', 'specialist',
+    'industrial placement', 'industrial year', 'industry year', 'co-op',
+    'cooperative education', 'year-long placement', '12 month placement'
   ];
-  
+ 
   return relevantKeywords.some(keyword => text.toLowerCase().includes(keyword));
 }
 
@@ -391,8 +407,10 @@ function buildLinkedInDedupKey(job: any): string {
 
 function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
   const terms = new Set<string>();
-  const MAX_TERMS = 120;
+  const MAX_TERMS = 200;
   const jobTypes = ['graduate', 'placement', 'internship'];
+  const placementDurations = ['12 month', '12-month', 'year-long', 'year long', 'industrial year', 'industry year'];
+  const placementSuffixes = ['placement', 'programme', 'program', 'co-op', 'cooperative education'];
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
@@ -407,6 +425,13 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
       add(`${type} ${industry} uk`);
       add(`${industry} ${type} uk`);
     });
+
+    placementDurations.forEach(duration => {
+      placementSuffixes.forEach(suffix => {
+        add(`${duration} ${industry} ${suffix}`);
+        add(`${duration} ${suffix} ${industry}`);
+      });
+    });
   });
 
   slot.cities.forEach(city => {
@@ -416,6 +441,15 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
       slot.industries.forEach(industry => {
         add(`${type} ${industry} ${city}`);
         add(`${industry} ${type} ${city}`);
+      });
+    });
+
+    placementDurations.forEach(duration => {
+      placementSuffixes.forEach(suffix => {
+        add(`${duration} ${suffix} ${city}`);
+        slot.industries.forEach(industry => {
+          add(`${duration} ${industry} ${suffix} ${city}`);
+        });
       });
     });
   });

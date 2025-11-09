@@ -29,6 +29,19 @@ export const SLOT_DEFINITIONS: SlotDefinition[] = [
     industries: ['healthcare', 'public sector', 'education', 'law', 'government', 'charity', 'environment', 'social work', 'psychology', 'policy'],
     cities: ['glasgow', 'edinburgh', 'cardiff', 'belfast', 'aberdeen', 'swansea'],
     useBacklogWindow: true
+  },
+  {
+    name: 'placement-all-industries',
+    industries: [
+      'finance', 'business', 'engineering', 'technology', 'consulting', 'marketing', 'sales', 'law', 'healthcare', 'education',
+      'public sector', 'environment', 'analytics', 'supply chain', 'operations', 'manufacturing', 'fmcg', 'media', 'creative',
+      'human resources', 'data science'
+    ],
+    cities: [
+      'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh', 'bristol', 'liverpool', 'cardiff', 'belfast',
+      'sheffield', 'nottingham', 'newcastle', 'oxford', 'cambridge'
+    ],
+    useBacklogWindow: true
   }
 ];
 
