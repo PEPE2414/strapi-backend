@@ -43,21 +43,14 @@ export async function scrapeRapidAPILinkedInJobs(): Promise<CanonicalJob[]> {
     console.warn('❌ Jobs API 14 failed:', error instanceof Error ? error.message : String(error));
   }
 
-  // Scrape Glassdoor Real-Time API (requires job IDs)
-  const glassdoorIds = (process.env.GLASSDOOR_JOB_IDS || '')
-    .split(',')
-    .map(id => id.trim())
-    .filter(Boolean);
-
-  if (glassdoorIds.length > 0) {
-    try {
-      console.log(`\n🏢 Scraping Glassdoor Real-Time API (${glassdoorIds.length} job ids)...`);
-      const glassdoorJobs = await scrapeGlassdoorJobs(glassdoorIds);
-      allJobs.push(...glassdoorJobs);
-      console.log(`✅ Glassdoor: Found ${glassdoorJobs.length} jobs`);
-    } catch (error) {
-      console.warn('❌ Glassdoor Real-Time API failed:', error instanceof Error ? error.message : String(error));
-    }
+  // Scrape Glassdoor Real-Time API (keyword based)
+  try {
+    console.log('\n🏢 Scraping Glassdoor Real-Time API...');
+    const glassdoorJobs = await scrapeGlassdoorJobs();
+    allJobs.push(...glassdoorJobs);
+    console.log(`✅ Glassdoor: Found ${glassdoorJobs.length} jobs`);
+  } catch (error) {
+    console.warn('❌ Glassdoor Real-Time API failed:', error instanceof Error ? error.message : String(error));
   }
 
   console.log(`\n📊 Combined API scraping: ${allJobs.length} total jobs`);

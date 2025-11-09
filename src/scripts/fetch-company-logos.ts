@@ -273,7 +273,7 @@ async function fetchAllJobs(): Promise<StrapiJobRecord[]> {
     params.set('fields[3]', 'applyUrl');
     params.set('fields[4]', 'sourceUrl');
     params.set('fields[5]', 'slug');
-    params.set('populate[companyLogo]', '*');
+    params.set('populate[companyLogo]', 'true');
 
     const json = (await strapiRequest(`/api/jobs?${params.toString()}`)) as StrapiJobResponse;
     const data = json.data || [];
