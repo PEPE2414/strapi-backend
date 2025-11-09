@@ -1,6 +1,6 @@
 import { CanonicalJob } from '../types';
 import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
-import { cleanDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { cleanJobDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
@@ -136,7 +136,7 @@ function convertJob(job: JobsApi14Job): CanonicalJob | null {
 
   const location = job.location || job.jobLocation || '';
   const description = job.jobDescription || job.description || '';
-  const cleanDesc = cleanDescription(description);
+  const cleanDesc = cleanJobDescription(description);
   const postedAt = toISODate(job.listedAt || job.postedAt || job.publishedAt);
   const workplace = job.workplaceTypes?.[0] || job.jobWorkplaceType || job.workplaceType;
 

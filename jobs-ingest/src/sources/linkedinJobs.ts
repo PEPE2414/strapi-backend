@@ -2,6 +2,7 @@ import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
 import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
+import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
 
 /**

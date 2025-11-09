@@ -1,6 +1,6 @@
 import { CanonicalJob } from '../types';
 import { generateJobHash } from '../lib/jobHash';
-import { cleanDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { cleanJobDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
 
 interface GlassdoorJob {
   jobId?: string;
@@ -75,7 +75,7 @@ function convertJob(job: GlassdoorJob): CanonicalJob | null {
   }
 
   const description = job.description || '';
-  const cleanDesc = cleanDescription(description);
+  const cleanDesc = cleanJobDescription(description);
   const location = job.location || job.jobCity || '';
   const postedAt = job.postedDate ? toISO(job.postedDate) : undefined;
 
