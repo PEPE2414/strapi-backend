@@ -1,6 +1,8 @@
 // src/api/webhooks/controllers/stripe.ts
 import { stripe, getPackageSlugFromPrice, lookupReferrerByReferralCode, is4MonthSubscription } from '../../../utils/stripe';
 
+const UNPARSED_BODY = Symbol.for('unparsedBody');
+
 export default {
   async handleWebhook(ctx) {
     const sig = ctx.request.headers['stripe-signature'];
@@ -18,7 +20,15 @@ export default {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(ctx.request.body, sig, endpointSecret);
+      const rawBody = ctx.request.body?.[UNPARSED_BODY];
+
+      if (typeof rawBody === 'string' || Buffer.isBuffer(rawBody)) {
+        event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
+      } else {
+        console.warn('Stripe webhook received without raw body; falling back to JSON stringified payload.');
+        const fallbackPayload = JSON.stringify(ctx.request.body ?? {});
+        event = stripe.webhooks.constructEvent(fallbackPayload, sig, endpointSecret);
+      }
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
       return ctx.badRequest('Invalid signature');
@@ -56,6 +66,20 @@ async function handleCheckoutSessionCompleted(session: any) {
   try {
     // Get the subscription and invoice details
     const subscription = await stripe.subscriptions.retrieve(session.subscription);
+
+    if (!subscription.items?.data?.length) {
+      console.error('Subscription missing items; cannot determine package slug', {
+        subscriptionId: subscription.id,
+      });
+      return;
+    }
+
+    if (subscription.items.data.length > 1) {
+      console.warn('Subscription contains multiple items; defaulting to first item for package slug resolution', {
+        subscriptionId: subscription.id,
+      });
+    }
+
     const invoiceId = typeof subscription.latest_invoice === 'string' 
       ? subscription.latest_invoice 
       : subscription.latest_invoice.id;
@@ -87,6 +111,13 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     // Get package slug from the price
     const priceId = subscription.items.data[0]?.price?.id;
+    if (!priceId) {
+      console.error('Unable to resolve price ID from subscription item', {
+        subscriptionId: subscription.id,
+      });
+      return;
+    }
+
     const price = await stripe.prices.retrieve(priceId);
     const packageSlug = getPackageSlugFromPrice(price);
 
@@ -257,8 +288,27 @@ async function handleInvoicePaymentFailed(invoice: any) {
 
     const user = users[0];
     
-    // Get the price to check if it's a 4-month subscription
+    if (!subscription.items?.data?.length) {
+      console.error('Subscription missing items; cannot determine package on payment failure', {
+        subscriptionId: subscription.id,
+      });
+      return;
+    }
+
+    if (subscription.items.data.length > 1) {
+      console.warn('Subscription contains multiple items on payment failure; defaulting to first item', {
+        subscriptionId: subscription.id,
+      });
+    }
+
     const priceId = subscription.items.data[0]?.price?.id;
+    if (!priceId) {
+      console.error('Unable to resolve price ID from subscription item on payment failure', {
+        subscriptionId: subscription.id,
+      });
+      return;
+    }
+
     const price = await stripe.prices.retrieve(priceId);
     const packageSlug = getPackageSlugFromPrice(price);
     const is4Month = is4MonthSubscription(price);
@@ -341,10 +391,36 @@ async function handleSubscriptionDeleted(subscription: any) {
 
     const user = users[0];
     
+    if (!subscription.items?.data?.length) {
+      console.warn('Subscription cancelled without items; removing all packages', {
+        subscriptionId: subscription.id,
+      });
+    } else if (subscription.items.data.length > 1) {
+      console.warn('Subscription cancellation with multiple items; defaulting to first item', {
+        subscriptionId: subscription.id,
+      });
+    }
+
+    let packageSlug: string | null = null;
+    const priceId = subscription.items?.data?.[0]?.price?.id;
+    if (priceId) {
+      try {
+        const price = await stripe.prices.retrieve(priceId);
+        packageSlug = getPackageSlugFromPrice(price);
+      } catch (priceError) {
+        console.error('Failed to retrieve price for subscription cancellation', {
+          subscriptionId: subscription.id,
+          priceId,
+          error: priceError,
+        });
+      }
+    }
+
     // Deactivate account
     await deactivateUserAccount(user.id, 'subscription_cancelled', {
       subscriptionId: subscription.id,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      packageSlug,
     });
 
     // Track cancellation event
@@ -427,10 +503,36 @@ async function deactivateUserAccount(
       return;
     }
 
-    // Update user - remove packages and reset plan
+    const packagesArr = Array.isArray(user.packages) ? [...user.packages] : [];
+    const packageSlug = metadata?.packageSlug;
+
+    let updatedPackages = packagesArr;
+    if (packageSlug) {
+      if (packagesArr.includes(packageSlug)) {
+        updatedPackages = packagesArr.filter(pkg => pkg !== packageSlug);
+      } else {
+        console.warn('Package slug to remove not found on user; leaving packages unchanged', {
+          userId,
+          packageSlug,
+        });
+      }
+    } else {
+      updatedPackages = [];
+    }
+
+    let nextPlan = user.plan || 'none';
+    if (packageSlug) {
+      if (!updatedPackages.includes(nextPlan)) {
+        nextPlan = updatedPackages[0] ?? 'none';
+      }
+    } else {
+      nextPlan = 'none';
+    }
+
+    // Update user - remove packages and reset plan if none remain
     const updateData: any = {
-      packages: [],
-      plan: 'none'
+      packages: updatedPackages,
+      plan: nextPlan,
     };
 
     // Optionally clear subscription ID if reason is cancellation
