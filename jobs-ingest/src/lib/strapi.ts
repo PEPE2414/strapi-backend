@@ -41,8 +41,14 @@ export async function upsertJobs(jobs: CanonicalJob[]) {
 
   console.log(`\n📦 Processing batch of ${jobs.length} jobs...`);
 
+  const hydratedJobs = jobs.map(job => ({
+    ...job,
+    isExpired: job.isExpired ?? false,
+    lastCheckedAt: job.lastCheckedAt ?? new Date().toISOString()
+  }));
+
   // Deduplicate jobs within this batch
-  const uniqueJobs = deduplicateJobs(jobs);
+  const uniqueJobs = deduplicateJobs(hydratedJobs);
   const dedupRemoved = jobs.length - uniqueJobs.length;
   if (dedupRemoved > 0) {
     const dedupPercent = Math.round((dedupRemoved / jobs.length) * 100);

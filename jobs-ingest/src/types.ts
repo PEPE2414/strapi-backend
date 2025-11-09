@@ -51,4 +51,8 @@ export type CanonicalJob = {
   // Quality indicators
   qualityScore?: number;      // 0-100 quality score based on completeness
   lastValidated?: string;     // ISO8601 - when job was last validated
+
+  // Availability metadata
+  isExpired?: boolean;
+  lastCheckedAt?: string;
 };

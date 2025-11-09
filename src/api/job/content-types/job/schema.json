@@ -32,6 +32,8 @@
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
     "hash": { "type": "string", "required": true, "unique": true },
     "qualityScore": { "type": "integer", "min": 0, "max": 100 },
-    "lastValidated": { "type": "datetime" }
+    "lastValidated": { "type": "datetime" },
+    "isExpired": { "type": "boolean", "default": false },
+    "lastCheckedAt": { "type": "datetime" }
   }
 }

@@ -25,7 +25,8 @@
     "jobs:remove-duplicates-robust": "node jobs-ingest/remove-duplicates-robust.js",
     "referrals:generate": "tsx -e \"import('./src/scripts/generate-referral-codes').then(m => m.default()).then(() => console.log('Done')).catch(console.error)\"",
     "test:promo-code": "tsx src/scripts/test-promotion-code.ts",
-    "jobs:sync-logos": "tsx src/scripts/fetch-company-logos.ts"
+    "jobs:sync-logos": "tsx src/scripts/fetch-company-logos.ts",
+    "jobs:check-links": "tsx src/scripts/check-job-links.ts"
   },
   "dependencies": {
     "@strapi/admin": "5.21.0",

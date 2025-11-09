@@ -18,6 +18,16 @@ function slugify(input: string) {
 }
 
 export default factories.createCoreController('api::job.job', ({ strapi }) => ({
+  async find(ctx) {
+    ctx.query = ctx.query || {};
+    ctx.query.filters = ctx.query.filters || {};
+    if (typeof ctx.query.filters.isExpired === 'undefined') {
+      ctx.query.filters.isExpired = { $ne: true };
+    }
+    const response = await super.find(ctx);
+    return response;
+  },
+
   async ingest(ctx) {
     try {
       const secretHeader = ctx.request.headers[SECRET_HEADER];
@@ -198,6 +208,22 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         lastValidated: formatDate(inJob.lastValidated)
       };
 
+      const hasExisting = existing?.length > 0;
+
+      if (inJob.isExpired !== undefined) {
+        data.isExpired = !!inJob.isExpired;
+      } else if (!hasExisting) {
+        data.isExpired = false;
+      }
+
+      const lastCheckedCandidate = inJob.lastCheckedAt ?? (hasExisting ? null : new Date().toISOString());
+      if (lastCheckedCandidate) {
+        const formatted = formatDate(lastCheckedCandidate);
+        if (formatted) {
+          data.lastCheckedAt = formatted;
+        }
+      }
+
       // Remove undefined values (but keep null for dates if needed)
       Object.keys(data).forEach(key => {
         if (data[key] === undefined) {
@@ -313,7 +339,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
     console.log('[recommendations] CV analysis available:', !!cvAnalysis);
 
     // DB prefilter: only fresh jobs with optional hard filters
-    const filters: any = { };
+    const filters: any = { isExpired: { $ne: true } };
     if (hard.countries?.length) filters.location = { $containsi: hard.countries[0] }; // simple example
     // Remove the deadline filter as it's causing issues - filter by applyDeadline instead
     if (prefs.onlyActive !== false) {
