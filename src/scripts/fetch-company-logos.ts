@@ -107,15 +107,24 @@ type CompanyInfo = {
   asset?: CompanyAssetRecord;
 };
 
+function numericEnv(value: string | undefined, fallback: number, { min = 0, max }: { min?: number; max?: number } = {}) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  let clamped = parsed;
+  if (min !== undefined && clamped < min) clamped = fallback;
+  if (max !== undefined && clamped > max) clamped = max;
+  return clamped;
+}
+
 const STRAPI_BASE_URL = (process.env.STRAPI_BASE_URL || process.env.STRAPI_URL || '').replace(/\/$/, '');
 const STRAPI_TOKEN = process.env.STRAPI_ADMIN_TOKEN || process.env.STRAPI_TOKEN;
-const LOGO_SIZE = Number(process.env.COMPANY_LOGO_SIZE || 256);
-const JOB_PAGE_SIZE = Number(process.env.COMPANY_LOGO_PAGE_SIZE || 200);
-const MAX_COMPANIES_PER_RUN = Number(process.env.COMPANY_LOGO_MAX_COMPANIES || 40);
-const MAX_DOMAINS_PER_COMPANY = Number(process.env.COMPANY_LOGO_MAX_DOMAINS || 5);
+const LOGO_SIZE = numericEnv(process.env.COMPANY_LOGO_SIZE, 256, { min: 32, max: 512 });
+const JOB_PAGE_SIZE = numericEnv(process.env.COMPANY_LOGO_PAGE_SIZE, 200, { min: 1, max: 500 });
+const MAX_COMPANIES_PER_RUN = numericEnv(process.env.COMPANY_LOGO_MAX_COMPANIES, 40, { min: 1 });
+const MAX_DOMAINS_PER_COMPANY = numericEnv(process.env.COMPANY_LOGO_MAX_DOMAINS, 5, { min: 1, max: 25 });
 const CLEARBIT_AUTOCOMPLETE_ENDPOINT = 'https://autocomplete.clearbit.com/v1/companies/suggest';
-const MIN_VALID_BYTES = Number(process.env.COMPANY_LOGO_MIN_BYTES || 8192);
-const FETCH_TIMEOUT_MS = Number(process.env.COMPANY_LOGO_FETCH_TIMEOUT_MS || 8000);
+const MIN_VALID_BYTES = numericEnv(process.env.COMPANY_LOGO_MIN_BYTES, 8192, { min: 512 });
+const FETCH_TIMEOUT_MS = numericEnv(process.env.COMPANY_LOGO_FETCH_TIMEOUT_MS, 8000, { min: 1000, max: 20000 });
 const USER_AGENT = process.env.COMPANY_LOGO_USER_AGENT || 'EffortFreeCompanyLogoBot/1.0';
 
 if (!STRAPI_BASE_URL) {
