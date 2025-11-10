@@ -573,6 +573,17 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 })
               };
 
+              const siteIndustry = classifyIndustry({
+                title: canonicalJob.title,
+                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
+                company: canonicalJob.company?.name,
+                hints: [...slotDefinition.industries, term, site.domain],
+                query: `${term} site:${site.domain}`
+              });
+              if (siteIndustry) {
+                canonicalJob.industry = siteIndustry;
+              }
+
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
