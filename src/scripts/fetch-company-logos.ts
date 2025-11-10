@@ -11,22 +11,21 @@ type StrapiMedia = {
   };
 };
 
+type StrapiJobAttributes = {
+  title?: string | null;
+  company?: unknown;
+  companyPageUrl?: string | null;
+  applyUrl?: string | null;
+  sourceUrl?: string | null;
+  slug?: string | null;
+  companyLogo?: {
+    data?: StrapiMedia | null;
+  } | StrapiMedia | null;
+};
+
 type StrapiJobRecord = {
   id: number;
-  attributes: {
-    title?: string | null;
-    company?: {
-      name?: string | null;
-      [key: string]: unknown;
-    } | string | null;
-    companyPageUrl?: string | null;
-    applyUrl?: string | null;
-    sourceUrl?: string | null;
-    slug?: string | null;
-    companyLogo?: {
-      data?: StrapiMedia | null;
-    } | StrapiMedia | null;
-  };
+  attributes: StrapiJobAttributes;
 };
 
 type StrapiJobResponse = {
@@ -191,27 +190,32 @@ function normaliseCompanyName(name?: string | null): string {
     .toLowerCase();
 }
 
-function extractCompanyName(companyField: StrapiJobRecord['attributes']['company']): string {
+function extractCompanyName(companyField: StrapiJobAttributes['company']): string {
   if (!companyField) return '';
 
   // Strapi REST API often returns JSON fields as plain values, but depending on configuration
   // this might arrive as { data: { attributes: { name: '...' } } } or similar.
-  if (typeof companyField === 'object' && 'data' in companyField && companyField.data) {
-    const nested: any = companyField.data;
-    if (nested?.attributes?.name) {
-      return String(nested.attributes.name);
+  if (typeof companyField === 'object') {
+    const obj = companyField as Record<string, unknown>;
+
+    if ('data' in obj && obj.data && typeof obj.data === 'object') {
+      const data = obj.data as Record<string, unknown>;
+      if ('attributes' in data && data.attributes && typeof data.attributes === 'object') {
+        const attributes = data.attributes as Record<string, unknown>;
+        if (typeof attributes.name === 'string') return attributes.name;
+        if (typeof attributes.title === 'string') return attributes.title;
+        const firstAttrString = Object.values(attributes).find((value) => typeof value === 'string');
+        if (typeof firstAttrString === 'string') return firstAttrString;
+      }
     }
+
+    if (typeof obj.name === 'string') return obj.name;
+    if (typeof obj.title === 'string') return obj.title;
+    const firstString = Object.values(obj).find((value) => typeof value === 'string');
+    if (typeof firstString === 'string') return firstString;
   }
 
   if (typeof companyField === 'string') return companyField;
-  if (typeof companyField.name === 'string') return companyField.name;
-
-  // Some jobs might store company as raw JSON object (without name field)
-  if (typeof companyField === 'object') {
-    if (typeof (companyField as any).title === 'string') return (companyField as any).title;
-    const firstString = Object.values(companyField as Record<string, unknown>).find((value) => typeof value === 'string');
-    if (typeof firstString === 'string') return firstString;
-  }
 
   return '';
 }
