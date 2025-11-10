@@ -10,7 +10,7 @@ export function classifyJobType(text: string): 'internship' | 'placement' | 'gra
   }
 
   // Placement keywords
-  if (/\b(placement|year in industry|industrial placement|industrial experience|sandwich placement|sandwich course|sandwich degree|work placement|student placement|professional placement|industry placement|12 month placement|12-month placement|year long placement|year-long placement|industrial year|industry year|co-op|co op|cooperative education|cooperative placement|placement programme|placement program|placement opportunity)\b/.test(t)) {
+  if (/\b(placement|placement year|year placement|year in industry|industrial placement|industrial placement year|industrial experience|industrial trainee|industrial training placement|sandwich placement|sandwich course|sandwich degree|sandwich year|work placement|student placement|placement student|professional placement|undergraduate placement|industry placement|placement scheme|placement programme|placement program|placement opportunity|placement vacancy|12 month placement|12-month placement|year long placement|year-long placement|industrial year|industry year|co-op|co op|cooperative education|cooperative placement)\b/.test(t)) {
     return 'placement';
   }
 
@@ -37,8 +37,9 @@ export function isRelevantJobType(text: string): boolean {
     'graduate', 'graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee', 'graduate analyst',
     'graduate engineer', 'graduate consultant', 'graduate intake', 'early careers', 'early career', 'graduate opportunity',
     'internship', 'intern', 'summer analyst', 'summer internship', 'summer program', 'off-cycle internship', 'spring week',
-    'insight week', 'placement', 'year in industry', 'industrial placement', 'work placement', 'student placement',
-    'professional placement', 'industry placement'
+    'insight week', 'placement', 'placement year', 'year placement', 'year in industry', 'industrial placement', 'industrial trainee',
+    'industrial placement year', 'work placement', 'student placement', 'placement student', 'professional placement', 'undergraduate placement',
+    'industry placement', 'placement scheme', 'placement programme'
   ];
 
   if (!acceptedKeywords.some(keyword => t.includes(keyword))) {

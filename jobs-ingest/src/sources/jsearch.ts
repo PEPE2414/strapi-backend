@@ -1,7 +1,7 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
-import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
+import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoostTerms } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
@@ -248,7 +248,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const dateWindow = isBacklogSlot(runSlot) ? 'all' : 'month';
 
   const siteSearchTerms = [
-    'graduate', 'graduate scheme', 'placement', 'industrial placement', 
+    'graduate', 'graduate scheme', 'placement', 'industrial placement',
+    'placement year', 'undergraduate placement', 'placement scheme',
     'year in industry', 'internship', 'summer internship', 'summer analyst', 'off-cycle internship', 'finance'
   ];
 
@@ -267,6 +268,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   );
 
   const combinedTerms = new Set<string>();
+  const placementBoostTerms = buildPlacementBoostTerms(slotDefinition);
+  placementBoostTerms.forEach(term => combinedTerms.add(term.trim()));
   baseTermsForRun.forEach(term => combinedTerms.add(term.trim()));
   slotSpecificTerms.forEach(term => combinedTerms.add(term.trim()));
 
@@ -316,7 +319,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           page: '1',
           num_pages: '5', // 5 pages = 50 jobs max, charged 2x (worth it for coverage)
           date_posted: dateWindow,
-          employment_types: 'FULLTIME,INTERN', // Graduate roles and internships
+          employment_types: 'FULLTIME,INTERN,CONTRACTOR,PARTTIME', // Capture placements listed as contract/part-time
           job_requirements: 'no_experience,under_3_years_experience' // Entry-level focus
         });
         
@@ -464,7 +467,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
             page: '1',
             num_pages: '4',
             date_posted: dateWindow,
-            employment_types: 'FULLTIME,INTERN',
+            employment_types: 'FULLTIME,INTERN,CONTRACTOR,PARTTIME',
             job_requirements: 'no_experience,under_3_years_experience'
           });
           
@@ -628,16 +631,29 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
  
   const placementKeywords = [
     'placement',
+    'placement year',
+    'year placement',
     'year in industry',
     'industrial placement',
+    'industrial placement year',
     'industrial experience',
+    'industrial trainee',
+    'industrial training placement',
     'sandwich placement',
     'sandwich course',
     'sandwich degree',
+    'sandwich year',
     'work placement',
     'student placement',
+    'placement student',
     'professional placement',
+    'undergraduate placement',
     'industry placement',
+    'placement scheme',
+    'placement programme',
+    'placement program',
+    'placement opportunity',
+    'placement vacancy',
     '12 month placement',
     '12-month placement',
     '12 month program',
@@ -651,10 +667,7 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
     'co-op',
     'co op',
     'cooperative education',
-    'cooperative placement',
-    'placement programme',
-    'placement program',
-    'placement opportunity'
+    'cooperative placement'
   ];
  
   if (placementKeywords.some(keyword => t.includes(keyword))) {

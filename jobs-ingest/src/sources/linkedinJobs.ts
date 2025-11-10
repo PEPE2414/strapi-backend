@@ -1,6 +1,6 @@
 import { CanonicalJob } from '../types';
 import { toISO } from '../lib/normalize';
-import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
+import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoostTerms } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
@@ -75,13 +75,21 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
     // Placement terms
     'placement',
     'industrial placement',
+    'industrial placement year',
     'placement year',
+    'placement scheme',
+    'placement programme',
+    'placement program',
     'year in industry',
+    'year placement',
+    'placement student',
+    'undergraduate placement',
+    'industrial trainee placement',
     'work experience placement',
     'student placement',
+    'placement opportunity',
     'sandwich course',
     'sandwich degree',
-    'year placement',
     '12 month placement',
     'year long placement',
     
@@ -360,16 +368,28 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
 
   const placementKeywords = [
     'placement',
+    'placement year',
+    'year placement',
     'year in industry',
     'industrial placement',
+    'industrial placement year',
     'industrial year',
     'industry year',
+    'industrial trainee',
+    'industrial training placement',
     'sandwich course',
     'sandwich degree',
+    'sandwich year',
     'work experience placement',
+    'work placement',
+    'student placement',
+    'placement student',
+    'undergraduate placement',
     'co-op',
     'co op',
     'cooperative education',
+    'placement scheme',
+    'placement programme',
     '12 month placement',
     '12-month placement',
     'year-long placement',
@@ -427,7 +447,9 @@ function isRelevantJobType(text: string): boolean {
      'graduate', 'graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee', 'graduate analyst',
      'graduate engineer', 'graduate consultant', 'graduate intake', 'early careers', 'early career', 'graduate opportunity',
      'internship', 'intern', 'summer internship', 'summer analyst', 'off-cycle', 'spring week', 'insight week',
-     'placement', 'year in industry', 'industrial placement', 'work placement', 'student placement', 'professional placement'
+    'placement', 'placement year', 'year placement', 'year in industry', 'industrial placement', 'industrial placement year',
+    'work placement', 'student placement', 'placement student', 'professional placement', 'undergraduate placement',
+    'industry placement', 'placement scheme', 'placement programme'
    ];
  
    if (!relevantKeywords.some(keyword => t.includes(keyword))) {
@@ -482,6 +504,8 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
     if (terms.size >= MAX_TERMS) return;
     terms.add(cleaned);
   };
+
+  buildPlacementBoostTerms(slot).forEach(add);
 
   slot.industries.forEach(industry => {
     jobTypes.forEach(type => {

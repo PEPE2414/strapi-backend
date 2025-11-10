@@ -90,3 +90,59 @@ export function isBacklogSlot(slotIndex: number): boolean {
   return SLOT_DEFINITIONS[slotIndex]?.useBacklogWindow === true;
 }
 
+export function buildPlacementBoostTerms(slot: SlotDefinition): string[] {
+  const terms = new Set<string>();
+  const MAX_TERMS = 400;
+
+  const add = (value: string) => {
+    const cleaned = value.trim().toLowerCase();
+    if (!cleaned) return;
+    if (terms.has(cleaned)) return;
+    if (terms.size >= MAX_TERMS) return;
+    terms.add(cleaned);
+  };
+
+  const generic = [
+    'placement uk',
+    'placement jobs uk',
+    'placement year uk',
+    'year in industry uk',
+    'industrial placement uk',
+    'industrial placement year uk',
+    'industrial trainee uk',
+    'industrial training placement uk',
+    'undergraduate placement uk',
+    'placement scheme uk',
+    'placement programme uk',
+    'placement student uk',
+    'professional placement uk'
+  ];
+  generic.forEach(add);
+
+  slot.industries.forEach(industry => {
+    add(`${industry} placement`);
+    add(`${industry} placement uk`);
+    add(`${industry} placement year`);
+    add(`${industry} year in industry`);
+    add(`${industry} industrial placement`);
+    add(`${industry} undergraduate placement`);
+    add(`${industry} placement scheme`);
+    add(`industrial placement ${industry}`);
+    add(`placement year in ${industry}`);
+    add(`year in industry ${industry}`);
+    add(`placement student ${industry}`);
+  });
+
+  slot.cities.forEach(city => {
+    add(`placement jobs ${city}`);
+    add(`placement year ${city}`);
+    add(`year in industry ${city}`);
+    add(`industrial placement ${city}`);
+    add(`undergraduate placement ${city}`);
+    add(`${city} placement scheme`);
+    add(`${city} placement student`);
+  });
+
+  return Array.from(terms);
+}
+

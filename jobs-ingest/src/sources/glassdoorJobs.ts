@@ -1,5 +1,5 @@
 import { CanonicalJob } from '../types';
-import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot } from '../lib/runSlots';
+import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoostTerms } from '../lib/runSlots';
 import { cleanJobDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
@@ -148,7 +148,7 @@ function convertJob(job: GlassdoorJob): CanonicalJob | null {
 function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
   const lower = text.toLowerCase();
   if (/\b(internship|intern|summer analyst|spring week|off-cycle)\b/.test(lower)) return 'internship';
-  if (/\b(placement|year in industry|industrial placement)\b/.test(lower)) return 'placement';
+  if (/\b(placement|placement year|year placement|year in industry|industrial placement|industrial placement year|industrial trainee|industrial training placement|work placement|student placement|placement student|professional placement|undergraduate placement|industry placement|placement scheme|placement programme|sandwich placement|sandwich course|sandwich degree|sandwich year)\b/.test(lower)) return 'placement';
   if (/\b(graduate|graduate scheme|graduate programme|graduate program|early careers)\b/.test(lower)) return 'graduate';
   return 'other';
 }
@@ -156,6 +156,14 @@ function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' 
 function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): { query: string; page: number }[] {
   const queries: { query: string; page: number }[] = [];
   const pages = backlog ? 2 : 1;
+
+  const placementBoostTerms = buildPlacementBoostTerms(slot);
+  placementBoostTerms.forEach(term => {
+    const base = term.includes('uk') || term.includes('united kingdom') ? term : `${term} uk`;
+    for (let page = 1; page <= pages; page++) {
+      queries.push({ query: base, page });
+    }
+  });
 
   slot.industries.forEach(industry => {
     JOB_TYPES.forEach(jobType => {

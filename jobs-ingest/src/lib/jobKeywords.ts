@@ -48,7 +48,12 @@ const GENERAL_TITLES: Record<JobTypeKey, string[]> = {
     'year in industry',
     'placement year',
     '12 month placement',
-    'professional placement'
+    'professional placement',
+    'placement scheme',
+    'placement programme',
+    'undergraduate placement',
+    'placement student',
+    'industrial trainee placement'
   ],
   internship: [
     'summer internship',
@@ -71,7 +76,9 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
       'finance placement',
       'investment banking placement',
       'accounting placement',
-      'audit placement'
+      'audit placement',
+      'finance placement year',
+      'finance year in industry'
     ],
     internship: [
       'summer analyst',
@@ -82,7 +89,7 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   },
   business: {
     graduate: ['business graduate scheme', 'operations graduate', 'management trainee', 'commercial graduate'],
-    placement: ['business placement', 'operations placement', 'commercial placement'],
+    placement: ['business placement', 'operations placement', 'commercial placement', 'business placement year'],
     internship: ['business internship', 'operations internship', 'strategy internship']
   },
   investment: {
@@ -95,17 +102,17 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   },
   technology: {
     graduate: ['software engineer graduate', 'technology graduate programme', 'data graduate scheme'],
-    placement: ['software engineering placement', 'technology placement', 'it placement'],
+    placement: ['software engineering placement', 'technology placement', 'it placement', 'software placement year'],
     internship: ['software engineering internship', 'technology internship', 'data science internship']
   },
   'software engineering': {
     graduate: ['graduate software developer', 'graduate software engineer'],
-    placement: ['software engineering placement'],
+    placement: ['software engineering placement', 'software placement year'],
     internship: ['software developer internship', 'software engineering internship']
   },
   data: {
     graduate: ['data analyst graduate', 'data scientist graduate'],
-    placement: ['data science placement'],
+    placement: ['data science placement', 'data placement year'],
     internship: ['data analyst internship', 'data science internship']
   },
   analytics: {
@@ -114,32 +121,38 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   },
   engineering: {
     graduate: ['mechanical engineering graduate', 'civil engineering graduate', 'electrical engineering graduate'],
-    placement: ['mechanical engineering placement', 'civil engineering placement', 'electrical engineering placement'],
+    placement: [
+      'mechanical engineering placement',
+      'civil engineering placement',
+      'electrical engineering placement',
+      'engineering industrial placement',
+      'engineering placement year'
+    ],
     internship: ['engineering internship', 'mechanical engineering internship']
   },
   consulting: {
     graduate: ['consulting graduate programme', 'strategy graduate'],
-    placement: ['consulting placement'],
+    placement: ['consulting placement', 'consulting placement year', 'strategy placement'],
     internship: ['consulting internship', 'strategy internship']
   },
   marketing: {
     graduate: ['marketing graduate scheme', 'digital marketing graduate'],
-    placement: ['marketing placement', 'digital marketing placement'],
+    placement: ['marketing placement', 'digital marketing placement', 'marketing placement year'],
     internship: ['marketing internship', 'digital marketing internship']
   },
   sales: {
     graduate: ['sales graduate scheme', 'business development graduate'],
-    placement: ['sales placement'],
+    placement: ['sales placement', 'sales placement year'],
     internship: ['sales internship', 'business development internship']
   },
   law: {
     graduate: ['paralegal graduate', 'legal graduate programme'],
-    placement: ['legal placement'],
+    placement: ['legal placement', 'law placement year'],
     internship: ['legal internship', 'law internship']
   },
   healthcare: {
     graduate: ['biomedical graduate programme', 'healthcare management graduate'],
-    placement: ['healthcare placement'],
+    placement: ['healthcare placement', 'healthcare placement year'],
     internship: ['healthcare internship']
   },
   biotech: {
@@ -152,7 +165,7 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   },
   education: {
     graduate: ['teaching graduate programme'],
-    placement: ['education placement'],
+    placement: ['education placement', 'education placement year', 'school placement'],
     internship: ['education internship']
   },
   'public sector': {
@@ -170,16 +183,16 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   environment: {
     graduate: ['environmental graduate scheme'],
     internship: ['environmental internship'],
-    placement: ['environmental placement']
+    placement: ['environmental placement', 'environmental placement year']
   },
   sustainability: {
     graduate: ['sustainability graduate scheme'],
     internship: ['sustainability internship'],
-    placement: ['sustainability placement']
+    placement: ['sustainability placement', 'sustainability placement year']
   },
   manufacturing: {
     graduate: ['manufacturing graduate scheme'],
-    placement: ['manufacturing placement'],
+    placement: ['manufacturing placement', 'manufacturing placement year', 'manufacturing industrial placement'],
     internship: ['manufacturing internship']
   },
   media: {
@@ -192,17 +205,17 @@ const INDUSTRY_TITLES: Partial<Record<IndustryKey, Partial<Record<JobTypeKey, st
   },
   'human resources': {
     graduate: ['hr graduate scheme', 'people graduate programme'],
-    placement: ['hr placement'],
+    placement: ['hr placement', 'hr placement year'],
     internship: ['hr internship']
   },
   'supply chain': {
     graduate: ['supply chain graduate scheme', 'logistics graduate programme'],
-    placement: ['supply chain placement'],
+    placement: ['supply chain placement', 'supply chain placement year'],
     internship: ['supply chain internship']
   },
   operations: {
     graduate: ['operations graduate scheme'],
-    placement: ['operations placement'],
+    placement: ['operations placement', 'operations placement year'],
     internship: ['operations internship']
   },
   'product management': {
