@@ -3,6 +3,56 @@ import crypto from 'node:crypto';
 
 const SECRET_HEADER = 'x-seed-secret';
 
+const INDUSTRY_VALUES = new Set([
+  'Accounting & Finance',
+  'Aerospace & Defence',
+  'Agriculture & Farming',
+  'Architecture',
+  'Automotive',
+  'Banking & Investment',
+  'Biotechnology',
+  'Chemical Engineering',
+  'Civil Engineering',
+  'Consulting',
+  'Construction',
+  'Creative & Design',
+  'Cybersecurity',
+  'Data Science & Analytics',
+  'Education & Training',
+  'Electrical Engineering',
+  'Energy & Utilities',
+  'Engineering (General)',
+  'Entertainment & Media',
+  'Environmental',
+  'Fashion & Textiles',
+  'Food & Beverage',
+  'Government & Public Sector',
+  'Healthcare & Medical',
+  'Hospitality & Tourism',
+  'HR & Recruitment',
+  'Insurance',
+  'IT & Software',
+  'Law & Legal',
+  'Logistics & Supply Chain',
+  'Manufacturing',
+  'Marketing & Advertising',
+  'Mechanical Engineering',
+  'Mining & Resources',
+  'Non-Profit & Charity',
+  'Oil & Gas',
+  'Pharmaceuticals',
+  'Property & Real Estate',
+  'Retail',
+  'Sales',
+  'Science & Research',
+  'Social Care',
+  'Sports & Fitness',
+  'Technology',
+  'Telecommunications',
+  'Transport',
+  'Water & Waste Management'
+]);
+
 // Constant-time comparison to prevent timing attacks
 function constantTimeCompare(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -182,7 +232,12 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 
       // Build clean data object with only schema fields
       // This prevents issues with extra fields that might cause Strapi to reject the job
-      const data: any = {
+             const industry =
+               typeof inJob.industry === 'string' && INDUSTRY_VALUES.has(inJob.industry)
+                 ? inJob.industry
+                 : undefined;
+
+             const data: any = {
         source: inJob.source,
         sourceUrl: inJob.sourceUrl || undefined,
         title: inJob.title,
@@ -198,6 +253,7 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
         experience: inJob.experience || undefined,
         companyPageUrl: inJob.companyPageUrl || undefined,
         remotePolicy: inJob.remotePolicy || undefined,
+               industry,
         applyDeadline: formatDate(inJob.applyDeadline),
         salary: inJob.salary || undefined,
         relatedDegree: inJob.relatedDegree || undefined,
@@ -341,7 +397,13 @@ export default factories.createCoreController('api::job.job', ({ strapi }) => ({
 
     // DB prefilter: only fresh jobs with optional hard filters
     const filters: any = { isExpired: { $ne: true } };
-    if (hard.countries?.length) filters.location = { $containsi: hard.countries[0] }; // simple example
+         if (hard.countries?.length) filters.location = { $containsi: hard.countries[0] }; // simple example
+         if (Array.isArray(hard.industries)) {
+           const validIndustries = hard.industries.filter((ind: string) => INDUSTRY_VALUES.has(ind));
+           if (validIndustries.length > 0) {
+             filters.industry = { $in: validIndustries };
+           }
+         }
     // Remove the deadline filter as it's causing issues - filter by applyDeadline instead
     if (prefs.onlyActive !== false) {
       filters.$or = [

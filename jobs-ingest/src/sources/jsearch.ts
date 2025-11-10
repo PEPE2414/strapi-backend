@@ -5,6 +5,8 @@ import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoost
 import type { SlotDefinition } from '../lib/runSlots';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
+import { classifyIndustry } from '../lib/industryClassifier';
+import { recordRapidApiRequest, logRapidApiUsage } from '../lib/rapidapiUsage';
 
 /**
  * Scraper for RapidAPI JSearch (Mega Plan)
@@ -38,6 +40,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
       job_requirements: 'no_experience,under_3_years_experience'
     });
     const testUrl = `https://jsearch.p.rapidapi.com/search?${testParams.toString()}`;
+    recordRapidApiRequest('jsearch');
     const testResponse = await fetch(testUrl, {
       method: 'GET',
       headers: {
@@ -290,7 +293,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   // Rate limit: 20 requests/second = 1,200 requests/minute = 72,000 requests/hour
   // We'll run multiple times per day, so each run can do 200-500 searches
   // This run will do up to 500 searches (can be split across multiple daily runs)
-  const MAX_SEARCHES_PER_RUN = 500;
+  const maxSearchesEnv = Number(process.env.JSEARCH_MAX_SEARCHES_PER_RUN);
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 500;
   let totalSearches = 0;
   
   try {
@@ -325,6 +329,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
         
         const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
         
+        recordRapidApiRequest('jsearch');
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -410,8 +415,30 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 })
               };
 
+              const inferredIndustry = classifyIndustry({
+                title: canonicalJob.title,
+                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
+                company: canonicalJob.company?.name,
+                hints: [...slotDefinition.industries, term],
+                query: term
+              });
+              if (inferredIndustry) {
+                canonicalJob.industry = inferredIndustry;
+              }
+
               // Filter for relevant job types (placement, graduate, or internship)
               // Location is already filtered by country=uk parameter
+              const inferredIndustry = classifyIndustry({
+                title: canonicalJob.title,
+                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
+                company: canonicalJob.company?.name,
+                hints: [...slotDefinition.industries, term, site.domain],
+                query
+              });
+              if (inferredIndustry) {
+                canonicalJob.industry = inferredIndustry;
+              }
+
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
               const jobType = classifyJobType(jobText);
               if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
@@ -472,6 +499,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           });
           
           const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
+          recordRapidApiRequest('jsearch');
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -602,6 +630,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   }
 
   console.log(`📊 JSearch API: Found ${jobs.length} total jobs`);
+  logRapidApiUsage('jsearch', { searches: totalSearches, jobs: jobs.length });
   return jobs;
 }
 

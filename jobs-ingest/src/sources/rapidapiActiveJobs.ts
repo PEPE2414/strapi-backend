@@ -1,6 +1,9 @@
 import { CanonicalJob } from '../types';
 import { toISO, classifyJobType, isRelevantJobType } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
+import { classifyIndustry } from '../lib/industryClassifier';
+import { recordRapidApiRequest, logRapidApiUsage } from '../lib/rapidapiUsage';
+import { SLOT_DEFINITIONS, getCurrentRunSlot, buildPlacementBoostTerms } from '../lib/runSlots';
 
 /**
  * Scraper for RapidAPI Active Jobs DB
@@ -20,6 +23,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   console.log('🧪 Testing API with broad search...');
   try {
     const testUrl = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?location_filter="United Kingdom"&limit=5&offset=0`;
+    recordRapidApiRequest('active-jobs-db');
     const testResponse = await fetch(testUrl, {
       method: 'GET',
       headers: {
@@ -44,7 +48,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   }
 
   // Search terms for graduate jobs and placements
-  const searchTerms = [
+  const baseSearchTerms = [
     'graduate',
     'graduate scheme', 
     'graduate program',
@@ -62,6 +66,19 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
     'junior'
   ];
 
+  const { slotIndex } = getCurrentRunSlot();
+  const slotDefinition = SLOT_DEFINITIONS[slotIndex];
+  const placementBoostTerms = buildPlacementBoostTerms(slotDefinition).slice(0, 40);
+  const dynamicIndustryTerms = placementBoostTerms
+    .map(term => term.replace(/\buk\b/g, '').trim())
+    .filter(term => term.length > 3);
+
+  const maxTermsEnv = Number(process.env.ACTIVE_JOBS_MAX_SEARCH_TERMS);
+  const maxTerms = Number.isFinite(maxTermsEnv) && maxTermsEnv > 0 ? maxTermsEnv : 60;
+  const searchTerms = Array.from(new Set([...baseSearchTerms, ...dynamicIndustryTerms])).slice(0, maxTerms);
+
+  console.log(`🔢 RapidAPI Active Jobs: using ${searchTerms.length} search terms (slot: ${slotDefinition.name})`);
+
   try {
     for (const term of searchTerms) {
       console.log(`  🔍 Searching for: "${term}"`);
@@ -71,6 +88,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
         const encodedTerm = encodeURIComponent(`"${term}"`);
         const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=100&offset=0`;
         
+        recordRapidApiRequest('active-jobs-db');
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -139,6 +157,24 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                 })
               };
 
+              const industryHints = [
+                ...slotDefinition.industries,
+                job.jobIndustry,
+                ...(job.industries || []),
+                term
+              ].filter((hint): hint is string => Boolean(hint && String(hint).trim()));
+
+              const inferredIndustry = classifyIndustry({
+                title,
+                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
+                company: canonicalJob.company?.name,
+                hints: industryHints,
+                query: term
+              });
+              if (inferredIndustry) {
+                canonicalJob.industry = inferredIndustry;
+              }
+
               jobs.push(canonicalJob);
             } catch (error) {
               console.warn(`  ⚠️  Error processing job:`, error instanceof Error ? error.message : String(error));
@@ -165,6 +201,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   }
 
   console.log(`📊 RapidAPI Active Jobs DB: Found ${jobs.length} total jobs`);
+  logRapidApiUsage('active-jobs-db', { searches: searchTerms.length, jobs: jobs.length });
   return jobs;
 }
 

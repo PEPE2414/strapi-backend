@@ -370,6 +370,7 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
   const map = new Map<string, CompanyInfo>();
   let missingCompanyCount = 0;
   const debugSamples: Array<{ id: number; title?: string | null; companyRaw: unknown }> = [];
+  const rawCompanyValues: Array<{ id: number; value: unknown }> = [];
 
   for (const job of jobs) {
     if (!job?.attributes) continue;
@@ -400,6 +401,9 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
 
     const info = map.get(normalizedName)!;
     info.jobs.push(job);
+    if (rawCompanyValues.length < 5) {
+      rawCompanyValues.push({ id: job.id, value: job.attributes.company });
+    }
 
     addCandidateDomain(
       info.candidateDomains,
@@ -414,6 +418,10 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
     if (debugSamples.length > 0) {
       console.warn('   Sample of skipped jobs due to missing company info:', debugSamples);
     }
+  }
+
+  if (map.size === 0 && jobs.length > 0) {
+    console.warn('⚠️  No companies were added to the map. Sample of raw company values:', rawCompanyValues);
   }
 
   return map;

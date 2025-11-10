@@ -4,6 +4,8 @@ import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoost
 import type { SlotDefinition } from '../lib/runSlots';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
 import { generateJobHash } from '../lib/jobHash';
+import { classifyIndustry } from '../lib/industryClassifier';
+import { recordRapidApiRequest, logRapidApiUsage } from '../lib/rapidapiUsage';
 
 /**
  * Scraper for LinkedIn Jobs API
@@ -25,6 +27,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   console.log('🧪 Testing LinkedIn API with broad search...');
   try {
     const testUrl = `https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?location_filter="United Kingdom"&description_type=text&limit=5&offset=0`;
+    recordRapidApiRequest('linkedin-jobs');
     const testResponse = await fetch(testUrl, {
       method: 'GET',
       headers: {
@@ -137,7 +140,8 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   baseTermsForRun.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
   slotTerms.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
 
-  const MAX_SEARCHES_PER_RUN = 40;
+  const maxSearchesEnv = Number(process.env.LINKEDIN_MAX_SEARCHES_PER_RUN);
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 40;
   const termsForRun = Array.from(combinedTerms).slice(0, MAX_SEARCHES_PER_RUN);
 
   console.log(`  🕒 LinkedIn run slot: ${slotIndex + 1}/${totalSlots} (${slotDefinition.name})`);
@@ -180,6 +184,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
           const maxRetries = 3;
           
           while (retries <= maxRetries) {
+            recordRapidApiRequest('linkedin-jobs');
             response = await fetch(url, {
               method: 'GET',
               headers: {
@@ -275,6 +280,17 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
                 })
               };
 
+              const inferredIndustry = classifyIndustry({
+                title: canonicalJob.title,
+                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
+                company: canonicalJob.company?.name,
+                hints: [...slotDefinition.industries, term],
+                query: term
+              });
+              if (inferredIndustry) {
+                canonicalJob.industry = inferredIndustry;
+              }
+
               // Filter for relevant job types (placement, graduate, or internship)
               // Location is already filtered by API parameter (United Kingdom)
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
@@ -341,6 +357,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   }
 
   console.log(`📊 LinkedIn Jobs API: Found ${jobs.length} total jobs`);
+  logRapidApiUsage('linkedin-jobs', { searches: totalSearches, jobs: jobs.length });
   return jobs;
 }
 

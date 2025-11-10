@@ -1,5 +1,57 @@
 export type SalaryNorm = { min?: number; max?: number; currency?: string; period?: 'year'|'month'|'week'|'day'|'hour' };
 
+export const INDUSTRIES = [
+  'Accounting & Finance',
+  'Aerospace & Defence',
+  'Agriculture & Farming',
+  'Architecture',
+  'Automotive',
+  'Banking & Investment',
+  'Biotechnology',
+  'Chemical Engineering',
+  'Civil Engineering',
+  'Consulting',
+  'Construction',
+  'Creative & Design',
+  'Cybersecurity',
+  'Data Science & Analytics',
+  'Education & Training',
+  'Electrical Engineering',
+  'Energy & Utilities',
+  'Engineering (General)',
+  'Entertainment & Media',
+  'Environmental',
+  'Fashion & Textiles',
+  'Food & Beverage',
+  'Government & Public Sector',
+  'Healthcare & Medical',
+  'Hospitality & Tourism',
+  'HR & Recruitment',
+  'Insurance',
+  'IT & Software',
+  'Law & Legal',
+  'Logistics & Supply Chain',
+  'Manufacturing',
+  'Marketing & Advertising',
+  'Mechanical Engineering',
+  'Mining & Resources',
+  'Non-Profit & Charity',
+  'Oil & Gas',
+  'Pharmaceuticals',
+  'Property & Real Estate',
+  'Retail',
+  'Sales',
+  'Science & Research',
+  'Social Care',
+  'Sports & Fitness',
+  'Technology',
+  'Telecommunications',
+  'Transport',
+  'Water & Waste Management'
+] as const;
+
+export type Industry = (typeof INDUSTRIES)[number];
+
 export type CanonicalJob = {
   // Core identification
   source: string;             // e.g. "greenhouse:company", "workday:company", "site:bristol.ac.uk"
@@ -29,6 +81,7 @@ export type CanonicalJob = {
   
   // Job classification
   jobType: 'internship'|'placement'|'graduate'|'other';  // REQUIRED
+  industry?: Industry;
   experience?: string;        // e.g. "0–2 years", "entry level"
   
   // Dates and duration

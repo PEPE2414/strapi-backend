@@ -4,6 +4,8 @@ import { cleanJobDescription, isRelevantJobType, isUKJob, classifyJobType } from
 import { generateJobHash } from '../lib/jobHash';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
+import { classifyIndustry } from '../lib/industryClassifier';
+import { recordRapidApiRequest, logRapidApiUsage } from '../lib/rapidapiUsage';
 
 type JobsApi14Job = {
   jobTitle?: string;
@@ -64,6 +66,7 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
       url.searchParams.set('datePosted', datePosted);
       url.searchParams.set('employmentTypes', employmentTypes.join('%3B'));
 
+      recordRapidApiRequest('jobs-api14');
       const response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
@@ -91,6 +94,25 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
         const canonical = convertJob(raw);
         if (!canonical) continue;
 
+        const industryHints = [
+          ...slotDefinition.industries,
+          raw.jobIndustry,
+          ...(raw.industries ?? []),
+          query
+        ].filter((hint): hint is string => Boolean(hint && String(hint).trim()));
+
+        const inferredIndustry = classifyIndustry({
+          title: canonical.title,
+          description: canonical.descriptionText || canonical.descriptionHtml,
+          company: canonical.company?.name,
+          hints: industryHints,
+          query
+        });
+
+        if (inferredIndustry) {
+          canonical.industry = inferredIndustry;
+        }
+
         const key = `${canonical.hash}`;
         if (seen.has(key)) {
           duplicates++;
@@ -113,6 +135,7 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
     console.log(`  🔁 Jobs API 14 dedup removed ${duplicates} duplicates`);
   }
 
+  logRapidApiUsage('jobs-api14', { queries: queryTerms.length, jobs: jobs.length });
   return jobs;
 }
 
@@ -277,6 +300,8 @@ function buildQueryTerms(slot: typeof SLOT_DEFINITIONS[number]): QueryTerm[] {
   }
 
   const combined = [...placementQueries, ...terms];
-  return combined.slice(0, 160);
+  const maxQueriesEnv = Number(process.env.JOBS_API14_MAX_QUERIES_PER_RUN);
+  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 160;
+  return combined.slice(0, maxQueries);
 }
 

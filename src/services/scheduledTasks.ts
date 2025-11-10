@@ -8,6 +8,7 @@
 import { jobCleanupService } from './jobCleanup';
 import { jobDeduplicationService } from './jobDeduplication';
 import { jobLinkCheckerService } from './jobLinkChecker';
+import { jobIndustryBackfillService } from './jobIndustryBackfill';
 
 interface ScheduledTaskConfig {
   name: string;
@@ -54,6 +55,15 @@ class ScheduledTasksService {
       enabled: true,
       targetHour: 23,
       targetMinute: 50
+    });
+
+    // Job industry backfill runs daily at 03:15 (Europe/London)
+    this.tasks.set('jobIndustryBackfill', {
+      name: 'Job Industry Backfill',
+      interval: 24 * 60 * 60 * 1000,
+      enabled: true,
+      targetHour: 3,
+      targetMinute: 15
     });
   }
 
@@ -202,6 +212,10 @@ class ScheduledTasksService {
           active: linkStats.active,
           errors: linkStats.errors.length
         });
+        break;
+      case 'jobIndustryBackfill':
+        const industryStats = await jobIndustryBackfillService.backfill();
+        console.log(`📊 Job industry backfill stats:`, industryStats);
         break;
 
       default:

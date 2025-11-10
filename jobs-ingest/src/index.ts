@@ -35,6 +35,7 @@ import { getCurrentRunSlot, isBacklogSlot } from './lib/runSlots';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
 import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday } from './lib/seenTodayCache';
 import { CanonicalJob } from './types';
+import { summarizeRapidApiUsage } from './lib/rapidapiUsage';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
@@ -523,6 +524,7 @@ async function runAll() {
     console.log(`   See: https://developer.adzuna.com/ and https://www.reed.co.uk/developers`);
   }
 
+  summarizeRapidApiUsage();
   await saveSeenTodayCache(seenTodayCache);
 }
 
@@ -532,30 +534,24 @@ function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {
     return;
   }
 
-  const trackedIndustries = [
-    'business', 'finance', 'engineering', 'technology', 'consulting',
-    'marketing', 'sales', 'law', 'data', 'analytics', 'healthcare',
-    'education', 'creative', 'science'
-  ];
-
   const trackedCities = [
     'london', 'manchester', 'birmingham', 'leeds', 'glasgow',
     'edinburgh', 'bristol', 'liverpool', 'oxford', 'cambridge',
     'cardiff', 'belfast'
   ];
 
-  const industryCounts: Record<string, number> = Object.fromEntries(trackedIndustries.map(i => [i, 0]));
+  const industryCounts: Record<string, number> = {};
   const cityCounts: Record<string, number> = Object.fromEntries(trackedCities.map(c => [c, 0]));
+  let industryTagged = 0;
 
   for (const job of jobs) {
     const text = `${job.title} ${job.descriptionText || ''}`.toLowerCase();
     const location = (job.location || '').toLowerCase();
 
-    trackedIndustries.forEach(industry => {
-      if (text.includes(industry)) {
-        industryCounts[industry] += 1;
-      }
-    });
+    if (job.industry) {
+      industryCounts[job.industry] = (industryCounts[job.industry] || 0) + 1;
+      industryTagged++;
+    }
 
     trackedCities.forEach(city => {
       if (location.includes(city) || text.includes(city)) {
@@ -567,8 +563,8 @@ function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {
   const industryThreshold = Math.max(10, Math.round(jobs.length * 0.01));
   const cityThreshold = Math.max(5, Math.round(jobs.length * 0.005));
 
-  const lowIndustries = trackedIndustries
-    .map(industry => ({ industry, count: industryCounts[industry] }))
+  const lowIndustries = Object.entries(industryCounts)
+    .map(([industry, count]) => ({ industry, count }))
     .filter(item => item.count < industryThreshold)
     .sort((a, b) => a.count - b.count);
 
@@ -579,8 +575,11 @@ function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {
 
   console.log(`\n📉 Weekly Coverage Report`);
   console.log(`  • Jobs analyzed: ${jobs.length}`);
+  console.log(`  • Jobs with industry tag: ${industryTagged}`);
   console.log(`  • Industry threshold: ${industryThreshold} jobs`);
-  if (lowIndustries.length > 0) {
+  if (Object.keys(industryCounts).length === 0) {
+    console.log(`  ⚠️  No jobs have industry tags yet.`);
+  } else if (lowIndustries.length > 0) {
     console.log(`  ⚠️  Under-covered industries:`);
     lowIndustries.forEach(({ industry, count }) => {
       console.log(`    - ${industry}: ${count} jobs`);

@@ -3,6 +3,8 @@ import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoost
 import { cleanJobDescription, isRelevantJobType, isUKJob, classifyJobType } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
+import { classifyIndustry } from '../lib/industryClassifier';
+import { recordRapidApiRequest, logRapidApiUsage } from '../lib/rapidapiUsage';
 
 interface GlassdoorJob {
   jobId?: string;
@@ -52,6 +54,7 @@ export async function scrapeGlassdoorJobs(): Promise<CanonicalJob[]> {
       url.searchParams.set('location', 'United Kingdom');
       url.searchParams.set('page', page.toString());
 
+      recordRapidApiRequest('glassdoor-real-time');
       const response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
@@ -76,6 +79,17 @@ export async function scrapeGlassdoorJobs(): Promise<CanonicalJob[]> {
         const canonical = convertJob(raw);
         if (!canonical) continue;
 
+        const inferredIndustry = classifyIndustry({
+          title: canonical.title,
+          description: canonical.descriptionText || canonical.descriptionHtml,
+          company: canonical.company?.name,
+          hints: [...slotDefinition.industries, query],
+          query
+        });
+        if (inferredIndustry) {
+          canonical.industry = inferredIndustry;
+        }
+
         const key = canonical.hash;
         if (seen.has(key)) {
           duplicates++;
@@ -98,6 +112,7 @@ export async function scrapeGlassdoorJobs(): Promise<CanonicalJob[]> {
     console.log(`  🔁 Glassdoor dedup removed ${duplicates} duplicates`);
   }
 
+  logRapidApiUsage('glassdoor-real-time', { queries: queries.length, jobs: results.length });
   return results;
 }
 
@@ -190,7 +205,9 @@ function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): 
     });
   });
 
-  return queries.slice(0, 120);
+  const maxQueriesEnv = Number(process.env.GLASSDOOR_MAX_QUERIES_PER_RUN);
+  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 120;
+  return queries.slice(0, maxQueries);
 }
 
 function generateSlug(title: string, company: string): string {
