@@ -431,7 +431,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
                 company: canonicalJob.company?.name,
                 hints: [...slotDefinition.industries, term],
-                query: query
+                query
               });
               if (siteIndustry) {
                 canonicalJob.industry = siteIndustry;
