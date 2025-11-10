@@ -1,5 +1,5 @@
 import { CanonicalJob } from '../types';
-import { toISO } from '../lib/normalize';
+import { toISO, classifyJobType } from '../lib/normalize';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoostTerms } from '../lib/runSlots';
 import type { SlotDefinition } from '../lib/runSlots';
@@ -603,98 +603,6 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   console.log(`📊 JSearch API: Found ${jobs.length} total jobs`);
   return jobs;
-}
-
-function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
-  const t = text.toLowerCase();
- 
-  const internshipKeywords = [
-    'internship',
-    'intern',
-    'summer analyst',
-    'summer associate',
-    'summer program',
-    'summer placement',
-    'winter internship',
-    'spring week',
-    'off-cycle',
-    'off cycle',
-    'insight week',
-    'insight programme',
-    'insight program',
-    'industrial internship'
-  ];
- 
-  if (internshipKeywords.some(keyword => t.includes(keyword))) {
-    return 'internship';
-  }
- 
-  const placementKeywords = [
-    'placement',
-    'placement year',
-    'year placement',
-    'year in industry',
-    'industrial placement',
-    'industrial placement year',
-    'industrial experience',
-    'industrial trainee',
-    'industrial training placement',
-    'sandwich placement',
-    'sandwich course',
-    'sandwich degree',
-    'sandwich year',
-    'work placement',
-    'student placement',
-    'placement student',
-    'professional placement',
-    'undergraduate placement',
-    'industry placement',
-    'placement scheme',
-    'placement programme',
-    'placement program',
-    'placement opportunity',
-    'placement vacancy',
-    '12 month placement',
-    '12-month placement',
-    '12 month program',
-    '12-month program',
-    'year long placement',
-    'year-long placement',
-    'year long internship',
-    'year-long internship',
-    'industrial year',
-    'industry year',
-    'co-op',
-    'co op',
-    'cooperative education',
-    'cooperative placement'
-  ];
- 
-  if (placementKeywords.some(keyword => t.includes(keyword))) {
-    return 'placement';
-  }
- 
-  const graduateKeywords = [
-    'graduate',
-    'early careers',
-    'early career',
-    'graduate scheme',
-    'graduate program',
-    'graduate programme',
-    'graduate trainee',
-    'graduate analyst',
-    'graduate engineer',
-    'graduate consultant',
-    'graduate intake',
-    'new graduate',
-    'recent graduate'
-  ];
- 
-  if (graduateKeywords.some(keyword => t.includes(keyword))) {
-    return 'graduate';
-  }
- 
-  return 'other';
 }
 
 function generateSlug(title: string, company: string): string {

@@ -1,6 +1,6 @@
 import { CanonicalJob } from '../types';
 import { SLOT_DEFINITIONS, getCurrentRunSlot, isBacklogSlot, buildPlacementBoostTerms } from '../lib/runSlots';
-import { cleanJobDescription, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { cleanJobDescription, isRelevantJobType, isUKJob, classifyJobType } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
 import { enhanceJobDescription } from '../lib/descriptionEnhancer';
 import { getPopularTitles, JobTypeKey } from '../lib/jobKeywords';
@@ -194,20 +194,6 @@ function determineJobType(job: JobsApi14Job): 'internship' | 'placement' | 'grad
     job.industries?.join(' ')
   ].join(' ').toLowerCase();
   return classifyJobType(text);
-}
-
-function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
-  const lower = text.toLowerCase();
-  if (/\b(internship|intern|summer analyst|summer associate|spring week|off-cycle|off cycle|insight week|industrial internship)\b/.test(lower)) {
-    return 'internship';
-  }
-  if (/\b(placement|placement year|year placement|year in industry|industrial placement|industrial placement year|industrial trainee|industrial training placement|work placement|student placement|placement student|professional placement|undergraduate placement|industry placement|placement scheme|placement programme|placement program|placement opportunity|placement vacancy|12 month placement|12-month placement|industrial year|industry year|co-op|co op|cooperative education|cooperative placement|sandwich placement|sandwich course|sandwich degree|sandwich year)\b/.test(lower)) {
-    return 'placement';
-  }
-  if (/\b(graduate|graduate scheme|graduate program|graduate programme|graduate trainee|graduate analyst|graduate engineer|early careers|early career|graduate intake|new graduate|recent graduate)\b/.test(lower)) {
-    return 'graduate';
-  }
-  return 'other';
 }
 
 type QueryTerm = {

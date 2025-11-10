@@ -1,5 +1,5 @@
 import { CanonicalJob } from '../types';
-import { toISO } from '../lib/normalize';
+import { toISO, classifyJobType, isRelevantJobType } from '../lib/normalize';
 import { generateJobHash } from '../lib/jobHash';
 
 /**
@@ -102,16 +102,29 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
           
           for (const job of jobArray) {
             try {
+              const title = job.title || 'Unknown Title';
+              const description = job.description_text || '';
+              const jobText = `${title} ${description}`.trim();
+              const jobType = classifyJobType(jobText);
+
+              if (jobType !== 'graduate' && jobType !== 'placement' && jobType !== 'internship') {
+                continue;
+              }
+
+              if (!isRelevantJobType(jobText)) {
+                continue;
+              }
+
               const canonicalJob: CanonicalJob = {
-                title: job.title || 'Unknown Title',
+                title,
                 company: { name: job.company_name || 'Unknown Company' },
                 location: job.location || 'UK',
                 applyUrl: job.apply_url || job.details_url || '',
-                descriptionText: job.description_text || '',
+                descriptionText: description,
                 descriptionHtml: job.description_html || job.description_text || '',
                 source: 'RapidAPI Active Jobs DB',
                 sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/active-jobs-db',
-                jobType: classifyJobType(job.title + ' ' + (job.description_text || '')),
+                jobType,
                 salary: undefined, // Not provided by this API
                 postedAt: job.posted_at ? toISO(job.posted_at) : undefined,
                 applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
@@ -126,13 +139,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                 })
               };
 
-              // Filter for relevant job types (placement, graduate, or internship)
-              // Location is already filtered by API parameter (United Kingdom)
-              const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
-              const jobType = classifyJobType(jobText);
-              if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
-                jobs.push(canonicalJob);
-              }
+              jobs.push(canonicalJob);
             } catch (error) {
               console.warn(`  ⚠️  Error processing job:`, error instanceof Error ? error.message : String(error));
             }
@@ -159,43 +166,6 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
   console.log(`📊 RapidAPI Active Jobs DB: Found ${jobs.length} total jobs`);
   return jobs;
-}
-
-function classifyJobType(text: string): 'internship' | 'placement' | 'graduate' | 'other' {
-  const t = text.toLowerCase();
-  
-  if (t.includes('internship') || t.includes('intern')) {
-    return 'internship';
-  }
-  if (t.includes('placement') || t.includes('year in industry') || t.includes('industrial placement') || 
-      t.includes('sandwich course') || t.includes('work experience placement')) {
-    return 'placement';
-  }
-  if (t.includes('graduate') || t.includes('entry level') || t.includes('junior')) {
-    return 'graduate';
-  }
-  
-  return 'other';
-}
-
-function isUKJob(location: string): boolean {
-  const ukLocations = [
-    'uk', 'united kingdom', 'england', 'scotland', 'wales', 'northern ireland',
-    'london', 'manchester', 'birmingham', 'leeds', 'glasgow', 'edinburgh',
-    'bristol', 'liverpool', 'newcastle', 'sheffield', 'belfast', 'cardiff'
-  ];
-  
-  return ukLocations.some(uk => location.toLowerCase().includes(uk));
-}
-
-function isRelevantJobType(text: string): boolean {
-  const relevantKeywords = [
-    'graduate', 'internship', 'placement', 'entry level', 'junior',
-    'trainee', 'scheme', 'programme', 'program', 'analyst', 'engineer',
-    'consultant', 'manager', 'developer', 'coordinator', 'specialist'
-  ];
-  
-  return relevantKeywords.some(keyword => text.toLowerCase().includes(keyword));
 }
 
 function generateSlug(title: string, company: string): string {

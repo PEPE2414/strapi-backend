@@ -9,9 +9,117 @@ export function classifyJobType(text: string): 'internship' | 'placement' | 'gra
     return 'internship';
   }
 
-  // Placement keywords
-  if (/\b(placement|placement year|year placement|year in industry|industrial placement|industrial placement year|industrial experience|industrial trainee|industrial training placement|sandwich placement|sandwich course|sandwich degree|sandwich year|work placement|student placement|placement student|professional placement|undergraduate placement|industry placement|placement scheme|placement programme|placement program|placement opportunity|placement vacancy|12 month placement|12-month placement|year long placement|year-long placement|industrial year|industry year|co-op|co op|cooperative education|cooperative placement)\b/.test(t)) {
-    return 'placement';
+  const hasPlacementWord = /\bplacements?\b/.test(t);
+  if (hasPlacementWord) {
+    const strongPlacementPhrases = [
+      'placement year',
+      'year placement',
+      'year in industry',
+      'industrial placement',
+      'industrial placement year',
+      'industrial experience',
+      'industrial trainee',
+      'industrial training placement',
+      'industrial year',
+      'industry year',
+      'sandwich placement',
+      'sandwich course',
+      'sandwich year',
+      'sandwich degree',
+      'student placement',
+      'placement student',
+      'undergraduate placement',
+      'professional placement',
+      'industry placement',
+      'placement scheme',
+      'placement programme',
+      'placement program',
+      'placement opportunity',
+      'placement vacancy',
+      'placement internship',
+      'summer placement',
+      '12 month placement',
+      '12-month placement',
+      'year long placement',
+      'year-long placement'
+    ];
+
+    const negativePlacementPhrases = [
+      'placement consultant',
+      'placement coordinator',
+      'placement manager',
+      'placement administrator',
+      'placement advisor',
+      'placement adviser',
+      'placement support',
+      'placement specialist',
+      'placement lead',
+      'placement partner',
+      'placement supervisor',
+      'placement worker',
+      'placement team leader',
+      'placement recruiter',
+      'placement recruitment',
+      'placement services',
+      'placement service',
+      'placement assessor',
+      'placement facilitator',
+      'placement therapist',
+      'placement social worker',
+      'placement officer',
+      'placement coach',
+      'placement counsellor',
+      'placement counselor',
+      'placement liaison',
+      'placement test',
+      'placement testing',
+      'placement assessment',
+      'placement exam'
+    ];
+
+    const hasStrongPlacement = strongPlacementPhrases.some(phrase => t.includes(phrase));
+    const hasNegativePlacement = negativePlacementPhrases.some(phrase => t.includes(phrase));
+
+    const placementDurationMatch = /\b(6|9|10|11|12|13|14|15|16|18|24)\s*[- ]?(month|months|mth|mths)\b/.test(t) || t.includes('year-long') || t.includes('year long');
+    const placementContextWords = [
+      'student',
+      'students',
+      'undergraduate',
+      'undergraduates',
+      'university',
+      'uni',
+      'degree',
+      'course',
+      'programme',
+      'program',
+      'scheme',
+      'co-op',
+      'cooperative',
+      'industrial',
+      'industry',
+      'year',
+      '12 month',
+      '12-month',
+      '11 month',
+      'summer',
+      'autumn',
+      'spring',
+      'vacation',
+      'engineer',
+      'analyst',
+      'technician',
+      'technologist',
+      'scientist',
+      'developer',
+      'designer'
+    ];
+    const hasPlacementContext = placementContextWords.some(word => t.includes(`${word} placement`) || t.includes(`placement ${word}`));
+
+    const placementIndustryRegex = /\b(finance|business|engineering|mechanical|civil|electrical|chemical|software|technology|data|analytics|marketing|law|legal|accounting|audit|consulting|operations|supply chain|manufacturing|design|product|ux|ui|cyber|security|environment|environmental|hr|human resources|biomedical|pharma|pharmaceutical|science|scientist|biology|chemistry|physics|mathematics|maths|economics|statistics|construction|architecture|automation|aerospace|computer|ai|machine learning|geology|earth science|project|quality|procurement|logistics)\s+placements?\b/.test(t);
+
+    if ((hasStrongPlacement || placementDurationMatch || hasPlacementContext || placementIndustryRegex) && !hasNegativePlacement) {
+      return 'placement';
+    }
   }
 
   // Graduate keywords (must be explicit)
@@ -56,6 +164,30 @@ export function isRelevantJobType(text: string): boolean {
   ];
 
   if (nonGraduateKeywords.some(keyword => t.includes(keyword))) {
+    return false;
+  }
+
+  const placementStaffRoles = [
+    'placement officer',
+    'placement consultant',
+    'placement coordinator',
+    'placement manager',
+    'placement administrator',
+    'placement advisor',
+    'placement adviser',
+    'placement support worker',
+    'placement specialist',
+    'placement supervisor',
+    'placement services',
+    'placement recruiter',
+    'placement recruitment',
+    'placement team leader',
+    'placement facilitator',
+    'placement therapist',
+    'placement social worker'
+  ];
+
+  if (placementStaffRoles.some(keyword => t.includes(keyword))) {
     return false;
   }
 
