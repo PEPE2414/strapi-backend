@@ -193,8 +193,26 @@ function normaliseCompanyName(name?: string | null): string {
 
 function extractCompanyName(companyField: StrapiJobRecord['attributes']['company']): string {
   if (!companyField) return '';
+
+  // Strapi REST API often returns JSON fields as plain values, but depending on configuration
+  // this might arrive as { data: { attributes: { name: '...' } } } or similar.
+  if (typeof companyField === 'object' && 'data' in companyField && companyField.data) {
+    const nested: any = companyField.data;
+    if (nested?.attributes?.name) {
+      return String(nested.attributes.name);
+    }
+  }
+
   if (typeof companyField === 'string') return companyField;
   if (typeof companyField.name === 'string') return companyField.name;
+
+  // Some jobs might store company as raw JSON object (without name field)
+  if (typeof companyField === 'object') {
+    if (typeof (companyField as any).title === 'string') return (companyField as any).title;
+    const firstString = Object.values(companyField as Record<string, unknown>).find((value) => typeof value === 'string');
+    if (typeof firstString === 'string') return firstString;
+  }
+
   return '';
 }
 
