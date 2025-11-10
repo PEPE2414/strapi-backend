@@ -346,6 +346,8 @@ async function updateCompanyAsset(id: number, data: Partial<CompanyAssetAttribut
 
 function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
   const map = new Map<string, CompanyInfo>();
+  let missingCompanyCount = 0;
+  const debugSamples: Array<{ id: number; title?: string | null; companyRaw: unknown }> = [];
 
   for (const job of jobs) {
     if (!job?.attributes) continue;
@@ -354,6 +356,14 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
     const normalizedName = normaliseCompanyName(companyName);
 
     if (!normalizedName || normalizedName === 'unknown' || normalizedName === 'unknown company') {
+      if (missingCompanyCount < 5) {
+        debugSamples.push({
+          id: job.id,
+          title: job.attributes.title,
+          companyRaw: job.attributes.company,
+        });
+      }
+      missingCompanyCount += 1;
       continue;
     }
 
@@ -375,6 +385,13 @@ function gatherCompanyInfo(jobs: StrapiJobRecord[]): Map<string, CompanyInfo> {
       extractDomainFromUrl(job.attributes.applyUrl),
       extractDomainFromUrl(job.attributes.sourceUrl),
     );
+  }
+
+  if (missingCompanyCount > 0) {
+    console.warn(`⚠️  Skipped ${missingCompanyCount} jobs without identifiable company names.`);
+    if (debugSamples.length > 0) {
+      console.warn('   Sample of skipped jobs due to missing company info:', debugSamples);
+    }
   }
 
   return map;
