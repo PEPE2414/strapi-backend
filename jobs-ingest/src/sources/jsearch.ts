@@ -426,17 +426,15 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
                 canonicalJob.industry = inferredIndustry;
               }
 
-              // Filter for relevant job types (placement, graduate, or internship)
-              // Location is already filtered by country=uk parameter
-              const inferredIndustry = classifyIndustry({
+              const siteIndustry = classifyIndustry({
                 title: canonicalJob.title,
                 description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
                 company: canonicalJob.company?.name,
                 hints: [...slotDefinition.industries, term, site.domain],
-                query
+                query: term
               });
-              if (inferredIndustry) {
-                canonicalJob.industry = inferredIndustry;
+              if (siteIndustry) {
+                canonicalJob.industry = siteIndustry;
               }
 
               const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
