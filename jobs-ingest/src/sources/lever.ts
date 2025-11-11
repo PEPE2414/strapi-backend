@@ -56,13 +56,18 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       const applyUrl = await resolveApplyUrl(posting.hostedUrl || posting.applyUrl || '');
       const jobType = classifyJobType(`${title} ${posting.categories?.team || ''}`);
       const companyName = company;
+      const rawTimestamp = posting.updatedAt ?? posting.createdAt;
+      const postedAt =
+        typeof rawTimestamp === 'number'
+          ? new Date(rawTimestamp).toISOString()
+          : toISO(rawTimestamp);
 
       const hash = generateJobHash({
         title,
         company: companyName,
         applyUrl,
         location,
-        postedAt: posting.updatedAt || posting.createdAt
+        postedAt
       });
       const slug = makeUniqueSlug(title, companyName, hash, location);
 
@@ -76,7 +81,7 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
         descriptionText: undefined,
         applyUrl,
         jobType,
-        postedAt: toISO(posting.updatedAt || posting.createdAt),
+        postedAt,
         applyDeadline: undefined,
         salary: undefined,
         startDate: undefined,
