@@ -350,35 +350,6 @@ function getBucketsForDay(dayOfWeek: number): CrawlBucket[] {
   return buckets;
 }
 
-// Smart early exit logic - target 1000+ jobs
-export function shouldExitEarly(
-  totalJobsFound: number,
-  startTime: Date,
-  maxRuntimeMinutes: number = 60,        // Increased to allow API scrapers to complete
-  minJobsThreshold: number = 1200        // Target 1200 to ensure we exceed 1000 after deduplication
-): boolean {
-  const runtimeMinutes = (Date.now() - startTime.getTime()) / (1000 * 60);
-  
-  // Exit if we've been running too long
-  if (runtimeMinutes > maxRuntimeMinutes) {
-    console.log(`⏰ Runtime limit reached (${maxRuntimeMinutes} minutes), exiting early with ${totalJobsFound} jobs`);
-    return true;
-  }
-  
-  // Exit if we have enough jobs and it's been a reasonable time
-  if (totalJobsFound >= minJobsThreshold && runtimeMinutes > 15) {
-    console.log(`✅ Found ${totalJobsFound} jobs in ${runtimeMinutes.toFixed(1)} minutes, target exceeded, exiting early`);
-    return true;
-  }
-  
-  // Log progress every 5 minutes if we haven't hit threshold yet
-  if (Math.floor(runtimeMinutes) % 5 === 0 && totalJobsFound < minJobsThreshold) {
-    console.log(`⏳ Progress: ${totalJobsFound}/${minJobsThreshold} jobs after ${runtimeMinutes.toFixed(1)} minutes`);
-  }
-  
-  return false;
-}
-
 // Rate limiting based on domain
 export function getRateLimitForDomain(domain: string): { requestsPerMinute: number; delayMs: number } {
   // Be more aggressive with ATS platforms (they're designed for it)

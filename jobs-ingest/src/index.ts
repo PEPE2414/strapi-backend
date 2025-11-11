@@ -89,12 +89,6 @@ async function runAll() {
   // Process each bucket
   for (const bucket of todaysBuckets) {
     console.log(`\n📦 Processing bucket: ${bucket.name}`);
-    
-    // Check for early exit
-    if (shouldExitEarly(totalJobsFound, startTime)) {
-      console.log('⏰ Early exit triggered, stopping crawl');
-      break;
-    }
 
     for (const source of bucket.sources) {
       // Initialize source stats
