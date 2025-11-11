@@ -79,46 +79,47 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
   console.log(`🔢 RapidAPI Active Jobs: using ${searchTerms.length} search terms (slot: ${slotDefinition.name})`);
 
+  let requestCount = 0;
+
   try {
     for (const term of searchTerms) {
       console.log(`  🔍 Searching for: "${term}"`);
-      
-      try {
-        // Use the correct GET endpoint with query parameters
-        const encodedTerm = encodeURIComponent(`"${term}"`);
-        const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=100&offset=0`;
-        
-        recordRapidApiRequest('active-jobs-db');
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-            'X-RapidAPI-Host': 'active-jobs-db.p.rapidapi.com'
-          }
-        });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.warn(`  ⚠️  RapidAPI request failed: ${response.status} ${response.statusText}`);
-          console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
-          continue;
-        }
+      for (let offsetIndex = 0; offsetIndex < maxOffsets; offsetIndex += 1) {
+        const offset = offsetIndex * offsetStep;
 
-        const data = await response.json() as any;
-        
-        // Handle both array response and wrapped response
-        const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
-        
-        if (jobArray.length > 0) {
-          console.log(`  📦 Found ${jobArray.length} jobs for "${term}"`);
-          
-          // Debug: Show first few jobs to understand the data structure
-          if (jobArray.length > 0) {
-            const sampleJob = jobArray[0];
-            console.log(`  🔍 Sample job: ${sampleJob.title} at ${sampleJob.company_name || sampleJob.organization || 'Unknown'}`);
+        try {
+          const encodedTerm = encodeURIComponent(`"${term}"`);
+          const url = `https://active-jobs-db.p.rapidapi.com/active-ats-24h?title_filter=${encodedTerm}&location_filter="United Kingdom"&limit=100&offset=${offset}`;
+
+          recordRapidApiRequest('active-jobs-db');
+          requestCount++;
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+              'X-RapidAPI-Host': 'active-jobs-db.p.rapidapi.com'
+            }
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.warn(`  ⚠️  RapidAPI request failed: ${response.status} ${response.statusText}`);
+            console.warn(`  📄 Error response: ${errorText.substring(0, 200)}`);
+            break;
           }
-          
-          for (const job of jobArray) {
+
+          const data = await response.json() as any;
+          const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);
+
+          if (jobArray.length === 0) {
+            console.log(`  📄 No jobs found for "${term}" at offset ${offset}`);
+            break;
+          }
+
+          console.log(`  📦 Found ${jobArray.length} jobs for "${term}" (offset ${offset})`);
+
+          jobArray.forEach((job: any) => {
             try {
               const title = job.title || 'Unknown Title';
               const description = job.description_text || '';
@@ -126,16 +127,16 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
               const jobType = classifyJobType(jobText);
 
               if (jobType !== 'graduate' && jobType !== 'placement' && jobType !== 'internship') {
-                continue;
+                return;
               }
 
               if (!isRelevantJobType(jobText)) {
-                continue;
+                return;
               }
 
               const canonicalJob: CanonicalJob = {
                 title,
-                company: { name: job.company_name || 'Unknown Company' },
+                company: { name: job.company_name || job.organization || 'Unknown Company' },
                 location: job.location || 'UK',
                 applyUrl: job.apply_url || job.details_url || '',
                 descriptionText: description,
@@ -143,7 +144,7 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
                 source: 'RapidAPI Active Jobs DB',
                 sourceUrl: 'https://rapidapi.com/fantastic-jobs/api/active-jobs-db',
                 jobType,
-                salary: undefined, // Not provided by this API
+                salary: undefined,
                 postedAt: job.posted_at ? toISO(job.posted_at) : undefined,
                 applyDeadline: job.posted_at ? toISO(job.posted_at) : undefined,
                 slug: generateSlug(job.title, job.company_name),
@@ -179,29 +180,25 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
             } catch (error) {
               console.warn(`  ⚠️  Error processing job:`, error instanceof Error ? error.message : String(error));
             }
-          }
-        } else {
-          console.log(`  📄 No jobs found for "${term}"`);
-          // Debug: Show the actual response structure
-          if (jobArray.length === 0) {
-            console.log(`  🔍 Response structure:`, JSON.stringify(data).substring(0, 200));
-          }
-        }
+          });
 
-        // Rate limiting - wait between requests
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-      } catch (error) {
-        console.warn(`  ❌ Failed to search "${term}":`, error instanceof Error ? error.message : String(error));
+          if (jobArray.length < 100) {
+            break;
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        } catch (error) {
+          console.warn(`  ❌ Failed to search "${term}" (offset ${offset}):`, error instanceof Error ? error.message : String(error));
+          break;
+        }
       }
     }
-
   } catch (error) {
     console.warn('Failed to scrape RapidAPI Active Jobs DB:', error instanceof Error ? error.message : String(error));
   }
 
   console.log(`📊 RapidAPI Active Jobs DB: Found ${jobs.length} total jobs`);
-  logRapidApiUsage('active-jobs-db', { searches: searchTerms.length, jobs: jobs.length });
+  logRapidApiUsage('active-jobs-db', { searches: searchTerms.length, requests: requestCount, jobs: jobs.length });
   return jobs;
 }
 

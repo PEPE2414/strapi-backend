@@ -162,7 +162,7 @@ function convertJob(job: GlassdoorJob): CanonicalJob | null {
 
 function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): { query: string; page: number }[] {
   const queries: { query: string; page: number }[] = [];
-  const pages = backlog ? 2 : 1;
+  const pages = backlog ? 3 : 2;
 
   const placementBoostTerms = buildPlacementBoostTerms(slot);
   placementBoostTerms.forEach(term => {
@@ -177,6 +177,7 @@ function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): 
       const baseQuery = `${jobType} ${industry}`;
       for (let page = 1; page <= pages; page++) {
         queries.push({ query: `${baseQuery} uk`, page });
+        queries.push({ query: `${baseQuery} remote uk`, page });
       }
 
       getPopularTitles(industry, jobType)
@@ -184,6 +185,7 @@ function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): 
         .forEach(title => {
           for (let page = 1; page <= pages; page++) {
             queries.push({ query: `${title}`, page });
+            queries.push({ query: `${title} remote uk`, page });
           }
         });
     });

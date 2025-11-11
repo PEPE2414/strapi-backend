@@ -41,7 +41,9 @@ export function classifyJobType(text: string): 'internship' | 'placement' | 'gra
       '12 month placement',
       '12-month placement',
       'year long placement',
-      'year-long placement'
+      'year-long placement',
+      'student opportunity',
+      'campus placement'
     ];
 
     const negativePlacementPhrases = [
@@ -111,7 +113,11 @@ export function classifyJobType(text: string): 'internship' | 'placement' | 'gra
       'technologist',
       'scientist',
       'developer',
-      'designer'
+      'designer',
+      'student',
+      'undergraduate',
+      'campus',
+      'cohort'
     ];
     const hasPlacementContext = placementContextWords.some(word => t.includes(`${word} placement`) || t.includes(`placement ${word}`));
 

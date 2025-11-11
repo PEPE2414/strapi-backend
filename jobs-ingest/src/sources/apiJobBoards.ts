@@ -4,6 +4,8 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { sha256 } from '../lib/hash';
 import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { scrapeIndeedCompanyJobs } from './indeedCompany';
+import { scrapeEchoJobs } from './echoJobs';
 
 /**
  * Adzuna API - Free API for UK job listings
@@ -490,7 +492,9 @@ export async function scrapeAllAPIJobBoards(): Promise<CanonicalJob[]> {
     { name: 'Adzuna', fn: scrapeAdzunaAPI },
     { name: 'Reed', fn: scrapeReedAPI },
     { name: 'The Muse', fn: scrapeTheMuseAPI },
-    { name: 'Jobs.ac.uk', fn: scrapeJobsAcUkAPI }
+    { name: 'Jobs.ac.uk', fn: scrapeJobsAcUkAPI },
+    { name: 'Indeed Company', fn: scrapeIndeedCompanyJobs },
+    { name: 'EchoJobs', fn: scrapeEchoJobs }
   ];
 
   for (const scraper of scrapers) {

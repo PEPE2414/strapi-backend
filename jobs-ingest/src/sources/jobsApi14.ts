@@ -46,7 +46,7 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
   const { slotIndex } = getCurrentRunSlot();
   const slotDefinition = SLOT_DEFINITIONS[slotIndex];
   const backlogMode = isBacklogSlot(slotIndex);
-  const datePosted = backlogMode ? 'all' : 'month';
+  const datePosted = backlogMode ? 'all' : 'week';
 
   const queryTerms = buildQueryTerms(slotDefinition);
   console.log(`  🕒 Jobs API 14 run slot: ${slotIndex + 1}/${SLOT_DEFINITIONS.length} (${slotDefinition.name})`);
@@ -264,11 +264,25 @@ function buildQueryTerms(slot: typeof SLOT_DEFINITIONS[number]): QueryTerm[] {
         experienceLevels: experienceLevelsMap[jobType]
       });
 
+      terms.push({
+        query: `${baseQuery} remote united kingdom`,
+        employmentTypes: employmentTypeMap[jobType],
+        workplaceTypes,
+        experienceLevels: experienceLevelsMap[jobType]
+      });
+
       getPopularTitles(industry, jobType)
         .slice(0, 5)
         .forEach(title => {
           terms.push({
             query: `${title} united kingdom`,
+            employmentTypes: employmentTypeMap[jobType],
+            workplaceTypes,
+            experienceLevels: experienceLevelsMap[jobType]
+          });
+
+          terms.push({
+            query: `${title} remote united kingdom`,
             employmentTypes: employmentTypeMap[jobType],
             workplaceTypes,
             experienceLevels: experienceLevelsMap[jobType]
@@ -301,7 +315,7 @@ function buildQueryTerms(slot: typeof SLOT_DEFINITIONS[number]): QueryTerm[] {
 
   const combined = [...placementQueries, ...terms];
   const maxQueriesEnv = Number(process.env.JOBS_API14_MAX_QUERIES_PER_RUN);
-  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 160;
+  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 240;
   return combined.slice(0, maxQueries);
 }
 

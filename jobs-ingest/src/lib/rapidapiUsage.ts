@@ -3,7 +3,9 @@ type RapidApiSource =
   | 'linkedin-jobs'
   | 'jobs-api14'
   | 'glassdoor-real-time'
-  | 'active-jobs-db';
+  | 'active-jobs-db'
+  | 'indeed-company'
+  | 'echojobs';
 
 type UsageEntry = {
   requests: number;
@@ -15,7 +17,9 @@ const DEFAULT_LIMITS: Record<RapidApiSource, number> = {
   'linkedin-jobs': 50_000,
   'jobs-api14': 50_000,
   'glassdoor-real-time': 30_000,
-  'active-jobs-db': 30_000
+  'active-jobs-db': 30_000,
+  'indeed-company': 10_000,
+  'echojobs': 20_000
 };
 
 const usage: Record<RapidApiSource, UsageEntry> = {
@@ -23,7 +27,9 @@ const usage: Record<RapidApiSource, UsageEntry> = {
   'linkedin-jobs': { requests: 0, quota: resolveQuota('linkedin-jobs') },
   'jobs-api14': { requests: 0, quota: resolveQuota('jobs-api14') },
   'glassdoor-real-time': { requests: 0, quota: resolveQuota('glassdoor-real-time') },
-  'active-jobs-db': { requests: 0, quota: resolveQuota('active-jobs-db') }
+  'active-jobs-db': { requests: 0, quota: resolveQuota('active-jobs-db') },
+  'indeed-company': { requests: 0, quota: resolveQuota('indeed-company') },
+  'echojobs': { requests: 0, quota: resolveQuota('echojobs') }
 };
 
 function resolveQuota(source: RapidApiSource): number {

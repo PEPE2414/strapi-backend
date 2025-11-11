@@ -87,6 +87,12 @@ export function getCurrentRunSlot(totalSlots: number = SLOT_DEFINITIONS.length):
 }
 
 export function isBacklogSlot(slotIndex: number): boolean {
+  if (process.env.RUN_BACKLOG === '1') {
+    return true;
+  }
+  if (process.env.RUN_FRESH_ONLY === '1') {
+    return false;
+  }
   return SLOT_DEFINITIONS[slotIndex]?.useBacklogWindow === true;
 }
 

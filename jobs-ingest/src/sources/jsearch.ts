@@ -68,8 +68,11 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
 
   // Popular industries (priority - MANY searches for these)
   const popularIndustries = [
-    'business', 'finance', 'engineering', 'accounting', 'marketing', 
-    'consulting', 'it', 'technology', 'law', 'sales', 'data', 'analytics'
+    'business', 'finance', 'engineering', 'accounting', 'marketing',
+    'consulting', 'it', 'technology', 'law', 'sales', 'data', 'analytics',
+    'logistics', 'supply chain', 'operations', 'healthcare', 'pharmaceutical',
+    'public sector', 'government', 'energy', 'environmental', 'manufacturing',
+    'retail', 'hospitality', 'tourism'
   ];
 
   // Engineering types (popular - many searches)
@@ -248,12 +251,14 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const { slotIndex } = getCurrentRunSlot(totalSlots);
   const runSlot = slotIndex;
   const slotDefinition = SLOT_DEFINITIONS[runSlot];
-  const dateWindow = isBacklogSlot(runSlot) ? 'all' : 'month';
+  const dateWindow = isBacklogSlot(runSlot) ? 'all' : 'week';
 
   const siteSearchTerms = [
     'graduate', 'graduate scheme', 'placement', 'industrial placement',
     'placement year', 'undergraduate placement', 'placement scheme',
-    'year in industry', 'internship', 'summer internship', 'summer analyst', 'off-cycle internship', 'finance'
+    'year in industry', 'internship', 'summer internship', 'summer analyst', 'off-cycle internship',
+    'engineering placement', 'technology internship', 'finance graduate', 'consulting placement',
+    'data science internship', 'marketing graduate', 'logistics placement', 'healthcare internship'
   ];
 
   const siteTermsForRun = buildSlotSiteTerms(slotDefinition, siteSearchTerms);
@@ -276,11 +281,14 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   baseTermsForRun.forEach(term => combinedTerms.add(term.trim()));
   slotSpecificTerms.forEach(term => combinedTerms.add(term.trim()));
 
+  const maxSearchesEnv = Number(process.env.JSEARCH_MAX_SEARCHES_PER_RUN);
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 700;
+
   // Limit to avoid overwhelming the API per run
   const termsForRun = Array.from(combinedTerms)
     .map(term => term.toLowerCase())
     .filter(Boolean)
-    .slice(0, 600);
+    .slice(0, MAX_SEARCHES_PER_RUN);
 
   console.log(`  🕒 JSearch run slot: ${runSlot + 1}/${totalSlots} (${slotDefinition.name})`);
   console.log(`  📅 Date window: ${dateWindow}`);
@@ -293,8 +301,6 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   // Rate limit: 20 requests/second = 1,200 requests/minute = 72,000 requests/hour
   // We'll run multiple times per day, so each run can do 200-500 searches
   // This run will do up to 500 searches (can be split across multiple daily runs)
-  const maxSearchesEnv = Number(process.env.JSEARCH_MAX_SEARCHES_PER_RUN);
-  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 500;
   let totalSearches = 0;
   
   try {

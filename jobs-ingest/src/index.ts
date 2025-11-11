@@ -33,9 +33,9 @@ import { validateJobRequirements, cleanJobDescription, isUKJob, isRelevantJobTyp
 import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
 import { getCurrentRunSlot, isBacklogSlot } from './lib/runSlots';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
-import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday } from './lib/seenTodayCache';
+import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday, wasSeenRecently } from './lib/seenTodayCache';
 import { CanonicalJob } from './types';
-import { summarizeRapidApiUsage } from './lib/rapidapiUsage';
+import { summarizeRapidApiUsage, getRapidApiUsage } from './lib/rapidapiUsage';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
@@ -67,6 +67,7 @@ async function runAll() {
   let seenTodaySkippedTotal = 0;
   const backlogRun = isBacklogSlot(getCurrentRunSlot().slotIndex);
   let totalJobsFound = 0;
+  let totalRecentRejected = 0;
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
@@ -265,11 +266,19 @@ async function runAll() {
         let missingFieldsRejected = 0;
         let locationRejected = 0;
         let jobTypeRejected = 0;
+        let recentRejected = 0;
         
         const validJobs = sourceJobs.filter(job => {
           // Basic validation only
           if (!job.title || !job.company?.name || !job.applyUrl) {
             missingFieldsRejected++;
+            sourceStats[source].invalid++;
+            return false;
+          }
+
+          const recentlySeenWindow = backlogRun ? 30 : 7;
+          if (wasSeenRecently(job, seenTodayCache, recentlySeenWindow)) {
+            recentRejected++;
             sourceStats[source].invalid++;
             return false;
           }
@@ -305,9 +314,9 @@ async function runAll() {
         
         // Log rejection reasons for API sources
         if (isAPISource && sourceJobs.length > 0) {
-          const totalRejected = freshnessRejected + missingFieldsRejected + locationRejected + jobTypeRejected;
+          const totalRejected = freshnessRejected + missingFieldsRejected + locationRejected + jobTypeRejected + recentRejected;
           if (totalRejected > 0) {
-            console.log(`  📊 Rejection breakdown: ${freshnessRejected} stale, ${missingFieldsRejected} missing fields, ${locationRejected} location, ${jobTypeRejected} job type`);
+            console.log(`  📊 Rejection breakdown: ${freshnessRejected} stale, ${missingFieldsRejected} missing fields, ${locationRejected} location, ${jobTypeRejected} job type, ${recentRejected} recently seen`);
           }
         }
 
@@ -342,6 +351,8 @@ async function runAll() {
             }
           }
         }
+
+        totalRecentRejected += recentRejected;
 
       } catch (error) {
         console.error(`  ❌ Failed to scrape ${source}:`, error instanceof Error ? error.message : String(error));
@@ -442,6 +453,12 @@ async function runAll() {
   console.log(`    ✅ Created (NEW): ${totalCreated} jobs`);
   console.log(`    🔄 Updated (duplicates): ${totalUpdated} jobs`);
   console.log(`    ⏭️  Skipped: ${totalSkipped} jobs`);
+  const jobTypeBreakdown = results.reduce<Record<string, number>>((acc, job) => {
+    const type = job.jobType || 'unknown';
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {});
+  console.log(`    📚 Job type distribution:`, jobTypeBreakdown);
   console.log(`\n📈 Job Loss Analysis:`);
   const jobsLostInPipeline = results.length - totalProcessed;
   if (jobsLostInPipeline > 0) {
@@ -452,6 +469,9 @@ async function runAll() {
   const jobsLostInValidation = totalJobsFound - results.length;
   if (jobsLostInValidation > 0) {
     console.log(`  ⚠️  ${jobsLostInValidation} jobs lost during LLM/enhancement phase`);
+  }
+  if (totalRecentRejected > 0) {
+    console.log(`  🧭 Recently seen guard skipped ${totalRecentRejected} jobs from prior runs`);
   }
   
   // Calculate creation rate
@@ -525,6 +545,50 @@ async function runAll() {
   }
 
   summarizeRapidApiUsage();
+
+  const rapidSummary: Record<string, { requests: number; quota: number }> = {};
+  const rapidSources = [
+    'jsearch',
+    'linkedin-jobs',
+    'jobs-api14',
+    'glassdoor-real-time',
+    'active-jobs-db',
+    'indeed-company',
+    'echojobs'
+  ];
+  rapidSources.forEach(sourceName => {
+    try {
+      const usage = getRapidApiUsage(sourceName as any);
+      rapidSummary[sourceName] = { requests: usage.requests, quota: usage.quota };
+    } catch {
+      // ignore unknown sources
+    }
+  });
+
+  const sourceReport = sortedSources.map(([source, stats]) => ({
+    source,
+    total: stats.total,
+    valid: stats.valid,
+    invalid: stats.invalid
+  }));
+
+  await sendRunReport({
+    startedAt: startTime.toISOString(),
+    durationSeconds: duration,
+    backlogRun,
+    totalScraped: totalJobsFound,
+    afterEnhancement: results.length,
+    sentToStrapi: totalProcessed,
+    created: totalCreated,
+    updated: totalUpdated,
+    skipped: totalSkipped,
+    creationRate,
+    recentlySkipped: totalRecentRejected,
+    jobTypeBreakdown,
+    sourceReport,
+    rapidApi: rapidSummary
+  });
+
   await saveSeenTodayCache(seenTodayCache);
 }
 
@@ -603,3 +667,39 @@ runAll().catch(e => {
   console.error(e);
   process.exit(1);
 });
+
+type RunReportPayload = {
+  startedAt: string;
+  durationSeconds: number;
+  backlogRun: boolean;
+  totalScraped: number;
+  afterEnhancement: number;
+  sentToStrapi: number;
+  created: number;
+  updated: number;
+  skipped: number;
+  creationRate: number;
+  recentlySkipped: number;
+  jobTypeBreakdown: Record<string, number>;
+  sourceReport: Array<{ source: string; total: number; valid: number; invalid: number }>;
+  rapidApi: Record<string, { requests: number; quota: number }>;
+};
+
+async function sendRunReport(payload: RunReportPayload): Promise<void> {
+  const webhookUrl = process.env.N8N_WEBHOOK_URL || 'https://effort-free.app.n8n.cloud/webhook/3a30ee14-45e5-4920-b15c-f8d6f043d4d9';
+  if (!webhookUrl) return;
+  try {
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      console.warn(`⚠️  Failed to send run report webhook: ${res.status} ${res.statusText}`);
+    } else {
+      console.log('📬 Sent ingestion report to n8n webhook');
+    }
+  } catch (error) {
+    console.warn('⚠️  Error sending run report webhook:', error instanceof Error ? error.message : String(error));
+  }
+}

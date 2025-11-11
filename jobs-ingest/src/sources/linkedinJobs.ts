@@ -132,7 +132,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   const { slotIndex } = getCurrentRunSlot(totalSlots);
   const slotDefinition = SLOT_DEFINITIONS[slotIndex];
   const backlogMode = isBacklogSlot(slotIndex);
-  const dateWindow = backlogMode ? 'all' : 'month';
+  const dateWindow = backlogMode ? 'all' : 'week';
 
   const baseTermsForRun = filterLinkedInTermsBySlot(searchTerms, totalSlots, slotIndex);
   const slotTerms = buildLinkedInSlotTerms(slotDefinition);
@@ -141,7 +141,7 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   slotTerms.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
 
   const maxSearchesEnv = Number(process.env.LINKEDIN_MAX_SEARCHES_PER_RUN);
-  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 40;
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 120;
   const termsForRun = Array.from(combinedTerms).slice(0, MAX_SEARCHES_PER_RUN);
 
   console.log(`  🕒 LinkedIn run slot: ${slotIndex + 1}/${totalSlots} (${slotDefinition.name})`);
@@ -169,7 +169,8 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         // Reduced pagination to avoid rate limits (429 errors)
         // Target: Get up to 100-200 jobs per term (reduced from 300)
         let termJobsFound = 0;
-        for (let offset = 0; offset < 200; offset += 100) { // Get up to 200 jobs per term (reduced from 300)
+        const maxOffsetEnv = Number(process.env.LINKEDIN_MAX_OFFSET) || 400;
+        for (let offset = 0; offset < maxOffsetEnv; offset += 100) {
           const encodedTerm = encodeURIComponent(`"${term}"`);
           const endpoint = backlogMode ? 'search' : 'active-jb-24h';
           const url = `https://linkedin-job-search-api.p.rapidapi.com/${endpoint}?title_filter=${encodedTerm}&location_filter="United Kingdom"&description_type=text&date_posted=${dateWindow}&limit=100&offset=${offset}`;
