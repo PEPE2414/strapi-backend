@@ -164,7 +164,7 @@ export class HybridScraper {
     for (let i = 0; i < steps; i++) {
       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
       await page.waitForTimeout(800 + Math.floor(Math.random() * 800));
-      const height = await page.evaluate(() => document.body.scrollHeight);
+      const height = await page.evaluate<number>('document.body.scrollHeight');
       if (height === lastHeight) break;
       lastHeight = height;
     }
