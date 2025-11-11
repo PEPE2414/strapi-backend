@@ -24,6 +24,16 @@ interface DiscoveredUrls {
 const urlCache: Map<string, DiscoveredUrls> = new Map();
 const detailCache: Map<string, { urls: string[]; lastUpdated: Date }> = new Map();
 
+function isLikelyListing(url: string): boolean {
+  const lower = url.toLowerCase();
+  return /search|jobs|intern|placement|graduate|vacanc|opportunit|scheme|programme/.test(lower);
+}
+
+function isLikelyDetail(url: string): boolean {
+  const lower = url.toLowerCase();
+  return /job|vacanc|role|position|opportunit/.test(lower) && !/sitemap|search|feed|rss/.test(lower);
+}
+
 /**
  * Common URL patterns for graduate job boards
  */
