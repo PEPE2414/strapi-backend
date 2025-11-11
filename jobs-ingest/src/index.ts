@@ -1,5 +1,8 @@
 import { scrapeGreenhouse } from './sources/greenhouse';
 import { scrapeLever } from './sources/lever';
+import { scrapeWorkable } from './sources/workable';
+import { scrapeAshby } from './sources/ashby';
+import { scrapeTeamtailor } from './sources/teamtailor';
 import { scrapeWorkday } from './sources/workday';
 import { scrapeSuccessFactors } from './sources/successfactors';
 import { scrapeICIMS } from './sources/icims';
@@ -30,7 +33,7 @@ import { scrapeFinanceBankCareers } from './sources/financeBankCareers';
 import { upsertJobs, testAuth } from './lib/strapi';
 import { llmAssist } from './lib/llm';
 import { validateJobRequirements, cleanJobDescription, isUKJob, isRelevantJobType } from './lib/normalize';
-import { getBucketsForToday, shouldExitEarly, getRateLimitForDomain } from './lib/rotation';
+import { getBucketsForToday, getRateLimitForDomain } from './lib/rotation';
 import { getCurrentRunSlot, isBacklogSlot } from './lib/runSlots';
 import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
 import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday, wasSeenRecently } from './lib/seenTodayCache';
@@ -39,6 +42,9 @@ import { summarizeRapidApiUsage, getRapidApiUsage } from './lib/rapidapiUsage';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
+  WORKABLE_COMPANIES,
+  ASHBY_COMPANIES,
+  TEAMTAILOR_COMPANIES,
   ALL_JOB_BOARDS, 
   ALL_COMPANIES,
   ENGINEERING_COMPANIES,
@@ -109,12 +115,33 @@ async function runAll() {
           const company = source.replace('lever:', '');
           console.log(`🔄 Scraping Lever: ${company}`);
           sourceJobs = await limiter.schedule(() => scrapeLever(company));
+        } else if (source.startsWith('workable:')) {
+          const company = source.replace('workable:', '');
+          console.log(`🔄 Scraping Workable: ${company}`);
+          sourceJobs = await limiter.schedule(() => scrapeWorkable(company));
+        } else if (source.startsWith('ashby:')) {
+          const company = source.replace('ashby:', '');
+          console.log(`🔄 Scraping AshbyHQ: ${company}`);
+          sourceJobs = await limiter.schedule(() => scrapeAshby(company));
+        } else if (source.startsWith('teamtailor:')) {
+          const company = source.replace('teamtailor:', '');
+          console.log(`🔄 Scraping Teamtailor: ${company}`);
+          sourceJobs = await limiter.schedule(() => scrapeTeamtailor(company));
         } else if (GREENHOUSE_BOARDS.includes(source)) {
           console.log(`🔄 Scraping Greenhouse: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeGreenhouse(source));
         } else if (LEVER_COMPANIES.includes(source)) {
           console.log(`🔄 Scraping Lever: ${source}`);
           sourceJobs = await limiter.schedule(() => scrapeLever(source));
+        } else if (WORKABLE_COMPANIES.includes(source)) {
+          console.log(`🔄 Scraping Workable: ${source}`);
+          sourceJobs = await limiter.schedule(() => scrapeWorkable(source));
+        } else if (ASHBY_COMPANIES.includes(source)) {
+          console.log(`🔄 Scraping AshbyHQ: ${source}`);
+          sourceJobs = await limiter.schedule(() => scrapeAshby(source));
+        } else if (TEAMTAILOR_COMPANIES.includes(source)) {
+          console.log(`🔄 Scraping Teamtailor: ${source}`);
+          sourceJobs = await limiter.schedule(() => scrapeTeamtailor(source));
         } else if (source.startsWith('workday:')) {
           const company = source.replace('workday:', '');
           console.log(`🔄 Scraping Workday: ${company}`);

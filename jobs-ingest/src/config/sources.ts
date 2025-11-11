@@ -10,6 +10,8 @@ export const GREENHOUSE_BOARDS = [
   // UK-specific companies with Greenhouse
   'deliveroo', 'transferwise', 'monzo', 'revolut', 'octopus-energy',
   'bulb', 'starling-bank', 'checkout', 'plum', 'freetrade',
+  // Engineering & consulting examples
+  'arup', 'mottmacdonald', 'pwccareers',
   // Consulting firms with UK offices
   'bcg', 'mckinsey', 'bain-company'
 ];
@@ -19,7 +21,21 @@ export const LEVER_COMPANIES = [
   // These are often used by startups/scale-ups with UK offices
   'netflix', 'spotify', 'canva', 'figma', 'notion',
   // UK startups/scaleups on Lever
-  'darktrace', 'improbable', 'benevolentai', 'graphcore'
+  'darktrace', 'improbable', 'benevolentai', 'graphcore',
+  // Engineering & infrastructure examples
+  'atkinsrealis', 'aecom', 'skanska'
+];
+
+export const WORKABLE_COMPANIES = [
+  'hoarelea', 'wsp', 'balfourbeatty'
+];
+
+export const ASHBY_COMPANIES = [
+  'monzo', 'revolut', 'deliveroo', 'wise', 'zettle'
+];
+
+export const TEAMTAILOR_COMPANIES = [
+  'costain', 'structurae', 'buildspace', 'alfaenergy'
 ];
 
 // ===== MAJOR JOB BOARDS (High Volume) =====
@@ -234,7 +250,12 @@ export const ALL_COMPANIES = [
   ...FINANCE_COMPANIES,
   ...CONSULTING_COMPANIES,
   ...MANUFACTURING_COMPANIES,
-  ...ENERGY_COMPANIES
+  ...ENERGY_COMPANIES,
+  ...GREENHOUSE_BOARDS,
+  ...LEVER_COMPANIES,
+  ...WORKABLE_COMPANIES,
+  ...ASHBY_COMPANIES,
+  ...TEAMTAILOR_COMPANIES
 ];
 
 // ===== LEGACY EXPORTS (for backward compatibility) =====
