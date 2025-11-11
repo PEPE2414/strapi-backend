@@ -79,6 +79,11 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
 
   console.log(`🔢 RapidAPI Active Jobs: using ${searchTerms.length} search terms (slot: ${slotDefinition.name})`);
 
+  const offsetStepEnv = Number(process.env.ACTIVE_JOBS_OFFSET_STEP);
+  const offsetStep = Number.isFinite(offsetStepEnv) && offsetStepEnv > 0 ? offsetStepEnv : 100;
+  const maxOffsetsEnv = Number(process.env.ACTIVE_JOBS_MAX_OFFSETS);
+  const maxOffsets = Number.isFinite(maxOffsetsEnv) && maxOffsetsEnv > 0 ? maxOffsetsEnv : 5;
+
   let requestCount = 0;
 
   try {
