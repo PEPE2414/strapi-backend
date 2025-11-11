@@ -577,3 +577,48 @@ export function isJobFresh(job: any, maxAgeDays: number = 30): boolean {
   // This is especially important for API jobs that may not have postedAt
   return true;
 }
+
+export function normalizeCompanyName(input: string): string {
+  if (!input) return 'Unknown';
+  let name = input.replace(/\s+/g, ' ').trim();
+  if (!name) return 'Unknown';
+
+  name = name.replace(/,?\s*(limited|ltd|plc|llp|inc|corporation|corp\.?|company|co\.?|holdings?|group)$/iu, '').trim();
+  name = name.replace(/\s{2,}/g, ' ');
+
+  if (!name) return 'Unknown';
+
+  const words = name.split(' ').map(word => {
+    if (!word) return '';
+    if (word.toUpperCase() === word) {
+      return word[0] + word.slice(1).toLowerCase();
+    }
+    return word[0].toUpperCase() + word.slice(1);
+  });
+
+  return words.join(' ').replace(/\s{2,}/g, ' ').trim();
+}
+
+export function normalizeLocation(input: string): string {
+  if (!input) return '';
+  const trimmed = input.replace(/\s+/g, ' ').trim();
+  if (!trimmed) return '';
+
+  const lower = trimmed.toLowerCase();
+  if (lower.includes('remote')) {
+    return 'Remote (UK)';
+  }
+  if (lower.includes('hybrid')) {
+    return 'Hybrid (UK)';
+  }
+  if (lower.includes('united kingdom') || lower.endsWith(', uk') || lower === 'uk') {
+    return 'United Kingdom';
+  }
+
+  return trimmed
+    .split(',')
+    .map(part => part.trim())
+    .filter(Boolean)
+    .map(part => part.replace(/\b\w/g, char => char.toUpperCase()))
+    .join(', ');
+}

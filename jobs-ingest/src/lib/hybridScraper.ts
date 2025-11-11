@@ -1,9 +1,21 @@
-import { chromium, Browser, Page } from 'playwright';
+import { chromium, Browser, Page, BrowserContext } from 'playwright';
 import { smartFetch } from './smartFetcher';
 import { fetchWithCloudflareBypass } from './cloudflareBypass';
 import { aggressiveExtractJobs } from './aggressiveJobExtractor';
 import * as cheerio from 'cheerio';
 import { CanonicalJob } from '../types';
+import { recordXHREndpoint } from './xhrDiscovery';
+import { registerDetailUrls } from './urlDiscovery';
+
+const LOAD_MORE_SELECTORS = [
+  'button:has-text("Load more")',
+  'button:has-text("Show more")',
+  'a:has-text("Load more")',
+  'a:has-text("Show more")',
+  '[data-testid*="load-more"]',
+  '[aria-label*="load more"]',
+  '[aria-label*="show more"]'
+];
 
 /**
  * Hybrid scraper that tries multiple strategies in order
@@ -13,6 +25,7 @@ import { CanonicalJob } from '../types';
  */
 export class HybridScraper {
   private browser: Browser | null = null;
+  private contextPool: Map<string, BrowserContext> = new Map();
 
   /**
    * Scrape a URL using hybrid approach
@@ -80,9 +93,12 @@ export class HybridScraper {
       });
     }
 
-    const page = await this.browser.newPage();
+    const context = await this.getContext(boardKey);
+    const page = await context.newPage();
     
     try {
+      await this.attachNetworkListeners(page, boardKey);
+
       // Set realistic user agent and headers
       await page.setExtraHTTPHeaders({
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -90,13 +106,12 @@ export class HybridScraper {
       
       // Navigate to the page
       await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-      
-      // Wait for potential dynamic content
-      await page.waitForTimeout(3000);
+      await this.simulateUserBehaviour(page);
       
       // Get the HTML content
       const html = await page.content();
       const $ = cheerio.load(html);
+      this.captureDetailLinks(html, url, boardKey);
       
       return aggressiveExtractJobs($, boardName, boardKey, url);
     } finally {
@@ -120,7 +135,101 @@ export class HybridScraper {
     if (this.browser) {
       await this.browser.close();
       this.browser = null;
+      this.contextPool.clear();
     }
+  }
+
+  private async getContext(boardKey: string): Promise<BrowserContext> {
+    const key = boardKey.toLowerCase();
+    if (this.contextPool.has(key)) {
+      return this.contextPool.get(key)!;
+    }
+    if (!this.browser) {
+      throw new Error('Browser not initialised');
+    }
+    const context = await this.browser.newContext({
+      viewport: {
+        width: 1200 + Math.floor(Math.random() * 200),
+        height: 850 + Math.floor(Math.random() * 200)
+      },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+    });
+    this.contextPool.set(key, context);
+    return context;
+  }
+
+  private async simulateUserBehaviour(page: Page): Promise<void> {
+    const steps = 3 + Math.floor(Math.random() * 4);
+    let lastHeight = 0;
+    for (let i = 0; i < steps; i++) {
+      await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+      await page.waitForTimeout(800 + Math.floor(Math.random() * 800));
+      const height = await page.evaluate('document.body.scrollHeight');
+      if (height === lastHeight) break;
+      lastHeight = height;
+    }
+
+    for (const selector of LOAD_MORE_SELECTORS) {
+      try {
+        const button = await page.$(selector);
+        if (button) {
+          await button.click({ delay: 30 });
+          await page.waitForTimeout(1200 + Math.floor(Math.random() * 800));
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      const width = 200 + Math.floor(Math.random() * 400);
+      const height = 200 + Math.floor(Math.random() * 200);
+      await page.mouse.move(width, height);
+      await page.mouse.move(width + 20, height + 10, { steps: 5 });
+    } catch {
+      // ignore
+    }
+  }
+
+  private captureDetailLinks(html: string, currentUrl: string, boardKey: string) {
+    const $ = cheerio.load(html);
+    const anchors = $('a[href]')
+      .map((_, el) => $(el).attr('href'))
+      .get()
+      .filter((href): href is string => Boolean(href));
+
+    const detailLinks = anchors
+      .map(href => {
+        try {
+          return new URL(href, currentUrl).toString();
+        } catch {
+          return null;
+        }
+      })
+      .filter((full): full is string => Boolean(full))
+      .filter(url =>
+        /job|vacanc|role|position|opportunit|listing/.test(url.toLowerCase()) &&
+        !/logout|login|register|bookmark|apply|javascript:void/.test(url.toLowerCase())
+      );
+
+    if (detailLinks.length > 0) {
+      registerDetailUrls(boardKey, detailLinks.slice(0, 200));
+    }
+  }
+
+  private async attachNetworkListeners(page: Page, boardKey: string) {
+    page.on('response', async (response) => {
+      try {
+        const url = response.url();
+        const headers = response.headers();
+        const contentType = headers['content-type'];
+        if (contentType && contentType.includes('application/json')) {
+          recordXHREndpoint(boardKey, url, contentType);
+        }
+      } catch {
+        // ignore
+      }
+    });
   }
 }
 

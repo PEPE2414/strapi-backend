@@ -5,6 +5,9 @@ import { smartFetch } from './smartFetcher';
 import { getBetterUrlPatterns } from './betterUrlPatterns';
 import { getRealisticUrlPatterns } from './realisticUrlPatterns';
 import { discoverUrlsWithPerplexity } from './perplexityUrlDiscovery';
+import { discoverSitemaps } from './sitemapDiscovery';
+import { discoverWithSearchAPI } from './searchDiscovery';
+import { getXHREndpoints } from './xhrDiscovery';
 
 /**
  * Adaptive URL discovery system
@@ -19,6 +22,7 @@ interface DiscoveredUrls {
 
 // Cache of discovered URLs (in-memory for now)
 const urlCache: Map<string, DiscoveredUrls> = new Map();
+const detailCache: Map<string, { urls: string[]; lastUpdated: Date }> = new Map();
 
 /**
  * Common URL patterns for graduate job boards
@@ -288,101 +292,183 @@ async function discoverFromHomepage(baseUrl: string): Promise<string | null> {
 /**
  * Auto-discover working job search URLs for a job board
  */
+function normaliseUrl(url: string, baseUrl?: string): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url, baseUrl).toString().split('#')[0];
+  } catch {
+    return null;
+  }
+}
+
+async function validateCandidates(boardKey: string, candidates: string[], maxValid = 4): Promise<string[]> {
+  const valid: string[] = [];
+  for (const candidate of candidates) {
+    if (valid.length >= maxValid) break;
+    try {
+      const isValid = await testUrl(candidate);
+      if (isValid) {
+        valid.push(candidate);
+      }
+    } catch (error) {
+      console.log(`⚠️  Candidate test failed for ${candidate}:`, error instanceof Error ? error.message : String(error));
+    }
+    await new Promise(resolve => setTimeout(resolve, 400));
+  }
+  if (valid.length > 0) {
+    console.log(`✅ ${boardKey}: ${valid.length}/${candidates.length} validated seeds`);
+  }
+  return valid;
+}
+
 export async function discoverWorkingUrls(
   boardKey: string,
   knownPatterns: string[],
   baseUrl?: string
 ): Promise<string[]> {
   console.log(`\n🔍 Auto-discovering working URLs for ${boardKey}...`);
-  
-  const workingUrls: string[] = [];
-  
-  // Try Perplexity AI discovery first (most likely to find current URLs)
+
+  const listingCandidates = new Set<string>();
+  const detailCandidates = new Set<string>();
+
+  if (baseUrl) {
+    try {
+      const sitemapResult = await discoverSitemaps(boardKey, baseUrl);
+      sitemapResult.listingUrls.forEach(url => {
+        const normalised = normaliseUrl(url);
+        if (normalised) listingCandidates.add(normalised);
+      });
+      sitemapResult.detailUrls.forEach(url => {
+        const normalised = normaliseUrl(url);
+        if (normalised) detailCandidates.add(normalised);
+      });
+      if (sitemapResult.listingUrls.length || sitemapResult.detailUrls.length) {
+        console.log(`  🗺️  Sitemaps discovered ${sitemapResult.listingUrls.length} listings & ${sitemapResult.detailUrls.length} detail URLs`);
+      }
+    } catch (error) {
+      console.warn(`  ⚠️  Sitemap discovery failed for ${boardKey}:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  // Search API discovery
+  if (baseUrl && (process.env.SERP_API_KEY || process.env.SERPER_API_KEY)) {
+    try {
+      const domain = new URL(baseUrl).hostname.replace(/^www\./, '');
+      const queries = [
+        '"placement" OR "year in industry"',
+        '"internship" OR "summer analyst"',
+        '"graduate scheme" OR "graduate programme"',
+        '"work placement" OR "industrial placement"'
+      ];
+      const searchResults = await discoverWithSearchAPI({
+        domain,
+        queries,
+        maxResults: 40
+      });
+      searchResults.forEach(result => {
+        const normalised = normaliseUrl(result.url);
+        if (!normalised) return;
+        if (isLikelyListing(normalised)) {
+          listingCandidates.add(normalised);
+        } else if (isLikelyDetail(normalised)) {
+          detailCandidates.add(normalised);
+        }
+      });
+      if (searchResults.length > 0) {
+        console.log(`  🔎 Search discovery yielded ${searchResults.length} candidates`);
+      }
+    } catch (error) {
+      console.warn(`  ⚠️  Search discovery error for ${boardKey}:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  // Previously captured XHR endpoints
+  const xhrEndpoints = getXHREndpoints(boardKey);
+  if (xhrEndpoints.length > 0) {
+    xhrEndpoints.forEach(url => {
+      const normalised = normaliseUrl(url);
+      if (normalised) listingCandidates.add(normalised);
+    });
+    console.log(`  🛰️  Reusing ${xhrEndpoints.length} cached XHR endpoints`);
+  }
+
+  // Perplexity discovery
   try {
-    console.log(`🤖 Trying Perplexity AI discovery for ${boardKey}...`);
     const perplexityResults = await discoverUrlsWithPerplexity(boardKey);
+    perplexityResults.forEach(url => {
+      const normalised = normaliseUrl(url);
+      if (normalised) listingCandidates.add(normalised);
+    });
     if (perplexityResults.length > 0) {
-      console.log(`✅ Found ${perplexityResults.length} working URLs with Perplexity AI`);
-      return perplexityResults;
+      console.log(`  🤖 Perplexity suggested ${perplexityResults.length} URLs`);
     }
   } catch (error) {
     console.log(`⚠️  Perplexity discovery failed:`, error instanceof Error ? error.message : String(error));
   }
-  
-  // Try realistic URL patterns as fallback (skipping heavy testing)
+
+  // Pattern-based fallbacks
   const realisticPatterns = getRealisticUrlPatterns(boardKey);
-  if (realisticPatterns.length > 0) {
-    console.log(`🎯 Using ${realisticPatterns.length} realistic URL patterns for ${boardKey} (skipping heavy testing)...`);
-    // Return first 3 patterns without testing to speed up
-    const selectedPatterns = realisticPatterns.slice(0, 3);
-    console.log(`✅ Using realistic patterns: ${selectedPatterns.join(', ')}`);
-    return selectedPatterns;
-  }
-  
-  // Try better URL patterns as fallback (skipping heavy testing)
+  realisticPatterns.forEach(url => {
+    const normalised = normaliseUrl(url, baseUrl);
+    if (normalised) listingCandidates.add(normalised);
+  });
+
   const betterPatterns = getBetterUrlPatterns(boardKey);
-  if (betterPatterns.length > 0) {
-    console.log(`🎯 Using ${betterPatterns.length} better URL patterns for ${boardKey} (skipping heavy testing)...`);
-    // Return first 3 patterns without testing to speed up
-    const selectedPatterns = betterPatterns.slice(0, 3);
-    console.log(`✅ Using better patterns: ${selectedPatterns.join(', ')}`);
-    return selectedPatterns;
-  }
-  
-  // Fall back to original patterns (skipping heavy testing)
-  if (knownPatterns.length > 0) {
-    console.log(`🔄 Using ${knownPatterns.length} original URL patterns for ${boardKey} (skipping heavy testing)...`);
-    // Return first 3 patterns without testing to speed up
-    const selectedPatterns = knownPatterns.slice(0, 3);
-    console.log(`✅ Using original patterns: ${selectedPatterns.join(', ')}`);
-    return selectedPatterns;
-  }
-  
-  const originalResults: string[] = [];
-  
-  // If no patterns worked, try homepage discovery
-  if (originalResults.length === 0 && baseUrl) {
-    console.log(`⚠️  No URL patterns worked, trying homepage discovery...`);
+  betterPatterns.forEach(url => {
+    const normalised = normaliseUrl(url, baseUrl);
+    if (normalised) listingCandidates.add(normalised);
+  });
+
+  knownPatterns.forEach(url => {
+    const normalised = normaliseUrl(url, baseUrl);
+    if (normalised) listingCandidates.add(normalised);
+  });
+
+  // Homepage fallback
+  if (baseUrl) {
     try {
-      const discoveredUrl = await discoverFromHomepage(baseUrl);
-      if (discoveredUrl) {
-        workingUrls.push(discoveredUrl);
-        console.log(`✅ Homepage discovery found: ${discoveredUrl}`);
+      const discovered = await discoverFromHomepage(baseUrl);
+      if (discovered) {
+        listingCandidates.add(discovered);
       }
     } catch (error) {
-      console.log(`⚠️  Homepage discovery failed:`, error instanceof Error ? error.message : String(error));
+      console.warn(`  ⚠️  Homepage discovery failed:`, error instanceof Error ? error.message : String(error));
     }
   }
-  
-  // If still no URLs found, try the base URL as a last resort
+
+  // Validate top candidates
+  const candidateArray = Array.from(listingCandidates).slice(0, 40);
+  let workingUrls = await validateCandidates(boardKey, candidateArray, 5);
+
+  // As a last resort, test the base URL
   if (workingUrls.length === 0 && baseUrl) {
-    console.log(`⚠️  Trying base URL as last resort: ${baseUrl}`);
-    try {
-      const isValid = await testUrl(baseUrl);
-      if (isValid) {
-        workingUrls.push(baseUrl);
-        console.log(`✅ Base URL works: ${baseUrl}`);
-      } else {
-        console.log(`❌ Base URL not valid: ${baseUrl}`);
-      }
-    } catch (error) {
-      console.log(`❌ Base URL error:`, error instanceof Error ? error.message : String(error));
+    const isValid = await testUrl(baseUrl);
+    if (isValid) {
+      workingUrls = [baseUrl];
     }
   }
-  
-  // Cache the results
+
+  // Cache results
+  const now = new Date();
   urlCache.set(boardKey, {
     working: workingUrls,
     failed: [],
-    lastUpdated: new Date()
+    lastUpdated: now
   });
-  
+
+  if (detailCandidates.size > 0) {
+    detailCache.set(boardKey, {
+      urls: Array.from(detailCandidates).slice(0, 500),
+      lastUpdated: now
+    });
+  }
+
   if (workingUrls.length === 0) {
     console.warn(`⚠️  No working URLs found for ${boardKey}`);
   } else {
     console.log(`✅ Found ${workingUrls.length} working URLs for ${boardKey}`);
   }
-  
+
   return workingUrls;
 }
 
@@ -441,6 +527,31 @@ export async function getWorkingUrls(
   
   // No cache or expired, discover new URLs
   return await discoverWorkingUrls(boardKey, knownPatterns, baseUrl);
+}
+
+export function getDiscoveredDetailUrls(
+  boardKey: string,
+  maxCacheAge: number = 4 * 60 * 60 * 1000
+): string[] {
+  const entry = detailCache.get(boardKey);
+  if (!entry || entry.urls.length === 0) return [];
+  const age = Date.now() - entry.lastUpdated.getTime();
+  if (age > maxCacheAge) return [];
+  return entry.urls;
+}
+
+export function registerDetailUrls(boardKey: string, urls: string[]): void {
+  if (!urls.length) return;
+  const entry = detailCache.get(boardKey) || { urls: [], lastUpdated: new Date(0) };
+  const combined = new Set<string>(entry.urls);
+  urls.forEach(url => {
+    const normalised = normaliseUrl(url);
+    if (normalised) combined.add(normalised);
+  });
+  detailCache.set(boardKey, {
+    urls: Array.from(combined).slice(0, 600),
+    lastUpdated: new Date()
+  });
 }
 
 /**

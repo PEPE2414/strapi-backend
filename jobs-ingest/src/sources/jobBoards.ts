@@ -1,20 +1,16 @@
-import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { smartFetch } from '../lib/smartFetcher';
-import { getWorkingUrls } from '../lib/urlDiscovery';
-import { extractDeadlineFromJobCard } from '../lib/deadlineExtractor';
+import { getWorkingUrls, getDiscoveredDetailUrls, registerDetailUrls } from '../lib/urlDiscovery';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
 import { debugExtractJobs } from '../lib/debugExtractor';
 import { aggressiveExtractJobs } from '../lib/aggressiveJobExtractor';
 import * as cheerio from 'cheerio';
-import { extractJobPostingJSONLD } from '../lib/jsonld';
-import { pickLogo } from '../lib/logo';
-import { resolveApplyUrl } from '../lib/applyUrl';
 import { CanonicalJob } from '../types';
 import { makeUniqueSlug } from '../lib/slug';
-import { sha256 } from '../lib/hash';
-import { classifyJobType, parseSalary, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { classifyJobType, isRelevantJobType, isUKJob, normalizeCompanyName, normalizeLocation } from '../lib/normalize';
 import { scrapeUrlsWithHybrid } from '../lib/hybridScraper';
+import { scrapeFromUrls } from './sitemapGeneric';
+import { generateJobHash } from '../lib/jobHash';
 
 // Job board configurations with MULTIPLE URL patterns
 // The scraper will auto-discover which URLs actually work
@@ -173,6 +169,11 @@ const JOB_BOARDS = {
   }
 };
 
+const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround', 'trackr', 'gradcracker']);
+const LISTING_PAGE_LIMIT = 10;
+const MAX_QUEUE_SIZE = 24;
+const DETAIL_FETCH_LIMIT = 160;
+
 export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> {
   console.log(`🚀 Starting job board scraper for: ${boardKey}`);
   console.log(`🛡️  ${getBypassStatus()}`);
@@ -184,7 +185,19 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
   }
 
   console.log(`🔄 Scraping ${board.name}...`);
-  const jobs: CanonicalJob[] = [];
+  const results: CanonicalJob[] = [];
+  const seenHashes = new Set<string>();
+
+  const addJob = (job: CanonicalJob) => {
+    const normalized = normalizeCanonicalJob(job);
+    const summary = `${normalized.title} ${normalized.descriptionText || normalized.descriptionHtml || ''} ${normalized.location || ''}`;
+    if (!normalized.applyUrl) return;
+    if (!isRelevantJobType(summary)) return;
+    if (!isUKJob(summary)) return;
+    if (seenHashes.has(normalized.hash)) return;
+    seenHashes.add(normalized.hash);
+    results.push(normalized);
+  };
 
   try {
     // AUTO-DISCOVER working URLs (tries multiple patterns, caches results)
@@ -201,375 +214,242 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
     }
     
     console.log(`✅ Found ${workingUrls.length} working URLs for ${board.name}`);
-    
-    // Use the hybrid scraper (Direct → Playwright → ScraperAPI) for JS-heavy boards
-    const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround', 'trackr']);
+
+    const detailSeedSet = new Set<string>(getDiscoveredDetailUrls(boardKey));
+
     if (HYBRID_BOARDS.has(boardKey)) {
       console.log(`🎭 Using hybrid scraper for ${board.name}...`);
       const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 3), board.name, boardKey);
-      return hybridJobs;
-    }
-    
-    // Scrape each working URL
-    for (const searchUrl of workingUrls.slice(0, 2)) {
-      try {
-        console.log(`🔄 Scraping: ${searchUrl}`);
-        const searchJobs = await scrapeSearchPageDirect(searchUrl, board.name, boardKey);
-          jobs.push(...searchJobs);
-        console.log(`✅ Extracted ${searchJobs.length} jobs from this URL`);
-          
-        // Add delay between URLs
-        await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 3000));
-        } catch (error) {
-        console.warn(`Failed to scrape ${searchUrl}:`, error instanceof Error ? error.message : String(error));
-      }
+      hybridJobs.forEach(addJob);
     }
 
-    console.log(`✅ ${board.name}: Found ${jobs.length} total jobs`);
-    return jobs;
+    const { jobs: listingJobs, detailUrls: discoveredDetailUrls } = await crawlListingUrls(
+      workingUrls.slice(0, 4),
+      boardKey,
+      board.name
+    );
+    listingJobs.forEach(addJob);
+    discoveredDetailUrls.forEach(url => detailSeedSet.add(url));
+
+    registerDetailUrls(boardKey, Array.from(detailSeedSet));
+
+    const detailUrlsToFetch = Array.from(detailSeedSet).slice(0, DETAIL_FETCH_LIMIT);
+    if (detailUrlsToFetch.length > 0) {
+      console.log(`🔁 Fetching ${detailUrlsToFetch.length} detail pages for ${board.name}`);
+      const detailJobs = await scrapeFromUrls(detailUrlsToFetch, `${board.name} detail`);
+      detailJobs.forEach(addJob);
+    }
+
+    console.log(`✅ ${board.name}: Found ${results.length} unique jobs`);
+    return results;
 
   } catch (error) {
     console.warn(`Failed to scrape ${board.name}:`, error instanceof Error ? error.message : String(error));
-    return [];
+    return results;
   }
 }
 
-/**
- * Extract jobs DIRECTLY from search page HTML (no individual page scraping)
- */
-async function scrapeSearchPageDirect(url: string, boardName: string, boardKey: string): Promise<CanonicalJob[]> {
+async function crawlListingUrls(
+  startUrls: string[],
+  boardKey: string,
+  boardName: string
+): Promise<{ jobs: CanonicalJob[]; detailUrls: string[] }> {
+  const queue: string[] = [...new Set(startUrls)];
+  const visited = new Set<string>();
+  const jobs: CanonicalJob[] = [];
+  const detailLinks = new Set<string>();
+
+  while (queue.length > 0 && visited.size < LISTING_PAGE_LIMIT) {
+    const current = queue.shift();
+    if (!current) break;
+    if (visited.has(current)) continue;
+    visited.add(current);
+
+    try {
+      console.log(`🔄 Listing crawl: ${current}`);
+      const html = await fetchListingHtml(current);
+      if (!html) continue;
+      const $ = cheerio.load(html);
+
+      const pageJobs = extractJobsFromListing($, boardName, boardKey, current);
+      if (pageJobs.length > 0) {
+        console.log(`  ✅ ${pageJobs.length} jobs from listing page`);
+        jobs.push(...pageJobs);
+      }
+
+      const pageDetailLinks = collectDetailLinks($, current);
+      if (pageDetailLinks.length > 0) {
+        console.log(`  🔗 Captured ${pageDetailLinks.length} detail links`);
+        pageDetailLinks.forEach(link => detailLinks.add(link));
+        registerDetailUrls(boardKey, pageDetailLinks);
+      }
+
+      const paginationLinks = collectPaginationLinks($, current);
+      paginationLinks.forEach(link => {
+        if (!visited.has(link) && !queue.includes(link) && queue.length < MAX_QUEUE_SIZE) {
+          queue.push(link);
+        }
+      });
+    } catch (error) {
+      console.warn(`  ⚠️  Failed to process listing ${current}:`, error instanceof Error ? error.message : String(error));
+    }
+
+    await delay(900 + Math.random() * 700);
+  }
+
+  return { jobs, detailUrls: Array.from(detailLinks) };
+}
+
+async function fetchListingHtml(url: string): Promise<string | null> {
   try {
     const { html } = await smartFetch(url);
-    const $ = cheerio.load(html);
-    const jobs: CanonicalJob[] = [];
-
-    console.log(`📊 Fetched ${html.length} chars, parsing...`);
-
-    // Use aggressive extractor for maximum job discovery
-    const aggressiveJobs = aggressiveExtractJobs($, boardName, boardKey, url);
-    if (aggressiveJobs.length > 0) {
-      console.log(`✅ Aggressive extractor found ${aggressiveJobs.length} jobs`);
-      return aggressiveJobs;
+    if (html && html.length > 0) {
+      return html;
     }
-    
-    console.log(`⚠️  Aggressive extractor found 0 jobs, trying debug extractor...`);
-    
-    // Fallback to debug extractor
-    const debugJobs = debugExtractJobs($, boardName, boardKey, url);
-    if (debugJobs.length > 0) {
-      console.log(`✅ Debug extractor found ${debugJobs.length} jobs`);
-      return debugJobs;
-    }
-    
-    console.log(`⚠️  Debug extractor found 0 jobs, trying specialized graduate extractor...`);
-    
-    // Fallback to specialized graduate extractor
-    const graduateJobs = extractGraduateJobs($, boardName, boardKey);
-    if (graduateJobs.length > 0) {
-      console.log(`✅ Graduate extractor found ${graduateJobs.length} jobs`);
-      return graduateJobs;
-    }
-    
-    console.log(`⚠️  All extractors found 0 jobs, trying fallback methods...`);
-
-    // Try multiple job card selectors (ultra comprehensive)
-    const jobSelectors = [
-      // Common job card patterns
-      '.job-card', '.job-listing', '.job-item', '.job-result', '.job-post', '.job',
-      '[class*="JobCard"]', '[class*="job-card"]', '[class*="job-listing"]',
-      '[class*="job-item"]', '[class*="job-result"]', '[class*="job-post"]',
-      '[class*="job"]', '[class*="Job"]',
-      
-      // Article and result patterns
-      'article[class*="job"]', 'article[class*="listing"]', 'article[class*="result"]',
-      'article[class*="post"]', 'article[class*="item"]', 'article[class*="card"]',
-      '.search-result', '.result', '.vacancy', '.position', '.opportunity',
-      '.role', '.career', '.employment', '.listing', '.post', '.item', '.card',
-      
-      // Data attribute patterns (comprehensive)
-      '[data-testid*="job"]', '[data-testid*="listing"]', '[data-testid*="result"]',
-      '[data-testid*="post"]', '[data-testid*="item"]', '[data-testid*="card"]',
-      '[data-cy*="job"]', '[data-cy*="listing"]', '[data-cy*="result"]',
-      '[data-cy*="post"]', '[data-cy*="item"]', '[data-cy*="card"]',
-      '[data-test*="job"]', '[data-test*="listing"]', '[data-test*="result"]',
-      
-      // Generic patterns
-      'article', '.item', '.entry', '.post', '.content', '.card', '.box',
-      '[class*="listing"]', '[class*="result"]', '[class*="vacancy"]',
-      '[class*="position"]', '[class*="opportunity"]', '[class*="role"]',
-      '[class*="career"]', '[class*="employment"]', '[class*="item"]',
-      '[class*="entry"]', '[class*="post"]', '[class*="content"]',
-      '[class*="card"]', '[class*="box"]', '[class*="tile"]',
-      
-      // Table row patterns (some sites use tables)
-      'tr[class*="job"]', 'tr[class*="listing"]', 'tr[class*="result"]',
-      'tr[class*="post"]', 'tr[class*="item"]', 'tr[class*="card"]',
-      'td[class*="job"]', 'td[class*="listing"]', 'td[class*="result"]',
-      'td[class*="post"]', 'td[class*="item"]', 'td[class*="card"]',
-      
-      // List item patterns
-      'li[class*="job"]', 'li[class*="listing"]', 'li[class*="result"]',
-      'li[class*="vacancy"]', 'li[class*="position"]', 'li[class*="opportunity"]',
-      'li[class*="post"]', 'li[class*="item"]', 'li[class*="card"]',
-      
-      // Div patterns (very common)
-      'div[class*="job"]', 'div[class*="listing"]', 'div[class*="result"]',
-      'div[class*="post"]', 'div[class*="item"]', 'div[class*="card"]',
-      'div[class*="vacancy"]', 'div[class*="position"]', 'div[class*="opportunity"]',
-      
-      // Section patterns
-      'section[class*="job"]', 'section[class*="listing"]', 'section[class*="result"]',
-      'section[class*="post"]', 'section[class*="item"]', 'section[class*="card"]',
-      
-      // Link patterns (jobs as links)
-      'a[class*="job"]', 'a[class*="listing"]', 'a[class*="result"]',
-      'a[class*="post"]', 'a[class*="item"]', 'a[class*="card"]',
-      'a[href*="job"]', 'a[href*="career"]', 'a[href*="vacancy"]',
-      
-      // Specific to graduate job boards
-      '.graduate-job', '.graduate-listing', '.graduate-result',
-      '.internship', '.placement', '.scheme', '.programme',
-      '[class*="graduate"]', '[class*="internship"]', '[class*="placement"]',
-      '[class*="scheme"]', '[class*="programme"]'
-    ];
-
-    let $jobCards = $();
-    let usedSelector = '';
-    
-    for (const selector of jobSelectors) {
-      const found = $(selector);
-      if (found.length > 0) {
-        $jobCards = found;
-        usedSelector = selector;
-        console.log(`📦 Found ${found.length} elements with: ${selector}`);
-        break;
-      }
-    }
-
-    if ($jobCards.length === 0) {
-      console.warn(`⚠️  No job cards found on ${url} - trying fallback extraction...`);
-      
-      // Fallback: try to extract any text that looks like job titles
-      const allText = $.text();
-      const lines = allText.split('\n').map(line => line.trim()).filter(line => line.length > 10);
-      
-      // Look for lines that might be job titles (contain job-related keywords)
-      const jobKeywords = [
-        'graduate', 'internship', 'placement', 'scheme', 'programme', 'program', 
-        'trainee', 'entry level', 'junior', 'vacancy', 'position', 'role',
-        'career', 'employment', 'opportunity', 'job', 'work', 'experience',
-        'summer', 'winter', 'year in industry', 'industrial placement',
-        'work placement', 'student placement', 'sandwich', 'co-op'
-      ];
-      const potentialJobs = lines.filter(line => 
-        jobKeywords.some(keyword => line.toLowerCase().includes(keyword)) &&
-        line.length > 15 && line.length < 300 &&
-        !line.includes('cookie') && !line.includes('privacy') && 
-        !line.includes('terms') && !line.includes('contact') &&
-        !line.includes('about') && !line.includes('help')
-      );
-      
-      console.log(`📋 Fallback: Found ${potentialJobs.length} potential job titles`);
-      
-      // Additional fallback: try to extract from links and headings
-      const links = $('a[href]').map((i, el) => $(el).text().trim()).get();
-      const headings = $('h1, h2, h3, h4, h5, h6').map((i, el) => $(el).text().trim()).get();
-      
-      const linkJobs = links.filter(link => 
-        jobKeywords.some(keyword => link.toLowerCase().includes(keyword)) &&
-        link.length > 15 && link.length < 200
-      );
-      
-      const headingJobs = headings.filter(heading => 
-        jobKeywords.some(keyword => heading.toLowerCase().includes(keyword)) &&
-        heading.length > 15 && heading.length < 200
-      );
-      
-      console.log(`📋 Additional fallback: Found ${linkJobs.length} link jobs, ${headingJobs.length} heading jobs`);
-      
-      // Combine all potential jobs
-      const allPotentialJobs = [...potentialJobs, ...linkJobs, ...headingJobs];
-      const uniqueJobs = [...new Set(allPotentialJobs)]; // Remove duplicates
-      
-      console.log(`📋 Total unique potential jobs: ${uniqueJobs.length}`);
-      
-      // Create basic job entries from potential titles
-      for (let i = 0; i < Math.min(uniqueJobs.length, 30); i++) {
-        const title = uniqueJobs[i];
-        if (title && title.length > 5) {
-          const job: CanonicalJob = {
-            source: boardKey,
-            sourceUrl: url,
-            title,
-            company: { name: 'Unknown' },
-            location: 'UK',
-            descriptionHtml: '',
-            descriptionText: '',
-            applyUrl: url,
-            applyDeadline: undefined,
-            jobType: classifyJobType(title),
-            salary: undefined,
-            hash: sha256([title, 'Unknown', url].join('|')),
-            slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url, Date.now().toString()].join('|')), 'UK')
-          };
-          
-          // Only add if it's a relevant job type
-          if (isRelevantJobType(title) && isUKJob(title)) {
-            jobs.push(job);
-          }
-        }
-      }
-      
-      if (jobs.length === 0) {
-        console.warn(`⚠️  Fallback extraction also failed - trying ultra-aggressive extraction...`);
-        
-        // Ultra-aggressive fallback: extract any text that looks like a job
-        const allText = $.text();
-        const words = allText.split(/\s+/);
-        const jobPhrases: string[] = [];
-        
-        // Look for job-related phrases
-        for (let i = 0; i < words.length - 2; i++) {
-          const phrase = words.slice(i, i + 3).join(' ').toLowerCase();
-          if (jobKeywords.some(keyword => phrase.includes(keyword))) {
-            const fullPhrase = words.slice(i, i + 5).join(' ').trim();
-            if (fullPhrase.length > 20 && fullPhrase.length < 200) {
-              jobPhrases.push(fullPhrase);
-            }
-          }
-        }
-        
-        const uniquePhrases = [...new Set(jobPhrases)];
-        console.log(`📋 Ultra-aggressive: Found ${uniquePhrases.length} job phrases`);
-        
-        // Create jobs from phrases
-        for (let i = 0; i < Math.min(uniquePhrases.length, 20); i++) {
-          const title = uniquePhrases[i];
-          if (title && title.length > 10) {
-            const job: CanonicalJob = {
-              source: boardKey,
-              sourceUrl: url,
-              title,
-              company: { name: 'Unknown' },
-              location: 'UK',
-              descriptionHtml: '',
-              descriptionText: '',
-              applyUrl: url,
-              applyDeadline: undefined,
-              jobType: classifyJobType(title),
-              salary: undefined,
-              hash: sha256([title, 'Unknown', url].join('|')),
-              slug: makeUniqueSlug(title, 'Unknown', sha256([title, 'Unknown', url, Date.now().toString()].join('|')), 'UK')
-            };
-            
-            if (isRelevantJobType(title) && isUKJob(title)) {
-              jobs.push(job);
-            }
-          }
-        }
-        
-        if (jobs.length === 0) {
-          console.warn(`⚠️  All extraction methods failed - page might be JS-rendered or wrong URL`);
-        }
-      }
-      
-      return jobs;
-    }
-
-    // Extract job data from each card (limit to 30)
-    for (let i = 0; i < Math.min($jobCards.length, 30); i++) {
-      try {
-        const $card = $jobCards.eq(i);
-        
-        // Extract title with comprehensive fallbacks
-        const title = (
-          $card.find('h1, h2, h3, h4').first().text().trim() ||
-          $card.find('[class*="title"], [class*="Title"], [class*="job-title"], [class*="jobTitle"]').first().text().trim() ||
-          $card.find('[class*="heading"], [class*="Heading"]').first().text().trim() ||
-          $card.find('a').first().text().trim() ||
-          $card.find('strong, b').first().text().trim() ||
-          $card.text().split('\n')[0].trim()
-        );
-        
-        // Extract company with comprehensive fallbacks
-        const company = (
-          $card.find('[class*="company"], [class*="Company"], [class*="employer"], [class*="Employer"]').first().text().trim() ||
-          $card.find('[class*="organisation"], [class*="Organization"], [class*="org"]').first().text().trim() ||
-          $card.find('[class*="firm"], [class*="Firm"]').first().text().trim() ||
-          $card.find('[class*="business"], [class*="Business"]').first().text().trim() ||
-          $card.find('span[class*="company"], span[class*="employer"]').first().text().trim()
-        );
-        
-        // Extract location with comprehensive fallbacks
-        const location = (
-          $card.find('[class*="location"], [class*="Location"], [class*="place"], [class*="Place"]').first().text().trim() ||
-          $card.find('[class*="address"], [class*="Address"]').first().text().trim() ||
-          $card.find('[class*="city"], [class*="City"]').first().text().trim() ||
-          $card.find('[class*="area"], [class*="Area"]').first().text().trim() ||
-          $card.find('span[class*="location"], span[class*="place"]').first().text().trim()
-        );
-        
-        // Get link with comprehensive fallbacks
-        const link = (
-          $card.find('a[href]').first().attr('href') ||
-          $card.find('[href]').first().attr('href') ||
-          $card.attr('href')
-        );
-        
-        if (!title || title.length < 5) {
-          continue;
-        }
-        
-        // Build apply URL
-        const applyUrl = link ? new URL(link, url).toString() : url;
-        
-        // Filter for relevance and UK
-        const fullText = `${title} ${company} ${location}`;
-        if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
-          continue;
-        }
-        
-        const hash = sha256([title, company || boardName, applyUrl].join('|'));
-        const slug = makeUniqueSlug(title, company || boardName, hash, location);
-
-    const job: CanonicalJob = {
-          source: boardKey,
-      sourceUrl: url,
-      title,
-          company: { name: company || boardName },
-      location,
-          descriptionHtml: $card.find('[class*="description"], [class*="summary"]').first().text().substring(0, 500),
-      descriptionText: undefined,
-      applyUrl,
-          applyDeadline: extractDeadlineFromJobCard($card),
-          jobType: classifyJobType(title),
-          salary: undefined,
-      startDate: undefined,
-      endDate: undefined,
-      duration: undefined,
-      experience: undefined,
-          companyPageUrl: undefined,
-      relatedDegree: undefined,
-          degreeLevel: ['UG'],
-          postedAt: new Date().toISOString(),
-      slug,
-      hash
-    };
-
-          jobs.push(job);
-        console.log(`  ✅ #${i+1}: "${title}" at ${company || 'Unknown'} (${location || 'N/A'})`);
   } catch (error) {
-        console.warn(`  ⚠️  Error extracting job #${i}:`, error);
+    console.warn(`  ⚠️  smartFetch failed for ${url}:`, error instanceof Error ? error.message : String(error));
+  }
+
+  try {
+    const { html } = await fetchWithCloudflareBypass(url);
+    return html;
+  } catch (error) {
+    console.warn(`  ⚠️  Bypass fetch failed for ${url}:`, error instanceof Error ? error.message : String(error));
+    return null;
+  }
+}
+
+function extractJobsFromListing(
+  $: cheerio.CheerioAPI,
+  boardName: string,
+  boardKey: string,
+  url: string
+): CanonicalJob[] {
+  const aggressive = aggressiveExtractJobs($, boardName, boardKey, url);
+  if (aggressive.length > 0) return aggressive;
+
+  const debug = debugExtractJobs($, boardName, boardKey, url);
+  if (debug.length > 0) return debug;
+
+  const graduate = extractGraduateJobs($, boardName, boardKey);
+  if (graduate.length > 0) return graduate;
+
+  return [];
+}
+
+function collectDetailLinks($: cheerio.CheerioAPI, currentUrl: string): string[] {
+  const links = new Set<string>();
+
+  const addLink = (href?: string | null) => {
+    if (!href) return;
+    try {
+      const full = new URL(href, currentUrl).toString().split('#')[0];
+      const lower = full.toLowerCase();
+      if (
+        /job|vacancy|role|position|opportunit|listing/.test(lower) &&
+        !/logout|login|register|mailto|tel:|javascript:void/.test(lower)
+      ) {
+        links.add(full);
+      }
+    } catch {
+      // ignore invalid
+    }
+  };
+
+  $('a[href]').each((_, el) => addLink($(el).attr('href')));
+  $('[data-url]').each((_, el) => addLink($(el).attr('data-url')));
+  $('[data-href]').each((_, el) => addLink($(el).attr('data-href')));
+
+  return Array.from(links).slice(0, 200);
+}
+
+function collectPaginationLinks($: cheerio.CheerioAPI, currentUrl: string): string[] {
+  const links = new Set<string>();
+
+  $('a[rel="next"]').each((_, el) => {
+    const href = $(el).attr('href');
+    if (href) {
+      try {
+        links.add(new URL(href, currentUrl).toString());
+      } catch {
+        // ignore
+      }
+    }
+  });
+
+  $('a').each((_, el) => {
+    const text = $(el).text().trim().toLowerCase();
+    if (!text) return;
+    if (/(next|more results|older|load more|show more)/.test(text)) {
+      const href = $(el).attr('href');
+      if (href) {
+        try {
+          links.add(new URL(href, currentUrl).toString());
+        } catch {
+          // ignore
+        }
+      }
+    }
+  });
+
+  try {
+    const current = new URL(currentUrl);
+    const page = current.searchParams.get('page');
+    if (page) {
+      const nextPage = Number(page) + 1;
+      if (Number.isFinite(nextPage)) {
+        const next = new URL(currentUrl);
+        next.searchParams.set('page', String(nextPage));
+        links.add(next.toString());
       }
     }
 
-    console.log(`📊 Successfully extracted ${jobs.length} jobs from search page`);
-    return jobs;
-
-      } catch (error) {
-    console.warn(`Failed to fetch search page ${url}:`, error instanceof Error ? error.message : String(error));
-    return [];
+    const offset = current.searchParams.get('offset');
+    if (offset) {
+      const nextOffset = Number(offset) + 1;
+      if (Number.isFinite(nextOffset)) {
+        const next = new URL(currentUrl);
+        next.searchParams.set('offset', String(nextOffset));
+        links.add(next.toString());
+      }
+    }
+  } catch {
+    // ignore
   }
+
+  return Array.from(links).slice(0, 10);
+}
+
+function normalizeCanonicalJob(job: CanonicalJob): CanonicalJob {
+  const companyName = normalizeCompanyName(job.company?.name || 'Unknown');
+  const location = job.location ? normalizeLocation(job.location) : undefined;
+  const summary = `${job.title} ${job.descriptionText || job.descriptionHtml || ''}`;
+  const jobType = job.jobType && job.jobType !== 'other'
+    ? job.jobType
+    : classifyJobType(summary);
+
+  const hash = generateJobHash({
+    title: job.title,
+    company: companyName,
+    applyUrl: job.applyUrl,
+    location,
+    postedAt: job.postedAt
+  });
+
+  const slug = makeUniqueSlug(job.title, companyName, hash, location);
+
+  return {
+    ...job,
+    company: { ...job.company, name: companyName },
+    location: location || undefined,
+    jobType,
+    hash,
+    slug
+  };
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Export individual board scrapers
