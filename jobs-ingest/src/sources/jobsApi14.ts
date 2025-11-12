@@ -55,79 +55,122 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
   const seen = new Set<string>();
   let duplicates = 0;
+  let consecutive429s = 0;
+  const MAX_429_RETRIES = 3;
+  const BASE_DELAY_MS = 2000; // Start with 2 seconds
+  const REQUEST_DELAY_MS = 100; // Small delay between requests to avoid rate limits
 
   for (const { query, workplaceTypes, employmentTypes, experienceLevels } of queryTerms) {
-    try {
-      const url = new URL('https://jobs-api14.p.rapidapi.com/v2/linkedin/search');
-      url.searchParams.set('query', query);
-      url.searchParams.set('experienceLevels', experienceLevels.join('%3B'));
-      url.searchParams.set('workplaceTypes', workplaceTypes.join('%3B'));
-      url.searchParams.set('location', 'United Kingdom');
-      url.searchParams.set('datePosted', datePosted);
-      url.searchParams.set('employmentTypes', employmentTypes.join('%3B'));
+    // Add small delay between requests to avoid hitting rate limits
+    if (jobs.length > 0) {
+      await new Promise(resolve => setTimeout(resolve, REQUEST_DELAY_MS));
+    }
 
-      recordRapidApiRequest('jobs-api14');
-      const response = await fetch(url.toString(), {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-          'X-RapidAPI-Host': 'jobs-api14.p.rapidapi.com'
-        }
-      });
+    let retryCount = 0;
+    let success = false;
+    
+    while (retryCount <= MAX_429_RETRIES && !success) {
+      try {
+        const url = new URL('https://jobs-api14.p.rapidapi.com/v2/linkedin/search');
+        url.searchParams.set('query', query);
+        url.searchParams.set('experienceLevels', experienceLevels.join('%3B'));
+        url.searchParams.set('workplaceTypes', workplaceTypes.join('%3B'));
+        url.searchParams.set('location', 'United Kingdom');
+        url.searchParams.set('datePosted', datePosted);
+        url.searchParams.set('employmentTypes', employmentTypes.join('%3B'));
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.warn(`  ⚠️  Jobs API 14 request failed (${response.status}): ${errorText.substring(0, 200)}`);
-        continue;
-      }
-
-      const data = await response.json();
-      const jobArray = extractJobs(data);
-
-      if (jobArray.length === 0) {
-        continue;
-      }
-
-      console.log(`    📦 Jobs API 14 "${query}" returned ${jobArray.length} results`);
-
-      for (const raw of jobArray) {
-        const canonical = convertJob(raw);
-        if (!canonical) continue;
-
-        const industryHints = [
-          ...slotDefinition.industries,
-          raw.jobIndustry,
-          ...(raw.industries ?? []),
-          query
-        ].filter((hint): hint is string => Boolean(hint && String(hint).trim()));
-
-        const inferredIndustry = classifyIndustry({
-          title: canonical.title,
-          description: canonical.descriptionText || canonical.descriptionHtml,
-          company: canonical.company?.name,
-          hints: industryHints,
-          query
+        recordRapidApiRequest('jobs-api14');
+        const response = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+            'X-RapidAPI-Host': 'jobs-api14.p.rapidapi.com'
+          }
         });
 
-        if (inferredIndustry) {
-          canonical.industry = inferredIndustry;
+        if (!response.ok) {
+          const errorText = await response.text();
+          
+          // Handle rate limiting (429) with exponential backoff
+          if (response.status === 429) {
+            consecutive429s++;
+            retryCount++;
+            if (retryCount <= MAX_429_RETRIES) {
+              const delayMs = BASE_DELAY_MS * Math.pow(2, retryCount - 1); // Exponential backoff: 2s, 4s, 8s
+              console.warn(`  ⚠️  Jobs API 14 rate limited (429). Waiting ${delayMs / 1000}s before retry ${retryCount}/${MAX_429_RETRIES}...`);
+              await new Promise(resolve => setTimeout(resolve, delayMs));
+              continue; // Retry the same query
+            } else {
+              console.warn(`  ⚠️  Jobs API 14 rate limited (429) after ${MAX_429_RETRIES} retries. Skipping query "${query}" and remaining queries.`);
+              consecutive429s = MAX_429_RETRIES + 1; // Mark that we've exceeded retries
+              break; // Stop retrying this query
+            }
+          } else {
+            // Reset 429 counter on non-429 errors
+            consecutive429s = 0;
+            console.warn(`  ⚠️  Jobs API 14 request failed (${response.status}): ${errorText.substring(0, 200)}`);
+            break; // Move to next query
+          }
+        }
+        
+        // Reset 429 counter on success
+        consecutive429s = 0;
+        success = true;
+
+        const data = await response.json();
+        const jobArray = extractJobs(data);
+
+        if (jobArray.length === 0) {
+          break; // Move to next query
         }
 
-        const key = `${canonical.hash}`;
-        if (seen.has(key)) {
-          duplicates++;
-          continue;
+        console.log(`    📦 Jobs API 14 "${query}" returned ${jobArray.length} results`);
+
+        for (const raw of jobArray) {
+          const canonical = convertJob(raw);
+          if (!canonical) continue;
+
+          const industryHints = [
+            ...slotDefinition.industries,
+            raw.jobIndustry,
+            ...(raw.industries ?? []),
+            query
+          ].filter((hint): hint is string => Boolean(hint && String(hint).trim()));
+
+          const inferredIndustry = classifyIndustry({
+            title: canonical.title,
+            description: canonical.descriptionText || canonical.descriptionHtml,
+            company: canonical.company?.name,
+            hints: industryHints,
+            query
+          });
+
+          if (inferredIndustry) {
+            canonical.industry = inferredIndustry;
+          }
+
+          const key = `${canonical.hash}`;
+          if (seen.has(key)) {
+            duplicates++;
+            continue;
+          }
+          seen.add(key);
+
+          const jobText = `${canonical.title} ${canonical.descriptionText || canonical.descriptionHtml || ''} ${canonical.location || ''}`.toLowerCase();
+          if (!isRelevantJobType(jobText)) continue;
+          if (!isUKJob(jobText)) continue;
+
+          jobs.push(canonical);
         }
-        seen.add(key);
-
-        const jobText = `${canonical.title} ${canonical.descriptionText || canonical.descriptionHtml || ''} ${canonical.location || ''}`.toLowerCase();
-        if (!isRelevantJobType(jobText)) continue;
-        if (!isUKJob(jobText)) continue;
-
-        jobs.push(canonical);
+      } catch (error) {
+        console.warn(`  ❌ Jobs API 14 query "${query}" failed:`, error instanceof Error ? error.message : String(error));
+        break; // Move to next query on error
       }
-    } catch (error) {
-      console.warn(`  ❌ Jobs API 14 query "${query}" failed:`, error instanceof Error ? error.message : String(error));
+    }
+    
+    // If we hit max 429 retries, stop processing remaining queries
+    if (consecutive429s > MAX_429_RETRIES) {
+      break;
     }
   }
 
@@ -229,10 +272,11 @@ type QueryTerm = {
 function buildQueryTerms(slot: typeof SLOT_DEFINITIONS[number]): QueryTerm[] {
   const terms: QueryTerm[] = [];
 
+  // Valid employmentTypes per API: contractor, fulltime, parttime
   const employmentTypeMap: Record<string, string[]> = {
     graduate: ['fulltime', 'contractor'],
-    placement: ['intern', 'contractor', 'temporary'],
-    internship: ['intern']
+    placement: ['fulltime', 'contractor'], // Removed invalid 'intern' and 'temporary'
+    internship: ['fulltime', 'contractor'] // Removed invalid 'intern'
   };
 
   const experienceLevelsMap: Record<string, string[]> = {

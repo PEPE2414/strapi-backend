@@ -43,9 +43,13 @@ export async function scrapeEchoJobs(): Promise<CanonicalJob[]> {
   let duplicates = 0;
   const seen = new Set<string>();
 
+  let consecutive404s = 0;
+  const MAX_404_BEFORE_SKIP = 3; // Stop trying if we get 3 consecutive 404s
+
   for (const query of queries) {
     try {
-      const url = new URL('https://jobs-api22.p.rapidapi.com/search');
+      // Try RapidAPI endpoint first (might be /tags or /v1/search)
+      let url = new URL('https://jobs-api22.p.rapidapi.com/tags');
       url.searchParams.set('levels', query.levels);
       if (query.locations) url.searchParams.set('locations', query.locations);
       if (query.industry) url.searchParams.set('industry', query.industry);
@@ -56,7 +60,7 @@ export async function scrapeEchoJobs(): Promise<CanonicalJob[]> {
       }
 
       recordRapidApiRequest('echojobs');
-      const response = await fetch(url.toString(), {
+      let response = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
@@ -64,11 +68,46 @@ export async function scrapeEchoJobs(): Promise<CanonicalJob[]> {
         }
       });
 
+      // If /tags returns 404, try /v1/search as fallback
+      if (response.status === 404) {
+        consecutive404s++;
+        if (consecutive404s >= MAX_404_BEFORE_SKIP) {
+          console.warn(`  ⚠️  EchoJobs: Multiple 404 errors. RapidAPI endpoint may be incorrect. Skipping remaining queries.`);
+          break;
+        }
+        
+        url = new URL('https://jobs-api22.p.rapidapi.com/v1/search');
+        url.searchParams.set('levels', query.levels);
+        if (query.locations) url.searchParams.set('locations', query.locations);
+        if (query.industry) url.searchParams.set('industry', query.industry);
+        if (query.focuses) url.searchParams.set('focuses', query.focuses);
+        if (query.remote) url.searchParams.set('remote', String(query.remote));
+        
+        response = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
+            'X-RapidAPI-Host': 'jobs-api22.p.rapidapi.com'
+          }
+        });
+      } else {
+        consecutive404s = 0; // Reset counter on success
+      }
+
       if (!response.ok) {
         const errorText = await response.text();
         console.warn(`  ⚠️  EchoJobs request failed (${response.status}): ${errorText.substring(0, 200)}`);
+        if (response.status === 404) {
+          consecutive404s++;
+          if (consecutive404s >= MAX_404_BEFORE_SKIP) {
+            console.warn(`  ⚠️  EchoJobs: Multiple 404 errors. Stopping.`);
+            break;
+          }
+        }
         continue;
       }
+      
+      consecutive404s = 0; // Reset on success
 
       const data = await response.json();
       const jobArray = extractEchoJobs(data);
@@ -177,7 +216,7 @@ function convertEchoJob(job: EchoJob): CanonicalJob | null {
 
   return {
     source: 'echojobs',
-    sourceUrl: 'https://jobs-api22.p.rapidapi.com/search',
+    sourceUrl: 'https://jobs-api22.p.rapidapi.com/v1/search',
     title,
     company: { name: company },
     location,

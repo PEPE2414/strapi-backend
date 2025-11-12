@@ -385,96 +385,9 @@ export async function scrapeJobsAcUkAPI(): Promise<CanonicalJob[]> {
       'executive-management'
     ];
     
-    for (const category of categories) {
-      for (let page = 1; page <= 5; page++) {
-        const url = `https://www.jobs.ac.uk/search/?category=${category}&location=UK&page=${page}&resultsPP=100`;
-        
-        console.log(`🔄 Fetching jobs.ac.uk category "${category}" page ${page}...`);
-        
-        const { body } = await request(url, {
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        let data: any;
-        try {
-          data = await body.json();
-        } catch {
-          // If JSON fails, it might be HTML - skip
-          console.log(`⏭️  Skipping ${category} page ${page} (not JSON)`);
-          break;
-        }
-        
-        if (!data || !data.jobs || data.jobs.length === 0) {
-          console.log(`📄 No more results for "${category}" on page ${page}`);
-          break;
-        }
-        
-        console.log(`📊 Found ${data.jobs.length} jobs for "${category}" (page ${page})`);
-        
-        for (const job of data.jobs) {
-          try {
-            const title = job.title?.trim() || '';
-            const companyName = job.employer || job.institution || 'Unknown';
-            const location = job.location || '';
-            const description = job.description || job.summary || '';
-            
-            // Apply filters
-            const fullText = `${title} ${description} ${location}`;
-            if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
-              continue;
-            }
-            
-            const applyUrl = job.url || `https://www.jobs.ac.uk/job/${job.id}`;
-            const hash = sha256([title, companyName, applyUrl].join('|'));
-            const slug = makeUniqueSlug(title, companyName, hash, location);
-            
-            const canonicalJob: CanonicalJob = {
-              source: 'jobsacuk-api',
-              sourceUrl: applyUrl,
-              title,
-              company: { name: companyName },
-              location,
-              descriptionHtml: description,
-              descriptionText: undefined,
-              applyUrl,
-              applyDeadline: job.closingDate ? toISO(job.closingDate) : undefined,
-              jobType: classifyJobType(title),
-              salary: job.salary || undefined,
-              startDate: job.startDate ? toISO(job.startDate) : undefined,
-              endDate: undefined,
-              duration: job.duration || undefined,
-              experience: undefined,
-              companyPageUrl: undefined,
-              relatedDegree: undefined,
-              degreeLevel: ['UG', 'PG-taught'],
-              postedAt: job.postedDate ? toISO(job.postedDate) : new Date().toISOString(),
-              slug,
-              hash
-            };
-            
-            jobs.push(canonicalJob);
-          } catch (error) {
-            console.warn(`Error processing jobs.ac.uk job:`, error);
-          }
-        }
-        
-        // Rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // If we got fewer results than requested, stop pagination
-        if (data.jobs.length < 100) {
-          break;
-        }
-      }
-      
-      // Delay between categories
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    }
-    
-    console.log(`✅ Jobs.ac.uk API: Found ${jobs.length} jobs`);
-    return jobs;
+    // Jobs.ac.uk doesn't have a public JSON API, so we'll use the HTML scraper instead
+    const { scrapeJobsAcUk } = await import('./jobsacuk');
+    return await scrapeJobsAcUk();
     
   } catch (error) {
     console.error('Failed to scrape jobs.ac.uk API:', error instanceof Error ? error.message : String(error));

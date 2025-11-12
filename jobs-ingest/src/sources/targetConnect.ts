@@ -82,7 +82,16 @@ export async function scrapeTargetConnectFeeds(): Promise<CanonicalJob[]> {
 
   for (const feed of TARGETCONNECT_FEEDS) {
     try {
-      const response = await fetch(feed.url, { method: 'GET' });
+      const response = await fetch(feed.url, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'en-GB,en;q=0.9',
+          'Referer': feed.url.replace('/api/jobs/public-feed', ''),
+          'Origin': feed.url.split('/api')[0]
+        }
+      });
       if (!response.ok) {
         console.warn(`⚠️  TargetConnect feed failed (${feed.university}): ${response.status} ${response.statusText}`);
         continue;

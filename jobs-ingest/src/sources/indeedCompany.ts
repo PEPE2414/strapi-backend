@@ -29,15 +29,25 @@ export async function scrapeIndeedCompanyJobs(): Promise<CanonicalJob[]> {
   }
 
   const companiesEnv = process.env.INDEED_COMPANY_IDS;
+  
+  // Default list of popular UK companies if not provided
+  const defaultCompanies = [
+    'Accenture', 'Deloitte', 'PwC', 'EY', 'KPMG', 'JP Morgan', 'Goldman Sachs',
+    'Barclays', 'HSBC', 'Lloyds', 'NatWest', 'BT', 'Vodafone', 'Tesco',
+    'Sainsburys', 'Asda', 'Unilever', 'GlaxoSmithKline', 'AstraZeneca',
+    'Rolls-Royce', 'BAE Systems', 'BP', 'Shell', 'British Airways'
+  ];
+  
+  let companies: string[];
   if (!companiesEnv) {
-    console.warn('⚠️  INDEED_COMPANY_IDS not provided. Set a comma-separated list of company identifiers.');
-    return [];
-  }
-
-  const companies = companiesEnv.split(',').map(id => id.trim()).filter(Boolean);
-  if (companies.length === 0) {
-    console.warn('⚠️  INDEED_COMPANY_IDS did not contain valid company identifiers.');
-    return [];
+    console.warn('⚠️  INDEED_COMPANY_IDS not provided. Using default list of popular UK companies.');
+    companies = defaultCompanies;
+  } else {
+    companies = companiesEnv.split(',').map(id => id.trim()).filter(Boolean);
+    if (companies.length === 0) {
+      console.warn('⚠️  INDEED_COMPANY_IDS did not contain valid company identifiers. Using default list.');
+      companies = defaultCompanies;
+    }
   }
 
   const locality = process.env.INDEED_LOCALITY || 'gb';
