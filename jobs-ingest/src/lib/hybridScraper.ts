@@ -176,13 +176,33 @@ export class HybridScraper {
     if (!this.browser) {
       throw new Error('Browser not initialised');
     }
-    const context = await this.browser.newContext({
+    
+    // Configure proxy if Smartproxy credentials are available
+    const smartproxyUsername = process.env.SMARTPROXY_USERNAME;
+    const smartproxyPassword = process.env.SMARTPROXY_PASSWORD;
+    const smartproxyEndpoint = process.env.SMARTPROXY_ENDPOINT;
+    
+    const contextOptions: Parameters<typeof this.browser.newContext>[0] = {
       viewport: {
         width: 1200 + Math.floor(Math.random() * 200),
         height: 850 + Math.floor(Math.random() * 200)
       },
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
-    });
+    };
+    
+    // Add Smartproxy if available
+    if (smartproxyUsername && smartproxyPassword && smartproxyEndpoint) {
+      // Playwright expects proxy server with http:// prefix and separate username/password
+      const proxyServer = `http://${smartproxyEndpoint}`;
+      contextOptions.proxy = {
+        server: proxyServer,
+        username: smartproxyUsername,
+        password: smartproxyPassword
+      };
+      console.log(`  🔐 Using Smartproxy for Playwright: ${smartproxyEndpoint}`);
+    }
+    
+    const context = await this.browser.newContext(contextOptions);
     this.contextPool.set(key, context);
     return context;
   }

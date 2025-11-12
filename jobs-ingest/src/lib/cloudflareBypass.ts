@@ -1,8 +1,9 @@
 import { request } from 'undici';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /**
  * Enhanced fetcher with Cloudflare bypass techniques
- * Supports ScraperAPI integration if API key is provided
+ * Supports ScraperAPI and Smartproxy integration if credentials are provided
  */
 
 // More realistic browser headers to avoid detection
@@ -39,21 +40,129 @@ function getRandomUserAgent(): string {
 }
 
 /**
- * Fetch with ScraperAPI if key is provided, otherwise use enhanced direct fetch
+ * Fetch with Smartproxy, ScraperAPI, or enhanced direct fetch (in priority order)
  */
 export async function fetchWithCloudflareBypass(
   url: string, 
   retries: number = 4
 ): Promise<{ url: string; headers: any; html: string }> {
   
-  // Check if ScraperAPI key is available
-  const scraperApiKey = process.env.SCRAPER_API_KEY;
+  // Priority 1: Smartproxy (best for mass scraping)
+  const smartproxyUsername = process.env.SMARTPROXY_USERNAME;
+  const smartproxyPassword = process.env.SMARTPROXY_PASSWORD;
+  const smartproxyEndpoint = process.env.SMARTPROXY_ENDPOINT;
   
+  if (smartproxyUsername && smartproxyPassword && smartproxyEndpoint) {
+    return fetchWithSmartproxy(url, smartproxyUsername, smartproxyPassword, smartproxyEndpoint, retries);
+  }
+  
+  // Priority 2: ScraperAPI (fallback)
+  const scraperApiKey = process.env.SCRAPER_API_KEY;
   if (scraperApiKey) {
     return fetchWithScraperAPI(url, scraperApiKey, retries);
-  } else {
-    return fetchWithEnhancedHeaders(url, retries);
   }
+  
+  // Priority 3: Enhanced direct fetch (no proxy)
+  return fetchWithEnhancedHeaders(url, retries);
+}
+
+/**
+ * Use Smartproxy residential proxies to bypass Cloudflare
+ */
+async function fetchWithSmartproxy(
+  url: string,
+  username: string,
+  password: string,
+  endpoint: string,
+  retries: number
+): Promise<{ url: string; headers: any; html: string }> {
+  
+  console.log(`  🔐 Using Smartproxy residential proxy...`);
+  
+  // Smartproxy endpoint format: gate.smartproxy.com:7000 (or 10000 for residential)
+  // Build proxy URL: http://username:password@endpoint
+  const proxyUrl = `http://${username}:${password}@${endpoint}`;
+  
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      // Add small delay to avoid rate limits
+      if (attempt > 0) {
+        const delay = Math.pow(2, attempt) * 2000 + Math.random() * 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      
+      const userAgent = getRandomUserAgent();
+      
+      // Note: Most blocked sites use Playwright (which fully supports Smartproxy)
+      // For HTTP requests, we'll use native fetch with proxy agent
+      // This is mainly a fallback for non-blocked sites
+      
+      const proxyAgent = new HttpsProxyAgent(proxyUrl);
+      const targetUrl = new URL(url);
+      
+      // Use native Node.js fetch with proxy agent
+      // Note: Node.js 18+ has native fetch, but proxy support requires agent
+      const fetchOptions: RequestInit = {
+        method: 'GET',
+        headers: {
+          'User-Agent': userAgent,
+          ...BROWSER_HEADERS,
+          'Referer': targetUrl.origin,
+          'Origin': targetUrl.origin
+        },
+        redirect: 'follow'
+      };
+      
+      // Add proxy agent for HTTPS requests
+      if (targetUrl.protocol === 'https:') {
+        // @ts-ignore - HttpsProxyAgent works with fetch in Node.js
+        fetchOptions.agent = proxyAgent;
+      }
+      
+      const res = await fetch(url, fetchOptions);
+      
+      if (!res.ok) {
+        const statusCode = res.status;
+        if (attempt < retries) {
+          const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
+          console.warn(`  ⚠️  Smartproxy returned ${statusCode}, retrying in ${Math.round(delay/1000)}s...`);
+          continue;
+        }
+        throw new Error(`Smartproxy error: ${statusCode}`);
+      }
+      
+      const html = await res.text();
+      
+      // Check for Cloudflare challenge
+      if (html.includes('cf-browser-verification') || 
+          html.includes('Just a moment...') ||
+          html.includes('Checking your browser')) {
+        if (attempt < retries) {
+          const delay = Math.pow(2, attempt + 2) * 5000;
+          console.warn(`  🔒 Cloudflare challenge detected, retrying in ${Math.round(delay/1000)}s...`);
+          continue;
+        }
+        throw new Error('Cloudflare challenge still present after Smartproxy');
+      }
+      
+      console.log(`  ✅ Successfully fetched via Smartproxy (${html.length} chars)`);
+      const headers: Record<string, string> = {};
+      res.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+      return { url: res.url ?? url, headers, html };
+      
+    } catch (error) {
+      if (attempt < retries) {
+        const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
+        console.warn(`  ⚠️  Smartproxy request failed, retrying in ${Math.round(delay/1000)}s...`);
+        continue;
+      }
+      throw error;
+    }
+  }
+  
+  throw new Error('Smartproxy max retries exceeded');
 }
 
 /**
@@ -208,17 +317,20 @@ async function fetchWithEnhancedHeaders(
  * Check if Cloudflare bypass is available
  */
 export function hasCloudflareBypass(): boolean {
-  return !!process.env.SCRAPER_API_KEY;
+  return !!(process.env.SMARTPROXY_USERNAME && process.env.SMARTPROXY_PASSWORD && process.env.SMARTPROXY_ENDPOINT) ||
+         !!process.env.SCRAPER_API_KEY;
 }
 
 /**
  * Get status message about Cloudflare bypass capability
  */
 export function getBypassStatus(): string {
-  if (hasCloudflareBypass()) {
+  if (process.env.SMARTPROXY_USERNAME && process.env.SMARTPROXY_PASSWORD && process.env.SMARTPROXY_ENDPOINT) {
+    return '🔐 Smartproxy enabled (residential proxies - best for mass scraping)';
+  } else if (process.env.SCRAPER_API_KEY) {
     return '🔐 ScraperAPI enabled (Cloudflare bypass active)';
   } else {
-    return '⚠️  No ScraperAPI key - using enhanced headers (limited Cloudflare bypass)';
+    return '⚠️  No proxy service - using enhanced headers (limited Cloudflare bypass)';
   }
 }
 

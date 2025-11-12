@@ -52,6 +52,7 @@
     "stripe": "^19.1.0",
     "styled-components": "^6.1.19",
     "undici": "^6.19.8",
+    "https-proxy-agent": "^7.0.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
