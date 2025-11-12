@@ -22,7 +22,22 @@ type LeverPosting = {
 };
 
 export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
-  const endpoint = `https://api.lever.co/v0/postings/${company}?mode=json`;
+  // Try Perplexity discovery first to get the most up-to-date URL
+  let endpoint = `https://api.lever.co/v0/postings/${company}?mode=json`;
+  
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredUrls = await discoverUrlsWithPerplexity('lever', `lever:${company}`, company);
+    if (discoveredUrls.length > 0) {
+      const leverUrl = discoveredUrls.find(url => url.includes('lever.co'));
+      if (leverUrl) {
+        endpoint = leverUrl;
+        console.log(`🤖 Using Perplexity-discovered URL for ${company}: ${endpoint}`);
+      }
+    }
+  } catch (error) {
+    // Fall back to default endpoint
+  }
 
   try {
     const { body } = await request(endpoint, {

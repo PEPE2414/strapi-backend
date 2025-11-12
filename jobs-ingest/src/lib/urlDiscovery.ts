@@ -402,9 +402,9 @@ export async function discoverWorkingUrls(
     console.log(`  🛰️  Reusing ${xhrEndpoints.length} cached XHR endpoints`);
   }
 
-  // Perplexity discovery
+  // Perplexity discovery (for graduate job boards)
   try {
-    const perplexityResults = await discoverUrlsWithPerplexity(boardKey);
+    const perplexityResults = await discoverUrlsWithPerplexity('job-board', boardKey);
     perplexityResults.forEach(url => {
       const normalised = normaliseUrl(url);
       if (normalised) listingCandidates.add(normalised);

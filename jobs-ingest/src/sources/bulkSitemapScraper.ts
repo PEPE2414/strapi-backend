@@ -95,7 +95,7 @@ async function processSitemap(sitemapUrl: string, maxUrls: number = 10000): Prom
  */
 export async function scrapeAllSitemaps(): Promise<CanonicalJob[]> {
   console.log('🚀 Starting bulk sitemap scraping...');
-  const allSitemaps = [
+  let allSitemaps = [
     ...MAJOR_JOB_BOARDS,
     ...ENGINEERING_JOB_BOARDS,
     ...TECH_JOB_BOARDS,
@@ -104,7 +104,24 @@ export async function scrapeAllSitemaps(): Promise<CanonicalJob[]> {
     ...UNIVERSITY_BOARDS
   ];
 
-  console.log(`📊 Processing ${allSitemaps.length} sitemaps...`);
+  // Use Perplexity to discover additional sitemap URLs
+  const knownCount = allSitemaps.length;
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredSitemaps = await discoverUrlsWithPerplexity('sitemap', 'bulk-sitemaps', 'Bulk Sitemaps');
+    discoveredSitemaps.forEach(url => {
+      if (!allSitemaps.includes(url) && url.includes('sitemap')) {
+        allSitemaps.push(url);
+      }
+    });
+    if (discoveredSitemaps.length > 0) {
+      console.log(`🤖 Perplexity discovered ${discoveredSitemaps.length} additional sitemap URLs`);
+    }
+  } catch (error) {
+    console.log(`⚠️  Perplexity sitemap discovery failed, using known sitemaps only`);
+  }
+
+  console.log(`📊 Processing ${allSitemaps.length} sitemaps (${knownCount} known + ${allSitemaps.length - knownCount} discovered)...`);
   
   const allJobUrls: string[] = [];
   const processed = new Set<string>();

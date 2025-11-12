@@ -40,9 +40,26 @@ export async function scrapeRSSFeeds(): Promise<CanonicalJob[]> {
   const allJobs: CanonicalJob[] = [];
   const seenHashes = new Set<string>();
 
+  // Use Perplexity to discover additional RSS feed URLs
+  let allFeeds = [...KNOWN_RSS_FEEDS];
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredFeeds = await discoverUrlsWithPerplexity('rss', 'rss-feeds', 'RSS Feeds');
+    discoveredFeeds.forEach(url => {
+      if (!allFeeds.some(f => f.url === url)) {
+        allFeeds.push({ url, title: `Discovered RSS Feed` });
+      }
+    });
+    if (discoveredFeeds.length > 0) {
+      console.log(`🤖 Perplexity discovered ${discoveredFeeds.length} additional RSS feed URLs`);
+    }
+  } catch (error) {
+    console.log(`⚠️  Perplexity RSS discovery failed, using known feeds only`);
+  }
+
   // Process known RSS feeds
-  console.log(`\n📡 Processing ${KNOWN_RSS_FEEDS.length} known RSS feeds...`);
-  for (const feed of KNOWN_RSS_FEEDS) {
+  console.log(`\n📡 Processing ${allFeeds.length} RSS feeds (${KNOWN_RSS_FEEDS.length} known + ${allFeeds.length - KNOWN_RSS_FEEDS.length} discovered)...`);
+  for (const feed of allFeeds) {
     try {
       console.log(`  🔄 Fetching ${feed.title || feed.url}...`);
       const items = await parseRSSFeed(feed.url);

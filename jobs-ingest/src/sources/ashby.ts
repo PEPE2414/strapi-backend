@@ -23,7 +23,22 @@ type AshbyResponse = {
 };
 
 export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJob[]> {
-  const endpoint = `https://jobs.ashbyhq.com/api/non_authenticated/job_board?organization_slug=${organizationSlug}`;
+  // Try Perplexity discovery first to get the most up-to-date URL
+  let endpoint = `https://jobs.ashbyhq.com/api/non_authenticated/job_board?organization_slug=${organizationSlug}`;
+  
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredUrls = await discoverUrlsWithPerplexity('ashby', `ashby:${organizationSlug}`, organizationSlug);
+    if (discoveredUrls.length > 0) {
+      const ashbyUrl = discoveredUrls.find(url => url.includes('ashbyhq.com'));
+      if (ashbyUrl) {
+        endpoint = ashbyUrl;
+        console.log(`🤖 Using Perplexity-discovered URL for ${organizationSlug}: ${endpoint}`);
+      }
+    }
+  } catch (error) {
+    // Fall back to default endpoint
+  }
 
   try {
     const { body } = await request(endpoint, {

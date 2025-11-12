@@ -21,7 +21,24 @@ type GreenhouseResponse = {
 };
 
 export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
-  const endpoint = `https://boards.greenhouse.io/${board}/embed/job_board?content=true`;
+  // Try Perplexity discovery first to get the most up-to-date URL
+  let endpoint = `https://boards.greenhouse.io/${board}/embed/job_board?content=true`;
+  
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredUrls = await discoverUrlsWithPerplexity('greenhouse', `greenhouse:${board}`, board);
+    if (discoveredUrls.length > 0) {
+      // Use the first discovered URL if it's a Greenhouse endpoint
+      const greenhouseUrl = discoveredUrls.find(url => url.includes('greenhouse.io'));
+      if (greenhouseUrl) {
+        endpoint = greenhouseUrl;
+        console.log(`🤖 Using Perplexity-discovered URL for ${board}: ${endpoint}`);
+      }
+    }
+  } catch (error) {
+    // Fall back to default endpoint if Perplexity fails
+    console.log(`⚠️  Perplexity discovery for ${board} failed, using default endpoint`);
+  }
 
   try {
     const { body } = await request(endpoint, {

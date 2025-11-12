@@ -43,7 +43,31 @@ const JOBTEASER_FEEDS: JobTeaserFeed[] = [
 export async function scrapeJobTeaserFeeds(): Promise<CanonicalJob[]> {
   const collected: CanonicalJob[] = [];
 
-  for (const feed of JOBTEASER_FEEDS) {
+  // Use Perplexity to discover additional JobTeaser feed URLs
+  let allFeeds = [...JOBTEASER_FEEDS];
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredFeeds = await discoverUrlsWithPerplexity('jobteaser', 'jobteaser', 'JobTeaser');
+    discoveredFeeds.forEach(url => {
+      if (url.includes('jobteaser.com') && url.includes('/api/v1/jobs')) {
+        // Extract university name from URL if possible
+        const match = url.match(/([^.]+)\.jobteaser\.com/);
+        const university = match ? match[1].charAt(0).toUpperCase() + match[1].slice(1) : 'Discovered';
+        if (!allFeeds.some(f => f.url === url)) {
+          allFeeds.push({ university, url });
+        }
+      }
+    });
+    if (discoveredFeeds.length > 0) {
+      console.log(`🤖 Perplexity discovered ${discoveredFeeds.length} additional JobTeaser feed URLs`);
+    }
+  } catch (error) {
+    console.log(`⚠️  Perplexity JobTeaser discovery failed, using known feeds only`);
+  }
+
+  console.log(`📡 Processing ${allFeeds.length} JobTeaser feeds (${JOBTEASER_FEEDS.length} known + ${allFeeds.length - JOBTEASER_FEEDS.length} discovered)...`);
+
+  for (const feed of allFeeds) {
     try {
       const response = await fetch(feed.url, {
         method: 'GET',

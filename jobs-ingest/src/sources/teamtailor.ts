@@ -24,7 +24,22 @@ type TeamtailorResponse = {
 };
 
 export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
-  const endpoint = `https://api.teamtailor.com/v1/jobs?host=${host}.teamtailor.com`;
+  // Try Perplexity discovery first to get the most up-to-date URL
+  let endpoint = `https://api.teamtailor.com/v1/jobs?host=${host}.teamtailor.com`;
+  
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredUrls = await discoverUrlsWithPerplexity('teamtailor', `teamtailor:${host}`, host);
+    if (discoveredUrls.length > 0) {
+      const teamtailorUrl = discoveredUrls.find(url => url.includes('teamtailor.com'));
+      if (teamtailorUrl) {
+        endpoint = teamtailorUrl;
+        console.log(`🤖 Using Perplexity-discovered URL for ${host}: ${endpoint}`);
+      }
+    }
+  } catch (error) {
+    // Fall back to default endpoint
+  }
 
   try {
     const { body } = await request(endpoint, {

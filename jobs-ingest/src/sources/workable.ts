@@ -27,7 +27,22 @@ type WorkableResponse = {
 };
 
 export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
-  const endpoint = `https://${company}.workable.com/api/v3/jobs?state=published`;
+  // Try Perplexity discovery first to get the most up-to-date URL
+  let endpoint = `https://${company}.workable.com/api/v3/jobs?state=published`;
+  
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredUrls = await discoverUrlsWithPerplexity('workable', `workable:${company}`, company);
+    if (discoveredUrls.length > 0) {
+      const workableUrl = discoveredUrls.find(url => url.includes('workable.com'));
+      if (workableUrl) {
+        endpoint = workableUrl;
+        console.log(`🤖 Using Perplexity-discovered URL for ${company}: ${endpoint}`);
+      }
+    }
+  } catch (error) {
+    // Fall back to default endpoint
+  }
 
   try {
     const { body } = await request(endpoint, {

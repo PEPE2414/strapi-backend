@@ -80,7 +80,31 @@ const TARGETCONNECT_FEEDS: TargetConnectFeed[] = [
 export async function scrapeTargetConnectFeeds(): Promise<CanonicalJob[]> {
   const collected: CanonicalJob[] = [];
 
-  for (const feed of TARGETCONNECT_FEEDS) {
+  // Use Perplexity to discover additional TargetConnect feed URLs
+  let allFeeds = [...TARGETCONNECT_FEEDS];
+  try {
+    const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
+    const discoveredFeeds = await discoverUrlsWithPerplexity('targetconnect', 'targetconnect', 'TargetConnect');
+    discoveredFeeds.forEach(url => {
+      if (url.includes('targetconnect.net') && url.includes('/api/jobs/public-feed')) {
+        // Extract university name from URL if possible
+        const match = url.match(/([^.]+)\.targetconnect\.net/);
+        const university = match ? match[1].charAt(0).toUpperCase() + match[1].slice(1) : 'Discovered';
+        if (!allFeeds.some(f => f.url === url)) {
+          allFeeds.push({ university, url });
+        }
+      }
+    });
+    if (discoveredFeeds.length > 0) {
+      console.log(`🤖 Perplexity discovered ${discoveredFeeds.length} additional TargetConnect feed URLs`);
+    }
+  } catch (error) {
+    console.log(`⚠️  Perplexity TargetConnect discovery failed, using known feeds only`);
+  }
+
+  console.log(`📡 Processing ${allFeeds.length} TargetConnect feeds (${TARGETCONNECT_FEEDS.length} known + ${allFeeds.length - TARGETCONNECT_FEEDS.length} discovered)...`);
+
+  for (const feed of allFeeds) {
     try {
       const response = await fetch(feed.url, {
         method: 'GET',

@@ -2,83 +2,178 @@ import { fetchWithCloudflareBypass } from './cloudflareBypass';
 import { smartFetch } from './smartFetcher';
 
 /**
- * Perplexity-based URL discovery for graduate job boards
- * Uses AI to find current working URLs for each site
+ * Comprehensive Perplexity-based URL discovery for all sources
+ * Uses AI to find current working URLs for job boards, ATS platforms, feeds, etc.
  */
-export async function discoverUrlsWithPerplexity(boardKey: string): Promise<string[]> {
-  const queries = getPerplexityQueries(boardKey);
+
+// Cache to avoid repeated Perplexity queries (24 hour TTL)
+const perplexityCache: Map<string, { urls: string[]; timestamp: number }> = new Map();
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Main entry point for Perplexity URL discovery
+ */
+export async function discoverUrlsWithPerplexity(
+  sourceType: string, 
+  sourceKey: string,
+  sourceName?: string
+): Promise<string[]> {
+  // Check cache first
+  const cacheKey = `${sourceType}:${sourceKey}`;
+  const cached = perplexityCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
+    console.log(`📦 Using cached Perplexity results for ${sourceKey} (${cached.urls.length} URLs)`);
+    return cached.urls;
+  }
+
+  const queries = getPerplexityQueries(sourceType, sourceKey, sourceName);
+  if (queries.length === 0) {
+    return [];
+  }
+
   const discoveredUrls: string[] = [];
   
   for (const query of queries) {
     try {
-      console.log(`🤖 Perplexity discovery for ${boardKey}: ${query}`);
-      const urls = await queryPerplexityForUrls(query);
+      console.log(`🤖 Perplexity discovery for ${sourceKey}: ${query}`);
+      const urls = await queryPerplexityForUrls(query, sourceKey);
       discoveredUrls.push(...urls);
       
-      // Add delay between queries
+      // Add delay between queries to respect rate limits
       await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (error) {
-      console.warn(`⚠️  Perplexity query failed for ${boardKey}:`, error instanceof Error ? error.message : String(error));
+      console.warn(`⚠️  Perplexity query failed for ${sourceKey}:`, error instanceof Error ? error.message : String(error));
     }
   }
   
+  // Deduplicate URLs
+  const uniqueUrls = [...new Set(discoveredUrls)];
+  
   // Test discovered URLs and return working ones
-  const workingUrls = await testDiscoveredUrls(discoveredUrls);
-  console.log(`✅ Perplexity discovery found ${workingUrls.length} working URLs for ${boardKey}`);
+  const workingUrls = await testDiscoveredUrls(uniqueUrls, sourceKey);
+  
+  // Cache results
+  if (workingUrls.length > 0) {
+    perplexityCache.set(cacheKey, { urls: workingUrls, timestamp: Date.now() });
+  }
+  
+  console.log(`✅ Perplexity discovery found ${workingUrls.length} working URLs for ${sourceKey}`);
   
   return workingUrls;
 }
 
 /**
- * Get Perplexity queries for each board
+ * Get comprehensive Perplexity queries for all source types
  */
-function getPerplexityQueries(boardKey: string): string[] {
-  const queries: { [key: string]: string[] } = {
-    gradcracker: [
-      'What is the current URL for searching graduate jobs on Gradcracker?',
-      'What is the current URL for searching internships on Gradcracker?',
-      'What is the current URL for searching placements on Gradcracker?',
-      'What is the current URL for searching graduate schemes on Gradcracker?'
-    ],
-    targetjobs: [
-      'What is the current URL for searching graduate jobs on Targetjobs?',
-      'What is the current URL for searching internships on Targetjobs?',
-      'What is the current URL for searching placements on Targetjobs?',
-      'What is the current URL for searching graduate schemes on Targetjobs?'
-    ],
-    prospects: [
-      'What is the current URL for searching graduate jobs on Prospects?',
-      'What is the current URL for searching internships on Prospects?',
-      'What is the current URL for searching placements on Prospects?',
-      'What is the current URL for searching graduate schemes on Prospects?'
-    ],
-    milkround: [
-      'What is the current URL for searching graduate jobs on Milkround?',
-      'What is the current URL for searching internships on Milkround?',
-      'What is the current URL for searching placements on Milkround?',
-      'What is the current URL for searching graduate schemes on Milkround?'
-    ],
-    brightnetwork: [
-      'What is the current URL for searching graduate jobs on Bright Network?',
-      'What is the current URL for searching internships on Bright Network?',
-      'What is the current URL for searching placements on Bright Network?',
-      'What is the current URL for searching graduate schemes on Bright Network?'
-    ],
-    ratemyplacement: [
-      'What is the current URL for searching placements on Rate My Placement?',
-      'What is the current URL for searching internships on Rate My Placement?',
-      'What is the current URL for searching graduate jobs on Rate My Placement?',
-      'What is the current URL for searching graduate schemes on Rate My Placement?'
-    ]
-  };
+function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?: string): string[] {
+  const name = sourceName || sourceKey;
   
-  return queries[boardKey] || [];
+  // Graduate Job Boards
+  if (['gradcracker', 'targetjobs', 'prospects', 'milkround', 'brightnetwork', 'ratemyplacement', 'trackr'].includes(sourceKey)) {
+    return [
+      `What is the current working URL for searching graduate jobs on ${name}? Provide the exact URL.`,
+      `What is the current working URL for searching internships on ${name}? Provide the exact URL.`,
+      `What is the current working URL for searching placements on ${name}? Provide the exact URL.`,
+      `What is the current working URL for searching graduate schemes on ${name}? Provide the exact URL.`,
+      `What is the current job search page URL on ${name}? Provide the exact URL.`
+    ];
+  }
+  
+  // ATS Platforms - Greenhouse
+  if (sourceType === 'greenhouse' || sourceKey.startsWith('greenhouse:')) {
+    const company = sourceKey.replace('greenhouse:', '') || sourceKey;
+    return [
+      `What is the current Greenhouse job board URL for ${company}? Format: boards.greenhouse.io/{company}/embed/job_board`,
+      `What is the working Greenhouse careers page URL for ${company}?`,
+      `What is the current Greenhouse API endpoint for ${company} jobs?`
+    ];
+  }
+  
+  // ATS Platforms - Lever
+  if (sourceType === 'lever' || sourceKey.startsWith('lever:')) {
+    const company = sourceKey.replace('lever:', '') || sourceKey;
+    return [
+      `What is the current Lever API endpoint for ${company}? Format: api.lever.co/v0/postings/{company}`,
+      `What is the working Lever careers page URL for ${company}?`
+    ];
+  }
+  
+  // ATS Platforms - Workable
+  if (sourceType === 'workable' || sourceKey.startsWith('workable:')) {
+    const company = sourceKey.replace('workable:', '') || sourceKey;
+    return [
+      `What is the current Workable API endpoint for ${company}? Format: {company}.workable.com/api/v3/jobs`,
+      `What is the working Workable careers page URL for ${company}?`
+    ];
+  }
+  
+  // ATS Platforms - Ashby
+  if (sourceType === 'ashby' || sourceKey.startsWith('ashby:')) {
+    const company = sourceKey.replace('ashby:', '') || sourceKey;
+    return [
+      `What is the current Ashby job board API endpoint for ${company}? Format: jobs.ashbyhq.com/api/non_authenticated/job_board?organization_slug={company}`,
+      `What is the working Ashby careers page URL for ${company}?`
+    ];
+  }
+  
+  // ATS Platforms - Teamtailor
+  if (sourceType === 'teamtailor' || sourceKey.startsWith('teamtailor:')) {
+    const company = sourceKey.replace('teamtailor:', '') || sourceKey;
+    return [
+      `What is the current Teamtailor API endpoint for ${company}? Format: api.teamtailor.com/v1/jobs?host={company}.teamtailor.com`,
+      `What is the working Teamtailor careers page URL for ${company}?`
+    ];
+  }
+  
+  // RSS Feeds
+  if (sourceType === 'rss' || sourceKey === 'rss-feeds') {
+    return [
+      `What are the current RSS feed URLs for UK graduate job boards? Provide exact feed URLs.`,
+      `What are the current RSS feed URLs for UK university career services? Provide exact feed URLs.`,
+      `What are the current Atom feed URLs for UK job boards? Provide exact feed URLs.`
+    ];
+  }
+  
+  // Sitemaps
+  if (sourceType === 'sitemap' || sourceKey === 'bulk-sitemaps') {
+    return [
+      `What are the current sitemap.xml URLs for major UK job boards? Provide exact sitemap URLs.`,
+      `What are the current sitemap URLs for UK graduate job boards? Provide exact sitemap URLs.`
+    ];
+  }
+  
+  // TargetConnect Feeds
+  if (sourceType === 'targetconnect' || sourceKey.includes('targetconnect')) {
+    return [
+      `What are the current TargetConnect API feed URLs for UK universities? Format: {university}.targetconnect.net/api/jobs/public-feed`,
+      `What is the current TargetConnect API endpoint format for university job feeds?`
+    ];
+  }
+  
+  // JobTeaser Feeds
+  if (sourceType === 'jobteaser' || sourceKey.includes('jobteaser')) {
+    return [
+      `What are the current JobTeaser API feed URLs for UK universities? Format: {university}.jobteaser.com/api/v1/jobs`,
+      `What is the current JobTeaser API endpoint format for university job feeds?`
+    ];
+  }
+  
+  // Generic job board discovery
+  if (sourceType === 'job-board' || sourceType === 'generic') {
+    return [
+      `What is the current working URL for searching jobs on ${name}? Provide the exact URL.`,
+      `What is the current job search page URL on ${name}? Provide the exact URL.`,
+      `What is the current careers page URL for ${name}? Provide the exact URL.`
+    ];
+  }
+  
+  return [];
 }
 
 /**
- * Query Perplexity for URLs
+ * Query Perplexity for URLs with improved error handling and rate limiting
  */
-async function queryPerplexityForUrls(query: string): Promise<string[]> {
+async function queryPerplexityForUrls(query: string, sourceKey: string): Promise<string[]> {
   const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
   
   if (!PERPLEXITY_API_KEY) {
@@ -98,74 +193,141 @@ async function queryPerplexityForUrls(query: string): Promise<string[]> {
         messages: [
           {
             role: 'user',
-            content: `${query} Please provide the exact URLs that are currently working.`
+            content: `${query} Please provide the exact URLs that are currently working in 2024. Include full URLs with https:// protocol.`
           }
         ],
-        max_tokens: 500,
+        max_tokens: 1000, // Increased for more URLs
         temperature: 0.1,
       }),
     });
     
     if (!response.ok) {
-      throw new Error(`Perplexity API error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`Perplexity API error: ${response.status} - ${errorText.substring(0, 200)}`);
     }
     
     const data = await response.json() as any;
     const content = data.choices?.[0]?.message?.content || '';
     
     // Extract URLs from the response
-    const urls = extractUrlsFromText(content);
-    console.log(`🔍 Perplexity found ${urls.length} URLs: ${urls.join(', ')}`);
+    const urls = extractUrlsFromText(content, sourceKey);
+    if (urls.length > 0) {
+      console.log(`🔍 Perplexity found ${urls.length} URLs for ${sourceKey}`);
+    }
     
     return urls;
   } catch (error) {
-    console.warn(`⚠️  Perplexity API error:`, error instanceof Error ? error.message : String(error));
+    console.warn(`⚠️  Perplexity API error for ${sourceKey}:`, error instanceof Error ? error.message : String(error));
     return [];
   }
 }
 
 /**
- * Extract URLs from text
+ * Extract URLs from text with comprehensive domain matching
  */
-function extractUrlsFromText(text: string): string[] {
-  const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]]+/g;
+function extractUrlsFromText(text: string, sourceKey: string): string[] {
+  const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]()]+/g;
   const urls = text.match(urlRegex) || [];
   
-  // Filter for relevant domains
-  const relevantDomains = [
-    'gradcracker.com',
-    'targetjobs.co.uk',
-    'prospects.ac.uk',
-    'milkround.com',
-    'brightnetwork.co.uk',
-    'ratemyplacement.co.uk'
-  ];
+  // Normalize URLs (remove trailing punctuation, decode entities)
+  const normalizedUrls = urls.map(url => {
+    // Remove trailing punctuation that might have been captured
+    let clean = url.replace(/[.,;:!?)\]}>]+$/, '');
+    // Remove common URL fragments
+    clean = clean.split('#')[0].split('?')[0];
+    return clean;
+  }).filter(url => url.length > 10); // Filter out obviously invalid URLs
   
-  return urls.filter((url: string) => 
-    relevantDomains.some(domain => url.includes(domain))
-  );
+  // Domain patterns for different source types
+  const domainPatterns: { [key: string]: RegExp[] } = {
+    gradcracker: [/gradcracker\.com/i],
+    targetjobs: [/targetjobs\.co\.uk/i],
+    prospects: [/prospects\.ac\.uk/i],
+    milkround: [/milkround\.com/i],
+    brightnetwork: [/brightnetwork\.co\.uk/i],
+    ratemyplacement: [/ratemyplacement|higherin\.com/i],
+    trackr: [/trackr\.com/i],
+    greenhouse: [/greenhouse\.io/i, /boards\.greenhouse\.io/i],
+    lever: [/lever\.co/i, /api\.lever\.co/i],
+    workable: [/workable\.com/i],
+    ashby: [/ashbyhq\.com/i, /jobs\.ashbyhq\.com/i],
+    teamtailor: [/teamtailor\.com/i, /api\.teamtailor\.com/i],
+    targetconnect: [/targetconnect\.net/i],
+    jobteaser: [/jobteaser\.com/i],
+    rss: [/\/feed/i, /\/rss/i, /\.xml$/i, /atom/i],
+    sitemap: [/sitemap/i, /\.xml$/i]
+  };
+  
+  // Get relevant patterns for this source
+  const patterns: RegExp[] = [];
+  for (const [key, keyPatterns] of Object.entries(domainPatterns)) {
+    if (sourceKey.toLowerCase().includes(key) || key.includes(sourceKey.toLowerCase())) {
+      patterns.push(...keyPatterns);
+    }
+  }
+  
+  // If no specific patterns, accept all valid URLs
+  if (patterns.length === 0) {
+    return normalizedUrls.filter(url => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  }
+  
+  // Filter URLs matching patterns
+  return normalizedUrls.filter((url: string) => {
+    try {
+      new URL(url); // Validate URL format
+      return patterns.some(pattern => pattern.test(url));
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**
- * Test discovered URLs to see which ones work
+ * Test discovered URLs to see which ones work (with improved validation)
  */
-async function testDiscoveredUrls(urls: string[]): Promise<string[]> {
+async function testDiscoveredUrls(urls: string[], sourceKey: string): Promise<string[]> {
   const workingUrls: string[] = [];
   
-  for (const url of urls) {
+  // Limit to top 20 URLs to avoid excessive testing
+  const urlsToTest = urls.slice(0, 20);
+  
+  for (const url of urlsToTest) {
     try {
       console.log(`🧪 Testing discovered URL: ${url}`);
-      const { html } = await smartFetch(url);
       
-      // Check if the page contains job-related content
-      if (isJobPage(html)) {
+      // Try fetching with Cloudflare bypass
+      const { html } = await fetchWithCloudflareBypass(url);
+      
+      // Check if the page contains job-related content or is a valid API endpoint
+      if (isJobPage(html) || isValidAPIEndpoint(html, url)) {
         workingUrls.push(url);
         console.log(`✅ Working URL found: ${url}`);
       } else {
-        console.log(`❌ URL not a job page: ${url}`);
+        console.log(`❌ URL not a valid job page/API: ${url}`);
       }
     } catch (error) {
-      console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
+      // For API endpoints, 200 status might be enough even if content check fails
+      if (url.includes('/api/') || url.includes('api.')) {
+        // Try a simpler check for API endpoints
+        try {
+          const response = await fetch(url, { method: 'HEAD' });
+          if (response.ok) {
+            workingUrls.push(url);
+            console.log(`✅ Working API endpoint: ${url}`);
+          }
+        } catch {
+          console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
+        }
+      } else {
+        console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
     
     // Add delay between tests
@@ -173,6 +335,29 @@ async function testDiscoveredUrls(urls: string[]): Promise<string[]> {
   }
   
   return workingUrls;
+}
+
+/**
+ * Check if content is a valid API endpoint response
+ */
+function isValidAPIEndpoint(content: string, url: string): boolean {
+  // Check for JSON response
+  try {
+    const parsed = JSON.parse(content);
+    // If it's an array or object with job-like structure, it's valid
+    if (Array.isArray(parsed) || (typeof parsed === 'object' && parsed !== null)) {
+      return true;
+    }
+  } catch {
+    // Not JSON, continue with other checks
+  }
+  
+  // Check for XML (sitemap, RSS)
+  if (url.includes('sitemap') || url.includes('feed') || url.includes('rss')) {
+    return content.includes('<?xml') || content.includes('<rss') || content.includes('<sitemap');
+  }
+  
+  return false;
 }
 
 /**
