@@ -77,7 +77,8 @@ async function runAll() {
   let totalRecentRejected = 0;
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
-  const ingestMode = process.env.INGEST_MODE || 'full';
+  // Support both INGEST_MODE and CRAWL_TYPE (for GitHub Actions compatibility)
+  const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : 'full');
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
   console.log(`⏱️  Maximum runtime: 5 hours`);
   console.log(`🎯 Mode: ${ingestMode.toUpperCase()} ${ingestMode === 'focused' ? '(ATS, RSS, Sitemaps, Graduate Boards, University Feeds only)' : '(all sources)'}`);

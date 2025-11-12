@@ -17,6 +17,7 @@ on:
         options:
           - ats-only
           - full-crawl
+          - focused
           - deep-refresh
           - specific-bucket
 
@@ -164,4 +165,5 @@ jobs:
           # RapidAPI for both Active Jobs DB and LinkedIn Jobs APIs
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
+          INGEST_MODE: ${{ github.event.inputs.crawl_type == 'focused' && 'focused' || '' }}
           MAX_RUNTIME_MINUTES: 60

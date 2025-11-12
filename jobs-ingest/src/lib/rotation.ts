@@ -206,8 +206,8 @@ export function getBucketsForFocusedMode(): CrawlBucket[] {
 
 // Get buckets to crawl today - FOCUSED ON HIGH VOLUME JOB BOARDS
 export function getBucketsForToday(): CrawlBucket[] {
-  // Check if focused mode is enabled
-  const ingestMode = process.env.INGEST_MODE || 'full';
+  // Check if focused mode is enabled (support both INGEST_MODE and CRAWL_TYPE for GitHub Actions)
+  const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : 'full');
   if (ingestMode === 'focused') {
     return getBucketsForFocusedMode();
   }
