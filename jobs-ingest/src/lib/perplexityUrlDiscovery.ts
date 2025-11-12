@@ -181,45 +181,66 @@ async function queryPerplexityForUrls(query: string, sourceKey: string): Promise
     return [];
   }
   
-  try {
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
-        messages: [
-          {
-            role: 'user',
-            content: `${query} Please provide the exact URLs that are currently working in 2024. Include full URLs with https:// protocol.`
-          }
-        ],
-        max_tokens: 1000, // Increased for more URLs
-        temperature: 0.1,
-      }),
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Perplexity API error: ${response.status} - ${errorText.substring(0, 200)}`);
+  // Try multiple model names as fallback (Perplexity model names may vary)
+  const modelsToTry = [
+    'sonar', // Simple model name
+    'sonar-small-online', // Online variant
+    'llama-3.1-sonar-small-128k', // Full model name without -online
+    'llama-3.1-sonar-large-128k-online' // Alternative model
+  ];
+  
+  for (let i = 0; i < modelsToTry.length; i++) {
+    const model = modelsToTry[i];
+    try {
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            {
+              role: 'user',
+              content: `${query} Please provide the exact URLs that are currently working in 2024. Include full URLs with https:// protocol.`
+            }
+          ],
+          max_tokens: 1000, // Increased for more URLs
+          temperature: 0.1,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        // If it's a model error and not the last model, try next model
+        if (errorText.includes('Invalid model') && i < modelsToTry.length - 1) {
+          continue; // Try next model
+        }
+        throw new Error(`Perplexity API error: ${response.status} - ${errorText.substring(0, 200)}`);
+      }
+      
+      const data = await response.json() as any;
+      const content = data.choices?.[0]?.message?.content || '';
+      
+      // Extract URLs from the response
+      const urls = extractUrlsFromText(content, sourceKey);
+      if (urls.length > 0) {
+        console.log(`🔍 Perplexity found ${urls.length} URLs for ${sourceKey} (using model: ${model})`);
+      }
+      
+      return urls;
+    } catch (error) {
+      // If it's the last model, log the error; otherwise continue to next model
+      if (i === modelsToTry.length - 1) {
+        console.warn(`⚠️  Perplexity API error for ${sourceKey} (tried all models):`, error instanceof Error ? error.message : String(error));
+        return [];
+      }
+      // Continue to next model silently
     }
-    
-    const data = await response.json() as any;
-    const content = data.choices?.[0]?.message?.content || '';
-    
-    // Extract URLs from the response
-    const urls = extractUrlsFromText(content, sourceKey);
-    if (urls.length > 0) {
-      console.log(`🔍 Perplexity found ${urls.length} URLs for ${sourceKey}`);
-    }
-    
-    return urls;
-  } catch (error) {
-    console.warn(`⚠️  Perplexity API error for ${sourceKey}:`, error instanceof Error ? error.message : String(error));
-    return [];
   }
+  
+  return [];
 }
 
 /**

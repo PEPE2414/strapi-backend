@@ -41,10 +41,27 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
   }
 
   try {
-    const { body } = await request(endpoint, {
-      headers: { Accept: 'application/json' }
+    const { body, statusCode } = await request(endpoint, {
+      headers: { 
+        Accept: 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
     });
-    const data = await body.json() as GreenhouseResponse;
+    
+    // Check if response is HTML (error page) instead of JSON
+    const text = await body.text();
+    if (statusCode !== 200 || text.trim().startsWith('<')) {
+      console.warn(`⚠️  Greenhouse ${board}: Received HTML response (${statusCode}), board may not exist or endpoint changed`);
+      return [];
+    }
+    
+    let data: GreenhouseResponse;
+    try {
+      data = JSON.parse(text) as GreenhouseResponse;
+    } catch (parseError) {
+      console.warn(`⚠️  Greenhouse ${board}: Failed to parse JSON response: ${text.substring(0, 200)}`);
+      return [];
+    }
 
     if (data.error) {
       console.warn(`Greenhouse embed error for ${board}: ${data.error}`);
