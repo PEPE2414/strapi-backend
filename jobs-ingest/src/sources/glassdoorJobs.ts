@@ -208,7 +208,8 @@ function buildQueries(slot: typeof SLOT_DEFINITIONS[number], backlog: boolean): 
   });
 
   const maxQueriesEnv = Number(process.env.GLASSDOOR_MAX_QUERIES_PER_RUN);
-  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 120;
+  // Increased from 120 to 1500 to reach 100k jobs target
+  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 1500;
   return queries.slice(0, maxQueries);
 }
 

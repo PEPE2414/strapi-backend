@@ -282,7 +282,9 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   slotSpecificTerms.forEach(term => combinedTerms.add(term.trim()));
 
   const maxSearchesEnv = Number(process.env.JSEARCH_MAX_SEARCHES_PER_RUN);
-  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 700;
+  // Increased from 700 to 5000 to reach 100k jobs target
+  // With 5 pages per search = 50 jobs/search, 5000 searches = 250k potential jobs (accounting for duplicates)
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 5000;
 
   // Limit to avoid overwhelming the API per run
   const termsForRun = Array.from(combinedTerms)
@@ -327,7 +329,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
           query: term,
           country: 'uk',
           page: '1',
-          num_pages: '5', // 5 pages = 50 jobs max, charged 2x (worth it for coverage)
+            num_pages: '10', // 10 pages = 100 jobs max, charged 3x (worth it for 100k target)
           date_posted: dateWindow,
           employment_types: 'FULLTIME,INTERN,CONTRACTOR,PARTTIME', // Capture placements listed as contract/part-time
           job_requirements: 'no_experience,under_3_years_experience' // Entry-level focus
@@ -485,7 +487,7 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
             query,
             country: 'uk',
             page: '1',
-            num_pages: '4',
+            num_pages: '8', // Increased for site searches
             date_posted: dateWindow,
             employment_types: 'FULLTIME,INTERN,CONTRACTOR,PARTTIME',
             job_requirements: 'no_experience,under_3_years_experience'

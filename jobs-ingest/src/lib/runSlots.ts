@@ -8,26 +8,26 @@ export interface SlotDefinition {
 export const SLOT_DEFINITIONS: SlotDefinition[] = [
   {
     name: 'south-finance-business',
-    industries: ['finance', 'investment', 'banking', 'accounting', 'business', 'economics', 'consulting', 'actuarial', 'risk management', 'business development'],
-    cities: ['london', 'reading', 'oxford', 'cambridge', 'brighton', 'southampton'],
+    industries: ['finance', 'investment', 'banking', 'accounting', 'business', 'economics', 'consulting', 'actuarial', 'risk management', 'business development', 'audit', 'tax', 'corporate finance', 'wealth management', 'private equity', 'venture capital', 'asset management', 'insurance', 'real estate', 'commercial banking'],
+    cities: ['london', 'reading', 'oxford', 'cambridge', 'brighton', 'southampton', 'guildford', 'maidstone', 'canterbury', 'portsmouth', 'winchester', 'basingstoke'],
     useBacklogWindow: false
   },
   {
     name: 'midlands-engineering-manufacturing',
-    industries: ['engineering', 'mechanical engineering', 'civil engineering', 'automotive', 'manufacturing', 'aerospace', 'energy', 'electrical engineering', 'chemical engineering', 'construction'],
-    cities: ['birmingham', 'coventry', 'leicester', 'derby', 'nottingham', 'stoke-on-trent'],
+    industries: ['engineering', 'mechanical engineering', 'civil engineering', 'automotive', 'manufacturing', 'aerospace', 'energy', 'electrical engineering', 'chemical engineering', 'construction', 'materials engineering', 'structural engineering', 'environmental engineering', 'nuclear engineering', 'rail engineering', 'process engineering', 'quality engineering', 'project engineering', 'design engineering', 'production engineering'],
+    cities: ['birmingham', 'coventry', 'leicester', 'derby', 'nottingham', 'stoke-on-trent', 'wolverhampton', 'walsall', 'dudley', 'solihull', 'nuneaton', 'rugby'],
     useBacklogWindow: false
   },
   {
     name: 'north-tech-data-marketing',
-    industries: ['technology', 'software engineering', 'data', 'analytics', 'marketing', 'digital', 'product management', 'cyber security', 'ux design', 'product design'],
-    cities: ['manchester', 'leeds', 'liverpool', 'newcastle', 'sheffield', 'york'],
+    industries: ['technology', 'software engineering', 'data', 'analytics', 'marketing', 'digital', 'product management', 'cyber security', 'ux design', 'product design', 'data science', 'machine learning', 'artificial intelligence', 'cloud computing', 'devops', 'full stack', 'frontend', 'backend', 'mobile development', 'game development', 'e-commerce', 'social media marketing', 'content marketing', 'seo', 'ppc'],
+    cities: ['manchester', 'leeds', 'liverpool', 'newcastle', 'sheffield', 'york', 'preston', 'blackburn', 'bolton', 'oldham', 'rochdale', 'stockport', 'warrington', 'chester'],
     useBacklogWindow: true
   },
   {
     name: 'nations-health-education-law',
-    industries: ['healthcare', 'public sector', 'education', 'law', 'government', 'charity', 'environment', 'social work', 'psychology', 'policy'],
-    cities: ['glasgow', 'edinburgh', 'cardiff', 'belfast', 'aberdeen', 'swansea'],
+    industries: ['healthcare', 'public sector', 'education', 'law', 'government', 'charity', 'environment', 'social work', 'psychology', 'policy', 'nursing', 'medicine', 'pharmacy', 'dentistry', 'veterinary', 'public health', 'mental health', 'criminal law', 'corporate law', 'family law', 'employment law', 'environmental law', 'human rights', 'policy analysis', 'research'],
+    cities: ['glasgow', 'edinburgh', 'cardiff', 'belfast', 'aberdeen', 'swansea', 'dundee', 'inverness', 'stirling', 'perth', 'newport', 'wrexham'],
     useBacklogWindow: true
   },
   {
@@ -98,7 +98,8 @@ export function isBacklogSlot(slotIndex: number): boolean {
 
 export function buildPlacementBoostTerms(slot: SlotDefinition): string[] {
   const terms = new Set<string>();
-  const MAX_TERMS = 400;
+  // Increased from 400 to 2000 to reach 100k jobs target
+  const MAX_TERMS = 2000;
 
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();

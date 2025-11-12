@@ -74,7 +74,8 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
     .filter(term => term.length > 3);
 
   const maxTermsEnv = Number(process.env.ACTIVE_JOBS_MAX_SEARCH_TERMS);
-  const maxTerms = Number.isFinite(maxTermsEnv) && maxTermsEnv > 0 ? maxTermsEnv : 60;
+  // Increased from 60 to 500 to reach 100k jobs target
+  const maxTerms = Number.isFinite(maxTermsEnv) && maxTermsEnv > 0 ? maxTermsEnv : 500;
   const searchTerms = Array.from(new Set([...baseSearchTerms, ...dynamicIndustryTerms])).slice(0, maxTerms);
 
   console.log(`🔢 RapidAPI Active Jobs: using ${searchTerms.length} search terms (slot: ${slotDefinition.name})`);
@@ -82,7 +83,8 @@ export async function scrapeRapidAPIActiveJobs(): Promise<CanonicalJob[]> {
   const offsetStepEnv = Number(process.env.ACTIVE_JOBS_OFFSET_STEP);
   const offsetStep = Number.isFinite(offsetStepEnv) && offsetStepEnv > 0 ? offsetStepEnv : 100;
   const maxOffsetsEnv = Number(process.env.ACTIVE_JOBS_MAX_OFFSETS);
-  const maxOffsets = Number.isFinite(maxOffsetsEnv) && maxOffsetsEnv > 0 ? maxOffsetsEnv : 5;
+  // Increased from 5 to 20 to get more jobs per term
+  const maxOffsets = Number.isFinite(maxOffsetsEnv) && maxOffsetsEnv > 0 ? maxOffsetsEnv : 20;
 
   let requestCount = 0;
 

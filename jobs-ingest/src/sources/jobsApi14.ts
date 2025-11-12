@@ -359,7 +359,8 @@ function buildQueryTerms(slot: typeof SLOT_DEFINITIONS[number]): QueryTerm[] {
 
   const combined = [...placementQueries, ...terms];
   const maxQueriesEnv = Number(process.env.JOBS_API14_MAX_QUERIES_PER_RUN);
-  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 240;
+  // Increased from 240 to 2000 to reach 100k jobs target
+  const maxQueries = Number.isFinite(maxQueriesEnv) && maxQueriesEnv > 0 ? maxQueriesEnv : 2000;
   return combined.slice(0, maxQueries);
 }
 

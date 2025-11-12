@@ -104,16 +104,45 @@ export class HybridScraper {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       });
       
-      // Navigate to the page
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+      // Navigate to the page with longer timeout for slow-loading pages
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      
+      // Wait for initial content to load
+      await page.waitForTimeout(2000);
+      
+      // Simulate user behavior (scrolling, clicking load more)
       await this.simulateUserBehaviour(page);
+      
+      // Wait a bit more for any lazy-loaded content
+      await page.waitForTimeout(2000);
       
       // Get the HTML content
       const html = await page.content();
       const $ = cheerio.load(html);
       this.captureDetailLinks(html, url, boardKey);
       
-      return aggressiveExtractJobs($, boardName, boardKey, url);
+      const jobs = aggressiveExtractJobs($, boardName, boardKey, url);
+      
+      // If we got jobs, try to extract more by scrolling and waiting again
+      if (jobs.length > 0 && jobs.length < 50) {
+        // Try one more aggressive scroll cycle
+        await page.evaluate('window.scrollTo(0, 0)');
+        await page.waitForTimeout(1000);
+        for (let i = 0; i < 10; i++) {
+          await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+          await page.waitForTimeout(1000);
+        }
+        await page.waitForTimeout(3000);
+        const moreHtml = await page.content();
+        const $more = cheerio.load(moreHtml);
+        const moreJobs = aggressiveExtractJobs($more, boardName, boardKey, url);
+        // Merge jobs, avoiding duplicates
+        const existingHashes = new Set(jobs.map(j => j.hash));
+        const uniqueMoreJobs = moreJobs.filter(j => !existingHashes.has(j.hash));
+        jobs.push(...uniqueMoreJobs);
+      }
+      
+      return jobs;
     } finally {
       await page.close();
     }
@@ -159,26 +188,47 @@ export class HybridScraper {
   }
 
   private async simulateUserBehaviour(page: Page): Promise<void> {
-    const steps = 3 + Math.floor(Math.random() * 4);
+    // Aggressive scrolling to load all jobs - up to 20 scroll cycles
+    const maxScrolls = 20;
     let lastHeight = 0;
-    for (let i = 0; i < steps; i++) {
+    let noChangeCount = 0;
+    
+    for (let i = 0; i < maxScrolls; i++) {
       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-      await page.waitForTimeout(800 + Math.floor(Math.random() * 800));
+      await page.waitForTimeout(1000 + Math.floor(Math.random() * 500));
       const height = await page.evaluate<number>('document.body.scrollHeight');
-      if (height === lastHeight) break;
+      
+      if (height === lastHeight) {
+        noChangeCount++;
+        if (noChangeCount >= 3) break; // Stop if no change for 3 consecutive scrolls
+      } else {
+        noChangeCount = 0;
+      }
       lastHeight = height;
     }
 
-    for (const selector of LOAD_MORE_SELECTORS) {
-      try {
-        const button = await page.$(selector);
-        if (button) {
-          await button.click({ delay: 30 });
-          await page.waitForTimeout(1200 + Math.floor(Math.random() * 800));
+    // Click "Load more" buttons multiple times (up to 10 times)
+    for (let clickRound = 0; clickRound < 10; clickRound++) {
+      let clickedAny = false;
+      for (const selector of LOAD_MORE_SELECTORS) {
+        try {
+          const button = await page.$(selector);
+          if (button) {
+            const isVisible = await button.isVisible();
+            if (isVisible) {
+              await button.click({ delay: 50 });
+              await page.waitForTimeout(1500 + Math.floor(Math.random() * 1000));
+              clickedAny = true;
+              // Scroll after clicking to trigger lazy loading
+              await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+              await page.waitForTimeout(500);
+            }
+          }
+        } catch {
+          // ignore
         }
-      } catch {
-        // ignore
       }
+      if (!clickedAny) break; // No more buttons found
     }
 
     try {
@@ -207,13 +257,17 @@ export class HybridScraper {
         }
       })
       .filter((full): full is string => Boolean(full))
-      .filter(url =>
-        /job|vacanc|role|position|opportunit|listing/.test(url.toLowerCase()) &&
-        !/logout|login|register|bookmark|apply|javascript:void/.test(url.toLowerCase())
-      );
+      .filter(url => {
+        const lower = url.toLowerCase();
+        // More aggressive matching for job detail pages
+        const isJobPage = /job|vacanc|role|position|opportunit|listing|career|opening|vacancy|graduate|internship|placement|scheme|programme|program/.test(lower);
+        const isExcluded = /logout|login|register|bookmark|javascript:void|mailto|tel:|#/.test(lower);
+        return isJobPage && !isExcluded;
+      });
 
     if (detailLinks.length > 0) {
-      registerDetailUrls(boardKey, detailLinks.slice(0, 200));
+      // Increased from 200 to 1000 to capture more detail links
+      registerDetailUrls(boardKey, detailLinks.slice(0, 1000));
     }
   }
 

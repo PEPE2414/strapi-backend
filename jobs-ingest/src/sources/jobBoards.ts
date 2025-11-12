@@ -170,9 +170,10 @@ const JOB_BOARDS = {
 };
 
 const HYBRID_BOARDS = new Set(['targetjobs', 'prospects', 'brightnetwork', 'ratemyplacement', 'milkround', 'trackr', 'gradcracker']);
-const LISTING_PAGE_LIMIT = 10;
-const MAX_QUEUE_SIZE = 24;
-const DETAIL_FETCH_LIMIT = 160;
+// Increased limits to reach 500+ jobs per source
+const LISTING_PAGE_LIMIT = 100; // Increased from 10 to 100
+const MAX_QUEUE_SIZE = 200; // Increased from 24 to 200
+const DETAIL_FETCH_LIMIT = 1000; // Increased from 160 to 1000
 
 export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> {
   console.log(`🚀 Starting job board scraper for: ${boardKey}`);
@@ -219,12 +220,13 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
 
     if (HYBRID_BOARDS.has(boardKey)) {
       console.log(`🎭 Using hybrid scraper for ${board.name}...`);
-      const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 3), board.name, boardKey);
+      // Use more URLs for hybrid scraping to get 500+ jobs
+      const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 20), board.name, boardKey);
       hybridJobs.forEach(addJob);
     }
 
     const { jobs: listingJobs, detailUrls: discoveredDetailUrls } = await crawlListingUrls(
-      workingUrls.slice(0, 4),
+      workingUrls.slice(0, 20), // Increased from 4 to 20
       boardKey,
       board.name
     );
@@ -366,6 +368,7 @@ function collectDetailLinks($: cheerio.CheerioAPI, currentUrl: string): string[]
 function collectPaginationLinks($: cheerio.CheerioAPI, currentUrl: string): string[] {
   const links = new Set<string>();
 
+  // Strategy 1: Standard pagination links
   $('a[rel="next"]').each((_, el) => {
     const href = $(el).attr('href');
     if (href) {
@@ -377,10 +380,11 @@ function collectPaginationLinks($: cheerio.CheerioAPI, currentUrl: string): stri
     }
   });
 
+  // Strategy 2: Text-based pagination links (more aggressive)
   $('a').each((_, el) => {
     const text = $(el).text().trim().toLowerCase();
     if (!text) return;
-    if (/(next|more results|older|load more|show more)/.test(text)) {
+    if (/(next|more results|older|load more|show more|page \d+|view more|see more|more jobs)/.test(text)) {
       const href = $(el).attr('href');
       if (href) {
         try {
@@ -392,24 +396,68 @@ function collectPaginationLinks($: cheerio.CheerioAPI, currentUrl: string): stri
     }
   });
 
+  // Strategy 3: Number-based pagination (page 2, 3, etc.)
+  $('a').each((_, el) => {
+    const text = $(el).text().trim();
+    const href = $(el).attr('href');
+    if (href && /^\d+$/.test(text) && Number(text) > 1) {
+      try {
+        links.add(new URL(href, currentUrl).toString());
+      } catch {
+        // ignore
+      }
+    }
+  });
+
+  // Strategy 4: URL parameter-based pagination (more aggressive)
   try {
     const current = new URL(currentUrl);
+    
+    // Try page parameter
     const page = current.searchParams.get('page');
     if (page) {
       const nextPage = Number(page) + 1;
-      if (Number.isFinite(nextPage)) {
+      if (Number.isFinite(nextPage) && nextPage <= 100) { // Limit to 100 pages
         const next = new URL(currentUrl);
         next.searchParams.set('page', String(nextPage));
         links.add(next.toString());
       }
+    } else {
+      // If no page param, try adding it starting from page 2
+      const next = new URL(currentUrl);
+      next.searchParams.set('page', '2');
+      links.add(next.toString());
     }
 
+    // Try offset parameter
     const offset = current.searchParams.get('offset');
     if (offset) {
-      const nextOffset = Number(offset) + 1;
-      if (Number.isFinite(nextOffset)) {
+      const nextOffset = Number(offset) + 50; // Common offset increment
+      if (Number.isFinite(nextOffset) && nextOffset <= 5000) { // Limit to 5000 offset
         const next = new URL(currentUrl);
         next.searchParams.set('offset', String(nextOffset));
+        links.add(next.toString());
+      }
+    }
+
+    // Try start parameter
+    const start = current.searchParams.get('start');
+    if (start) {
+      const nextStart = Number(start) + 50;
+      if (Number.isFinite(nextStart) && nextStart <= 5000) {
+        const next = new URL(currentUrl);
+        next.searchParams.set('start', String(nextStart));
+        links.add(next.toString());
+      }
+    }
+
+    // Try p parameter
+    const p = current.searchParams.get('p');
+    if (p) {
+      const nextP = Number(p) + 1;
+      if (Number.isFinite(nextP) && nextP <= 100) {
+        const next = new URL(currentUrl);
+        next.searchParams.set('p', String(nextP));
         links.add(next.toString());
       }
     }
@@ -417,7 +465,30 @@ function collectPaginationLinks($: cheerio.CheerioAPI, currentUrl: string): stri
     // ignore
   }
 
-  return Array.from(links).slice(0, 10);
+  // Strategy 5: Path-based pagination (e.g., /page/2, /jobs/2)
+  try {
+    const current = new URL(currentUrl);
+    const pathParts = current.pathname.split('/').filter(Boolean);
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart && /^\d+$/.test(lastPart)) {
+      const pageNum = Number(lastPart);
+      if (pageNum > 0 && pageNum < 100) {
+        pathParts[pathParts.length - 1] = String(pageNum + 1);
+        const next = new URL(currentUrl);
+        next.pathname = '/' + pathParts.join('/');
+        links.add(next.toString());
+      }
+    } else {
+      // Try adding /page/2 if no page in path
+      const next = new URL(currentUrl);
+      next.pathname = current.pathname.replace(/\/$/, '') + '/page/2';
+      links.add(next.toString());
+    }
+  } catch {
+    // ignore
+  }
+
+  return Array.from(links).slice(0, 50); // Increased from 10 to 50
 }
 
 function normalizeCanonicalJob(job: CanonicalJob): CanonicalJob {

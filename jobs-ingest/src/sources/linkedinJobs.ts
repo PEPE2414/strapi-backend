@@ -141,7 +141,9 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
   slotTerms.forEach(term => combinedTerms.add(term.trim().toLowerCase()));
 
   const maxSearchesEnv = Number(process.env.LINKEDIN_MAX_SEARCHES_PER_RUN);
-  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 120;
+  // Increased from 120 to 2000 to reach 100k jobs target
+  // With up to 400 offset per term = 400 jobs/term, 2000 terms = 800k potential jobs (accounting for duplicates)
+  const MAX_SEARCHES_PER_RUN = Number.isFinite(maxSearchesEnv) && maxSearchesEnv > 0 ? maxSearchesEnv : 2000;
   const termsForRun = Array.from(combinedTerms).slice(0, MAX_SEARCHES_PER_RUN);
 
   console.log(`  🕒 LinkedIn run slot: ${slotIndex + 1}/${totalSlots} (${slotDefinition.name})`);
@@ -169,7 +171,8 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
         // Reduced pagination to avoid rate limits (429 errors)
         // Target: Get up to 100-200 jobs per term (reduced from 300)
         let termJobsFound = 0;
-        const maxOffsetEnv = Number(process.env.LINKEDIN_MAX_OFFSET) || 400;
+        // Increased from 400 to 1000 to get more jobs per term
+        const maxOffsetEnv = Number(process.env.LINKEDIN_MAX_OFFSET) || 1000;
         for (let offset = 0; offset < maxOffsetEnv; offset += 100) {
           const encodedTerm = encodeURIComponent(`"${term}"`);
           const endpoint = backlogMode ? 'search' : 'active-jb-24h';

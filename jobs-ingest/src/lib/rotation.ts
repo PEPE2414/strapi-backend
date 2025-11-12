@@ -1,4 +1,5 @@
 // Rotation and freshness management for job scraping
+import { GREENHOUSE_BOARDS, LEVER_COMPANIES, WORKABLE_COMPANIES, ASHBY_COMPANIES, TEAMTAILOR_COMPANIES } from '../config/sources';
 
 export interface CrawlBucket {
   id: string;
@@ -199,18 +200,37 @@ export function getBucketsForToday(): CrawlBucket[] {
     priority: 'high'
   });
   
-  // PRIORITY 3: Working ATS platforms (only verified companies with UK jobs)
-  buckets.push({
-    id: 'ats-platforms',
-    name: 'ATS Platforms - Verified (Medium Priority)',
-    sources: [
-      // Only companies that we know have UK jobs
-      'greenhouse:stripe', 'greenhouse:shopify', 'greenhouse:gitlab', 'greenhouse:cloudflare',
-      'greenhouse:deliveroo', 'greenhouse:monzo', 'greenhouse:revolut', 'greenhouse:octopus-energy',
-      'lever:spotify', 'lever:canva', 'lever:figma', 'lever:notion'
-    ],
-    priority: 'medium'
+  // PRIORITY 3: All ATS platforms - process all companies to get 500+ jobs per source
+  const atsSources: string[] = [];
+  // Add all Greenhouse companies
+  GREENHOUSE_BOARDS.forEach((board: string) => {
+    atsSources.push(`greenhouse:${board}`);
   });
+  // Add all Lever companies
+  LEVER_COMPANIES.forEach((company: string) => {
+    atsSources.push(`lever:${company}`);
+  });
+  // Add all Workable companies
+  WORKABLE_COMPANIES.forEach((company: string) => {
+    atsSources.push(`workable:${company}`);
+  });
+  // Add all Ashby companies
+  ASHBY_COMPANIES.forEach((company: string) => {
+    atsSources.push(`ashby:${company}`);
+  });
+  // Add all Teamtailor companies
+  TEAMTAILOR_COMPANIES.forEach((company: string) => {
+    atsSources.push(`teamtailor:${company}`);
+  });
+  
+  if (atsSources.length > 0) {
+    buckets.push({
+      id: 'ats-platforms',
+      name: 'ATS Platforms - All Companies (High Priority)',
+      sources: atsSources,
+      priority: 'high'
+    });
+  }
   
   // PRIORITY 4: Rotate through company career pages (one sector per day)
   const sectorRotation = weekOfMonth % 5;

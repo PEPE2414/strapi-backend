@@ -33,7 +33,8 @@ export async function scrapeEchoJobs(): Promise<CanonicalJob[]> {
   const slotDefinition = SLOT_DEFINITIONS[slotIndex];
   const backlogMode = isBacklogSlot(slotIndex);
   const limitPerTypeEnv = Number(process.env.ECHOJOBS_MAX_COMBOS || 80);
-  const maxCombos = Number.isFinite(limitPerTypeEnv) && limitPerTypeEnv > 0 ? limitPerTypeEnv : 80;
+  // Increased from 80 to 1000 to reach 100k jobs target
+  const maxCombos = Number.isFinite(limitPerTypeEnv) && limitPerTypeEnv > 0 ? limitPerTypeEnv : 1000;
 
   const queries = buildEchoQueries(slotDefinition, maxCombos);
   console.log(`  🕒 EchoJobs run slot: ${slotIndex + 1}/${SLOT_DEFINITIONS.length} (${slotDefinition.name})`);
