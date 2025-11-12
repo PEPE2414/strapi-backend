@@ -90,20 +90,48 @@ export default {
     const industry = String(body.industry || '');
     const subrole = String(body.subrole || '');
     const tangible = String(body.tangible || '');
+    const structure = String(body.structure || '');
     const sections = body.sections || {};
     const preferConcise = Boolean(body.preferConcise);
     const quantify = Boolean(body.quantify);
     const showDiff = Boolean(body.showDiff !== false); // default true
 
-    let cvText = String(body.text || '').trim();
+    let cvText: string | undefined = undefined;
+    let cvSections: any = undefined;
 
     if (source === 'upload') {
       const fileId = Number(body.fileId);
       if (!fileId) return ctx.badRequest('fileId required for upload source');
       cvText = await extractTextFromFileId(fileId);
       if (!cvText) return ctx.badRequest('No extractable text in uploaded file');
-    } else if (!cvText) {
-      return ctx.badRequest('text is required');
+    } else {
+      // Paste source: accept separate sections
+      const email = String(body.email || '').trim();
+      const linkedIn = String(body.linkedIn || '').trim();
+      const phone = String(body.phone || '').trim();
+      const summary = String(body.summary || '').trim();
+      const experience = String(body.experience || '').trim();
+      const education = String(body.education || '').trim();
+      const skills = String(body.skills || '').trim();
+      const otherDetails = String(body.otherDetails || '').trim();
+
+      // Check if at least one section has content
+      const hasContent = email || linkedIn || phone || summary || experience || education || skills || otherDetails;
+      if (!hasContent) {
+        return ctx.badRequest('At least one CV section is required');
+      }
+
+      // Store sections separately for webhook
+      cvSections = {
+        email: email || undefined,
+        linkedIn: linkedIn || undefined,
+        phone: phone || undefined,
+        summary: summary || undefined,
+        experience: experience || undefined,
+        education: education || undefined,
+        skills: skills || undefined,
+        otherDetails: otherDetails || undefined,
+      };
     }
 
     const webhook = process.env.CV_N8N_WEBHOOK_URL;
@@ -121,27 +149,36 @@ export default {
         strapi.log.warn('[cv-refiner] failed to create pending entry: ' + e?.message);
       }
 
+      // Prepare webhook payload - send cvText for upload, cvSections for paste
+      const webhookPayload: any = {
+        userId: auth.id,
+        requestId,
+        industry,
+        subrole,
+        tangible,
+        structure,
+        sections,
+        preferConcise,
+        quantify,
+        showDiff,
+        meta: {
+          source: source,
+          userEmail: auth.email,
+          callbackUrl: (process.env.PUBLIC_API_URL || process.env.API_URL || '') + '/api/cv-refiner/complete',
+          callbackSecret: process.env.CV_REFINE_WEBHOOK_SECRET || ''
+        }
+      };
+
+      if (source === 'upload') {
+        webhookPayload.cvText = cvText;
+      } else {
+        webhookPayload.cvSections = cvSections;
+      }
+
       const res = await fetch(webhook, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: auth.id,
-          requestId,
-          industry,
-          subrole,
-          tangible,
-          cvText,
-          sections,
-          preferConcise,
-          quantify,
-          showDiff,
-          meta: {
-            source: source,
-            userEmail: auth.email,
-            callbackUrl: (process.env.PUBLIC_API_URL || process.env.API_URL || '') + '/api/cv-refiner/complete',
-            callbackSecret: process.env.CV_REFINE_WEBHOOK_SECRET || ''
-          }
-        }),
+        body: JSON.stringify(webhookPayload),
       });
       const ok = res.ok;
       let payload: any = null;
