@@ -364,7 +364,8 @@ export async function convertRSSItemToJob(item: RSSItem, feedUrl: string, source
   }
 
   const applyUrl = await resolveApplyUrl(link);
-  const postedAt = item.pubDate ? parseDate(item.pubDate) : undefined;
+  const postedAtDate = item.pubDate ? parseDate(item.pubDate) : null;
+  const postedAt = postedAtDate ? postedAtDate.toISOString() : undefined;
 
   const hash = generateJobHash({
     title,
@@ -385,7 +386,7 @@ export async function convertRSSItemToJob(item: RSSItem, feedUrl: string, source
     descriptionText: description || undefined,
     applyUrl,
     jobType,
-    postedAt: postedAt ? toISO(postedAt) : undefined,
+    postedAt,
     slug,
     hash
   };
