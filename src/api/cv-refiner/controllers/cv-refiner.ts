@@ -95,6 +95,7 @@ export default {
     const preferConcise = Boolean(body.preferConcise);
     const quantify = Boolean(body.quantify);
     const showDiff = Boolean(body.showDiff !== false); // default true
+    const coverLetterFileIds = Array.isArray(body.coverLetterFileIds) ? body.coverLetterFileIds.filter((id: any) => typeof id === 'number' && id > 0) : [];
 
     let cvText: string | undefined = undefined;
     let cvSections: any = undefined;
@@ -173,6 +174,11 @@ export default {
         webhookPayload.cvText = cvText;
       } else {
         webhookPayload.cvSections = cvSections;
+      }
+
+      // Add cover letter file IDs if provided
+      if (coverLetterFileIds.length > 0) {
+        webhookPayload.coverLetterFileIds = coverLetterFileIds;
       }
 
       const res = await fetch(webhook, {
