@@ -25,7 +25,7 @@ import {
   scrapeWorkingJobBoards, scrapeIndeedUK, scrapeReedWorking 
 } from './sources/workingJobBoards';
 import { scrapeOptimizedJobBoards } from './sources/optimizedJobBoards';
-import { scrapeAllAPIJobBoards } from './sources/apiJobBoards';
+import { scrapeAllAPIJobBoards, scrapeUniversityFeedsOnly } from './sources/apiJobBoards';
 import { scrapeRapidAPILinkedInJobs } from './sources/rapidapiLinkedInJobs';
 import { scrapeGraduateBoardsDirect } from './lib/directGraduateScraper';
 import { scrapeGraduateBoardsHybrid } from './lib/hybridGraduateScraper';
@@ -77,8 +77,10 @@ async function runAll() {
   let totalRecentRejected = 0;
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
+  const ingestMode = process.env.INGEST_MODE || 'full';
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
   console.log(`⏱️  Maximum runtime: 5 hours`);
+  console.log(`🎯 Mode: ${ingestMode.toUpperCase()} ${ingestMode === 'focused' ? '(ATS, RSS, Sitemaps, Graduate Boards, University Feeds only)' : '(all sources)'}`);
   console.log(`🎯 Target: 1000+ useful jobs per run (new API-based strategy)`);
   
   // Get today's crawl buckets
@@ -260,6 +262,9 @@ async function runAll() {
         } else if (source === 'api-job-boards') {
           console.log(`🔄 Scraping API Job Boards (Highest Priority)`);
           sourceJobs = await limiter.schedule(() => scrapeAllAPIJobBoards());
+        } else if (source === 'university-feeds-only') {
+          console.log(`🔄 Scraping University Feeds Only (TargetConnect + JobTeaser)`);
+          sourceJobs = await limiter.schedule(() => scrapeUniversityFeedsOnly());
         } else if (source === 'rss-feeds') {
           console.log(`🔄 Scraping RSS Feeds`);
           const { scrapeRSSFeeds } = await import('./sources/rssFeeds');

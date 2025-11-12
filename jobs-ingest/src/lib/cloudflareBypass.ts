@@ -94,63 +94,68 @@ async function fetchWithSmartproxy(
       const userAgent = getRandomUserAgent();
       
       // Note: Most blocked sites use Playwright (which fully supports Smartproxy)
-      // For HTTP requests, we'll use native fetch with proxy agent
-      // This is mainly a fallback for non-blocked sites
+      // For HTTP requests via undici, we'll use environment variables for proxy
+      // Set HTTP_PROXY and HTTPS_PROXY environment variables temporarily
+      const originalHttpProxy = process.env.HTTP_PROXY;
+      const originalHttpsProxy = process.env.HTTPS_PROXY;
       
-      const proxyAgent = new HttpsProxyAgent(proxyUrl);
-      const targetUrl = new URL(url);
-      
-      // Use native Node.js fetch with proxy agent
-      // Note: Node.js 18+ has native fetch, but proxy support requires agent
-      const fetchOptions: RequestInit = {
-        method: 'GET',
-        headers: {
-          'User-Agent': userAgent,
-          ...BROWSER_HEADERS,
-          'Referer': targetUrl.origin,
-          'Origin': targetUrl.origin
-        },
-        redirect: 'follow'
-      };
-      
-      // Add proxy agent for HTTPS requests
-      if (targetUrl.protocol === 'https:') {
-        // @ts-ignore - HttpsProxyAgent works with fetch in Node.js
-        fetchOptions.agent = proxyAgent;
-      }
-      
-      const res = await fetch(url, fetchOptions);
-      
-      if (!res.ok) {
-        const statusCode = res.status;
-        if (attempt < retries) {
-          const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
-          console.warn(`  ⚠️  Smartproxy returned ${statusCode}, retrying in ${Math.round(delay/1000)}s...`);
-          continue;
+      try {
+        // Set proxy environment variables for undici
+        process.env.HTTP_PROXY = proxyUrl;
+        process.env.HTTPS_PROXY = proxyUrl;
+        
+        const targetUrl = new URL(url);
+        
+        // Use undici request (which respects HTTP_PROXY/HTTPS_PROXY env vars)
+        const res = await request(url, {
+          method: 'GET',
+          headers: {
+            'User-Agent': userAgent,
+            ...BROWSER_HEADERS,
+            'Referer': targetUrl.origin,
+            'Origin': targetUrl.origin
+          },
+          maxRedirections: 5
+        });
+        
+        if (res.statusCode >= 400) {
+          if (attempt < retries) {
+            const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
+            console.warn(`  ⚠️  Smartproxy returned ${res.statusCode}, retrying in ${Math.round(delay/1000)}s...`);
+            continue;
+          }
+          throw new Error(`Smartproxy error: ${res.statusCode}`);
         }
-        throw new Error(`Smartproxy error: ${statusCode}`);
-      }
-      
-      const html = await res.text();
-      
-      // Check for Cloudflare challenge
-      if (html.includes('cf-browser-verification') || 
-          html.includes('Just a moment...') ||
-          html.includes('Checking your browser')) {
-        if (attempt < retries) {
-          const delay = Math.pow(2, attempt + 2) * 5000;
-          console.warn(`  🔒 Cloudflare challenge detected, retrying in ${Math.round(delay/1000)}s...`);
-          continue;
+        
+        const html = await res.body.text();
+        
+        // Check for Cloudflare challenge
+        if (html.includes('cf-browser-verification') || 
+            html.includes('Just a moment...') ||
+            html.includes('Checking your browser')) {
+          if (attempt < retries) {
+            const delay = Math.pow(2, attempt + 2) * 5000;
+            console.warn(`  🔒 Cloudflare challenge detected, retrying in ${Math.round(delay/1000)}s...`);
+            continue;
+          }
+          throw new Error('Cloudflare challenge still present after Smartproxy');
         }
-        throw new Error('Cloudflare challenge still present after Smartproxy');
+        
+        console.log(`  ✅ Successfully fetched via Smartproxy (${html.length} chars)`);
+        return { url: (res as any).url ?? url, headers: res.headers, html };
+      } finally {
+        // Restore original proxy settings
+        if (originalHttpProxy !== undefined) {
+          process.env.HTTP_PROXY = originalHttpProxy;
+        } else {
+          delete process.env.HTTP_PROXY;
+        }
+        if (originalHttpsProxy !== undefined) {
+          process.env.HTTPS_PROXY = originalHttpsProxy;
+        } else {
+          delete process.env.HTTPS_PROXY;
+        }
       }
-      
-      console.log(`  ✅ Successfully fetched via Smartproxy (${html.length} chars)`);
-      const headers: Record<string, string> = {};
-      res.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
-      return { url: res.url ?? url, headers, html };
       
     } catch (error) {
       if (attempt < retries) {

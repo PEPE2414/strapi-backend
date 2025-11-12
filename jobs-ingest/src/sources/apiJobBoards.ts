@@ -398,6 +398,36 @@ export async function scrapeJobsAcUkAPI(): Promise<CanonicalJob[]> {
 /**
  * Master function to scrape all API-based job boards
  */
+/**
+ * Scrape only TargetConnect and JobTeaser feeds (for focused mode)
+ */
+export async function scrapeUniversityFeedsOnly(): Promise<CanonicalJob[]> {
+  console.log('🚀 Starting University Feeds scraping (TargetConnect + JobTeaser)...');
+  const allJobs: CanonicalJob[] = [];
+
+  const scrapers = [
+    { name: 'TargetConnect', fn: scrapeTargetConnectFeeds },
+    { name: 'JobTeaser', fn: scrapeJobTeaserFeeds }
+  ];
+
+  for (const scraper of scrapers) {
+    try {
+      console.log(`\n📦 Scraping ${scraper.name} API...`);
+      const jobs = await scraper.fn();
+      allJobs.push(...jobs);
+      console.log(`✅ ${scraper.name}: ${jobs.length} jobs added (Total: ${allJobs.length})`);
+    } catch (error) {
+      console.error(`❌ ${scraper.name} failed:`, error instanceof Error ? error.message : String(error));
+    }
+    
+    // Delay between different APIs
+    await new Promise(resolve => setTimeout(resolve, 3000));
+  }
+
+  console.log(`\n🎉 University feeds scraping completed: ${allJobs.length} total jobs`);
+  return allJobs;
+}
+
 export async function scrapeAllAPIJobBoards(): Promise<CanonicalJob[]> {
   console.log('🚀 Starting API-based job board scraping...');
   const allJobs: CanonicalJob[] = [];

@@ -138,8 +138,80 @@ export function getCurrentWeekOfMonth(): number {
   return Math.ceil((pastDaysOfMonth + firstDay.getDay() + 1) / 7);
 }
 
+// Get buckets for focused mode (only specific sources)
+export function getBucketsForFocusedMode(): CrawlBucket[] {
+  const buckets: CrawlBucket[] = [];
+  
+  // ATS Platforms
+  const atsSources: string[] = [];
+  GREENHOUSE_BOARDS.forEach((board: string) => {
+    atsSources.push(`greenhouse:${board}`);
+  });
+  LEVER_COMPANIES.forEach((company: string) => {
+    atsSources.push(`lever:${company}`);
+  });
+  WORKABLE_COMPANIES.forEach((company: string) => {
+    atsSources.push(`workable:${company}`);
+  });
+  ASHBY_COMPANIES.forEach((company: string) => {
+    atsSources.push(`ashby:${company}`);
+  });
+  TEAMTAILOR_COMPANIES.forEach((company: string) => {
+    atsSources.push(`teamtailor:${company}`);
+  });
+  
+  if (atsSources.length > 0) {
+    buckets.push({
+      id: 'ats-platforms-focused',
+      name: 'ATS Platforms (Focused Mode)',
+      sources: atsSources,
+      priority: 'high'
+    });
+  }
+  
+  // RSS Feeds and Bulk Sitemaps
+  buckets.push({
+    id: 'feeds-and-sitemaps-focused',
+    name: 'RSS Feeds & Bulk Sitemaps (Focused Mode)',
+    sources: ['rss-feeds', 'bulk-sitemaps'],
+    priority: 'high'
+  });
+  
+  // Graduate Job Boards (partially working)
+  buckets.push({
+    id: 'graduate-boards-focused',
+    name: 'Graduate Job Boards (Focused Mode)',
+    sources: [
+      'targetjobs',
+      'prospects',
+      'brightnetwork',
+      'ratemyplacement',
+      'trackr',
+      'milkround',
+      'gradcracker'
+    ],
+    priority: 'high'
+  });
+  
+  // TargetConnect and JobTeaser Feeds only
+  buckets.push({
+    id: 'university-feeds-focused',
+    name: 'University Feeds (Focused Mode)',
+    sources: ['university-feeds-only'], // Only TargetConnect and JobTeaser
+    priority: 'high'
+  });
+  
+  return buckets;
+}
+
 // Get buckets to crawl today - FOCUSED ON HIGH VOLUME JOB BOARDS
 export function getBucketsForToday(): CrawlBucket[] {
+  // Check if focused mode is enabled
+  const ingestMode = process.env.INGEST_MODE || 'full';
+  if (ingestMode === 'focused') {
+    return getBucketsForFocusedMode();
+  }
+  
   const dayOfMonth = getCurrentDayOfMonth();
   const weekOfMonth = getCurrentWeekOfMonth();
   const dayOfWeek = new Date().getDay();
