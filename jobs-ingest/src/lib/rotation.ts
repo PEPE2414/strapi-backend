@@ -160,7 +160,9 @@ export function getBucketsForToday(): CrawlBucket[] {
       // LinkedIn API: 10,000/month = ~333/day (with pagination: up to 1000/day)
       // JSearch API: 200,000/month = ~6,667/day (with pagination: up to 8000/day)
       'rapidapi-linkedin-jobs', // RapidAPI + LinkedIn Jobs APIs (runs first)
-      'api-job-boards' // Other API boards
+      'api-job-boards', // Other API boards
+      'rss-feeds', // RSS/Atom feed scraping (high volume, low blocking)
+      'bulk-sitemaps' // Bulk sitemap processing (processes all listed sitemaps)
     ],
     priority: 'high'
   });

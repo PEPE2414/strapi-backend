@@ -260,6 +260,14 @@ async function runAll() {
         } else if (source === 'api-job-boards') {
           console.log(`🔄 Scraping API Job Boards (Highest Priority)`);
           sourceJobs = await limiter.schedule(() => scrapeAllAPIJobBoards());
+        } else if (source === 'rss-feeds') {
+          console.log(`🔄 Scraping RSS Feeds`);
+          const { scrapeRSSFeeds } = await import('./sources/rssFeeds');
+          sourceJobs = await limiter.schedule(() => scrapeRSSFeeds());
+        } else if (source === 'bulk-sitemaps') {
+          console.log(`🔄 Scraping Bulk Sitemaps`);
+          const { scrapeAllSitemaps } = await import('./sources/bulkSitemapScraper');
+          sourceJobs = await limiter.schedule(() => scrapeAllSitemaps());
         } else if (source === 'rapidapi-linkedin-jobs') {
           console.log(`🔄 Scraping RapidAPI + LinkedIn Jobs APIs (High Priority)`);
           sourceJobs = await limiter.schedule(() => scrapeRapidAPILinkedInJobs());

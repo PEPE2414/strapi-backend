@@ -108,8 +108,9 @@ export async function discoverSitemaps(boardKey: string, baseUrl?: string): Prom
   const sitemapQueue: string[] = [];
   const listingCandidates: string[] = [];
   const detailCandidates: string[] = [];
-  const MAX_SITEMAPS = 15;
-  const MAX_URLS_PER_SITEMAP = 200;
+  // Increased limits for better coverage
+  const MAX_SITEMAPS = 100; // Increased from 15 to 100
+  const MAX_URLS_PER_SITEMAP = 5000; // Increased from 200 to 5000
 
   const primarySitemaps = await discoverFromRobots(baseUrl);
   primarySitemaps.forEach(url => sitemapQueue.push(url));
@@ -154,8 +155,8 @@ export async function discoverSitemaps(boardKey: string, baseUrl?: string): Prom
   }
 
   const result: SitemapResult = {
-    listingUrls: unique(listingCandidates).slice(0, 200),
-    detailUrls: unique(detailCandidates).slice(0, 400)
+    listingUrls: unique(listingCandidates).slice(0, 1000), // Increased from 200 to 1000
+    detailUrls: unique(detailCandidates).slice(0, 5000) // Increased from 400 to 5000
   };
 
   sitemapCache.set(cacheKey, result);
