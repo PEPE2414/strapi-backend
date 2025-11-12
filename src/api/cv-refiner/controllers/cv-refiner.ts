@@ -176,9 +176,27 @@ export default {
         webhookPayload.cvSections = cvSections;
       }
 
-      // Add cover letter file IDs if provided
+      // Extract text from cover letter files if provided
       if (coverLetterFileIds.length > 0) {
         webhookPayload.coverLetterFileIds = coverLetterFileIds;
+        try {
+          const coverLetterTexts: string[] = [];
+          for (const fileId of coverLetterFileIds) {
+            try {
+              const text = await extractTextFromFileId(fileId);
+              if (text) {
+                coverLetterTexts.push(text);
+              }
+            } catch (e: any) {
+              strapi.log.warn(`[cv-refiner] Failed to extract text from cover letter file ${fileId}: ${e?.message}`);
+            }
+          }
+          if (coverLetterTexts.length > 0) {
+            webhookPayload.coverLetterTexts = coverLetterTexts;
+          }
+        } catch (e: any) {
+          strapi.log.warn(`[cv-refiner] Failed to extract cover letter texts: ${e?.message}`);
+        }
       }
 
       const res = await fetch(webhook, {
