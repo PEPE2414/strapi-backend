@@ -68,6 +68,7 @@ const limiter = new Bottleneck({
 
 async function runAll() {
   const startTime = new Date();
+  const MAX_RUNTIME_MS = 5 * 60 * 60 * 1000; // 5 hours
   const batches: CanonicalJob[][] = [];
   const seenTodayCache = await loadSeenTodayCache();
   let seenTodaySkippedTotal = 0;
@@ -77,6 +78,7 @@ async function runAll() {
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
+  console.log(`⏱️  Maximum runtime: 5 hours`);
   console.log(`🎯 Target: 1000+ useful jobs per run (new API-based strategy)`);
   
   // Get today's crawl buckets
@@ -93,10 +95,23 @@ async function runAll() {
   console.log('✅ Authentication successful!');
 
   // Process each bucket
+  let timeLimitReached = false;
   for (const bucket of todaysBuckets) {
+    if (timeLimitReached) break;
+    
     console.log(`\n📦 Processing bucket: ${bucket.name}`);
 
     for (const source of bucket.sources) {
+      // Check if we've exceeded the time limit
+      const elapsed = Date.now() - startTime.getTime();
+      if (elapsed >= MAX_RUNTIME_MS) {
+        const elapsedHours = (elapsed / (60 * 60 * 1000)).toFixed(2);
+        console.log(`\n⏱️  Time limit reached (5 hours). Elapsed: ${elapsedHours} hours`);
+        console.log(`🛑 Stopping scraping and proceeding to upload collected results...`);
+        timeLimitReached = true;
+        break;
+      }
+      
       // Initialize source stats
       if (!sourceStats[source]) {
         sourceStats[source] = { total: 0, valid: 0, invalid: 0 };
@@ -381,6 +396,13 @@ async function runAll() {
     }
   }
 
+  if (timeLimitReached) {
+    const elapsed = Date.now() - startTime.getTime();
+    const elapsedHours = (elapsed / (60 * 60 * 1000)).toFixed(2);
+    console.log(`\n⏱️  Scraping stopped due to 5-hour time limit (elapsed: ${elapsedHours} hours)`);
+    console.log(`📦 Proceeding to process and upload ${batches.flat().length} collected jobs...`);
+  }
+
   // Flatten all results
   const results = batches.flat();
   console.log(`\n📊 Total valid jobs found: ${results.length}`);
@@ -506,6 +528,9 @@ async function runAll() {
     console.warn(`     3. Hash generation might be creating collisions (same hash for different jobs)`);
   }
   console.log(`\n⏱️  Duration: ${duration}s`);
+  if (timeLimitReached) {
+    console.log(`   ⚠️  Run stopped at 5-hour time limit`);
+  }
   console.log(`🚀 Rate: ${Math.round(totalProcessed / duration)} jobs/second`);
   
   // Print source performance report
