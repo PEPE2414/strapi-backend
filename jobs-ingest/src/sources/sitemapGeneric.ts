@@ -1,4 +1,5 @@
 import { get } from '../lib/fetcher';
+import { fetchWithCloudflareBypass } from '../lib/cloudflareBypass';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -18,12 +19,47 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
     
     const batchPromises: Promise<CanonicalJob | null>[] = batch.map(async (url): Promise<CanonicalJob | null> => {
       try {
-      const { html } = await get(url);
+      // Quick check: skip URLs that don't look like job detail pages
+      const urlLower = url.toLowerCase();
+      const isLikelyJobPage = 
+        /\/job|\/vacancy|\/role|\/position|\/opportunity|\/career|\/opening|\/graduate|\/intern|\/placement|\/scheme|\/programme/.test(urlLower) ||
+        !/\/search|\/list|\/index|\/category|\/tag|\/archive|\/sitemap|\/feed|\/rss/.test(urlLower);
+      
+      if (!isLikelyJobPage) {
+        console.log(`⏭️  Skipping URL that doesn't look like a job page: ${new URL(url).pathname}`);
+        return null;
+      }
+      
+      // Try to fetch with Cloudflare bypass first, fallback to basic get
+      let html: string;
+      try {
+        const result = await fetchWithCloudflareBypass(url);
+        html = result.html;
+      } catch (error) {
+        // Fallback to basic get if Cloudflare bypass fails
+        const result = await get(url);
+        html = result.html;
+      }
+      
+      // Check if HTML is too short or looks like an error page
+      if (!html || html.length < 500) {
+        console.log(`⏭️  Skipping URL with insufficient content: ${new URL(url).pathname} (${html?.length || 0} chars)`);
+        return null;
+      }
+      
       const jsonld = extractJobPostingJSONLD(html);
       const $ = cheerio.load(html);
 
-      // Prefer JSON-LD fields
-      const title = (jsonld?.title || $('h1').first().text() || '').trim();
+      // More aggressive title extraction with multiple fallbacks
+      const title = (
+        jsonld?.title || 
+        $('h1').first().text() || 
+        $('h2.job-title, .job-title, [class*="job-title"], [class*="jobTitle"]').first().text() ||
+        $('title').first().text().split('|')[0].split('-')[0] ||
+        $('meta[property="og:title"]').attr('content') ||
+        $('meta[name="title"]').attr('content') ||
+        ''
+      ).trim();
       const companyName =
         jsonld?.hiringOrganization?.name ||
         $('meta[property="og:site_name"]').attr('content') ||
@@ -81,9 +117,12 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
             // Check if this job is relevant for university students AND UK-based
             const fullText = title + ' ' + String(descHtml) + ' ' + (location || '');
             
-            // Debug logging
+            // Debug logging with more context
             if (!title || title.trim().length < 3) {
-              console.log(`⏭️  Skipping job with invalid title: "${title}"`);
+              // Try to extract any text that might be a title from the page
+              const pageText = $('body').text().substring(0, 200);
+              const urlPath = new URL(url).pathname;
+              console.log(`⏭️  Skipping job with invalid title: "${title}" (URL: ${urlPath}, page preview: ${pageText.substring(0, 100)}...)`);
               return null;
             }
             
