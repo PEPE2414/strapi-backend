@@ -11,6 +11,7 @@ import { makeUniqueSlug } from '../lib/slug';
 import { sha256 } from '../lib/hash';
 import { classifyJobType, parseSalary, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 import { scrapeUrlsWithHybrid } from '../lib/hybridScraper';
+import { isTestMode } from '../lib/rotation';
 
 export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
   const jobs: CanonicalJob[] = [];
@@ -43,8 +44,9 @@ export async function scrapeGradcracker(): Promise<CanonicalJob[]> {
     console.log(`✅ Found ${workingUrls.length} working URLs for gradcracker`);
 
     // Use hybrid scraper with more URLs to get 500+ jobs
-    // Try all working URLs to maximize coverage
-    const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 20), 'Gradcracker', 'gradcracker');
+    // In test mode, limit to 1 URL
+    const urlLimit = isTestMode() ? 1 : 20;
+    const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, urlLimit), 'Gradcracker', 'gradcracker');
     jobs.push(...hybridJobs);
 
     console.log(`📊 Gradcracker: Found ${jobs.length} total jobs`);

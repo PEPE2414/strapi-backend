@@ -18,6 +18,7 @@ on:
           - ats-only
           - full-crawl
           - focused
+          - focused-test
           - deep-refresh
           - specific-bucket
 
@@ -166,5 +167,6 @@ jobs:
           # RapidAPI for both Active Jobs DB and LinkedIn Jobs APIs
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
-          INGEST_MODE: ${{ github.event.inputs.crawl_type == 'focused' && 'focused' || '' }}
-          MAX_RUNTIME_MINUTES: ${{ github.event.inputs.crawl_type == 'focused' && '300' || '60' }}
+          INGEST_MODE: ${{ github.event.inputs.crawl_type == 'focused' && 'focused' || (github.event.inputs.crawl_type == 'focused-test' && 'focused-test' || '') }}
+          MAX_RUNTIME_MINUTES: ${{ github.event.inputs.crawl_type == 'focused' && '300' || (github.event.inputs.crawl_type == 'focused-test' && '30' || '60') }}
+          TEST_MODE: ${{ github.event.inputs.crawl_type == 'focused-test' && 'true' || 'false' }}

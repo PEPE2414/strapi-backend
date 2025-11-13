@@ -138,6 +138,71 @@ export function getCurrentWeekOfMonth(): number {
   return Math.ceil((pastDaysOfMonth + firstDay.getDay() + 1) / 7);
 }
 
+// Check if we're in test mode (limits to 1 URL per source)
+export function isTestMode(): boolean {
+  return process.env.TEST_MODE === 'true' || 
+         process.env.INGEST_MODE === 'focused-test' || 
+         process.env.CRAWL_TYPE === 'focused-test';
+}
+
+// Get buckets for focused test mode (only 1 source per category for quick testing)
+export function getBucketsForFocusedTestMode(): CrawlBucket[] {
+  const buckets: CrawlBucket[] = [];
+  
+  // ATS Platforms - only 1 company per platform
+  const atsSources: string[] = [];
+  if (GREENHOUSE_BOARDS.length > 0) {
+    atsSources.push(`greenhouse:${GREENHOUSE_BOARDS[0]}`); // First Greenhouse board
+  }
+  if (LEVER_COMPANIES.length > 0) {
+    atsSources.push(`lever:${LEVER_COMPANIES[0]}`); // First Lever company
+  }
+  if (WORKABLE_COMPANIES.length > 0) {
+    atsSources.push(`workable:${WORKABLE_COMPANIES[0]}`); // First Workable company
+  }
+  if (ASHBY_COMPANIES.length > 0) {
+    atsSources.push(`ashby:${ASHBY_COMPANIES[0]}`); // First Ashby company
+  }
+  if (TEAMTAILOR_COMPANIES.length > 0) {
+    atsSources.push(`teamtailor:${TEAMTAILOR_COMPANIES[0]}`); // First Teamtailor company
+  }
+  
+  if (atsSources.length > 0) {
+    buckets.push({
+      id: 'ats-platforms-focused-test',
+      name: 'ATS Platforms (Test Mode - 1 per platform)',
+      sources: atsSources,
+      priority: 'high'
+    });
+  }
+  
+  // RSS Feeds and Bulk Sitemaps - only 1 of each
+  buckets.push({
+    id: 'feeds-and-sitemaps-focused-test',
+    name: 'RSS Feeds & Bulk Sitemaps (Test Mode)',
+    sources: ['rss-feeds', 'bulk-sitemaps'],
+    priority: 'high'
+  });
+  
+  // Graduate Job Boards - only first one
+  buckets.push({
+    id: 'graduate-boards-focused-test',
+    name: 'Graduate Job Boards (Test Mode - 1 board)',
+    sources: ['targetjobs'], // Only first board for testing
+    priority: 'high'
+  });
+  
+  // TargetConnect and JobTeaser Feeds only
+  buckets.push({
+    id: 'university-feeds-focused-test',
+    name: 'University Feeds (Test Mode)',
+    sources: ['university-feeds-only'],
+    priority: 'high'
+  });
+  
+  return buckets;
+}
+
 // Get buckets for focused mode (only specific sources)
 export function getBucketsForFocusedMode(): CrawlBucket[] {
   const buckets: CrawlBucket[] = [];
@@ -206,6 +271,11 @@ export function getBucketsForFocusedMode(): CrawlBucket[] {
 
 // Get buckets to crawl today - FOCUSED ON HIGH VOLUME JOB BOARDS
 export function getBucketsForToday(): CrawlBucket[] {
+  // Check if test mode is enabled (limits to 1 URL per source)
+  if (isTestMode()) {
+    return getBucketsForFocusedTestMode();
+  }
+  
   // Check if focused mode is enabled (support both INGEST_MODE and CRAWL_TYPE for GitHub Actions)
   const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : 'full');
   if (ingestMode === 'focused') {

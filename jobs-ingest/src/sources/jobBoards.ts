@@ -11,6 +11,7 @@ import { classifyJobType, isRelevantJobType, isUKJob, normalizeCompanyName, norm
 import { scrapeUrlsWithHybrid } from '../lib/hybridScraper';
 import { scrapeFromUrls } from './sitemapGeneric';
 import { generateJobHash } from '../lib/jobHash';
+import { isTestMode } from '../lib/rotation';
 
 // Job board configurations with MULTIPLE URL patterns
 // The scraper will auto-discover which URLs actually work
@@ -218,15 +219,18 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
 
     const detailSeedSet = new Set<string>(getDiscoveredDetailUrls(boardKey));
 
+    // In test mode, limit to 1 URL per source
+    const urlLimit = isTestMode() ? 1 : 20;
+    
     if (HYBRID_BOARDS.has(boardKey)) {
       console.log(`🎭 Using hybrid scraper for ${board.name}...`);
       // Use more URLs for hybrid scraping to get 500+ jobs
-      const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, 20), board.name, boardKey);
+      const hybridJobs = await scrapeUrlsWithHybrid(workingUrls.slice(0, urlLimit), board.name, boardKey);
       hybridJobs.forEach(addJob);
     }
 
     const { jobs: listingJobs, detailUrls: discoveredDetailUrls } = await crawlListingUrls(
-      workingUrls.slice(0, 20), // Increased from 4 to 20
+      workingUrls.slice(0, urlLimit), // Limit based on test mode
       boardKey,
       board.name
     );
@@ -235,7 +239,9 @@ export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> 
 
     registerDetailUrls(boardKey, Array.from(detailSeedSet));
 
-    const detailUrlsToFetch = Array.from(detailSeedSet).slice(0, DETAIL_FETCH_LIMIT);
+    // In test mode, limit detail URLs to 1
+    const detailLimit = isTestMode() ? 1 : DETAIL_FETCH_LIMIT;
+    const detailUrlsToFetch = Array.from(detailSeedSet).slice(0, detailLimit);
     if (detailUrlsToFetch.length > 0) {
       console.log(`🔁 Fetching ${detailUrlsToFetch.length} detail pages for ${board.name}`);
       const detailJobs = await scrapeFromUrls(detailUrlsToFetch, `${board.name} detail`);

@@ -82,10 +82,11 @@ async function runAll() {
   const sourceStats: Record<string, { total: number; valid: number; invalid: number }> = {};
 
   // Support both INGEST_MODE and CRAWL_TYPE (for GitHub Actions compatibility)
-  const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : 'full');
+  const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : (process.env.CRAWL_TYPE === 'focused-test' ? 'focused-test' : 'full'));
+  const isTest = ingestMode === 'focused-test' || process.env.TEST_MODE === 'true';
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
   console.log(`⏱️  Maximum runtime: ${maxRuntimeMinutes} minutes (${(maxRuntimeMinutes / 60).toFixed(1)} hours)`);
-  console.log(`🎯 Mode: ${ingestMode.toUpperCase()} ${ingestMode === 'focused' ? '(ATS, RSS, Sitemaps, Graduate Boards, University Feeds only)' : '(all sources)'}`);
+  console.log(`🎯 Mode: ${ingestMode.toUpperCase()} ${isTest ? '(TEST MODE: 1 URL per source)' : ingestMode === 'focused' ? '(ATS, RSS, Sitemaps, Graduate Boards, University Feeds only)' : '(all sources)'}`);
   console.log(`🎯 Target: 1000+ useful jobs per run (new API-based strategy)`);
   
   // Get today's crawl buckets

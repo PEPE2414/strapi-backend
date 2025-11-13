@@ -121,17 +121,19 @@ export async function scrapeAllSitemaps(): Promise<CanonicalJob[]> {
     console.log(`⚠️  Perplexity sitemap discovery failed, using known sitemaps only`);
   }
 
-  console.log(`📊 Processing ${allSitemaps.length} sitemaps (${knownCount} known + ${allSitemaps.length - knownCount} discovered)...`);
+  // In test mode, limit to 1 sitemap
+  const sitemapsToProcess = isTestMode() ? allSitemaps.slice(0, 1) : allSitemaps;
+  console.log(`📊 Processing ${sitemapsToProcess.length} sitemap(s)${isTestMode() ? ' (TEST MODE: 1 sitemap only)' : ` (${knownCount} known + ${allSitemaps.length - knownCount} discovered)`}...`);
   
   const allJobUrls: string[] = [];
   const processed = new Set<string>();
 
   // Process sitemaps in batches to avoid overwhelming servers
   const BATCH_SIZE = 10;
-  for (let i = 0; i < allSitemaps.length; i += BATCH_SIZE) {
-    const batch = allSitemaps.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < sitemapsToProcess.length; i += BATCH_SIZE) {
+    const batch = sitemapsToProcess.slice(i, i + BATCH_SIZE);
     
-    console.log(`\n📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allSitemaps.length / BATCH_SIZE)} (${batch.length} sitemaps)...`);
+    console.log(`\n📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(sitemapsToProcess.length / BATCH_SIZE)} (${batch.length} sitemap(s))...`);
 
     const batchPromises = batch.map(async (sitemapUrl) => {
       if (processed.has(sitemapUrl)) return [];
@@ -160,7 +162,7 @@ export async function scrapeAllSitemaps(): Promise<CanonicalJob[]> {
     batchResults.forEach(urls => allJobUrls.push(...urls));
 
     // Delay between batches
-    if (i + BATCH_SIZE < allSitemaps.length) {
+    if (i + BATCH_SIZE < sitemapsToProcess.length) {
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }

@@ -1,6 +1,7 @@
 import { CanonicalJob } from '../types';
 import { discoverRSSFeeds, parseRSSFeed, convertRSSItemToJob, RSSFeed } from '../lib/rssFeedParser';
 import { MAJOR_JOB_BOARDS, ENGINEERING_JOB_BOARDS, TECH_JOB_BOARDS, FINANCE_JOB_BOARDS, CONSULTING_JOB_BOARDS, UNIVERSITY_BOARDS } from '../config/sources';
+import { isTestMode } from '../lib/rotation';
 
 /**
  * Known RSS feed URLs for major job boards
@@ -57,9 +58,10 @@ export async function scrapeRSSFeeds(): Promise<CanonicalJob[]> {
     console.log(`⚠️  Perplexity RSS discovery failed, using known feeds only`);
   }
 
-  // Process known RSS feeds
-  console.log(`\n📡 Processing ${allFeeds.length} RSS feeds (${KNOWN_RSS_FEEDS.length} known + ${allFeeds.length - KNOWN_RSS_FEEDS.length} discovered)...`);
-  for (const feed of allFeeds) {
+  // In test mode, limit to 1 feed
+  const feedsToProcess = isTestMode() ? allFeeds.slice(0, 1) : allFeeds;
+  console.log(`\n📡 Processing ${feedsToProcess.length} RSS feeds (${isTestMode() ? 'TEST MODE: 1 feed only' : `${KNOWN_RSS_FEEDS.length} known + ${allFeeds.length - KNOWN_RSS_FEEDS.length} discovered`})...`);
+  for (const feed of feedsToProcess) {
     try {
       console.log(`  🔄 Fetching ${feed.title || feed.url}...`);
       const items = await parseRSSFeed(feed.url);
@@ -109,51 +111,58 @@ export async function scrapeRSSFeeds(): Promise<CanonicalJob[]> {
     }
   });
 
+  // In test mode, skip domain discovery
   let discoveredFeeds = 0;
-  for (const domain of Array.from(domainsToCheck).slice(0, 50)) { // Limit to 50 domains to avoid timeout
-    try {
-      const feeds = await discoverRSSFeeds(domain);
-      if (feeds.length === 0) continue;
+  if (!isTestMode()) {
+    for (const domain of Array.from(domainsToCheck).slice(0, 50)) { // Limit to 50 domains to avoid timeout
+      try {
+        const feeds = await discoverRSSFeeds(domain);
+        if (feeds.length === 0) continue;
 
-      discoveredFeeds += feeds.length;
-      console.log(`  ✅ Discovered ${feeds.length} RSS feed(s) from ${domain}`);
+        discoveredFeeds += feeds.length;
+        console.log(`  ✅ Discovered ${feeds.length} RSS feed(s) from ${domain}`);
 
-      for (const feed of feeds) {
-        try {
-          const items = await parseRSSFeed(feed.url);
-          if (items.length === 0) continue;
+        for (const feed of feeds) {
+          try {
+            const items = await parseRSSFeed(feed.url);
+            if (items.length === 0) continue;
 
-          const sourceName = new URL(feed.url).hostname.replace(/^www\./, '');
-          
-          for (const item of items) {
-            try {
-              const job = await convertRSSItemToJob(item, feed.url, sourceName);
-              if (!job) continue;
+            const sourceName = new URL(feed.url).hostname.replace(/^www\./, '');
+            
+            for (const item of items) {
+              try {
+                const job = await convertRSSItemToJob(item, feed.url, sourceName);
+                if (!job) continue;
 
-              // Deduplicate
-              if (seenHashes.has(job.hash)) continue;
-              seenHashes.add(job.hash);
+                // Deduplicate
+                if (seenHashes.has(job.hash)) continue;
+                seenHashes.add(job.hash);
 
-              allJobs.push(job);
-            } catch {
-              // Ignore conversion errors
+                allJobs.push(job);
+              } catch {
+                // Ignore conversion errors
+              }
             }
-          }
 
-          // Small delay between feeds
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch (error) {
-          console.warn(`    ⚠️  Failed to process discovered feed ${feed.url}:`, error instanceof Error ? error.message : String(error));
+            // Small delay between feeds
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (error) {
+            console.warn(`    ⚠️  Failed to process discovered feed ${feed.url}:`, error instanceof Error ? error.message : String(error));
+          }
         }
+      } catch (error) {
+        console.warn(`  ⚠️  Failed to discover feeds from ${domain}:`, error instanceof Error ? error.message : String(error));
       }
-    } catch (error) {
-      console.warn(`  ⚠️  Failed to discover feeds from ${domain}:`, error instanceof Error ? error.message : String(error));
     }
+  } else {
+    console.log(`  ⏭️  Skipping domain discovery in test mode`);
   }
 
   console.log(`\n✅ RSS feed scraping completed:`);
-  console.log(`   📊 Processed ${KNOWN_RSS_FEEDS.length} known feeds`);
-  console.log(`   🔍 Discovered ${discoveredFeeds} additional feeds`);
+  console.log(`   📊 Processed ${feedsToProcess.length} feed(s)${isTestMode() ? ' (TEST MODE)' : ''}`);
+  if (!isTestMode()) {
+    console.log(`   🔍 Discovered ${discoveredFeeds} additional feeds`);
+  }
   console.log(`   📦 Total jobs collected: ${allJobs.length}`);
 
   return allJobs;
