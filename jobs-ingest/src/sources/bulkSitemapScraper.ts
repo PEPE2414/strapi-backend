@@ -11,6 +11,7 @@ import {
   CONSULTING_JOB_BOARDS, 
   UNIVERSITY_BOARDS 
 } from '../config/sources';
+import { isTestMode } from '../lib/rotation';
 
 /**
  * Process a sitemap and extract job URLs
