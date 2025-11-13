@@ -133,6 +133,7 @@ jobs:
 
   manual-run:
     runs-on: ubuntu-latest
+    timeout-minutes: 300  # 5 hours - stop before GitHub's 6-hour limit
     if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
@@ -166,4 +167,4 @@ jobs:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRAWL_TYPE: ${{ github.event.inputs.crawl_type }}
           INGEST_MODE: ${{ github.event.inputs.crawl_type == 'focused' && 'focused' || '' }}
-          MAX_RUNTIME_MINUTES: 60
+          MAX_RUNTIME_MINUTES: ${{ github.event.inputs.crawl_type == 'focused' && '300' || '60' }}

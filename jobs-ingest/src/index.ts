@@ -68,7 +68,11 @@ const limiter = new Bottleneck({
 
 async function runAll() {
   const startTime = new Date();
-  const MAX_RUNTIME_MS = 5 * 60 * 60 * 1000; // 5 hours
+  // Support MAX_RUNTIME_MINUTES env var, default to 5 hours (300 minutes)
+  const maxRuntimeMinutes = process.env.MAX_RUNTIME_MINUTES 
+    ? parseInt(process.env.MAX_RUNTIME_MINUTES, 10) 
+    : 300; // 5 hours default
+  const MAX_RUNTIME_MS = maxRuntimeMinutes * 60 * 1000;
   const batches: CanonicalJob[][] = [];
   const seenTodayCache = await loadSeenTodayCache();
   let seenTodaySkippedTotal = 0;
@@ -80,7 +84,7 @@ async function runAll() {
   // Support both INGEST_MODE and CRAWL_TYPE (for GitHub Actions compatibility)
   const ingestMode = process.env.INGEST_MODE || (process.env.CRAWL_TYPE === 'focused' ? 'focused' : 'full');
   console.log(`🚀 Starting enhanced job ingestion at ${startTime.toISOString()}`);
-  console.log(`⏱️  Maximum runtime: 5 hours`);
+  console.log(`⏱️  Maximum runtime: ${maxRuntimeMinutes} minutes (${(maxRuntimeMinutes / 60).toFixed(1)} hours)`);
   console.log(`🎯 Mode: ${ingestMode.toUpperCase()} ${ingestMode === 'focused' ? '(ATS, RSS, Sitemaps, Graduate Boards, University Feeds only)' : '(all sources)'}`);
   console.log(`🎯 Target: 1000+ useful jobs per run (new API-based strategy)`);
   
@@ -107,9 +111,12 @@ async function runAll() {
     for (const source of bucket.sources) {
       // Check if we've exceeded the time limit
       const elapsed = Date.now() - startTime.getTime();
-      if (elapsed >= MAX_RUNTIME_MS) {
+      // Check time limit with 5-minute buffer to allow graceful shutdown
+      const timeBuffer = 5 * 60 * 1000; // 5 minutes
+      if (elapsed >= (MAX_RUNTIME_MS - timeBuffer)) {
+        const elapsedMinutes = Math.floor(elapsed / (60 * 1000));
         const elapsedHours = (elapsed / (60 * 60 * 1000)).toFixed(2);
-        console.log(`\n⏱️  Time limit reached (5 hours). Elapsed: ${elapsedHours} hours`);
+        console.log(`\n⏱️  Time limit approaching (${maxRuntimeMinutes} minutes). Elapsed: ${elapsedMinutes} minutes (${elapsedHours} hours)`);
         console.log(`🛑 Stopping scraping and proceeding to upload collected results...`);
         timeLimitReached = true;
         break;
@@ -412,8 +419,9 @@ async function runAll() {
 
   if (timeLimitReached) {
     const elapsed = Date.now() - startTime.getTime();
+    const elapsedMinutes = Math.floor(elapsed / (60 * 1000));
     const elapsedHours = (elapsed / (60 * 60 * 1000)).toFixed(2);
-    console.log(`\n⏱️  Scraping stopped due to 5-hour time limit (elapsed: ${elapsedHours} hours)`);
+    console.log(`\n⏱️  Scraping stopped due to time limit (${maxRuntimeMinutes} minutes, elapsed: ${elapsedMinutes} minutes / ${elapsedHours} hours)`);
     console.log(`📦 Proceeding to process and upload ${batches.flat().length} collected jobs...`);
   }
 
@@ -543,7 +551,7 @@ async function runAll() {
   }
   console.log(`\n⏱️  Duration: ${duration}s`);
   if (timeLimitReached) {
-    console.log(`   ⚠️  Run stopped at 5-hour time limit`);
+    console.log(`   ⚠️  Run stopped at ${maxRuntimeMinutes}-minute time limit`);
   }
   console.log(`🚀 Rate: ${Math.round(totalProcessed / duration)} jobs/second`);
   
