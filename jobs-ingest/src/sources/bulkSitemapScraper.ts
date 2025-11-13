@@ -65,18 +65,39 @@ async function processSitemap(sitemapUrl: string, maxUrls: number = 10000): Prom
         }
       });
 
-      // Filter for job URLs
+      // Filter for job detail page URLs (more precise filtering)
       for (const url of urls) {
         if (jobUrls.size >= maxUrls) break;
         
         const urlLower = url.toLowerCase();
+        const urlPath = new URL(url).pathname.toLowerCase();
         
-        // Check if it's a job-related URL
-        const isJobUrl = 
-          /job|vacanc|role|position|opportunit|career|opening|graduate|intern|placement|scheme|programme/.test(urlLower) &&
-          !/sitemap|feed|rss|atom|robots|login|register|logout/.test(urlLower);
-
-        if (isJobUrl) {
+        // Skip non-job URLs
+        if (/sitemap|feed|rss|atom|robots|login|register|logout|search|list|index|category|tag|archive/.test(urlLower)) {
+          continue;
+        }
+        
+        // Must contain job-related keywords
+        const hasJobKeyword = /job|vacanc|role|position|opportunit|career|opening|graduate|intern|placement|scheme|programme/.test(urlLower);
+        if (!hasJobKeyword) continue;
+        
+        // Prefer URLs that look like detail pages (not listing/search pages)
+        // Good signs: numeric IDs, specific job titles in URL, or common detail page patterns
+        const looksLikeDetailPage = 
+          /\/(job|vacancy|role|position|opportunity|career|opening|graduate|intern|placement|scheme|programme)\/[^\/]+$/i.test(urlPath) || // Single job path
+          /\/(job|vacancy|role|position|opportunity|career|opening|graduate|intern|placement|scheme|programme)\/[^\/]+\/[^\/]+$/i.test(urlPath) || // Nested job path
+          /\/\d+$/.test(urlPath) || // Ends with numeric ID
+          /\/[a-z0-9-]{20,}$/i.test(urlPath); // Long slug (likely specific job)
+        
+        // Avoid listing/search pages
+        const isListingPage = 
+          /\/search|\/list|\/jobs$|\/vacancies$|\/roles$|\/positions$|\/opportunities$/.test(urlPath) ||
+          /\?.*(search|query|q=|page=|offset=)/.test(urlLower);
+        
+        if (looksLikeDetailPage && !isListingPage) {
+          jobUrls.add(url);
+        } else if (hasJobKeyword && !isListingPage && jobUrls.size < maxUrls * 0.1) {
+          // Allow some non-detail pages if we don't have enough detail pages (10% max)
           jobUrls.add(url);
         }
       }
@@ -143,10 +164,16 @@ export async function scrapeAllSitemaps(): Promise<CanonicalJob[]> {
         const domain = new URL(sitemapUrl).hostname;
         console.log(`  🔄 Processing ${domain}...`);
         
-        const jobUrls = await processSitemap(sitemapUrl, 5000); // Get up to 5000 URLs per sitemap
+        // In test mode, limit to 50 URLs per sitemap for faster testing
+        const maxUrlsPerSitemap = isTestMode() ? 50 : 5000;
+        const jobUrls = await processSitemap(sitemapUrl, maxUrlsPerSitemap);
         
         if (jobUrls.length > 0) {
-          console.log(`    ✅ Found ${jobUrls.length} job URLs from ${domain}`);
+          console.log(`    ✅ Found ${jobUrls.length} job URLs from ${domain}${isTestMode() ? ' (TEST MODE: limited to 50)' : ''}`);
+          // Log first few URLs in test mode for debugging
+          if (isTestMode() && jobUrls.length > 0) {
+            console.log(`    📋 Sample URLs: ${jobUrls.slice(0, 3).map(u => new URL(u).pathname).join(', ')}`);
+          }
         } else {
           console.log(`    ⚠️  No job URLs found from ${domain}`);
         }
