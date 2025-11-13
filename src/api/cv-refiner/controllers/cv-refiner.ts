@@ -166,7 +166,7 @@ export default {
           source: source,
           userEmail: auth.email,
           callbackUrl: (process.env.PUBLIC_API_URL || process.env.API_URL || '') + '/api/cv-refiner/complete',
-          callbackSecret: process.env.CV_REFINE_WEBHOOK_SECRET || ''
+          callbackSecret: process.env.CL_WEBHOOK_SECRET || ''
         }
       };
 
@@ -240,7 +240,7 @@ export default {
   },
   async complete(ctx: Context) {
     const secret = ctx.request.headers['x-cl-secret'] || ctx.request.headers['x-webhook-secret'] || ctx.request.query.secret || (ctx.request.body && (ctx.request.body.secret || ctx.request.body.meta?.callbackSecret));
-    if (!secret || String(secret) !== String(process.env.CV_REFINE_WEBHOOK_SECRET || '')) {
+    if (!secret || String(secret) !== String(process.env.CL_WEBHOOK_SECRET || '')) {
       return ctx.unauthorized('Invalid secret');
     }
     const b = ctx.request.body || {};
