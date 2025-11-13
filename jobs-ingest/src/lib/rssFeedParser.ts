@@ -220,26 +220,60 @@ async function discoverFeedsFromRobots(baseUrl: string): Promise<RSSFeed[]> {
  */
 export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
   try {
-    const res = await request(feedUrl, {
-      method: 'GET',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/rss+xml,application/atom+xml,application/xml,text/xml,*/*;q=0.9'
-      },
-      maxRedirections: 3
-    });
+    // Try direct fetch first
+    let xml: string;
+    try {
+      const res = await request(feedUrl, {
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'Accept': 'application/rss+xml,application/atom+xml,application/xml,text/xml,*/*;q=0.9'
+        },
+        maxRedirections: 3
+      });
 
-    if (res.statusCode !== 200) {
-      console.warn(`RSS feed returned ${res.statusCode}: ${feedUrl}`);
-      return [];
+      if (res.statusCode !== 200) {
+        console.warn(`RSS feed returned ${res.statusCode}: ${feedUrl}`);
+        // Try with Cloudflare bypass as fallback
+        try {
+          const { fetchWithCloudflareBypass } = await import('./cloudflareBypass');
+          const result = await fetchWithCloudflareBypass(feedUrl);
+          xml = result.html;
+        } catch (bypassError) {
+          console.warn(`RSS feed fetch failed (direct: ${res.statusCode}, bypass failed): ${feedUrl}`);
+          return [];
+        }
+      } else {
+        xml = await res.body.text();
+      }
+    } catch (directError) {
+      // If direct fetch fails, try Cloudflare bypass
+      try {
+        const { fetchWithCloudflareBypass } = await import('./cloudflareBypass');
+        const result = await fetchWithCloudflareBypass(feedUrl);
+        xml = result.html;
+      } catch (bypassError) {
+        console.warn(`Failed to fetch RSS feed ${feedUrl}:`, bypassError instanceof Error ? bypassError.message : String(bypassError));
+        return [];
+      }
     }
 
-    const xml = await res.body.text();
     if (!xml || xml.length < 100) {
+      console.warn(`RSS feed content too short (${xml?.length || 0} chars): ${feedUrl}`);
       return [];
     }
 
-    return parseFeedXML(xml);
+    // Check if it's actually XML/RSS
+    if (!/<rss|<feed|<rdf:rdf/i.test(xml)) {
+      console.warn(`RSS feed doesn't appear to be valid XML/RSS: ${feedUrl} (first 200 chars: ${xml.substring(0, 200)})`);
+      return [];
+    }
+
+    const items = parseFeedXML(xml);
+    if (items.length === 0) {
+      console.warn(`RSS feed parsed but no items found: ${feedUrl} (XML length: ${xml.length})`);
+    }
+    return items;
   } catch (error) {
     console.warn(`Failed to parse RSS feed ${feedUrl}:`, error instanceof Error ? error.message : String(error));
     return [];

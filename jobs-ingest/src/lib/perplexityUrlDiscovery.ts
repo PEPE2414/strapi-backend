@@ -316,6 +316,26 @@ function extractUrlsFromText(text: string, sourceKey: string): string[] {
 async function testDiscoveredUrls(urls: string[], sourceKey: string): Promise<string[]> {
   const workingUrls: string[] = [];
   
+  // In test mode, skip URL testing and just validate URL format
+  const isTest = process.env.TEST_MODE === 'true' || process.env.INGEST_MODE === 'focused-test';
+  if (isTest) {
+    console.log(`🧪 TEST MODE: Skipping URL testing, validating format only`);
+    // Just validate URL format and basic patterns
+    for (const url of urls.slice(0, 5)) {
+      try {
+        const urlObj = new URL(url);
+        // Basic validation - check if URL looks reasonable
+        if (urlObj.protocol === 'https:' && urlObj.hostname.length > 0) {
+          workingUrls.push(url);
+          console.log(`✅ Valid URL format: ${url}`);
+        }
+      } catch {
+        // Invalid URL, skip
+      }
+    }
+    return workingUrls;
+  }
+  
   // Limit to top 20 URLs to avoid excessive testing
   const urlsToTest = urls.slice(0, 20);
   
@@ -323,36 +343,67 @@ async function testDiscoveredUrls(urls: string[], sourceKey: string): Promise<st
     try {
       console.log(`🧪 Testing discovered URL: ${url}`);
       
-      // Try fetching with Cloudflare bypass
-      const { html } = await fetchWithCloudflareBypass(url);
-      
-      // Check if the page contains job-related content or is a valid API endpoint
-      if (isJobPage(html) || isValidAPIEndpoint(html, url)) {
-        workingUrls.push(url);
-        console.log(`✅ Working URL found: ${url}`);
-      } else {
-        console.log(`❌ URL not a valid job page/API: ${url}`);
-      }
-    } catch (error) {
-      // For API endpoints, 200 status might be enough even if content check fails
+      // For API endpoints, use direct fetch (HEAD request) instead of Cloudflare bypass
       if (url.includes('/api/') || url.includes('api.')) {
-        // Try a simpler check for API endpoints
         try {
-          const response = await fetch(url, { method: 'HEAD' });
-          if (response.ok) {
-            workingUrls.push(url);
-            console.log(`✅ Working API endpoint: ${url}`);
+          const response = await fetch(url, { 
+            method: 'HEAD',
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          });
+          if (response.ok || response.status === 401) { // 401 might mean endpoint exists but needs auth
+            // For Greenhouse, validate it's an embed endpoint
+            if (sourceKey.includes('greenhouse')) {
+              if (url.includes('/embed/job_board') || url.includes('boards.greenhouse.io')) {
+                workingUrls.push(url);
+                console.log(`✅ Valid Greenhouse endpoint: ${url}`);
+              } else {
+                console.log(`❌ Not a Greenhouse embed endpoint: ${url}`);
+              }
+            } else {
+              workingUrls.push(url);
+              console.log(`✅ Working API endpoint: ${url}`);
+            }
           }
-        } catch {
-          console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
+        } catch (apiError) {
+          console.log(`❌ API endpoint failed: ${url} - ${apiError instanceof Error ? apiError.message : String(apiError)}`);
         }
       } else {
-        console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
+        // For non-API URLs, try direct fetch first (faster than Cloudflare bypass)
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          });
+          if (response.ok) {
+            const html = await response.text();
+            if (isJobPage(html) || isValidAPIEndpoint(html, url)) {
+              workingUrls.push(url);
+              console.log(`✅ Working URL found: ${url}`);
+            } else {
+              console.log(`❌ URL not a valid job page/API: ${url}`);
+            }
+          }
+        } catch (directError) {
+          // If direct fetch fails, try Cloudflare bypass as fallback
+          try {
+            const { html } = await fetchWithCloudflareBypass(url);
+            if (isJobPage(html) || isValidAPIEndpoint(html, url)) {
+              workingUrls.push(url);
+              console.log(`✅ Working URL found (via bypass): ${url}`);
+            } else {
+              console.log(`❌ URL not a valid job page/API: ${url}`);
+            }
+          } catch (bypassError) {
+            console.log(`❌ URL failed: ${url} - ${bypassError instanceof Error ? bypassError.message : String(bypassError)}`);
+          }
+        }
       }
+    } catch (error) {
+      console.log(`❌ URL failed: ${url} - ${error instanceof Error ? error.message : String(error)}`);
     }
     
     // Add delay between tests
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500)); // Reduced delay
   }
   
   return workingUrls;
