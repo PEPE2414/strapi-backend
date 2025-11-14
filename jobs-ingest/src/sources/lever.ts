@@ -56,8 +56,88 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
     // Check for authentication errors
     if (statusCode === 401 || statusCode === 403) {
       console.warn(`⚠️  Lever ${company}: Authentication required (${statusCode}). The API may require authentication or the company name may be incorrect.`);
-      // Try public careers page scraping as fallback
-      const careersUrl = `https://jobs.lever.co/${company}`;
+      // Try alternative company name variations
+      const altNames = [
+        company.toLowerCase(),
+        company.replace(/-/g, ''),
+        company.replace(/-/g, '_'),
+        company.split('-')[0] // First part of hyphenated name
+      ];
+      
+      for (const altName of altNames.slice(1)) { // Skip first (already tried)
+        if (altName === company) continue;
+        const altEndpoint = `https://api.lever.co/v0/postings/${altName}?mode=json`;
+        console.log(`⚠️  Trying alternative company name: ${altName}`);
+        try {
+          const { body: altBody, statusCode: altStatus } = await request(altEndpoint, {
+            headers: { Accept: 'application/json' }
+          });
+          if (altStatus === 200) {
+            const altText = await altBody.text();
+            const altResponse = JSON.parse(altText);
+            if (Array.isArray(altResponse) && altResponse.length > 0) {
+              console.log(`✅ Lever ${company}: Found ${altResponse.length} jobs using alternative name "${altName}"`);
+              // Process jobs with alternative name
+              const postings = altResponse as LeverPosting[];
+              const relevantPostings = postings.filter((posting) => {
+                const title = String(posting.text || '').trim();
+                const location = String(posting.categories?.location || '').trim();
+                const description = String(posting.descriptionPlain || posting.description || '').trim();
+                const team = String(posting.categories?.team || '').trim();
+                const fullText = `${title} ${location} ${description} ${team}`;
+                return isRelevantJobType(fullText) && isUKJob(fullText);
+              });
+              console.log(`📊 Lever ${company}: ${postings.length} jobs, ${relevantPostings.length} relevant UK graduate roles`);
+              return await Promise.all(relevantPostings.map(async (posting) => {
+                const title = String(posting.text || '').trim();
+                const location = posting.categories?.location || '';
+                const descriptionHtml = posting.description || posting.descriptionPlain || '';
+                const applyUrl = await resolveApplyUrl(posting.hostedUrl || posting.applyUrl || '');
+                const jobType = classifyJobType(`${title} ${posting.categories?.team || ''}`);
+                const companyName = company;
+                const rawTimestamp = posting.updatedAt ?? posting.createdAt;
+                const postedAt =
+                  typeof rawTimestamp === 'number'
+                    ? new Date(rawTimestamp).toISOString()
+                    : toISO(rawTimestamp);
+                const hash = generateJobHash({
+                  title,
+                  company: companyName,
+                  applyUrl,
+                  location,
+                  postedAt
+                });
+                const slug = makeUniqueSlug(title, companyName, hash, location);
+                return {
+                  source: `lever:${company}`,
+                  sourceUrl: posting.hostedUrl || posting.applyUrl || applyUrl,
+                  title,
+                  company: { name: companyName },
+                  location: location || undefined,
+                  descriptionHtml: descriptionHtml || undefined,
+                  descriptionText: undefined,
+                  applyUrl,
+                  jobType,
+                  postedAt,
+                  applyDeadline: undefined,
+                  salary: undefined,
+                  startDate: undefined,
+                  endDate: undefined,
+                  duration: undefined,
+                  experience: undefined,
+                  companyPageUrl: undefined,
+                  relatedDegree: undefined,
+                  degreeLevel: undefined,
+                  slug,
+                  hash
+                } as CanonicalJob;
+              }));
+            }
+          }
+        } catch (altError) {
+          // Continue to next alternative
+        }
+      }
       console.log(`⚠️  Lever ${company}: API requires auth, skipping (would need to scrape careers page instead)`);
       return [];
     }

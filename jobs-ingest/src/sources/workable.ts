@@ -60,7 +60,15 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
     // Check for errors
     if (statusCode !== 200) {
       console.warn(`⚠️  Workable ${company}: Received ${statusCode} response: ${text.substring(0, 200)}`);
-      // Try alternative endpoint format
+      // Try alternative company name variations
+      const altNames = [
+        company.replace(/-/g, ''),
+        company.replace(/-/g, '_'),
+        company.split('-').map((w, i) => i === 0 ? w : w[0].toUpperCase() + w.slice(1)).join(''),
+        company.toLowerCase()
+      ];
+      
+      // Try alternative endpoint format first
       const altEndpoint = `https://${company}.workable.com/api/v2/jobs?state=published`;
       console.log(`⚠️  Trying alternative endpoint: ${altEndpoint}`);
       try {
@@ -125,7 +133,89 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
           }
         }
       } catch (altError) {
-        console.warn(`⚠️  Workable ${company}: Alternative endpoint also failed`);
+        // Try alternative company names
+        for (const altName of altNames) {
+          if (altName === company) continue;
+          const altNameEndpoint = `https://${altName}.workable.com/api/v3/jobs?state=published`;
+          console.log(`⚠️  Trying alternative company name: ${altName} (${altNameEndpoint})`);
+          try {
+            const { body: altNameBody, statusCode: altNameStatus } = await request(altNameEndpoint, {
+              headers: { Accept: 'application/json' }
+            });
+            if (altNameStatus === 200) {
+              const altNameData = await altNameBody.json() as WorkableResponse;
+              const altNameJobs = Array.isArray(altNameData?.jobs) ? altNameData.jobs : [];
+              if (altNameJobs.length > 0) {
+                console.log(`✅ Workable ${company}: Found ${altNameJobs.length} jobs using alternative name "${altName}"`);
+                // Process jobs with alternative name (same code as below)
+                const enriched = await Promise.all(altNameJobs.map(async (job) => {
+                  let description = job.description || job.content || '';
+                  if (!description && job.shortcode) {
+                    try {
+                      const detailUrl = `https://${altName}.workable.com/api/v3/jobs/${job.shortcode}`;
+                      const { body: detailBody } = await request(detailUrl, {
+                        headers: { Accept: 'application/json' }
+                      });
+                      const detailJson = await detailBody.json() as any;
+                      description = detailJson?.job?.description || detailJson?.description || detailJson?.content || '';
+                    } catch (error) {
+                      // Ignore detail fetch errors
+                    }
+                  }
+                  const title = String(job.title || '').trim();
+                  const locationParts = [
+                    job.location?.city,
+                    job.location?.region,
+                    job.location?.country
+                  ].filter(Boolean);
+                  const location = locationParts.join(', ');
+                  const fullText = `${title} ${location} ${description}`;
+                  if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+                    return null;
+                  }
+                  const applyUrl = await resolveApplyUrl(job.url || '');
+                  const jobType = classifyJobType(`${title} ${description}`);
+                  const postedAt = toISO(job.updated_at || job.created_at);
+                  const hash = generateJobHash({
+                    title,
+                    company,
+                    applyUrl,
+                    location,
+                    postedAt
+                  });
+                  const slug = makeUniqueSlug(title, company, hash, location);
+                  return {
+                    source: `workable:${company}`,
+                    sourceUrl: job.url || applyUrl,
+                    title,
+                    company: { name: company },
+                    location: location || undefined,
+                    descriptionHtml: description || undefined,
+                    descriptionText: undefined,
+                    applyUrl,
+                    jobType,
+                    postedAt,
+                    applyDeadline: undefined,
+                    salary: undefined,
+                    startDate: undefined,
+                    endDate: undefined,
+                    duration: undefined,
+                    experience: undefined,
+                    companyPageUrl: undefined,
+                    relatedDegree: undefined,
+                    degreeLevel: undefined,
+                    slug,
+                    hash
+                  } as CanonicalJob;
+                }));
+                return enriched.filter((job): job is CanonicalJob => job !== null);
+              }
+            }
+          } catch (altNameError) {
+            // Continue to next alternative
+          }
+        }
+        console.warn(`⚠️  Workable ${company}: All alternative endpoints and company names failed`);
       }
       return [];
     }

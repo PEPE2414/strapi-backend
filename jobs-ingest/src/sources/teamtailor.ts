@@ -60,6 +60,85 @@ export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
 
     if (jobs.length === 0) {
       console.log(`📄 Teamtailor ${host}: no jobs returned`);
+      // Try alternative host name variations
+      const altHosts = [
+        host.toLowerCase(),
+        host.replace(/-/g, ''),
+        host.replace(/-/g, '_'),
+        host.split('-')[0],
+        host.replace(/\./g, '-')
+      ];
+      
+      for (const altHost of altHosts.slice(1)) { // Skip first (already tried)
+        if (altHost === host) continue;
+        const altEndpoint = `https://api.teamtailor.com/v1/jobs?host=${altHost}.teamtailor.com`;
+        console.log(`⚠️  Trying alternative host name: ${altHost} (${altEndpoint})`);
+        try {
+          const { body: altBody } = await request(altEndpoint, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: 'Token token="public"'
+            }
+          });
+          const altData = await altBody.json() as TeamtailorResponse;
+          const altJobs = Array.isArray(altData?.data) ? altData.data : [];
+          if (altJobs.length > 0) {
+            console.log(`✅ Teamtailor ${host}: Found ${altJobs.length} jobs using alternative host "${altHost}"`);
+            // Process jobs with alternative host (same code as below)
+            const canonicalJobs = await Promise.all(altJobs.map(async (job) => {
+              const attributes = job.attributes || {};
+              const title = String(attributes.title || '').trim();
+              const location = String(attributes.workplace_address || '').trim();
+              const description = String(attributes.body || '').trim();
+              const fullText = `${title} ${location} ${description}`;
+
+              if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+                return null;
+              }
+
+              const applyUrl = await resolveApplyUrl(attributes.url || '');
+              const jobType = classifyJobType(`${title} ${description}`);
+              const postedAt = toISO(attributes.updated_at || attributes.created_at);
+
+              const hash = generateJobHash({
+                title,
+                company: host,
+                applyUrl,
+                location,
+                postedAt
+              });
+              const slug = makeUniqueSlug(title, host, hash, location);
+
+              return {
+                source: `teamtailor:${host}`,
+                sourceUrl: attributes.url || applyUrl,
+                title,
+                company: { name: host },
+                location: location || undefined,
+                descriptionHtml: description || undefined,
+                descriptionText: undefined,
+                applyUrl,
+                jobType,
+                postedAt,
+                applyDeadline: undefined,
+                salary: undefined,
+                startDate: undefined,
+                endDate: undefined,
+                duration: undefined,
+                experience: undefined,
+                companyPageUrl: undefined,
+                relatedDegree: undefined,
+                degreeLevel: undefined,
+                slug,
+                hash
+              } as CanonicalJob;
+            }));
+            return canonicalJobs.filter((job): job is CanonicalJob => job !== null);
+          }
+        } catch (altError) {
+          // Continue to next alternative
+        }
+      }
       return [];
     }
 

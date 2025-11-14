@@ -123,9 +123,18 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         }
       }
       
-      // Check if HTML is too short or looks like an error page
+      // Check if HTML is corrupted (contains binary data or invalid characters)
       if (!html || html.length < 500) {
         console.log(`⏭️  Skipping URL with insufficient content: ${new URL(url).pathname} (${html?.length || 0} chars)`);
+        return null;
+      }
+      
+      // Check for binary/corrupted data (common indicators)
+      const hasBinaryData = /[\x00-\x08\x0E-\x1F]/.test(html.substring(0, 1000));
+      const hasValidHTML = /<html|<body|<head|<!DOCTYPE/i.test(html);
+      
+      if (hasBinaryData && !hasValidHTML) {
+        console.log(`⏭️  Skipping URL with corrupted/binary content: ${new URL(url).pathname} (likely encoding issue or invalid response)`);
         return null;
       }
       

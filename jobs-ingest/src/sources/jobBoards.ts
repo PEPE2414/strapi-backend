@@ -267,7 +267,10 @@ async function crawlListingUrls(
   const jobs: CanonicalJob[] = [];
   const detailLinks = new Set<string>();
 
-  while (queue.length > 0 && visited.size < LISTING_PAGE_LIMIT) {
+  // In test mode, limit to 1 page only (no pagination)
+  const maxPages = isTestMode() ? 1 : LISTING_PAGE_LIMIT;
+
+  while (queue.length > 0 && visited.size < maxPages) {
     const current = queue.shift();
     if (!current) break;
     if (visited.has(current)) continue;

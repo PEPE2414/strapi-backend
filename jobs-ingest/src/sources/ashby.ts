@@ -56,7 +56,15 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
     // Check if response is text (error) instead of JSON
     if (statusCode !== 200 || text.trim().startsWith('Unauthorized') || text.trim().startsWith('<')) {
       console.warn(`⚠️  Ashby ${organizationSlug}: Received error response (${statusCode}): ${text.substring(0, 100)}`);
-      // Try alternative endpoint format
+      // Try alternative endpoint format and organization slug variations
+      const altSlugs = [
+        organizationSlug.toLowerCase(),
+        organizationSlug.replace(/-/g, ''),
+        organizationSlug.replace(/-/g, '_'),
+        organizationSlug.split('-')[0]
+      ];
+      
+      // Try alternative endpoint format first
       const altEndpoint = `https://jobs.ashbyhq.com/${organizationSlug}`;
       console.log(`⚠️  Trying alternative endpoint: ${altEndpoint}`);
       try {
@@ -127,7 +135,79 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
           }
         }
       } catch (altError) {
-        console.warn(`⚠️  Ashby ${organizationSlug}: Alternative endpoint failed: ${altError instanceof Error ? altError.message : String(altError)}`);
+        // Try alternative organization slug variations
+        for (const altSlug of altSlugs.slice(1)) { // Skip first (already tried)
+          if (altSlug === organizationSlug) continue;
+          const altSlugEndpoint = `https://jobs.ashbyhq.com/api/non_authenticated/job_board?organization_slug=${altSlug}`;
+          console.log(`⚠️  Trying alternative organization slug: ${altSlug} (${altSlugEndpoint})`);
+          try {
+            const { body: altSlugBody } = await request(altSlugEndpoint, {
+              headers: { Accept: 'application/json' }
+            });
+            const altSlugText = await altSlugBody.text();
+            if (!altSlugText.trim().startsWith('Unauthorized') && !altSlugText.trim().startsWith('<')) {
+              const altSlugData = JSON.parse(altSlugText) as AshbyResponse;
+              const altSlugPostings = Array.isArray(altSlugData?.jobBoard?.jobPostings) ? altSlugData.jobBoard.jobPostings : [];
+              if (altSlugPostings.length > 0) {
+                console.log(`✅ Ashby ${organizationSlug}: Found ${altSlugPostings.length} jobs using alternative slug "${altSlug}"`);
+                // Process postings (same code as below)
+                const jobs = await Promise.all(altSlugPostings.map(async (posting) => {
+                  const title = String(posting.title || '').trim();
+                  const location = String(posting.location || '').trim();
+                  const description =
+                    posting.descriptionHtml ||
+                    posting.description ||
+                    posting.descriptionPlainText ||
+                    (Array.isArray(posting.sections)
+                      ? posting.sections.map(section => section?.content || '').join('\n')
+                      : '');
+                  const fullText = `${title} ${location} ${description}`;
+                  if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+                    return null;
+                  }
+                  const applyUrl = await resolveApplyUrl(posting.url || '');
+                  const jobType = classifyJobType(`${title} ${description}`);
+                  const postedAt = toISO(posting.updatedAt);
+                  const hash = generateJobHash({
+                    title,
+                    company: organizationSlug,
+                    applyUrl,
+                    location,
+                    postedAt
+                  });
+                  const slug = makeUniqueSlug(title, organizationSlug, hash, location);
+                  return {
+                    source: `ashby:${organizationSlug}`,
+                    sourceUrl: posting.url || applyUrl,
+                    title,
+                    company: { name: organizationSlug },
+                    location: location || undefined,
+                    descriptionHtml: description || undefined,
+                    descriptionText: undefined,
+                    applyUrl,
+                    jobType,
+                    postedAt,
+                    applyDeadline: undefined,
+                    salary: undefined,
+                    startDate: undefined,
+                    endDate: undefined,
+                    duration: undefined,
+                    experience: undefined,
+                    companyPageUrl: undefined,
+                    relatedDegree: undefined,
+                    degreeLevel: undefined,
+                    slug,
+                    hash
+                  } as CanonicalJob;
+                }));
+                return jobs.filter((job): job is CanonicalJob => job !== null);
+              }
+            }
+          } catch (altSlugError) {
+            // Continue to next alternative
+          }
+        }
+        console.warn(`⚠️  Ashby ${organizationSlug}: All alternative endpoints and slugs failed`);
       }
       return [];
     }

@@ -265,6 +265,34 @@ export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
 
     // Check if it's actually XML/RSS
     if (!/<rss|<feed|<rdf:rdf/i.test(xml)) {
+      // If it's HTML, try to extract RSS feed URL from the page
+      if (/<html|<body|<head|<!DOCTYPE/i.test(xml)) {
+        console.warn(`RSS feed returned HTML instead of XML: ${feedUrl}, attempting to find actual RSS URL...`);
+        try {
+          const cheerio = await import('cheerio');
+          const $ = cheerio.load(xml);
+          // Look for RSS feed links in the HTML
+          const rssLinks = $('a[href*="rss"], a[href*="feed"], link[type*="rss"], link[type*="atom"]').map((_, el) => {
+            const href = $(el).attr('href');
+            if (href) {
+              try {
+                return new URL(href, feedUrl).toString();
+              } catch {
+                return null;
+              }
+            }
+            return null;
+          }).get().filter(Boolean);
+          
+          if (rssLinks.length > 0) {
+            console.log(`  🔍 Found ${rssLinks.length} potential RSS feed URLs in HTML, trying first one: ${rssLinks[0]}`);
+            // Recursively try the first found RSS URL
+            return await parseRSSFeed(rssLinks[0]);
+          }
+        } catch (parseError) {
+          // Ignore parsing errors
+        }
+      }
       console.warn(`RSS feed doesn't appear to be valid XML/RSS: ${feedUrl} (first 200 chars: ${xml.substring(0, 200)})`);
       return [];
     }
