@@ -29,15 +29,17 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
     const discoveredUrls = await discoverUrlsWithPerplexity('greenhouse', `greenhouse:${board}`, board);
     if (discoveredUrls.length > 0) {
       // Use the first discovered URL if it's a valid Greenhouse embed endpoint
+      // Must have /embed/job_board in the path, not just boards.greenhouse.io
       const greenhouseUrl = discoveredUrls.find(url => 
         url.includes('greenhouse.io') && 
-        (url.includes('/embed/job_board') || url.includes('boards.greenhouse.io'))
+        url.includes('/embed/job_board')
       );
       if (greenhouseUrl) {
-        endpoint = greenhouseUrl;
+        // Ensure it has the ?content=true parameter
+        endpoint = greenhouseUrl.includes('?') ? greenhouseUrl : `${greenhouseUrl}?content=true`;
         console.log(`🤖 Using Perplexity-discovered URL for ${board}: ${endpoint}`);
       } else {
-        console.log(`⚠️  Perplexity found URLs but none are valid Greenhouse embed endpoints, using default`);
+        console.log(`⚠️  Perplexity found URLs but none are valid Greenhouse embed endpoints (must include /embed/job_board), using default`);
       }
     }
   } catch (error) {

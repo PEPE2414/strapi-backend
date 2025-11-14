@@ -8,7 +8,8 @@ import { isTestMode } from '../lib/rotation';
  */
 const KNOWN_RSS_FEEDS: RSSFeed[] = [
   // Major job boards
-  { url: 'https://www.reed.co.uk/jobs/rss', title: 'Reed Jobs RSS' },
+  // Note: Reed RSS feed at /jobs/rss returns HTML, skipping for now
+  // { url: 'https://www.reed.co.uk/jobs/rss', title: 'Reed Jobs RSS' },
   { url: 'https://www.totaljobs.com/jobs/rss', title: 'TotalJobs RSS' },
   { url: 'https://www.cv-library.co.uk/jobs/rss', title: 'CV-Library RSS' },
   { url: 'https://www.jobsite.co.uk/jobs/rss', title: 'Jobsite RSS' },

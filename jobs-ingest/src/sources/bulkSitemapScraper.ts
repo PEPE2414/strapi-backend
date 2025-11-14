@@ -72,8 +72,18 @@ async function processSitemap(sitemapUrl: string, maxUrls: number = 10000): Prom
         const urlLower = url.toLowerCase();
         const urlPath = new URL(url).pathname.toLowerCase();
         
-        // Skip non-job URLs and salary/average pages
-        if (/sitemap|feed|rss|atom|robots|login|register|logout|search|list|index|category|tag|archive|average-salary|salary|average-/.test(urlLower)) {
+        // Skip non-job URLs, salary/average pages, company profiles, and spam
+        if (/sitemap|feed|rss|atom|robots|login|register|logout|search|list|index|category|tag|archive|average-salary|salary|average-|company-profile|profile|generator|cash-app|autoclaim|boosted|asphalt|tokens/.test(urlLower)) {
+          continue;
+        }
+        
+        // Exclude company profile pages (common in Reed sitemaps)
+        if (/\/company-profile\/|\/profile\//.test(urlPath)) {
+          continue;
+        }
+        
+        // Exclude spam/junk URLs (dashes, special characters, invalid patterns)
+        if (/^\/jobs\/[-\s%&]+/i.test(urlPath) || /^\/jobs\/-{3,}/i.test(urlPath) || /%20/i.test(urlPath)) {
           continue;
         }
         
@@ -84,6 +94,13 @@ async function processSitemap(sitemapUrl: string, maxUrls: number = 10000): Prom
         // Explicitly exclude salary/average pages
         if (/\/average-|\/salary|average-salary/.test(urlPath)) {
           continue;
+        }
+        
+        // For Reed specifically, only accept URLs with numeric job IDs (format: /jobs/.../p12345)
+        if (urlLower.includes('reed.co.uk')) {
+          if (!/\/jobs\/[^\/]+\/p\d+$/i.test(urlPath) && !/\/jobs\/\d+$/i.test(urlPath)) {
+            continue;
+          }
         }
         
         // Prefer URLs that look like detail pages (not listing/search pages)

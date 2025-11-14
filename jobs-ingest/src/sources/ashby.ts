@@ -30,10 +30,17 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
     const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
     const discoveredUrls = await discoverUrlsWithPerplexity('ashby', `ashby:${organizationSlug}`, organizationSlug);
     if (discoveredUrls.length > 0) {
-      const ashbyUrl = discoveredUrls.find(url => url.includes('ashbyhq.com'));
+      // Look for valid Ashby API endpoint (must have /job_board and organization_slug parameter)
+      const ashbyUrl = discoveredUrls.find(url => 
+        url.includes('ashbyhq.com') && 
+        (url.includes('/job_board') || url.includes('/non_authenticated/job_board')) &&
+        url.includes(`organization_slug=${organizationSlug}`)
+      );
       if (ashbyUrl) {
         endpoint = ashbyUrl;
         console.log(`🤖 Using Perplexity-discovered URL for ${organizationSlug}: ${endpoint}`);
+      } else {
+        console.log(`⚠️  Perplexity found URLs but none are valid Ashby API endpoints (must include /job_board and organization_slug), using default`);
       }
     }
   } catch (error) {

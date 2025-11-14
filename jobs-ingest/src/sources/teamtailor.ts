@@ -31,10 +31,17 @@ export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
     const { discoverUrlsWithPerplexity } = await import('../lib/perplexityUrlDiscovery');
     const discoveredUrls = await discoverUrlsWithPerplexity('teamtailor', `teamtailor:${host}`, host);
     if (discoveredUrls.length > 0) {
-      const teamtailorUrl = discoveredUrls.find(url => url.includes('teamtailor.com'));
+      // Look for valid Teamtailor API endpoint (must have /v1/jobs and ?host= parameter)
+      const teamtailorUrl = discoveredUrls.find(url => 
+        url.includes('teamtailor.com') && 
+        url.includes('/v1/jobs') &&
+        url.includes(`host=${host}`)
+      );
       if (teamtailorUrl) {
         endpoint = teamtailorUrl;
         console.log(`🤖 Using Perplexity-discovered URL for ${host}: ${endpoint}`);
+      } else {
+        console.log(`⚠️  Perplexity found URLs but none are valid Teamtailor API endpoints (must include /v1/jobs and host parameter), using default`);
       }
     }
   } catch (error) {
