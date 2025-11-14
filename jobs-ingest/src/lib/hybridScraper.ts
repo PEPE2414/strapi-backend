@@ -21,7 +21,6 @@ const LOAD_MORE_SELECTORS = [
  * Hybrid scraper that tries multiple strategies in order
  * Strategy 1: Simplified Direct Scraping
  * Strategy 2: Playwright Browser Automation
- * Strategy 3: ScraperAPI Fallback
  */
 export class HybridScraper {
   private browser: Browser | null = null;
@@ -55,18 +54,6 @@ export class HybridScraper {
       }
     } catch (error) {
       console.log(`  ⚠️  Strategy 2 failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
-
-    // Strategy 3: ScraperAPI Fallback
-    try {
-      console.log(`  🔐 Strategy 3: ScraperAPI Fallback...`);
-      const jobs = await this.scraperAPIScrape(url, boardName, boardKey);
-      if (jobs.length > 0) {
-        console.log(`  ✅ Strategy 3 successful: ${jobs.length} jobs`);
-        return jobs;
-      }
-    } catch (error) {
-      console.log(`  ⚠️  Strategy 3 failed: ${error instanceof Error ? error.message : String(error)}`);
     }
 
     console.log(`  ❌ All strategies failed for ${url}`);
@@ -146,15 +133,6 @@ export class HybridScraper {
     } finally {
       await page.close();
     }
-  }
-
-  /**
-   * Strategy 3: ScraperAPI Fallback
-   */
-  private async scraperAPIScrape(url: string, boardName: string, boardKey: string): Promise<CanonicalJob[]> {
-    const { html } = await fetchWithCloudflareBypass(url);
-    const $ = cheerio.load(html);
-    return aggressiveExtractJobs($, boardName, boardKey, url);
   }
 
   /**

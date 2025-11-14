@@ -142,7 +142,7 @@ const URL_PATTERNS = {
 /**
  * Test if a URL returns a valid job search page
  */
-async function testUrl(url: string, useScraperAPI: boolean = true): Promise<boolean> {
+async function testUrl(url: string): Promise<boolean> {
   try {
     console.log(`  🧪 Testing: ${url}`);
     
@@ -221,7 +221,7 @@ async function testUrl(url: string, useScraperAPI: boolean = true): Promise<bool
       console.log(`    ❌ 404 Not Found`);
     } else if (errorMsg.includes('403')) {
       console.log(`    ⚠️  403 Forbidden (but URL exists)`);
-      return true; // URL exists, just blocked without ScraperAPI
+      return true; // URL exists, just blocked (may need Smartproxy)
     } else {
       console.log(`    ❌ Error: ${errorMsg}`);
     }

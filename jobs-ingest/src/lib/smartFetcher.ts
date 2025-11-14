@@ -5,7 +5,7 @@ import { efficientFetch } from './efficientFetcher';
 /**
  * Smart fetcher that tries multiple strategies to avoid 403 errors
  * 1. Direct fetch with realistic headers
- * 2. ScraperAPI as fallback
+ * 2. Smartproxy (if available) as fallback
  * 3. Multiple user agents and headers
  */
 export async function smartFetch(url: string, retries: number = 3): Promise<{ url: string; headers: any; html: string }> {
@@ -21,14 +21,14 @@ export async function smartFetch(url: string, retries: number = 3): Promise<{ ur
     console.log(`  ⚠️  Direct fetch failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   
-  // Strategy 2: Try ScraperAPI as fallback
+  // Strategy 2: Try Smartproxy (if available) as fallback
   try {
-    console.log(`  🔐 Trying ScraperAPI...`);
+    console.log(`  🔐 Trying Smartproxy...`);
     const result = await fetchWithCloudflareBypass(url);
-    console.log(`  ✅ ScraperAPI successful: ${result.html.length} chars`);
+    console.log(`  ✅ Smartproxy successful: ${result.html.length} chars`);
     return result;
   } catch (error) {
-    console.log(`  ⚠️  ScraperAPI failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.log(`  ⚠️  Smartproxy failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   
   // Strategy 3: Try with different user agents

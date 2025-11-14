@@ -18,14 +18,14 @@ export async function efficientFetch(url: string): Promise<{ url: string; header
     console.log(`  ⚠️  Direct fetch failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   
-  // Strategy 2: Try ScraperAPI (only if direct fails)
+  // Strategy 2: Try Smartproxy (if available, only if direct fails)
   try {
-    console.log(`  🔐 Trying ScraperAPI...`);
+    console.log(`  🔐 Trying Smartproxy...`);
     const result = await fetchWithCloudflareBypass(url);
-    console.log(`  ✅ ScraperAPI successful: ${result.html.length} chars`);
+    console.log(`  ✅ Smartproxy successful: ${result.html.length} chars`);
     return result;
   } catch (error) {
-    console.log(`  ⚠️  ScraperAPI failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.log(`  ⚠️  Smartproxy failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   
   // Strategy 3: Try with mobile user agent (often works when desktop fails)

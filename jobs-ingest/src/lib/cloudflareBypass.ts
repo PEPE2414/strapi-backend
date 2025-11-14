@@ -3,7 +3,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /**
  * Enhanced fetcher with Cloudflare bypass techniques
- * Supports ScraperAPI and Smartproxy integration if credentials are provided
+ * Uses Smartproxy residential proxies if credentials are provided
  */
 
 // More realistic browser headers to avoid detection
@@ -40,14 +40,14 @@ function getRandomUserAgent(): string {
 }
 
 /**
- * Fetch with Smartproxy, ScraperAPI, or enhanced direct fetch (in priority order)
+ * Fetch with Smartproxy or enhanced direct fetch (fallback)
  */
 export async function fetchWithCloudflareBypass(
   url: string, 
   retries: number = 4
 ): Promise<{ url: string; headers: any; html: string }> {
   
-  // Priority 1: Smartproxy (best for mass scraping)
+  // Use Smartproxy if available
   const smartproxyUsername = process.env.SMARTPROXY_USERNAME;
   const smartproxyPassword = process.env.SMARTPROXY_PASSWORD;
   const smartproxyEndpoint = process.env.SMARTPROXY_ENDPOINT;
@@ -56,13 +56,7 @@ export async function fetchWithCloudflareBypass(
     return fetchWithSmartproxy(url, smartproxyUsername, smartproxyPassword, smartproxyEndpoint, retries);
   }
   
-  // Priority 2: ScraperAPI (fallback)
-  const scraperApiKey = process.env.SCRAPER_API_KEY;
-  if (scraperApiKey) {
-    return fetchWithScraperAPI(url, scraperApiKey, retries);
-  }
-  
-  // Priority 3: Enhanced direct fetch (no proxy)
+  // Fallback to enhanced direct fetch (no proxy)
   return fetchWithEnhancedHeaders(url, retries);
 }
 
@@ -171,58 +165,6 @@ async function fetchWithSmartproxy(
 }
 
 /**
- * Use ScraperAPI to bypass Cloudflare (if key is available)
- */
-async function fetchWithScraperAPI(
-  url: string, 
-  apiKey: string, 
-  retries: number
-): Promise<{ url: string; headers: any; html: string }> {
-  
-  console.log(`  🔐 Using ScraperAPI to bypass Cloudflare...`);
-  
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      // ScraperAPI URL format
-      const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(url)}&render=true&wait=3000&country_code=gb&premium=true`;
-      
-      const res = await request(scraperUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-        }
-      });
-      
-      if (res.statusCode >= 400) {
-        if (attempt < retries) {
-          const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
-          console.warn(`  ⚠️  ScraperAPI returned ${res.statusCode}, retrying in ${Math.round(delay/1000)}s...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          continue;
-        }
-        throw new Error(`ScraperAPI error: ${res.statusCode}`);
-      }
-      
-      const html = await res.body.text();
-      console.log(`  ✅ Successfully fetched via ScraperAPI (${html.length} chars)`);
-      
-      return { url, headers: res.headers, html };
-      
-    } catch (error) {
-      if (attempt < retries) {
-        const delay = Math.pow(2, attempt) * 3000 + Math.random() * 2000;
-        console.warn(`  ⚠️  ScraperAPI request failed, retrying in ${Math.round(delay/1000)}s...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-      throw error;
-    }
-  }
-  
-  throw new Error('ScraperAPI max retries exceeded');
-}
-
-/**
  * Enhanced direct fetch with better headers and retry logic
  */
 async function fetchWithEnhancedHeaders(
@@ -261,7 +203,7 @@ async function fetchWithEnhancedHeaders(
           await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }
-        throw new Error(`403 Forbidden - Site is blocking scrapers. Consider using SCRAPER_API_KEY env variable.`);
+        throw new Error(`403 Forbidden - Site is blocking scrapers. Consider using Smartproxy (SMARTPROXY_USERNAME, SMARTPROXY_PASSWORD, SMARTPROXY_ENDPOINT env variables).`);
       }
       
       if (res.statusCode === 429) {
@@ -297,7 +239,7 @@ async function fetchWithEnhancedHeaders(
           await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }
-        throw new Error(`Cloudflare challenge detected. Consider using SCRAPER_API_KEY env variable ($49/month).`);
+        throw new Error(`Cloudflare challenge detected. Consider using Smartproxy (SMARTPROXY_USERNAME, SMARTPROXY_PASSWORD, SMARTPROXY_ENDPOINT env variables).`);
       }
       
       console.log(`  ✅ Successfully fetched (${html.length} chars)`);
@@ -322,8 +264,7 @@ async function fetchWithEnhancedHeaders(
  * Check if Cloudflare bypass is available
  */
 export function hasCloudflareBypass(): boolean {
-  return !!(process.env.SMARTPROXY_USERNAME && process.env.SMARTPROXY_PASSWORD && process.env.SMARTPROXY_ENDPOINT) ||
-         !!process.env.SCRAPER_API_KEY;
+  return !!(process.env.SMARTPROXY_USERNAME && process.env.SMARTPROXY_PASSWORD && process.env.SMARTPROXY_ENDPOINT);
 }
 
 /**
@@ -332,8 +273,6 @@ export function hasCloudflareBypass(): boolean {
 export function getBypassStatus(): string {
   if (process.env.SMARTPROXY_USERNAME && process.env.SMARTPROXY_PASSWORD && process.env.SMARTPROXY_ENDPOINT) {
     return '🔐 Smartproxy enabled (residential proxies - best for mass scraping)';
-  } else if (process.env.SCRAPER_API_KEY) {
-    return '🔐 ScraperAPI enabled (Cloudflare bypass active)';
   } else {
     return '⚠️  No proxy service - using enhanced headers (limited Cloudflare bypass)';
   }
