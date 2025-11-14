@@ -21,24 +21,38 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
       try {
       // Quick check: skip URLs that don't look like job detail pages
       const urlLower = url.toLowerCase();
+      const urlPath = new URL(url).pathname.toLowerCase();
+      
+      // Explicitly exclude salary/average pages
+      if (/\/average-|\/salary|average-salary/.test(urlPath)) {
+        console.log(`⏭️  Skipping salary/average page: ${urlPath}`);
+        return null;
+      }
+      
       const isLikelyJobPage = 
         /\/job|\/vacancy|\/role|\/position|\/opportunity|\/career|\/opening|\/graduate|\/intern|\/placement|\/scheme|\/programme/.test(urlLower) ||
         !/\/search|\/list|\/index|\/category|\/tag|\/archive|\/sitemap|\/feed|\/rss/.test(urlLower);
       
       if (!isLikelyJobPage) {
-        console.log(`⏭️  Skipping URL that doesn't look like a job page: ${new URL(url).pathname}`);
+        console.log(`⏭️  Skipping URL that doesn't look like a job page: ${urlPath}`);
         return null;
       }
       
-      // Try to fetch with Cloudflare bypass first, fallback to basic get
+      // Try direct fetch first (faster and more reliable), then fallback to Cloudflare bypass
       let html: string;
       try {
-        const result = await fetchWithCloudflareBypass(url);
-        html = result.html;
-      } catch (error) {
-        // Fallback to basic get if Cloudflare bypass fails
+        // Try direct fetch first
         const result = await get(url);
         html = result.html;
+      } catch (directError) {
+        // If direct fetch fails, try Cloudflare bypass as fallback
+        try {
+          const result = await fetchWithCloudflareBypass(url);
+          html = result.html;
+        } catch (bypassError) {
+          console.warn(`Failed to fetch ${url}: ${bypassError instanceof Error ? bypassError.message : String(bypassError)}`);
+          return null;
+        }
       }
       
       // Check if HTML is too short or looks like an error page

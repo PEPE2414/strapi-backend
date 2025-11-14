@@ -72,14 +72,19 @@ async function processSitemap(sitemapUrl: string, maxUrls: number = 10000): Prom
         const urlLower = url.toLowerCase();
         const urlPath = new URL(url).pathname.toLowerCase();
         
-        // Skip non-job URLs
-        if (/sitemap|feed|rss|atom|robots|login|register|logout|search|list|index|category|tag|archive/.test(urlLower)) {
+        // Skip non-job URLs and salary/average pages
+        if (/sitemap|feed|rss|atom|robots|login|register|logout|search|list|index|category|tag|archive|average-salary|salary|average-/.test(urlLower)) {
           continue;
         }
         
         // Must contain job-related keywords
         const hasJobKeyword = /job|vacanc|role|position|opportunit|career|opening|graduate|intern|placement|scheme|programme/.test(urlLower);
         if (!hasJobKeyword) continue;
+        
+        // Explicitly exclude salary/average pages
+        if (/\/average-|\/salary|average-salary/.test(urlPath)) {
+          continue;
+        }
         
         // Prefer URLs that look like detail pages (not listing/search pages)
         // Good signs: numeric IDs, specific job titles in URL, or common detail page patterns

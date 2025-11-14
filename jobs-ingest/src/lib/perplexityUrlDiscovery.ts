@@ -250,10 +250,12 @@ function extractUrlsFromText(text: string, sourceKey: string): string[] {
   const urlRegex = /https?:\/\/[^\s<>"{}|\\^`\[\]()]+/g;
   const urls = text.match(urlRegex) || [];
   
-  // Normalize URLs (remove trailing punctuation, decode entities)
+  // Normalize URLs (remove trailing punctuation, decode entities, remove ** suffix)
   const normalizedUrls = urls.map(url => {
     // Remove trailing punctuation that might have been captured
     let clean = url.replace(/[.,;:!?)\]}>]+$/, '');
+    // Remove ** suffix (common in Perplexity responses)
+    clean = clean.replace(/\*\*+$/, '');
     // Remove common URL fragments
     clean = clean.split('#')[0].split('?')[0];
     return clean;
