@@ -9,6 +9,55 @@ import { makeUniqueSlug } from '../lib/slug';
 import { sha256 } from '../lib/hash';
 import { classifyJobType, parseSalary, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
 
+/**
+ * Domains that are known to block scrapers and should use SmartProxy first
+ */
+const PROBLEMATIC_DOMAINS = [
+  'reed.co.uk',
+  'www.reed.co.uk',
+  'totaljobs.com',
+  'www.totaljobs.com',
+  'cv-library.co.uk',
+  'www.cv-library.co.uk',
+  'jobsite.co.uk',
+  'www.jobsite.co.uk',
+  'fish4jobs.co.uk',
+  'www.fish4jobs.co.uk',
+  'targetjobs.co.uk',
+  'www.targetjobs.co.uk',
+  'gradcracker.com',
+  'www.gradcracker.com',
+  'milkround.com',
+  'www.milkround.com',
+  'prospects.ac.uk',
+  'www.prospects.ac.uk',
+  'brightnetwork.co.uk',
+  'www.brightnetwork.co.uk',
+  'ratemyplacement.co.uk',
+  'www.ratemyplacement.co.uk',
+  'monster.co.uk',
+  'www.monster.co.uk',
+  'indeed.co.uk',
+  'www.indeed.co.uk',
+  'adzuna.co.uk',
+  'www.adzuna.co.uk',
+  'careerjet.co.uk',
+  'www.careerjet.co.uk'
+];
+
+/**
+ * Check if a URL is from a domain that commonly blocks scrapers
+ */
+function isProblematicDomain(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase();
+    return PROBLEMATIC_DOMAINS.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+  } catch {
+    return false;
+  }
+}
+
 export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise<CanonicalJob[]> {
   const out: CanonicalJob[] = [];
   const BATCH_SIZE = 10; // Process in batches for better memory management
@@ -38,20 +87,39 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         return null;
       }
       
-      // Try direct fetch first (faster and more reliable), then fallback to Cloudflare bypass
+      // For problematic domains, use SmartProxy first. For others, try direct fetch first
       let html: string;
-      try {
-        // Try direct fetch first
-        const result = await get(url);
-        html = result.html;
-      } catch (directError) {
-        // If direct fetch fails, try Cloudflare bypass as fallback
+      const useProxyFirst = isProblematicDomain(url);
+      
+      if (useProxyFirst) {
+        // Use SmartProxy first for known problematic domains
         try {
           const result = await fetchWithCloudflareBypass(url);
           html = result.html;
-        } catch (bypassError) {
-          console.warn(`Failed to fetch ${url}: ${bypassError instanceof Error ? bypassError.message : String(bypassError)}`);
-          return null;
+        } catch (proxyError) {
+          // If proxy fails, try direct fetch as fallback
+          try {
+            const result = await get(url);
+            html = result.html;
+          } catch (directError) {
+            console.warn(`Failed to fetch ${url} (proxy and direct both failed): ${proxyError instanceof Error ? proxyError.message : String(proxyError)}`);
+            return null;
+          }
+        }
+      } else {
+        // For other domains, try direct fetch first (faster and cheaper)
+        try {
+          const result = await get(url);
+          html = result.html;
+        } catch (directError) {
+          // If direct fetch fails, try Cloudflare bypass as fallback
+          try {
+            const result = await fetchWithCloudflareBypass(url);
+            html = result.html;
+          } catch (bypassError) {
+            console.warn(`Failed to fetch ${url}: ${bypassError instanceof Error ? bypassError.message : String(bypassError)}`);
+            return null;
+          }
         }
       }
       
