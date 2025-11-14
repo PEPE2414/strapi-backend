@@ -184,11 +184,19 @@ export function getBucketsForFocusedTestMode(): CrawlBucket[] {
     priority: 'high'
   });
   
-  // Graduate Job Boards - only first one
+  // Graduate Job Boards - include all for testing (1 URL per source in test mode)
   buckets.push({
     id: 'graduate-boards-focused-test',
-    name: 'Graduate Job Boards (Test Mode - 1 board)',
-    sources: ['targetjobs'], // Only first board for testing
+    name: 'Graduate Job Boards (Test Mode - 1 URL per board)',
+    sources: [
+      'targetjobs',
+      'prospects',
+      'brightnetwork',
+      'ratemyplacement',
+      'trackr',
+      'milkround',
+      'gradcracker'
+    ],
     priority: 'high'
   });
   
