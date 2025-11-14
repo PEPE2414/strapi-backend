@@ -48,13 +48,35 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
   }
 
   try {
-    const { body } = await request(endpoint, {
+    const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const response = await body.json();
+    const text = await body.text();
+    
+    // Check for authentication errors
+    if (statusCode === 401 || statusCode === 403) {
+      console.warn(`⚠️  Lever ${company}: Authentication required (${statusCode}). The API may require authentication or the company name may be incorrect.`);
+      // Try public careers page scraping as fallback
+      const careersUrl = `https://jobs.lever.co/${company}`;
+      console.log(`⚠️  Lever ${company}: API requires auth, skipping (would need to scrape careers page instead)`);
+      return [];
+    }
+    
+    let response;
+    try {
+      response = JSON.parse(text);
+    } catch (parseError) {
+      console.warn(`⚠️  Lever ${company}: Failed to parse JSON response: ${text.substring(0, 200)}`);
+      return [];
+    }
 
     if (!Array.isArray(response)) {
-      console.warn(`Lever API returned non-array payload for ${company}`, response);
+      // Check if it's an error object
+      if (response.error || response.message) {
+        console.warn(`⚠️  Lever API error for ${company}:`, response.error || response.message);
+        return [];
+      }
+      console.warn(`⚠️  Lever API returned non-array payload for ${company}`, response);
       return [];
     }
 

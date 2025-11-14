@@ -59,8 +59,12 @@ export async function scrapeRSSFeeds(): Promise<CanonicalJob[]> {
     console.log(`⚠️  Perplexity RSS discovery failed, using known feeds only`);
   }
 
-  // In test mode, limit to 1 feed
-  const feedsToProcess = isTestMode() ? allFeeds.slice(0, 1) : allFeeds;
+  // In test mode, limit to 1 feed, but prefer a working feed (skip Reed which returns HTML)
+  const feedsToProcess = isTestMode() 
+    ? allFeeds.filter(f => !f.url.includes('reed.co.uk')).slice(0, 1).length > 0
+      ? allFeeds.filter(f => !f.url.includes('reed.co.uk')).slice(0, 1)
+      : allFeeds.slice(0, 1)
+    : allFeeds;
   console.log(`\n📡 Processing ${feedsToProcess.length} RSS feeds (${isTestMode() ? 'TEST MODE: 1 feed only' : `${KNOWN_RSS_FEEDS.length} known + ${allFeeds.length - KNOWN_RSS_FEEDS.length} discovered`})...`);
   for (const feed of feedsToProcess) {
     try {

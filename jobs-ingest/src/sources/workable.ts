@@ -52,14 +52,96 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
   }
 
   try {
-    const { body } = await request(endpoint, {
+    const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const data = await body.json() as WorkableResponse;
+    const text = await body.text();
+    
+    // Check for errors
+    if (statusCode !== 200) {
+      console.warn(`⚠️  Workable ${company}: Received ${statusCode} response: ${text.substring(0, 200)}`);
+      // Try alternative endpoint format
+      const altEndpoint = `https://${company}.workable.com/api/v2/jobs?state=published`;
+      console.log(`⚠️  Trying alternative endpoint: ${altEndpoint}`);
+      try {
+        const { body: altBody, statusCode: altStatus } = await request(altEndpoint, {
+          headers: { Accept: 'application/json' }
+        });
+        if (altStatus === 200) {
+          const altData = await altBody.json() as any;
+          const altJobs = Array.isArray(altData?.jobs) ? altData.jobs : [];
+          if (altJobs.length > 0) {
+            console.log(`✅ Workable ${company}: Found ${altJobs.length} jobs via v2 API`);
+            // Process v2 format jobs (similar structure)
+            const enriched = await Promise.all(altJobs.map(async (job: any) => {
+              const title = String(job.title || '').trim();
+              const locationParts = [
+                job.location?.city,
+                job.location?.region,
+                job.location?.country
+              ].filter(Boolean);
+              const location = locationParts.join(', ');
+              const description = job.description || job.content || '';
+              const fullText = `${title} ${location} ${description}`;
+              if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+                return null;
+              }
+              const applyUrl = await resolveApplyUrl(job.url || '');
+              const jobType = classifyJobType(`${title} ${description}`);
+              const postedAt = toISO(job.updated_at || job.created_at);
+              const hash = generateJobHash({
+                title,
+                company,
+                applyUrl,
+                location,
+                postedAt
+              });
+              const slug = makeUniqueSlug(title, company, hash, location);
+              return {
+                source: `workable:${company}`,
+                sourceUrl: job.url || applyUrl,
+                title,
+                company: { name: company },
+                location: location || undefined,
+                descriptionHtml: description || undefined,
+                descriptionText: undefined,
+                applyUrl,
+                jobType,
+                postedAt,
+                applyDeadline: undefined,
+                salary: undefined,
+                startDate: undefined,
+                endDate: undefined,
+                duration: undefined,
+                experience: undefined,
+                companyPageUrl: undefined,
+                relatedDegree: undefined,
+                degreeLevel: undefined,
+                slug,
+                hash
+              } as CanonicalJob;
+            }));
+            return enriched.filter((job): job is CanonicalJob => job !== null);
+          }
+        }
+      } catch (altError) {
+        console.warn(`⚠️  Workable ${company}: Alternative endpoint also failed`);
+      }
+      return [];
+    }
+    
+    let data: WorkableResponse;
+    try {
+      data = JSON.parse(text) as WorkableResponse;
+    } catch (parseError) {
+      console.warn(`⚠️  Workable ${company}: Failed to parse JSON response: ${text.substring(0, 200)}`);
+      return [];
+    }
+    
     const jobs = Array.isArray(data?.jobs) ? data.jobs : [];
 
     if (jobs.length === 0) {
-      console.log(`📄 Workable ${company}: no published jobs returned`);
+      console.log(`📄 Workable ${company}: no published jobs returned (this may mean the company has no active jobs or the company name is incorrect)`);
       return [];
     }
 

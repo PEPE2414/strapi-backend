@@ -48,10 +48,91 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
   }
 
   try {
-    const { body } = await request(endpoint, {
+    const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const data = await body.json() as AshbyResponse;
+    const text = await body.text();
+    
+    // Check if response is text (error) instead of JSON
+    if (statusCode !== 200 || text.trim().startsWith('Unauthorized') || text.trim().startsWith('<')) {
+      console.warn(`⚠️  Ashby ${organizationSlug}: Received error response (${statusCode}): ${text.substring(0, 100)}`);
+      // Try alternative endpoint format
+      const altEndpoint = `https://jobs.ashbyhq.com/${organizationSlug}`;
+      console.log(`⚠️  Trying alternative endpoint: ${altEndpoint}`);
+      try {
+        const { body: altBody } = await request(altEndpoint, {
+          headers: { Accept: 'application/json' }
+        });
+        const altText = await altBody.text();
+        if (!altText.trim().startsWith('Unauthorized') && !altText.trim().startsWith('<')) {
+          try {
+            const altData = JSON.parse(altText) as AshbyResponse;
+            const postings = Array.isArray(altData?.jobBoard?.jobPostings) ? altData.jobBoard.jobPostings : [];
+            if (postings.length > 0) {
+              console.log(`✅ Ashby ${organizationSlug}: Found ${postings.length} jobs via alternative endpoint`);
+              // Process postings (continue with existing code)
+              const jobs = await Promise.all(postings.map(async (posting) => {
+                const title = String(posting.title || '').trim();
+                const location = String(posting.location || '').trim();
+                const description =
+                  posting.descriptionHtml ||
+                  posting.description ||
+                  posting.descriptionPlainText ||
+                  (Array.isArray(posting.sections)
+                    ? posting.sections.map(section => section?.content || '').join('\n')
+                    : '');
+                const fullText = `${title} ${location} ${description}`;
+                if (!isRelevantJobType(fullText) || !isUKJob(fullText)) {
+                  return null;
+                }
+                const applyUrl = await resolveApplyUrl(posting.url || '');
+                const jobType = classifyJobType(`${title} ${description}`);
+                const postedAt = toISO(posting.updatedAt);
+                const hash = generateJobHash({
+                  title,
+                  company: organizationSlug,
+                  applyUrl,
+                  location,
+                  postedAt
+                });
+                const slug = makeUniqueSlug(title, organizationSlug, hash, location);
+                return {
+                  source: `ashby:${organizationSlug}`,
+                  sourceUrl: posting.url || applyUrl,
+                  title,
+                  company: { name: organizationSlug },
+                  location: location || undefined,
+                  descriptionHtml: description || undefined,
+                  descriptionText: undefined,
+                  applyUrl,
+                  jobType,
+                  postedAt,
+                  applyDeadline: undefined,
+                  salary: undefined,
+                  startDate: undefined,
+                  endDate: undefined,
+                  duration: undefined,
+                  experience: undefined,
+                  companyPageUrl: undefined,
+                  relatedDegree: undefined,
+                  degreeLevel: undefined,
+                  slug,
+                  hash
+                } as CanonicalJob;
+              }));
+              return jobs.filter((job): job is CanonicalJob => job !== null);
+            }
+          } catch (parseError) {
+            console.warn(`⚠️  Ashby ${organizationSlug}: Failed to parse alternative endpoint response`);
+          }
+        }
+      } catch (altError) {
+        console.warn(`⚠️  Ashby ${organizationSlug}: Alternative endpoint failed: ${altError instanceof Error ? altError.message : String(altError)}`);
+      }
+      return [];
+    }
+    
+    const data = JSON.parse(text) as AshbyResponse;
     const postings = Array.isArray(data?.jobBoard?.jobPostings) ? data.jobBoard.jobPostings : [];
 
     if (postings.length === 0) {

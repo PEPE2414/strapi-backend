@@ -52,13 +52,97 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       headers: { 
         Accept: 'application/json',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
+      },
+      maxRedirections: 5 // Follow redirects
     });
     
     // Check if response is HTML (error page) instead of JSON
     const text = await body.text();
-    if (statusCode !== 200 || text.trim().startsWith('<')) {
-      console.warn(`⚠️  Greenhouse ${board}: Received HTML response (${statusCode}), board may not exist or endpoint changed`);
+    if (statusCode !== 200) {
+      // Try alternative endpoint format if we got a redirect or error
+      if (statusCode === 301 || statusCode === 302 || statusCode === 404) {
+        const altEndpoint = `https://boards-api.greenhouse.io/v1/boards/${board}/jobs`;
+        console.log(`⚠️  Greenhouse ${board}: Primary endpoint returned ${statusCode}, trying alternative: ${altEndpoint}`);
+        try {
+          const { body: altBody, statusCode: altStatus } = await request(altEndpoint, {
+            headers: { 
+              Accept: 'application/json',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+          const altText = await altBody.text();
+          if (altStatus === 200 && !altText.trim().startsWith('<')) {
+            // Use alternative endpoint response
+            const altData = JSON.parse(altText);
+            if (Array.isArray(altData.jobs)) {
+              // Transform API format to embed format
+              const transformedJobs = altData.jobs.map((job: any) => ({
+                title: job.title,
+                location: { name: job.location?.name || job.offices?.[0]?.location || '' },
+                content: job.content || job.description || '',
+                absolute_url: job.absolute_url || job.url || '',
+                updated_at: job.updated_at || job.created_at,
+                metadata: job.metadata || []
+              }));
+              const relevantJobs = transformedJobs.filter((job: any) => {
+                const title = String(job.title || '').trim();
+                const location = String(job.location?.name || '').trim();
+                const description = String(job.content || '').trim();
+                const fullText = `${title} ${location} ${description}`;
+                return isRelevantJobType(fullText) && isUKJob(fullText);
+              });
+              console.log(`📊 Greenhouse ${board} (API): ${transformedJobs.length} jobs, ${relevantJobs.length} relevant UK graduate roles`);
+              // Process jobs (code continues below)
+              return await Promise.all(relevantJobs.map(async (job: any) => {
+                const title = String(job.title || '').trim();
+                const location = job.location?.name || '';
+                const description = job.content || '';
+                const applyUrl = await resolveApplyUrl(job.absolute_url || '');
+                const jobType = classifyJobType(title);
+                const companyName = board;
+                const hash = generateJobHash({
+                  title,
+                  company: companyName,
+                  applyUrl,
+                  location,
+                  postedAt: job.updated_at
+                });
+                const slug = makeUniqueSlug(title, companyName, hash, location);
+                return {
+                  source: `greenhouse:${board}`,
+                  sourceUrl: job.absolute_url || applyUrl,
+                  title,
+                  company: { name: companyName },
+                  location: location || undefined,
+                  descriptionHtml: description || undefined,
+                  descriptionText: undefined,
+                  applyUrl,
+                  applyDeadline: undefined,
+                  jobType,
+                  postedAt: toISO(job.updated_at),
+                  salary: undefined,
+                  startDate: undefined,
+                  endDate: undefined,
+                  duration: undefined,
+                  experience: undefined,
+                  companyPageUrl: undefined,
+                  relatedDegree: undefined,
+                  degreeLevel: undefined,
+                  slug,
+                  hash
+                } as CanonicalJob;
+              }));
+            }
+          }
+        } catch (altError) {
+          console.warn(`⚠️  Greenhouse ${board}: Alternative endpoint also failed: ${altError instanceof Error ? altError.message : String(altError)}`);
+        }
+      }
+      console.warn(`⚠️  Greenhouse ${board}: Received non-200 response (${statusCode}), board may not exist or endpoint changed`);
+      return [];
+    }
+    if (text.trim().startsWith('<')) {
+      console.warn(`⚠️  Greenhouse ${board}: Received HTML response instead of JSON`);
       return [];
     }
     
