@@ -219,6 +219,10 @@ async function testUrl(url: string): Promise<boolean> {
     const errorMsg = error instanceof Error ? error.message : String(error);
     if (errorMsg.includes('404')) {
       console.log(`    ❌ 404 Not Found`);
+      // In test mode, don't retry 404s
+      if (process.env.TEST_MODE === 'true') {
+        return false; // Skip immediately
+      }
     } else if (errorMsg.includes('403')) {
       console.log(`    ⚠️  403 Forbidden (but URL exists)`);
       return true; // URL exists, just blocked (may need Smartproxy)

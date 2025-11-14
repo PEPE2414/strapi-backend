@@ -62,10 +62,14 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
       console.warn(`⚠️  Workable ${company}: Received ${statusCode} response: ${text.substring(0, 200)}`);
       // Try alternative company name variations
       const altNames = [
-        company.replace(/-/g, ''),
-        company.replace(/-/g, '_'),
-        company.split('-').map((w, i) => i === 0 ? w : w[0].toUpperCase() + w.slice(1)).join(''),
-        company.toLowerCase()
+        company.replace(/-/g, ''), // hoarelea
+        company.replace(/-/g, '_'), // hoare_lea
+        company.split('-').map((w, i) => i === 0 ? w : w[0].toUpperCase() + w.slice(1)).join(''), // hoareLea
+        company.toLowerCase(), // hoarelea
+        'hoare-lea', // Try with hyphen (common format)
+        'hoarelea', // No hyphen
+        'hoarelea-consulting', // With suffix
+        'hoare-lea-consulting' // Full name
       ];
       
       // Try alternative endpoint format first

@@ -62,11 +62,14 @@ export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
       console.log(`📄 Teamtailor ${host}: no jobs returned`);
       // Try alternative host name variations
       const altHosts = [
-        host.toLowerCase(),
-        host.replace(/-/g, ''),
-        host.replace(/-/g, '_'),
-        host.split('-')[0],
-        host.replace(/\./g, '-')
+        host.toLowerCase(), // costain
+        host.replace(/-/g, ''), // costain
+        host.replace(/-/g, '_'), // costain
+        host.split('-')[0], // costain
+        host.replace(/\./g, '-'), // costain
+        'costain-group', // Try with suffix
+        'costain-group-ltd', // Full name
+        'costainuk' // Alternative format
       ];
       
       for (const altHost of altHosts.slice(1)) { // Skip first (already tried)

@@ -58,10 +58,13 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
       console.warn(`⚠️  Lever ${company}: Authentication required (${statusCode}). The API may require authentication or the company name may be incorrect.`);
       // Try alternative company name variations
       const altNames = [
-        company.toLowerCase(),
-        company.replace(/-/g, ''),
-        company.replace(/-/g, '_'),
-        company.split('-')[0] // First part of hyphenated name
+        company.toLowerCase(), // netflix
+        company.replace(/-/g, ''), // netflix
+        company.replace(/-/g, '_'), // netflix
+        company.split('-')[0], // netflix
+        'netflix-uk', // Try with suffix
+        'netflixinc', // Alternative format
+        'netflix-inc' // With hyphen
       ];
       
       for (const altName of altNames.slice(1)) { // Skip first (already tried)

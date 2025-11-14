@@ -129,13 +129,21 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         return null;
       }
       
-      // Check for binary/corrupted data (common indicators)
-      const hasBinaryData = /[\x00-\x08\x0E-\x1F]/.test(html.substring(0, 1000));
+      // Check for valid HTML first (less aggressive binary detection)
+      // Only flag as binary if it has binary chars AND no valid HTML structure
       const hasValidHTML = /<html|<body|<head|<!DOCTYPE/i.test(html);
+      const hasBinaryData = /[\x00-\x08\x0E-\x1F]/.test(html.substring(0, 1000));
       
+      // If it has valid HTML structure, it's likely fine even with some binary chars
+      // (could be gzipped content that wasn't decompressed, or embedded binary data)
       if (hasBinaryData && !hasValidHTML) {
-        console.log(`⏭️  Skipping URL with corrupted/binary content: ${new URL(url).pathname} (likely encoding issue or invalid response)`);
-        return null;
+        // Try to check if it's actually HTML by looking for common HTML tags deeper in the content
+        const hasHTMLTags = /<div|<span|<p|<a|<h[1-6]|<script|<style/i.test(html.substring(1000, 5000));
+        if (!hasHTMLTags) {
+          console.log(`⏭️  Skipping URL with corrupted/binary content: ${new URL(url).pathname} (no valid HTML structure found)`);
+          return null;
+        }
+        // If HTML tags found, continue processing (might be valid HTML with some binary data)
       }
       
       const jsonld = extractJobPostingJSONLD(html);

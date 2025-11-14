@@ -18,7 +18,12 @@ export async function smartFetch(url: string, retries: number = 3): Promise<{ ur
     console.log(`  ✅ Direct fetch successful: ${result.html.length} chars`);
     return result;
   } catch (error) {
-    console.log(`  ⚠️  Direct fetch failed: ${error instanceof Error ? error.message : String(error)}`);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    // In test mode, skip 404s immediately to save time
+    if (process.env.TEST_MODE === 'true' && errorMsg.includes('404')) {
+      throw error; // Don't retry 404s in test mode
+    }
+    console.log(`  ⚠️  Direct fetch failed: ${errorMsg}`);
   }
   
   // Strategy 2: Try Smartproxy (if available) as fallback

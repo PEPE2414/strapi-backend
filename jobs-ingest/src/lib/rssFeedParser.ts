@@ -263,6 +263,27 @@ export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
       return [];
     }
 
+    // Check if response is gzipped/binary - try to detect and handle
+    const hasBinaryData = /[\x00-\x08\x0E-\x1F]/.test(xml.substring(0, 100));
+    const hasValidXML = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml);
+    
+    // If it looks like binary but we requested gzip, it might be compressed
+    // undici should auto-decompress, but if not, try to handle it
+    if (hasBinaryData && !hasValidXML) {
+      console.warn(`RSS feed appears to be binary/compressed: ${feedUrl}, attempting to parse anyway...`);
+      // Try to find XML structure deeper in the content
+      const hasXMLDeeper = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml.substring(100, 1000));
+      if (!hasXMLDeeper) {
+        console.warn(`RSS feed doesn't appear to be valid XML/RSS: ${feedUrl} (first 200 chars: ${xml.substring(0, 200)})`);
+        // Try HTML extraction as fallback
+        if (/<html|<body|<head|<!DOCTYPE/i.test(xml)) {
+          // It's HTML, try to extract RSS feed URL
+          return await parseRSSFeed(feedUrl); // Will trigger HTML handling below
+        }
+        return [];
+      }
+    }
+
     // Check if it's actually XML/RSS
     if (!/<rss|<feed|<rdf:rdf/i.test(xml)) {
       // If it's HTML, try to extract RSS feed URL from the page

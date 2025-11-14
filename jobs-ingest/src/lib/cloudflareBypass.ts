@@ -195,6 +195,11 @@ async function fetchWithEnhancedHeaders(
         maxRedirections: 5
       });
       
+      // In test mode, skip 404s immediately to save time
+      if (process.env.TEST_MODE === 'true' && res.statusCode === 404) {
+        throw new Error(`HTTP 404`);
+      }
+      
       if (res.statusCode === 403) {
         if (attempt < retries) {
           // For 403, wait even longer with exponential backoff

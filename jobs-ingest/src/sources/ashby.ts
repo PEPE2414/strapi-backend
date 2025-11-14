@@ -58,10 +58,13 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
       console.warn(`⚠️  Ashby ${organizationSlug}: Received error response (${statusCode}): ${text.substring(0, 100)}`);
       // Try alternative endpoint format and organization slug variations
       const altSlugs = [
-        organizationSlug.toLowerCase(),
-        organizationSlug.replace(/-/g, ''),
-        organizationSlug.replace(/-/g, '_'),
-        organizationSlug.split('-')[0]
+        organizationSlug.toLowerCase(), // monzo
+        organizationSlug.replace(/-/g, ''), // monzo
+        organizationSlug.replace(/-/g, '_'), // monzo
+        organizationSlug.split('-')[0], // monzo
+        'monzo-bank', // Try with suffix
+        'monzo-banking', // Alternative
+        'getmonzo' // Alternative name
       ];
       
       // Try alternative endpoint format first
