@@ -1,0 +1,3 @@
+# This file tells Railway to NOT use Nixpacks
+# Force Dockerfile usage
+
