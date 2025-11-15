@@ -370,7 +370,7 @@ export default factories.createCoreController('api::cover-letter.cover-letter' a
 
     const { error } = ctx.request.body || {};
     await strapi.entityService.update('api::cover-letter.cover-letter' as any, id, {
-      data: { status: 'failed' },
+      data: { status: 'failed' } as any,
     });
     strapi.log.warn(`[cover-letters] ${id} failed: ${error || 'unknown'}`);
     ctx.body = { ok: true };

@@ -123,7 +123,7 @@ export default factories.createCoreController('api::application-note.application
       applicationNote = await strapi.entityService.update('api::application-note.application-note' as any, applicationNote.id, {
         data: {
           questions: questions,
-        },
+        } as any,
       });
     }
 
