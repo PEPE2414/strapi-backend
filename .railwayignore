@@ -1,0 +1,13 @@
+node_modules
+.git
+.env
+.env.local
+dist
+build
+.cache
+.tmp
+*.log
+*.md
+jobs-ingest
+test-*
+
