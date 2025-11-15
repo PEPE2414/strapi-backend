@@ -1,5 +1,6 @@
 import { fetchWithCloudflareBypass, getBypassStatus } from '../lib/cloudflareBypass';
 import { smartFetch } from '../lib/smartFetcher';
+import { fetchWithBrowser, isBrowserAvailable, getBrowserStatus } from '../lib/browserAutomation';
 import { getWorkingUrls, getDiscoveredDetailUrls, registerDetailUrls } from '../lib/urlDiscovery';
 import { extractGraduateJobs } from '../lib/graduateJobExtractor';
 import { debugExtractJobs } from '../lib/debugExtractor';
@@ -179,6 +180,7 @@ const DETAIL_FETCH_LIMIT = 1000; // Increased from 160 to 1000
 export async function scrapeJobBoard(boardKey: string): Promise<CanonicalJob[]> {
   console.log(`🚀 Starting job board scraper for: ${boardKey}`);
   console.log(`🛡️  ${getBypassStatus()}`);
+  console.log(`🌐 ${getBrowserStatus()}`);
   
   const board = JOB_BOARDS[boardKey as keyof typeof JOB_BOARDS];
   if (!board) {
@@ -312,6 +314,7 @@ async function crawlListingUrls(
 }
 
 async function fetchListingHtml(url: string): Promise<string | null> {
+  // Strategy 1: Try direct fetch first (fastest)
   try {
     const { html } = await smartFetch(url);
     if (html && html.length > 0) {
@@ -321,13 +324,31 @@ async function fetchListingHtml(url: string): Promise<string | null> {
     console.warn(`  ⚠️  smartFetch failed for ${url}:`, error instanceof Error ? error.message : String(error));
   }
 
+  // Strategy 2: Try SmartProxy/Cloudflare bypass (good for blocked sites)
   try {
     const { html } = await fetchWithCloudflareBypass(url);
-    return html;
+    if (html && html.length > 0) {
+      return html;
+    }
   } catch (error) {
     console.warn(`  ⚠️  Bypass fetch failed for ${url}:`, error instanceof Error ? error.message : String(error));
-    return null;
   }
+
+  // Strategy 3: Try browser automation (for JavaScript-rendered content)
+  if (isBrowserAvailable()) {
+    try {
+      console.log(`  🌐 Trying browser automation for ${url}...`);
+      const { html } = await fetchWithBrowser(url, true); // Use SmartProxy with browser
+      if (html && html.length > 0) {
+        console.log(`  ✅ Browser automation successful: ${html.length} chars`);
+        return html;
+      }
+    } catch (error) {
+      console.warn(`  ⚠️  Browser automation failed for ${url}:`, error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  return null;
 }
 
 function extractJobsFromListing(

@@ -1,5 +1,6 @@
 import { get } from '../lib/fetcher';
 import { fetchWithCloudflareBypass } from '../lib/cloudflareBypass';
+import { fetchWithBrowser, isBrowserAvailable } from '../lib/browserAutomation';
 import * as cheerio from 'cheerio';
 import { extractJobPostingJSONLD } from '../lib/jsonld';
 import { pickLogo } from '../lib/logo';
@@ -87,45 +88,60 @@ export async function scrapeFromUrls(urls: string[], sourceTag: string): Promise
         return null;
       }
       
-      // For problematic domains, use SmartProxy first. For others, try direct fetch first
-      let html: string;
+      // Multi-strategy fetching: Direct → SmartProxy → Browser Automation
+      let html: string | null = null;
       const useProxyFirst = isProblematicDomain(url);
+      let fetchSuccess = false;
       
-      if (useProxyFirst) {
-        // Use SmartProxy first for known problematic domains
-        try {
-          const result = await fetchWithCloudflareBypass(url);
-          html = result.html;
-        } catch (proxyError) {
-          // If proxy fails, try direct fetch as fallback
-          try {
-            const result = await get(url);
-            html = result.html;
-          } catch (directError) {
-            console.warn(`Failed to fetch ${url} (proxy and direct both failed): ${proxyError instanceof Error ? proxyError.message : String(proxyError)}`);
-            return null;
-          }
-        }
-      } else {
-        // For other domains, try direct fetch first (faster and cheaper)
+      // Strategy 1: Try direct fetch first (fastest, cheapest)
+      if (!useProxyFirst) {
         try {
           const result = await get(url);
           html = result.html;
-        } catch (directError) {
-          // If direct fetch fails, try Cloudflare bypass as fallback
-          try {
-            const result = await fetchWithCloudflareBypass(url);
-            html = result.html;
-          } catch (bypassError) {
-            console.warn(`Failed to fetch ${url}: ${bypassError instanceof Error ? bypassError.message : String(bypassError)}`);
-            return null;
+          if (html && html.length > 500) {
+            fetchSuccess = true;
           }
+        } catch (directError) {
+          // Continue to next strategy
         }
       }
       
+      // Strategy 2: Try SmartProxy/Cloudflare bypass
+      if (!fetchSuccess) {
+        try {
+          const result = await fetchWithCloudflareBypass(url);
+          html = result.html;
+          if (html && html.length > 500) {
+            fetchSuccess = true;
+          }
+        } catch (proxyError) {
+          // Continue to next strategy
+        }
+      }
+      
+      // Strategy 3: Try browser automation (for JavaScript-rendered content)
+      if (!fetchSuccess && isBrowserAvailable()) {
+        try {
+          console.log(`  🌐 Trying browser automation for ${url}...`);
+          const result = await fetchWithBrowser(url, true); // Use SmartProxy with browser
+          html = result.html;
+          if (html && html.length > 500) {
+            fetchSuccess = true;
+            console.log(`  ✅ Browser automation successful: ${html.length} chars`);
+          }
+        } catch (browserError) {
+          console.warn(`  ⚠️  Browser automation failed: ${browserError instanceof Error ? browserError.message : String(browserError)}`);
+        }
+      }
+      
+      if (!fetchSuccess || !html) {
+        console.warn(`Failed to fetch ${url} (all strategies failed)`);
+        return null;
+      }
+      
       // Check if HTML is corrupted (contains binary data or invalid characters)
-      if (!html || html.length < 500) {
-        console.log(`⏭️  Skipping URL with insufficient content: ${new URL(url).pathname} (${html?.length || 0} chars)`);
+      if (html.length < 500) {
+        console.log(`⏭️  Skipping URL with insufficient content: ${new URL(url).pathname} (${html.length} chars)`);
         return null;
       }
       

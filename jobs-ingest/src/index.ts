@@ -39,6 +39,7 @@ import { enhanceJobDescriptions } from './lib/descriptionEnhancer';
 import { loadSeenTodayCache, saveSeenTodayCache, isJobNewToday, wasSeenRecently } from './lib/seenTodayCache';
 import { CanonicalJob } from './types';
 import { summarizeRapidApiUsage, getRapidApiUsage } from './lib/rapidapiUsage';
+import { closeBrowser } from './lib/browserAutomation';
 import { 
   GREENHOUSE_BOARDS, 
   LEVER_COMPANIES, 
@@ -735,6 +736,13 @@ function logWeeklyCoverageGaps(jobs: CanonicalJob[]): void {
 runAll().catch(e => {
   console.error(e);
   process.exit(1);
+}).finally(async () => {
+  // Clean up browser instance
+  try {
+    await closeBrowser();
+  } catch (error) {
+    // Ignore cleanup errors
+  }
 });
 
 type RunReportPayload = {
