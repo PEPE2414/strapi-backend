@@ -4,7 +4,8 @@
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile",
     "dockerContext": ".",
-    "watchPatterns": []
+    "watchPatterns": [],
+    "buildCommand": ""
   },
   "deploy": {
     "startCommand": "npm start",

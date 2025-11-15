@@ -1,10 +1,15 @@
+# Railway Configuration - Force Dockerfile Usage
+# This file explicitly tells Railway to use Dockerfile instead of Nixpacks
+
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
+dockerContext = "."
 watchPatterns = []
+# Empty buildCommand forces Dockerfile usage
+buildCommand = ""
 
 [deploy]
 startCommand = "npm start"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-
