@@ -5,6 +5,7 @@ import { makeUniqueSlug } from './slug';
 import { generateJobHash } from './jobHash';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob, cleanJobDescription } from './normalize';
 import { resolveApplyUrl } from './applyUrl';
+import { decompressUndiciResponse, decompressResponse } from './decompressResponse';
 
 export interface RSSFeed {
   url: string;
@@ -244,7 +245,14 @@ export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
           return [];
         }
       } else {
-        xml = await res.body.text();
+        // Use decompressResponse to handle binary/compressed data
+        try {
+          xml = await decompressUndiciResponse(res.body, res.headers);
+        } catch (decompressError) {
+          // If decompression fails, try regular text() as fallback
+          console.warn(`⚠️  Decompression failed, trying regular text(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+          xml = await res.body.text();
+        }
       }
     } catch (directError) {
       // If direct fetch fails, try Cloudflare bypass
@@ -252,6 +260,11 @@ export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
         const { fetchWithCloudflareBypass } = await import('./cloudflareBypass');
         const result = await fetchWithCloudflareBypass(feedUrl);
         xml = result.html;
+        // Decompress if needed (Cloudflare bypass might return compressed data)
+        // Check if it looks like binary data
+        if (xml && /[\x00-\x08\x0E-\x1F]/.test(xml.substring(0, 100)) && !/<rss|<feed|<rdf:rdf|<?xml/i.test(xml)) {
+          xml = await decompressResponse(xml);
+        }
       } catch (bypassError) {
         console.warn(`Failed to fetch RSS feed ${feedUrl}:`, bypassError instanceof Error ? bypassError.message : String(bypassError));
         return [];
@@ -263,23 +276,34 @@ export async function parseRSSFeed(feedUrl: string): Promise<RSSItem[]> {
       return [];
     }
 
-    // Check if response is gzipped/binary - try to detect and handle
+    // Check if response is still binary/compressed after decompression attempt
+    // (decompressResponse should have handled it, but double-check)
     const hasBinaryData = /[\x00-\x08\x0E-\x1F]/.test(xml.substring(0, 100));
     const hasValidXML = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml);
     
-    // If it looks like binary but we requested gzip, it might be compressed
-    // undici should auto-decompress, but if not, try to handle it
+    // If it still looks binary and not valid XML, try decompression again
     if (hasBinaryData && !hasValidXML) {
-      console.warn(`RSS feed appears to be binary/compressed: ${feedUrl}, attempting to parse anyway...`);
-      // Try to find XML structure deeper in the content
-      const hasXMLDeeper = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml.substring(100, 1000));
-      if (!hasXMLDeeper) {
-        console.warn(`RSS feed doesn't appear to be valid XML/RSS: ${feedUrl} (first 200 chars: ${xml.substring(0, 200)})`);
-        // Try HTML extraction as fallback
-        if (/<html|<body|<head|<!DOCTYPE/i.test(xml)) {
-          // It's HTML, try to extract RSS feed URL
-          return await parseRSSFeed(feedUrl); // Will trigger HTML handling below
+      console.warn(`RSS feed still appears to be binary/compressed: ${feedUrl}, attempting additional decompression...`);
+      try {
+        xml = await decompressResponse(xml);
+        // Check again after decompression
+        const stillBinary = /[\x00-\x08\x0E-\x1F]/.test(xml.substring(0, 100));
+        const nowValidXML = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml);
+        if (stillBinary && !nowValidXML) {
+          // Try to find XML structure deeper in the content
+          const hasXMLDeeper = /<rss|<feed|<rdf:rdf|<?xml/i.test(xml.substring(100, 1000));
+          if (!hasXMLDeeper) {
+            console.warn(`RSS feed doesn't appear to be valid XML/RSS after decompression: ${feedUrl} (first 200 chars: ${xml.substring(0, 200)})`);
+            // Try HTML extraction as fallback
+            if (/<html|<body|<head|<!DOCTYPE/i.test(xml)) {
+              // It's HTML, try to extract RSS feed URL
+              return await parseRSSFeed(feedUrl); // Will trigger HTML handling below
+            }
+            return [];
+          }
         }
+      } catch (decompressError) {
+        console.warn(`⚠️  Additional decompression failed: ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
         return [];
       }
     }

@@ -4,6 +4,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { makeUniqueSlug } from '../lib/slug';
 import { generateJobHash } from '../lib/jobHash';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { decompressUndiciResponse } from '../lib/decompressResponse';
 
 type AshbyJobPosting = {
   title?: string;
@@ -51,7 +52,13 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
     const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const text = await body.text();
+    // Use decompressResponse to handle binary/compressed data
+    let text: string;
+    try {
+      text = await decompressUndiciResponse(body, {});
+    } catch (decompressError) {
+      text = await body.text();
+    }
     
     // Check if response is text (error) instead of JSON
     if (statusCode !== 200 || text.trim().startsWith('Unauthorized') || text.trim().startsWith('<')) {
@@ -74,7 +81,13 @@ export async function scrapeAshby(organizationSlug: string): Promise<CanonicalJo
         const { body: altBody } = await request(altEndpoint, {
           headers: { Accept: 'application/json' }
         });
-        const altText = await altBody.text();
+        // Use decompressResponse for alternative endpoint
+        let altText: string;
+        try {
+          altText = await decompressUndiciResponse(altBody, {});
+        } catch (decompressError) {
+          altText = await altBody.text();
+        }
         if (!altText.trim().startsWith('Unauthorized') && !altText.trim().startsWith('<')) {
           try {
             const altData = JSON.parse(altText) as AshbyResponse;

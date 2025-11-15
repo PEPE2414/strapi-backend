@@ -219,7 +219,14 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
             }
             
             // For other errors, log and break
-            const errorText = await response.text();
+            // Use decompressResponse for error text (might be compressed)
+            const { decompressFetchResponse } = await import('../lib/decompressResponse');
+            let errorText: string;
+            try {
+              errorText = await decompressFetchResponse(response);
+            } catch {
+              errorText = await response.text();
+            }
             console.warn(`    ⚠️  LinkedIn API request failed (offset ${offset}): ${response.status} ${response.statusText}`);
             if (offset === 0) {
               break; // If first page fails, skip this term
@@ -234,7 +241,17 @@ export async function scrapeLinkedInJobs(): Promise<CanonicalJob[]> {
             break; // If later page fails, we got what we could
           }
 
-          const data = await response.json() as any;
+          // Use decompressResponse before parsing JSON (handles compressed responses)
+          const { decompressFetchResponse } = await import('../lib/decompressResponse');
+          let data: any;
+          try {
+            const jsonText = await decompressFetchResponse(response);
+            data = JSON.parse(jsonText);
+          } catch (decompressError) {
+            // If decompression fails, try regular json() as fallback
+            console.warn(`⚠️  Decompression failed, trying regular json(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+            data = await response.json();
+          }
           
           // Handle both array response and wrapped response
           const jobArray = Array.isArray(data) ? data : (data.results && Array.isArray(data.results) ? data.results : []);

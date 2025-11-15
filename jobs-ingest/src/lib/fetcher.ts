@@ -1,4 +1,5 @@
 import { request } from 'undici';
+import { decompressUndiciResponse } from './decompressResponse';
 
 // Rotate user agents to avoid detection - updated with more realistic ones
 const USER_AGENTS = [
@@ -82,7 +83,15 @@ export async function get(url: string, headers: Record<string,string> = {}, retr
         throw new Error(`GET ${url} -> ${res.statusCode}`);
       }
       
-      const html = await res.body.text();
+      // Use decompressResponse to handle binary/compressed data
+      let html: string;
+      try {
+        html = await decompressUndiciResponse(res.body, res.headers);
+      } catch (decompressError) {
+        // If decompression fails, try regular text() as fallback
+        console.warn(`⚠️  Decompression failed for ${url}, trying regular text(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+        html = await res.body.text();
+      }
       return { url: (res as any).url ?? url, headers: res.headers, html };
     } catch (error) {
       if (attempt < retries) {

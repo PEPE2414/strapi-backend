@@ -4,6 +4,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { makeUniqueSlug } from '../lib/slug';
 import { generateJobHash } from '../lib/jobHash';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { decompressUndiciResponse } from '../lib/decompressResponse';
 
 type GreenhouseJob = {
   id: number;
@@ -56,8 +57,15 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
       maxRedirections: 5 // Follow redirects
     });
     
-    // Check if response is HTML (error page) instead of JSON
-    const text = await body.text();
+    // Use decompressResponse to handle binary/compressed data
+    let text: string;
+    try {
+      text = await decompressUndiciResponse(body, {});
+    } catch (decompressError) {
+      // If decompression fails, try regular text() as fallback
+      console.warn(`⚠️  Decompression failed, trying regular text(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+      text = await body.text();
+    }
     if (statusCode !== 200) {
       // Try alternative endpoint format if we got a redirect or error
       if (statusCode === 301 || statusCode === 302 || statusCode === 404) {
@@ -70,7 +78,13 @@ export async function scrapeGreenhouse(board: string): Promise<CanonicalJob[]> {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             }
           });
-          const altText = await altBody.text();
+          // Use decompressResponse for alternative endpoint
+          let altText: string;
+          try {
+            altText = await decompressUndiciResponse(altBody, {});
+          } catch (decompressError) {
+            altText = await altBody.text();
+          }
           if (altStatus === 200 && !altText.trim().startsWith('<')) {
             // Use alternative endpoint response
             const altData = JSON.parse(altText);

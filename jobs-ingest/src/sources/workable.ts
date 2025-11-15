@@ -4,6 +4,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { makeUniqueSlug } from '../lib/slug';
 import { generateJobHash } from '../lib/jobHash';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { decompressUndiciResponse } from '../lib/decompressResponse';
 
 type WorkableLocation = {
   city?: string;
@@ -55,7 +56,13 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
     const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const text = await body.text();
+    // Use decompressResponse to handle binary/compressed data
+    let text: string;
+    try {
+      text = await decompressUndiciResponse(body, {});
+    } catch (decompressError) {
+      text = await body.text();
+    }
     
     // Check for errors
     if (statusCode !== 200) {
@@ -80,7 +87,14 @@ export async function scrapeWorkable(company: string): Promise<CanonicalJob[]> {
           headers: { Accept: 'application/json' }
         });
         if (altStatus === 200) {
-          const altData = await altBody.json() as any;
+          // Use decompressResponse before parsing JSON
+          let altData: any;
+          try {
+            const altText = await decompressUndiciResponse(altBody, {});
+            altData = JSON.parse(altText);
+          } catch (decompressError) {
+            altData = await altBody.json();
+          }
           const altJobs = Array.isArray(altData?.jobs) ? altData.jobs : [];
           if (altJobs.length > 0) {
             console.log(`✅ Workable ${company}: Found ${altJobs.length} jobs via v2 API`);

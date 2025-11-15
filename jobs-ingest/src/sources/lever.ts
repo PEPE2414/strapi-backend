@@ -4,6 +4,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { generateJobHash } from '../lib/jobHash';
 import { makeUniqueSlug } from '../lib/slug';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { decompressUndiciResponse } from '../lib/decompressResponse';
 
 type LeverPosting = {
   id?: string;
@@ -51,7 +52,13 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
     const { body, statusCode } = await request(endpoint, {
       headers: { Accept: 'application/json' }
     });
-    const text = await body.text();
+    // Use decompressResponse to handle binary/compressed data
+    let text: string;
+    try {
+      text = await decompressUndiciResponse(body, {});
+    } catch (decompressError) {
+      text = await body.text();
+    }
     
     // Check for authentication errors
     if (statusCode === 401 || statusCode === 403) {
@@ -76,7 +83,13 @@ export async function scrapeLever(company: string): Promise<CanonicalJob[]> {
             headers: { Accept: 'application/json' }
           });
           if (altStatus === 200) {
-            const altText = await altBody.text();
+            // Use decompressResponse for alternative endpoint
+            let altText: string;
+            try {
+              altText = await decompressUndiciResponse(altBody, {});
+            } catch {
+              altText = await altBody.text();
+            }
             const altResponse = JSON.parse(altText);
             if (Array.isArray(altResponse) && altResponse.length > 0) {
               console.log(`✅ Lever ${company}: Found ${altResponse.length} jobs using alternative name "${altName}"`);

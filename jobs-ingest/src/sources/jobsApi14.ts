@@ -91,7 +91,14 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
+          // Use decompressResponse for error text (might be compressed)
+          const { decompressFetchResponse } = await import('../lib/decompressResponse');
+          let errorText: string;
+          try {
+            errorText = await decompressFetchResponse(response);
+          } catch {
+            errorText = await response.text();
+          }
           
           // Handle rate limiting (429) with exponential backoff
           if (response.status === 429) {
@@ -119,7 +126,17 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
         consecutive429s = 0;
         success = true;
 
-        const data = await response.json();
+        // Use decompressResponse before parsing JSON (handles compressed responses)
+        const { decompressFetchResponse } = await import('../lib/decompressResponse');
+        let data: any;
+        try {
+          const jsonText = await decompressFetchResponse(response);
+          data = JSON.parse(jsonText);
+        } catch (decompressError) {
+          // If decompression fails, try regular json() as fallback
+          console.warn(`⚠️  Decompression failed, trying regular json(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+          data = await response.json();
+        }
         const jobArray = extractJobs(data);
 
         if (jobArray.length === 0) {

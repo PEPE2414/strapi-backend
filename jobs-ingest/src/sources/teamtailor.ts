@@ -4,6 +4,7 @@ import { resolveApplyUrl } from '../lib/applyUrl';
 import { makeUniqueSlug } from '../lib/slug';
 import { generateJobHash } from '../lib/jobHash';
 import { classifyJobType, toISO, isRelevantJobType, isUKJob } from '../lib/normalize';
+import { decompressUndiciResponse } from '../lib/decompressResponse';
 
 type TeamtailorAttributes = {
   title?: string;
@@ -55,7 +56,16 @@ export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
         Authorization: 'Token token="public"'
       }
     });
-    const data = await body.json() as TeamtailorResponse;
+    // Use decompressResponse before parsing JSON (handles compressed responses)
+    let data: TeamtailorResponse;
+    try {
+      const jsonText = await decompressUndiciResponse(body, {});
+      data = JSON.parse(jsonText) as TeamtailorResponse;
+    } catch (decompressError) {
+      // If decompression fails, try regular json() as fallback
+      console.warn(`⚠️  Decompression failed, trying regular json(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+      data = await body.json() as TeamtailorResponse;
+    }
     const jobs = Array.isArray(data?.data) ? data.data : [];
 
     if (jobs.length === 0) {
@@ -83,7 +93,14 @@ export async function scrapeTeamtailor(host: string): Promise<CanonicalJob[]> {
               Authorization: 'Token token="public"'
             }
           });
-          const altData = await altBody.json() as TeamtailorResponse;
+          // Use decompressResponse for alternative endpoint
+          let altData: TeamtailorResponse;
+          try {
+            const altJsonText = await decompressUndiciResponse(altBody, {});
+            altData = JSON.parse(altJsonText) as TeamtailorResponse;
+          } catch (decompressError) {
+            altData = await altBody.json() as TeamtailorResponse;
+          }
           const altJobs = Array.isArray(altData?.data) ? altData.data : [];
           if (altJobs.length > 0) {
             console.log(`✅ Teamtailor ${host}: Found ${altJobs.length} jobs using alternative host "${altHost}"`);

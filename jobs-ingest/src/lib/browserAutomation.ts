@@ -11,24 +11,56 @@ let browserContext: BrowserContext | null = null;
 
 /**
  * Get or create a browser instance (singleton pattern)
+ * Automatically installs browsers if not already installed
  */
 async function getBrowser(): Promise<Browser> {
   if (!browserInstance) {
     console.log('🌐 Launching Playwright browser...');
-    browserInstance = await chromium.launch({
-      headless: true, // Required for Railway/server environments
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-blink-features=AutomationControlled'
-      ]
-    });
-    console.log('✅ Browser launched successfully');
+    try {
+      browserInstance = await chromium.launch({
+        headless: true, // Required for Railway/server environments
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+          '--disable-blink-features=AutomationControlled'
+        ]
+      });
+      console.log('✅ Browser launched successfully');
+    } catch (error) {
+      // If browser not installed, try to install it now
+      if (error instanceof Error && error.message.includes('Executable doesn\'t exist')) {
+        console.log('📦 Browser not found, installing Chromium...');
+        const { execSync } = require('child_process');
+        try {
+          execSync('npx playwright install chromium --with-deps', { stdio: 'inherit', timeout: 300000 }); // 5 min timeout
+          console.log('✅ Chromium installed, launching browser...');
+          browserInstance = await chromium.launch({
+            headless: true,
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-accelerated-2d-canvas',
+              '--no-first-run',
+              '--no-zygote',
+              '--disable-gpu',
+              '--disable-blink-features=AutomationControlled'
+            ]
+          });
+          console.log('✅ Browser launched successfully');
+        } catch (installError) {
+          console.error('❌ Failed to install Chromium:', installError instanceof Error ? installError.message : String(installError));
+          throw new Error('Playwright browser is not available. Please ensure Chromium is installed.');
+        }
+      } else {
+        throw error;
+      }
+    }
   }
   return browserInstance;
 }

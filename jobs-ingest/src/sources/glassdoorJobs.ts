@@ -64,12 +64,29 @@ export async function scrapeGlassdoorJobs(): Promise<CanonicalJob[]> {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        // Use decompressResponse for error text (might be compressed)
+        const { decompressFetchResponse } = await import('../lib/decompressResponse');
+        let errorText: string;
+        try {
+          errorText = await decompressFetchResponse(response);
+        } catch {
+          errorText = await response.text();
+        }
         console.warn(`  ⚠️  Glassdoor request failed (${response.status}): ${errorText.substring(0, 200)}`);
         continue;
       }
 
-      const data = await response.json();
+      // Use decompressResponse before parsing JSON (handles compressed responses)
+      const { decompressFetchResponse } = await import('../lib/decompressResponse');
+      let data: any;
+      try {
+        const jsonText = await decompressFetchResponse(response);
+        data = JSON.parse(jsonText);
+      } catch (decompressError) {
+        // If decompression fails, try regular json() as fallback
+        console.warn(`⚠️  Decompression failed, trying regular json(): ${decompressError instanceof Error ? decompressError.message : String(decompressError)}`);
+        data = await response.json();
+      }
       const jobs = extractJobs(data);
       if (jobs.length === 0) continue;
 
