@@ -102,7 +102,7 @@ export class GradcrackerScraper {
       '[data-opportunity-id]',
     ];
 
-    let jobElements: cheerio.Cheerio<cheerio.Element> | null = null;
+    let jobElements: cheerio.Cheerio<any> | null = null;
 
     for (const selector of jobSelectors) {
       const elements = $(selector);
@@ -150,7 +150,7 @@ export class GradcrackerScraper {
   /**
    * Parse a single job element into a CanonicalJob
    */
-  private parseJobElement($job: cheerio.Cheerio<cheerio.Element>, baseUrl: string): CanonicalJob | null {
+  private parseJobElement($job: cheerio.Cheerio<any>, baseUrl: string): CanonicalJob | null {
     try {
       // Find the job title and link
       const titleLink = $job.find('a[href*="/jobs/"], a[href*="/job/"], a[href*="/opportunities/"]').first();
@@ -206,14 +206,16 @@ export class GradcrackerScraper {
         postedAt: postedDate ? new Date(postedDate).toISOString() : new Date().toISOString(),
       };
 
-      // Generate required slug and hash
-      const slug = makeUniqueSlug(title, company);
+      // Generate required hash first (needed for slug)
       const hash = generateJobHash({
         title,
         company: company,
         applyUrl: jobUrl,
         id: this.extractJobId(jobUrl),
       });
+
+      // Generate required slug (requires hash)
+      const slug = makeUniqueSlug(title, company, hash, location);
 
       const job: CanonicalJob = {
         ...jobData,
@@ -276,15 +278,8 @@ export class GradcrackerScraper {
                          $('main').text().trim() ||
                          '';
 
-      const requirements = $('[class*="requirements"], [class*="qualifications"]').first().text().trim() || '';
-      const benefits = $('[class*="benefits"], [class*="perks"]').first().text().trim() || '';
-
       return {
-        description: description || undefined,
-        raw: {
-          requirements,
-          benefits,
-        },
+        descriptionText: description || undefined,
       };
     } catch (error) {
       console.error(`Error scraping job detail ${jobUrl}:`, error);

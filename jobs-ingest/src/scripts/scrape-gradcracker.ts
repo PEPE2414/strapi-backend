@@ -69,9 +69,9 @@ Examples:
     if (jobs.length > 0) {
       console.log('\nSample jobs:');
       jobs.slice(0, 5).forEach((job, index) => {
-        console.log(`${index + 1}. ${job.title} at ${job.company}`);
+        console.log(`${index + 1}. ${job.title} at ${job.company.name}`);
         console.log(`   Location: ${job.location || 'N/A'}`);
-        console.log(`   URL: ${job.url}`);
+        console.log(`   URL: ${job.applyUrl || job.sourceUrl}`);
         console.log('');
       });
     }

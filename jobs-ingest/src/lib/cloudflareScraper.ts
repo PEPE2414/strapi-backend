@@ -61,35 +61,45 @@ export class CloudflareScraper {
     });
 
     // Add stealth scripts to avoid detection
+    // Note: This code runs in the browser context, not Node.js
+    // Using function syntax to avoid TypeScript errors (code runs in browser, not Node)
     await this.context.addInitScript(() => {
       // Override webdriver property
+      // @ts-ignore - This runs in browser context
       Object.defineProperty(navigator, 'webdriver', {
         get: () => false,
       });
 
       // Override plugins
+      // @ts-ignore - This runs in browser context
       Object.defineProperty(navigator, 'plugins', {
         get: () => [1, 2, 3, 4, 5],
       });
 
       // Override languages
+      // @ts-ignore - This runs in browser context
       Object.defineProperty(navigator, 'languages', {
         get: () => ['en-GB', 'en'],
       });
 
       // Override permissions
+      // @ts-ignore - This runs in browser context
       const originalQuery = window.navigator.permissions.query;
+      // @ts-ignore - This runs in browser context
       window.navigator.permissions.query = (parameters: any) =>
         parameters.name === 'notifications'
+          // @ts-ignore - This runs in browser context
           ? Promise.resolve({ state: Notification.permission } as PermissionStatus)
           : originalQuery(parameters);
 
       // Mock chrome object
+      // @ts-ignore - This runs in browser context
       (window as any).chrome = {
         runtime: {},
       };
 
       // Override getBattery
+      // @ts-ignore - This runs in browser context
       (navigator as any).getBattery = () =>
         Promise.resolve({
           charging: true,
@@ -158,9 +168,9 @@ export class CloudflareScraper {
         try {
           await page.waitForFunction(
             () => {
-              // Check if challenge is gone
+              // @ts-ignore - This runs in browser context
               const challenge = document.querySelector('#challenge-form, .cf-browser-verification');
-              return !challenge || challenge.style.display === 'none';
+              return !challenge || (challenge as HTMLElement).style.display === 'none';
             },
             { timeout: 15000 }
           );
