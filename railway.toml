@@ -3,11 +3,9 @@
 
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "./Dockerfile"
 dockerContext = "."
 watchPatterns = []
-# Empty buildCommand forces Dockerfile usage
-buildCommand = ""
 
 [deploy]
 startCommand = "npm start"
