@@ -19,7 +19,16 @@ coverage
 .cache
 .tmp
 *.md
-jobs-ingest
+# Keep jobs-ingest/src but exclude other jobs-ingest files
+jobs-ingest/node_modules
+jobs-ingest/dist
+jobs-ingest/*.md
+jobs-ingest/*.txt
+jobs-ingest/*.sh
+jobs-ingest/*.bat
+jobs-ingest/*.ps1
+jobs-ingest/test-*.js
+jobs-ingest/test-*.ts
 test-*.js
 test-*.ts
 *.sql
