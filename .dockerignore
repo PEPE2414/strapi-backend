@@ -16,4 +16,14 @@ coverage
 *.swp
 *.swo
 *~
+.cache
+.tmp
+*.md
+jobs-ingest
+test-*.js
+test-*.ts
+*.sql
+*.sh
+*.bat
+*.ps1
 

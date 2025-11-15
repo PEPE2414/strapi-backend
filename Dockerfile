@@ -1,47 +1,59 @@
 FROM node:18-alpine AS builder
 
-# Set working directory
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
-# Copy package files
+# Copy package files first for better caching
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci
+# Install all dependencies including dev dependencies
+RUN npm ci --prefer-offline --no-audit
 
-# Copy application files
-COPY . .
+# Copy source files
+COPY tsconfig.json ./
+COPY config ./config
+COPY database ./database
+COPY src ./src
+COPY public ./public
 
-# Build the application
+# Build Strapi
 RUN npm run build
 
 # Production stage
 FROM node:18-alpine
 
-# Set working directory
+# Install runtime dependencies for native modules (pg, better-sqlite3, etc.)
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --only=production --prefer-offline --no-audit && \
+    npm cache clean --force
 
-# Copy built application from builder
+# Copy built files from builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/src ./src
-COPY --from=builder /app/package.json ./
+COPY --from=builder /app/tsconfig.json ./
 
-# Expose port
-EXPOSE 1337
+# Create temp directory
+RUN mkdir -p .tmp
 
-# Set NODE_ENV to production
+# Set environment
 ENV NODE_ENV=production
 
-# Start the application
+# Expose port (Railway sets PORT automatically)
+EXPOSE 1337
+
+# Start Strapi
 CMD ["npm", "start"]
 
