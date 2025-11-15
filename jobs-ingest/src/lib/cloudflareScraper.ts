@@ -170,7 +170,8 @@ export class CloudflareScraper {
             () => {
               // @ts-ignore - This runs in browser context
               const challenge = document.querySelector('#challenge-form, .cf-browser-verification');
-              return !challenge || (challenge as HTMLElement).style.display === 'none';
+              // @ts-ignore - This runs in browser context
+              return !challenge || (challenge as any).style.display === 'none';
             },
             { timeout: 15000 }
           );
