@@ -73,11 +73,13 @@ export async function scrapeJobsAPI14(): Promise<CanonicalJob[]> {
       try {
         const url = new URL('https://jobs-api14.p.rapidapi.com/v2/linkedin/search');
         url.searchParams.set('query', query);
-        url.searchParams.set('experienceLevels', experienceLevels.join('%3B'));
-        url.searchParams.set('workplaceTypes', workplaceTypes.join('%3B'));
+        // API expects comma-separated values (URLSearchParams will auto-encode commas)
+        url.searchParams.set('experienceLevels', experienceLevels.join(','));
+        url.searchParams.set('workplaceTypes', workplaceTypes.join(','));
         url.searchParams.set('location', 'United Kingdom');
         url.searchParams.set('datePosted', datePosted);
-        url.searchParams.set('employmentTypes', employmentTypes.join('%3B'));
+        // API expects comma-separated values: contractor, fulltime, parttime
+        url.searchParams.set('employmentTypes', employmentTypes.join(','));
 
         recordRapidApiRequest('jobs-api14');
         const response = await fetch(url.toString(), {

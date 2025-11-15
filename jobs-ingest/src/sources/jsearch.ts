@@ -253,16 +253,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
   const slotDefinition = SLOT_DEFINITIONS[runSlot];
   const dateWindow = isBacklogSlot(runSlot) ? 'all' : 'week';
 
-  const siteSearchTerms = [
-    'graduate', 'graduate scheme', 'placement', 'industrial placement',
-    'placement year', 'undergraduate placement', 'placement scheme',
-    'year in industry', 'internship', 'summer internship', 'summer analyst', 'off-cycle internship',
-    'engineering placement', 'technology internship', 'finance graduate', 'consulting placement',
-    'data science internship', 'marketing graduate', 'logistics placement', 'healthcare internship'
-  ];
-
-  const siteTermsForRun = buildSlotSiteTerms(slotDefinition, siteSearchTerms);
-  console.log(`  🌐 Site search term combos: ${siteTermsForRun.length}`);
+  // Site search terms removed - Google-style "site:" syntax doesn't work well with JSearch API
+  // Focus on broader queries instead
 
   const jobsPerTerm: { [term: string]: number } = {};
   const uniqueJobsPerTerm: { [term: string]: number } = {};
@@ -465,146 +457,8 @@ export async function scrapeJSearch(): Promise<CanonicalJob[]> {
     console.warn('Failed to scrape JSearch API:', error instanceof Error ? error.message : String(error));
   }
 
-  // Site-constrained queries to focus on specific UK boards
-  // Use fewer searches per site to stay within daily limit
-  try {
-    const effectiveSiteTerms = siteTermsForRun.length > 0 ? siteTermsForRun : siteSearchTerms;
-
-    for (const site of sites) {
-      for (const term of effectiveSiteTerms) {
-        if (totalSearches >= MAX_SEARCHES_PER_RUN) {
-          console.log(`  ⏸️  Reached search limit for this run (${MAX_SEARCHES_PER_RUN}), stopping site searches`);
-          break;
-        }
-        
-        const query = `${term} site:${site.domain}`;
-        console.log(`  🌐 Site search (${site.key}): "${query}"`);
-        totalSearches++;
-        
-        try {
-          // Site-constrained search with same filters
-          const urlParams = new URLSearchParams({
-            query,
-            country: 'uk',
-            page: '1',
-            num_pages: '8', // Increased for site searches
-            date_posted: dateWindow,
-            employment_types: 'FULLTIME,INTERN,CONTRACTOR,PARTTIME',
-            job_requirements: 'no_experience,under_3_years_experience'
-          });
-          
-          const url = `https://jsearch.p.rapidapi.com/search?${urlParams.toString()}`;
-          recordRapidApiRequest('jsearch');
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-              'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
-            }
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.warn(`    ⚠️  JSearch site request failed: ${response.status} ${response.statusText}`);
-            console.warn(`    📄 Error response: ${errorText.substring(0, 300)}`);
-            continue;
-          }
-
-          const data = await response.json() as any;
-          const jobArray = (data.data && Array.isArray(data.data)) ? data.data : [];
-          const siteTermKey = `${site.key}:${term}`;
-
-          if (jobArray.length > 0) {
-            console.log(`    📦 ${site.key}: ${jobArray.length} jobs for "${term}"`);
-            jobsPerTerm[siteTermKey] = (jobsPerTerm[siteTermKey] || 0) + jobArray.length;
-          }
-
-          for (const job of jobArray) {
-            try {
-              const dedupKey = buildJSearchDedupKey(job);
-              if (seenKeys.has(dedupKey)) {
-                duplicateCount++;
-                continue;
-              }
-              seenKeys.add(dedupKey);
-
-              // Get best apply URL from apply_options array (prefer direct links)
-              let bestApplyUrl = job.job_apply_link || '';
-              if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
-                const directLink = job.apply_options.find((opt: any) => opt.is_direct === true);
-                if (directLink && directLink.apply_link) {
-                  bestApplyUrl = directLink.apply_link;
-                } else if (job.apply_options[0] && job.apply_options[0].apply_link) {
-                  bestApplyUrl = job.apply_options[0].apply_link;
-                }
-              }
-
-              const jobDescription = job.job_description || job.description || '';
-
-              const canonicalJob: CanonicalJob = {
-                title: job.job_title || job.title || 'Unknown Title',
-                company: { name: job.employer_name || job.company_name || job.employer || 'Unknown Company' },
-                location: job.job_city || job.job_location || job.location || job.job_state || 'UK',
-                applyUrl: bestApplyUrl,
-                descriptionText: jobDescription,
-                descriptionHtml: jobDescription,
-                source: `JSearch API (${site.key})`,
-                sourceUrl: `https://jsearch.p.rapidapi.com/search?site=${site.domain}`,
-                jobType: classifyJobType((job.job_title || job.title || '') + ' ' + jobDescription),
-                salary: job.job_min_salary || job.job_max_salary ? {
-                  min: job.job_min_salary,
-                  max: job.job_max_salary,
-                  currency: job.job_salary_currency || 'GBP'
-                } : undefined,
-                postedAt: job.job_posted_at_datetime_utc ? toISO(job.job_posted_at_datetime_utc) : undefined,
-                applyDeadline: job.job_posted_at_datetime_utc ? 
-                  toISO(job.job_posted_at_datetime_utc) : undefined,
-                slug: generateSlug(job.job_title || job.title, job.employer_name || job.company_name),
-                hash: generateJobHash({
-                  title: job.job_title || job.title,
-                  company: job.employer_name || job.company_name,
-                  id: job.job_id || job.id,
-                  applyUrl: bestApplyUrl,
-                  location: job.job_city || job.job_location || job.location || job.job_state,
-                  postedAt: job.job_posted_at_datetime_utc || job.job_posted_at
-                })
-              };
-
-              const siteIndustry = classifyIndustry({
-                title: canonicalJob.title,
-                description: canonicalJob.descriptionText || canonicalJob.descriptionHtml,
-                company: canonicalJob.company?.name,
-                hints: [...slotDefinition.industries, term],
-                query
-              });
-              if (siteIndustry) {
-                canonicalJob.industry = siteIndustry;
-              }
-
-              const jobText = canonicalJob.title + ' ' + (canonicalJob.descriptionText || '');
-              const jobType = classifyJobType(jobText);
-              if (jobType === 'graduate' || jobType === 'placement' || jobType === 'internship') {
-                if (!canonicalJob.descriptionText || canonicalJob.descriptionText.length < 200) {
-                  console.log(`    🔍 Enhancing description for: ${canonicalJob.title}`);
-                  await enhanceJobDescription(canonicalJob);
-                }
-                jobs.push(canonicalJob);
-                uniqueJobsPerTerm[siteTermKey] = (uniqueJobsPerTerm[siteTermKey] || 0) + 1;
-              }
-            } catch (error) {
-              console.warn(`    ⚠️  Error processing site job:`, error instanceof Error ? error.message : String(error));
-            }
-          }
-
-          await new Promise(resolve => setTimeout(resolve, 1500));
-        } catch (error) {
-          console.warn(`    ❌ Failed site search (${site.key}):`, error instanceof Error ? error.message : String(error));
-        }
-      }
-    }
-  } catch (error) {
-    console.warn('Failed site-constrained JSearch:', error instanceof Error ? error.message : String(error));
-  }
+  // Site-constrained queries removed - Google-style "site:" syntax doesn't work well with JSearch API
+  // Instead, focus on broader queries that are more likely to return results
 
   // Summary: Show jobs per term
   if (Object.keys(jobsPerTerm).length > 0) {

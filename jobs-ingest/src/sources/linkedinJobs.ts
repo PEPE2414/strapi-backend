@@ -384,14 +384,10 @@ function buildLinkedInDedupKey(job: any): string {
 
 function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
   const terms = new Set<string>();
-  const MAX_TERMS = 240;
+  const MAX_TERMS = 120; // Reduced from 240 to focus on broader queries
   const jobTypes: JobTypeKey[] = ['graduate', 'placement', 'internship'];
-  const placementDurations = ['12 month', '12-month', 'year-long', 'year long', 'industrial year', 'industry year'];
-  const placementSuffixes = ['placement', 'programme', 'program', 'co-op', 'cooperative education'];
-  const internshipDurations = ['summer', 'winter', 'spring', 'off-cycle', '12 week', '10 week'];
-  const internshipSuffixes = ['internship', 'analyst program', 'associate program', 'insight week'];
-  const graduateSuffixes = ['graduate scheme', 'graduate program', 'graduate programme', 'graduate trainee'];
-
+  
+  // Simplified - focus on broader queries that are more likely to return results
   const add = (value: string) => {
     const cleaned = value.trim().toLowerCase();
     if (!cleaned) return;
@@ -400,64 +396,35 @@ function buildLinkedInSlotTerms(slot: SlotDefinition): string[] {
     terms.add(cleaned);
   };
 
+  // Add placement boost terms (these are already optimized)
   buildPlacementBoostTerms(slot).forEach(add);
 
+  // Focus on broader industry + job type combinations (without excessive variations)
   slot.industries.forEach(industry => {
     jobTypes.forEach(type => {
+      // Simple combinations that are more likely to work
       add(`${type} ${industry} uk`);
       add(`${industry} ${type} uk`);
+      
+      // Only add popular titles (limit to top 3 to avoid too many 0-result queries)
       getPopularTitles(industry, type)
-        .slice(0, 6)
+        .slice(0, 3)
         .forEach(title => {
-          add(`${title}`);
           add(`${title} uk`);
-          add(`${title} ${industry}`);
         });
-    });
-
-    placementDurations.forEach(duration => {
-      placementSuffixes.forEach(suffix => {
-        add(`${duration} ${industry} ${suffix}`);
-        add(`${duration} ${suffix} ${industry}`);
-      });
     });
   });
 
-  slot.cities.forEach(city => {
+  // City-based searches - simplified (only top cities and broader terms)
+  slot.cities.slice(0, 5).forEach(city => { // Limit to top 5 cities
     jobTypes.forEach(type => {
+      // Simple city + job type combinations
+      add(`${type} ${city}`);
       add(`${type} jobs ${city}`);
-      add(`${type} ${city} uk`);
-      slot.industries.forEach(industry => {
+      
+      // Only add top industries per city (limit to 3)
+      slot.industries.slice(0, 3).forEach(industry => {
         add(`${type} ${industry} ${city}`);
-        add(`${industry} ${type} ${city}`);
-        getPopularTitles(industry, type)
-          .slice(0, 4)
-          .forEach(title => {
-            add(`${title} ${city}`);
-            add(`${title} in ${city}`);
-          });
-      });
-    });
-
-    placementDurations.forEach(duration => {
-      placementSuffixes.forEach(suffix => {
-        add(`${duration} ${suffix} ${city}`);
-        slot.industries.forEach(industry => {
-          add(`${duration} ${industry} ${suffix} ${city}`);
-        });
-      });
-    });
-
-    graduateSuffixes.forEach(suffix => {
-      add(`${suffix} ${city}`);
-      slot.industries.forEach(industry => {
-        add(`${suffix} ${industry} ${city}`);
-      });
-    });
-
-    internshipDurations.forEach(duration => {
-      internshipSuffixes.forEach(suffix => {
-        add(`${duration} ${suffix} ${city}`);
       });
     });
   });

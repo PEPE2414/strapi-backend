@@ -83,9 +83,9 @@ function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?
   if (sourceType === 'greenhouse' || sourceKey.startsWith('greenhouse:')) {
     const company = sourceKey.replace('greenhouse:', '') || sourceKey;
     return [
-      `What is the current Greenhouse job board URL for ${company}? Format: boards.greenhouse.io/{company}/embed/job_board`,
-      `What is the working Greenhouse careers page URL for ${company}?`,
-      `What is the current Greenhouse API endpoint for ${company} jobs?`
+      `What is the current working Greenhouse job board URL for ${company}? Provide the exact URL that shows job listings.`,
+      `What is the Greenhouse API endpoint that returns JSON job data for ${company}? Provide the exact URL.`,
+      `Find the Greenhouse careers page or job board page for ${company} that lists all available jobs.`
     ];
   }
   
@@ -93,8 +93,8 @@ function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?
   if (sourceType === 'lever' || sourceKey.startsWith('lever:')) {
     const company = sourceKey.replace('lever:', '') || sourceKey;
     return [
-      `What is the current Lever API endpoint for ${company}? Format: api.lever.co/v0/postings/{company}`,
-      `What is the working Lever careers page URL for ${company}?`
+      `What is the current working Lever API endpoint that returns JSON job postings for ${company}? Provide the exact URL.`,
+      `Find the Lever careers page or API endpoint for ${company} that lists job openings.`
     ];
   }
   
@@ -102,8 +102,8 @@ function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?
   if (sourceType === 'workable' || sourceKey.startsWith('workable:')) {
     const company = sourceKey.replace('workable:', '') || sourceKey;
     return [
-      `What is the current Workable API endpoint for ${company}? Format: {company}.workable.com/api/v3/jobs`,
-      `What is the working Workable careers page URL for ${company}?`
+      `What is the current working Workable API endpoint that returns JSON job listings for ${company}? Provide the exact URL.`,
+      `Find the Workable careers page or API endpoint for ${company} that shows available jobs.`
     ];
   }
   
@@ -111,8 +111,8 @@ function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?
   if (sourceType === 'ashby' || sourceKey.startsWith('ashby:')) {
     const company = sourceKey.replace('ashby:', '') || sourceKey;
     return [
-      `What is the current Ashby job board API endpoint for ${company}? Format: jobs.ashbyhq.com/api/non_authenticated/job_board?organization_slug={company}`,
-      `What is the working Ashby careers page URL for ${company}?`
+      `What is the current working Ashby job board API endpoint for ${company}? Provide the exact URL that returns job data.`,
+      `Find the Ashby careers page or public job board URL for ${company} that lists available positions.`
     ];
   }
   
@@ -120,8 +120,8 @@ function getPerplexityQueries(sourceType: string, sourceKey: string, sourceName?
   if (sourceType === 'teamtailor' || sourceKey.startsWith('teamtailor:')) {
     const company = sourceKey.replace('teamtailor:', '') || sourceKey;
     return [
-      `What is the current Teamtailor API endpoint for ${company}? Format: api.teamtailor.com/v1/jobs?host={company}.teamtailor.com`,
-      `What is the working Teamtailor careers page URL for ${company}?`
+      `What is the current working Teamtailor API endpoint that returns JSON job listings for ${company}? Provide the exact URL.`,
+      `Find the Teamtailor careers page or API endpoint for ${company} that shows job openings.`
     ];
   }
   
