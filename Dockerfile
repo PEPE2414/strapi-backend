@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Install build dependencies
 RUN apk add --no-cache python3 make g++
@@ -7,7 +7,8 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm ci --only=production=false
+# Try npm ci first (faster, reproducible), fall back to npm install if lock file is out of sync
+RUN npm ci || npm install
 
 # Copy TypeScript config
 COPY tsconfig.json ./
